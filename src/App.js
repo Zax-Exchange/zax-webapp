@@ -5,9 +5,12 @@ import { useEffect } from 'react';
 import { ApolloProvider, useQuery, gql } from '@apollo/client';
 
 const testQuery = gql`
-  query BookQuery {
-    books {
-      author
+  query User {
+    users {
+      name
+      email
+      password
+      companyId
     }
   }
 `;
