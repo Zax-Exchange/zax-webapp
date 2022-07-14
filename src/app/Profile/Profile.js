@@ -25,7 +25,7 @@ const getCompanyDetail = gql`
 const Profile = () => {
   const {loading: userLoading, error: userError, data: userData} = useQuery(getUserProfile, {
     variables: {
-      userId: 783
+      userId: parseInt(window.sessionStorage.getItem("userId"))
     }
   });
   const companyId = userData?.getUserWithUserId.companyId;

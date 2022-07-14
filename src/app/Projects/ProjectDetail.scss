@@ -1,0 +1,29 @@
+.project-detail-container {
+  display: flex;
+  flex-direction: column;
+  .title {
+    align-self: center;
+  }
+  .field-container {
+    align-self: flex-start;
+  }
+  .project-info-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 4px;
+  }
+
+  .components-detail-container {
+    .component-detail-container {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+  }
+}
