@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SearchResults.scss";
 import SearchProjectOverview from "./SearchProjectOverview";
+import { Typography, Stack, Grid, Container} from "@mui/material";
 /**
  * 
  * name
@@ -16,14 +17,23 @@ import SearchProjectOverview from "./SearchProjectOverview";
 const SearchResults = () => {
   const {state} = useLocation();
 
-  return (<div className="search-results-container">
-    RESULTS:
-    {
-      state && state.searchCustomerProjects.map((result) => {
-        return <SearchProjectOverview projectData={result}/>
-      })
-    }
-  </div>)
+  return (<Grid container className="search-results-container">
+    <Grid item xs={2} className="search-results-sortby-container">
+      <Typography>Sort by</Typography>
+
+    </Grid>
+
+    <Grid item xs={10} className="search-results-inner-container">
+      <Stack direction="column">
+        {
+          state && state.searchCustomerProjects.map((result) => {
+            return <SearchProjectOverview projectData={result}/>
+          })
+        }
+      </Stack>
+
+    </Grid>
+  </Grid>)
 };
 
 export default SearchResults;

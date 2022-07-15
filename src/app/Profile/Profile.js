@@ -1,4 +1,5 @@
 import { useQuery, gql } from '@apollo/client';
+import { Grid, Typography, Container } from '@mui/material';
 
 const getUserProfile = gql`
   query getUserWithUserId($userId: Int) {
@@ -43,23 +44,26 @@ const Profile = () => {
     console.log(companyData);
   }
   return (
-    <div>
-      Profile PAGE
-      <div>
-        USER INFO
-        user name: {userData && userData.getUserWithUserId.name}
-        email: {userData && userData.getUserWithUserId.email}
-      </div>
+    <Grid container className="profile-outer-container">
+      <Grid item xs={2}>
+        <Container>
+          USER PROFILE
+          <Typography>user name: {userData && userData.getUserWithUserId.name}</Typography>
+          <Typography>email: {userData && userData.getUserWithUserId.email}</Typography>
+        </Container>
+      </Grid>
 
-      <div>
-        COMPANY INFO
-        <p>company name: {companyData && companyData.getCompanyDetail.name}</p>
-        <p>company phone: {companyData && companyData.getCompanyDetail.phone}</p>
-        <p>company locations: {companyData && companyData.getCompanyDetail.locations}</p>
-        <p>company leadTime: {companyData && companyData.getCompanyDetail.leadTime}</p>
-        <p>company materials: {companyData && companyData.getCompanyDetail.materials}</p>
-      </div>
-    </div>
+      <Grid item xs={10}>
+        <Container>
+          COMPANY PROFILE
+          <Typography>company name: {companyData && companyData.getCompanyDetail.name}</Typography>
+          <Typography>company phone: {companyData && companyData.getCompanyDetail.phone}</Typography>
+          <Typography>company locations: {companyData && companyData.getCompanyDetail.locations}</Typography>
+          <Typography>company leadTime: {companyData && companyData.getCompanyDetail.leadTime}</Typography>
+          <Typography>company materials: {companyData && companyData.getCompanyDetail.materials}</Typography>
+        </Container>
+      </Grid>
+    </Grid>
   )
 };
 

@@ -5,6 +5,7 @@ import { GET_PROJECT_DETAIL } from "./ProjectDetail";
 import "./ProjectBid.scss";
 import { useState } from "react";
 import { useVendorProjects } from "./Projects";
+import { Container, Button, Typography } from "@mui/material";
 
 const CREATE_PROJECT_BID = gql`
 mutation CreateProjectBid($data: CreateProjectBidInput) {
@@ -78,31 +79,33 @@ const ProjectBid = ({projectId, setIsOpen}) => {
     } = projectData.getProjectDetail;
 
     return (
-    <div className="project-bid-container">
-      <div className="project-info-container">
-        <div className="title">Project Detail</div>
-        <div className="field-container">name: {projectName}</div>
-        <div className="field-container">deliveryDate: {deliveryDate}</div>
-        <div className="field-container">deliveryCountry: {deliveryCountry}</div>
-        <div className="field-container">budget: {budget}</div>
-        <div className="field-container">deliveryCity: {deliveryCity}</div>
-        <div className="field-container">design: {design}</div>
-        <div className="field-container">status: {status}</div>
-      </div>
+    <Container className="project-bid-container">
+      <Container className="project-info-container">
+        <Typography>Project Detail</Typography>
+        <Typography>name: {projectName}</Typography>
+        <Typography>deliveryDate: {deliveryDate}</Typography>
+        <Typography>deliveryCountry: {deliveryCountry}</Typography>
+        <Typography>budget: {budget}</Typography>
+        <Typography>deliveryCity: {deliveryCity}</Typography>
+        <Typography>design: {design}</Typography>
+        <Typography>status: {status}</Typography>
+      </Container>
       
-      <div className="bid-components-detail-container">
-        <div className="title">Components Detail</div>
+      <Container className="bid-components-detail-container">
+        <Typography>Components Detail</Typography>
 
         {
           components.map(comp => {
             return <ProjectBidComponent component={comp} setComponentQpData={setComponentQpData} componentsQpData={componentsQpData}/>
           })
         }
-      </div>
-
-      <button onClick={submitBid}>Submit</button>
-      <button onClick={() => setIsOpen(false)}>Cancel</button>
-    </div>)
+      </Container>
+      
+      <Container>
+        <Button onClick={submitBid}>Submit</Button>
+        <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+      </Container>
+    </Container>)
 
   }
 }

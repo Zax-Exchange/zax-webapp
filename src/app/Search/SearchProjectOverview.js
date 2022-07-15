@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { Typography, Card, CardActionArea, CardContent, Container } from "@mui/material";
+
 
 const SearchProjectOverview = ({projectData}) => {
   const navigate = useNavigate();
@@ -8,15 +10,21 @@ const SearchProjectOverview = ({projectData}) => {
   };
 
   const date = new Date(Date(projectData.createdAt)).toISOString().slice(0, 10);
-  return <div className="project-overview-container" onClick={() => handleProjectOnClick(projectData.id)}>
-    <div>Project Name: {projectData.name}</div>
-    {projectData.materials && <div>Materials: {projectData.materials.join(",")}</div>}
-    <div>Company: {projectData.companyId}</div>
-    <div>Delivery date: {projectData.deliveryDate}</div>
-    <div>Delivery city: {projectData.deliveryCity}</div>
-    <div>Budget: {projectData.budget}</div>
-    <div>Posted on: {date}</div>
-  </div>
+  return <Container style={{marginBottom: "10px"}}>
+    <Card className="search-project-overview-container" onClick={() => handleProjectOnClick(projectData.id)} variant="outlined">
+      <CardActionArea>
+        <CardContent>
+          <Typography>Project Name: {projectData.name}</Typography>
+          <Typography>Materials: {projectData.materials.join(",")}</Typography>
+          <Typography>Company: {projectData.companyId}</Typography>
+          <Typography>Delivery date: {projectData.deliveryDate}</Typography>
+          <Typography>Delivery city: {projectData.deliveryCity}</Typography>
+          <Typography>Budget: {projectData.budget}</Typography>
+          <Typography>Posted on: {date}</Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  </Container>
 }
 
 export default SearchProjectOverview;

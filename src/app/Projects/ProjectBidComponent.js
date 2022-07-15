@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { Container, Typography, Button, Input, Stack, TextField} from "@mui/material";
 const ProjectBidComponent = ({component, setComponentQpData, componentsQpData}) => {
     const {
       id,
@@ -46,34 +46,34 @@ const ProjectBidComponent = ({component, setComponentQpData, componentsQpData}) 
     }
 
     return (
-      <div className="component-detail-container">
-        <div className="field-container">name: {name}</div>
-        <div className="field-container">materials: {materials.join(",")}</div>
-        <div className="field-container">dimension: {dimension}</div>
-        <div className="field-container">post process: {postProcess}</div>
+      <Container className="component-detail-container">
+        <Typography>name: {name}</Typography>
+        <Typography>materials: {materials.join(",")}</Typography>
+        <Typography>dimension: {dimension}</Typography>
+        <Typography>post process: {postProcess}</Typography>
         
-        <div className="quanity-price-input-container">
-          <div className="quantity-container">
+        <Container className="quanity-price-input-container">
+          <Typography className="quantity-container">
             Quantity
-            <input name="quantity" onChange={handleQpInput} value={quantity}/>
-          </div>
-          <div className="price-container">
+            <TextField type="number" name="quantity" onChange={handleQpInput} value={quantity}/>
+          </Typography>
+          <Typography className="price-container">
             Price
-            <input name="price" onChange={handleQpInput} value={price}/>
-          </div>
-          <button onClick={addQp}>Add</button>
+            <TextField type="number" name="price" onChange={handleQpInput} value={price}/>
+          </Typography>
+          <Button onClick={addQp}>Add</Button>
 
-        </div>
+        </Container>
         {
           componentsQpData[id] && componentsQpData[id].map((qp, i) => {
-            return <div className="quantity-price-detail">
-              <div>quantity: {qp.quantity}</div>
-              <div>price: {qp.price}</div>
-              <button onClick={() => deleteQp(i)}>Delete</button>
-            </div>
+            return <Stack direction="row" >
+              <Typography>quantity: {qp.quantity}</Typography>
+              <Typography>price: {qp.price}</Typography>
+              <Button onClick={() => deleteQp(i)}>Delete</Button>
+            </Stack>
           })
         }
-      </div>
+      </Container>
     )
 }
 

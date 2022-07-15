@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom"
 import "./ProjectDetail.scss";
-import Modal from 'react-modal';
+import { Dialog, Container, Typography, Button } from "@mui/material";
 import ProjectBid from "./ProjectBid";
 import { useState } from "react";
 
@@ -77,62 +77,58 @@ const ProjectDetail = () => {
       status
     } = projectData.getProjectDetail;
 
-    return <div>
-      <div className="project-info-container">
-          <div className="title">Project Detail</div>
-          <div className="field-container">name: {projectName}</div>
-          <div className="field-container">deliveryDate: {deliveryDate}</div>
-          <div className="field-container">deliveryCountry: {deliveryCountry}</div>
-          <div className="field-container">budget: {budget}</div>
-          <div className="field-container">deliveryCity: {deliveryCity}</div>
-          <div className="field-container">design: {design}</div>
-          <div className="field-container">status: {status}</div>
-        </div>
+    return <Container>
+        <Container className="project-info-container">
+          <Typography>Project Detail</Typography>
+          <Typography>name: {projectName}</Typography>
+          <Typography>deliveryDate: {deliveryDate}</Typography>
+          <Typography>deliveryCountry: {deliveryCountry}</Typography>
+          <Typography>budget: {budget}</Typography>
+          <Typography>deliveryCity: {deliveryCity}</Typography>
+          <Typography>design: {design}</Typography>
+          <Typography>status: {status}</Typography>
+        </Container>
         
-        <div className="components-detail-container">
-        <div className="title">Components Detail</div>
+        <Container className="components-detail-container">
+          <Typography>Components Detail</Typography>
 
-        {
-          projectData.getProjectDetail.components.map(comp => {
-            const {name,
-              materials,
-              dimension,
-              postProcess} = comp;
-            return (
-              <div className="component-detail-container">
-                <div className="field-container">name: {name}</div>
-                <div className="field-container">materials: {materials.join(",")}</div>
-                <div className="field-container">dimension: {dimension}</div>
-                <div className="field-container">post process: {postProcess}</div>
-              </div>
-            )
-          })
-        }
-        </div>
-      </div>
+          {
+            projectData.getProjectDetail.components.map(comp => {
+              const {name,
+                materials,
+                dimension,
+                postProcess} = comp;
+              return (
+                <Container className="component-detail-container">
+                  <Typography>name: {name}</Typography>
+                  <Typography>materials: {materials.join(",")}</Typography>
+                  <Typography>dimension: {dimension}</Typography>
+                  <Typography>post process: {postProcess}</Typography>
+                </Container>
+              )
+            })
+          }
+        </Container>
+      </Container>
   }
 
   if (projectData) {
     
       // TODO: use isVendor
     if (true) {
-      return (<div className="project-detail-container">
+      return (<Container className="project-detail-container">
         {renderProjectDetail()}
 
-        <button onClick={bidProjectHandler}>Bid Project</button>
-        <button onClick={backHandler}>Back</button>
+        <Button onClick={bidProjectHandler}>Bid Project</Button>
+        <Button onClick={backHandler}>Back</Button>
 
-        <Modal
-          isOpen={modalIsOpen}
-          onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
-          // style={customStyles}
-          contentLabel="Project Bid"
-          ariaHideApp={false}
+        <Dialog
+          open={modalIsOpen}
+          onClose={closeModal}
         >
           <ProjectBid projectId={state.projectId} setIsOpen={setIsOpen}/>
-        </Modal>
-      </div>)
+        </Dialog>
+      </Container>)
     }
 
   }

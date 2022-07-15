@@ -1,12 +1,6 @@
 .search-results-container {
-  display: flex;
-  flex-direction: column;
 
-  .project-overview-container {
-    display: flex;
-    border: 1px solid black;
-    margin-bottom: 10px;
-    flex-direction: column;
-    cursor: pointer;
+  .search-project-overview-container:hover {
+
   }
 }

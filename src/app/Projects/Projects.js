@@ -1,5 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import UserProjectOverview from "./UserProjectOverview";
+import { Typography, Grid } from "@mui/material";
 import "./Projects.scss";
 
 const GET_VENDOR_PROJECTS = gql`
@@ -9,6 +10,7 @@ const GET_VENDOR_PROJECTS = gql`
         id
         permission
         components {
+          projectComponentId
           quantityPrices {
             quantity
             price
@@ -17,6 +19,7 @@ const GET_VENDOR_PROJECTS = gql`
         }
       }
       components {
+        id
         name
         materials
         dimension
@@ -55,13 +58,15 @@ const Projects = () => {
 
       return (
         <div className="user-projects-container">
-          <div>Projects PAGE</div>
+          <Typography variant="h3">Projects PAGE</Typography>
 
-          {
-            data.getVendorProjects.map((project) => {
-              return <UserProjectOverview projectData={project}/>
-            })
-          }
+          <Grid container spacing={2} className="user-projects-inner-container">
+            {
+              data.getVendorProjects.map((project) => {
+                return <UserProjectOverview projectData={project}/>
+              })
+            }
+          </Grid>
         </div>
       )
     }

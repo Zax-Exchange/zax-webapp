@@ -1,7 +1,10 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import UserProjectDetail from "./UserProjectDetail";
-
+import Button from '@mui/material/Button';
+import { Typography } from "@mui/material";
+import { Dialog, DialogContent } from "@mui/material";
+import { Card, CardActionArea, CardContent, Grid } from "@mui/material";
 const UserProjectOverview = ({projectData}) => {
   
   const [isOpen, setIsOpen] = useState(false);
@@ -17,33 +20,35 @@ const UserProjectOverview = ({projectData}) => {
     setIsOpen(false);
   }
 
- 
   // TODO: use isVendor
   if (true) {
     const date = new Date(Date(projectData.createdAt)).toISOString().slice(0, 10);
 
-    return <div className="user-project-overview-container" onClick={openModal}>
-      <div>Project Name: {projectData.name}</div>
+    return <Grid item >
+      <Card className="user-project-overview-container" variant="elevation" elevation={2}>
+        <CardActionArea>
+          <CardContent>
+            <Typography variant="h6">Project Name: {projectData.name}</Typography>
 
-      <div>Company: {projectData.companyId}</div>
-      <div>Delivery date: {projectData.deliveryDate}</div>
-      <div>Delivery city: {projectData.deliveryCity}</div>
-      <div>Budget: {projectData.budget}</div>
-      <div>Posted on: {date}</div>
+            <Typography align="left">Company: {projectData.companyId}</Typography>
+            <Typography align="left">Delivery date: {projectData.deliveryDate}</Typography>
+            <Typography align="left">Delivery city: {projectData.deliveryCity}</Typography>
+            <Typography align="left">Budget: {projectData.budget}</Typography>
+            <Typography align="left">Posted on: {date}</Typography>
 
-      <Modal
-        isOpen={isOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        // style={customStyles}
-        contentLabel="Project Bid"
-        ariaHideApp={false}
-      >
-
-        <UserProjectDetail projectId={projectData.id} bidInfo={projectData.bidInfo}/>
-      </Modal>
-    </div>
-
+            <Button onClick={openModal} style={{alignSelf: "center"}}>View detail</Button>
+          </CardContent>
+        </CardActionArea>
+        <Dialog
+          open={isOpen}
+          onClose={closeModal}
+        >
+          <DialogContent>
+            <UserProjectDetail projectId={projectData.id} bidInfo={projectData.bidInfo} closeModal={closeModal}/>
+          </DialogContent>
+        </Dialog>
+      </Card>
+    </Grid>
   }
   return null;
 }

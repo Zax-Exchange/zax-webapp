@@ -1,13 +1,14 @@
 .user-projects-container {
   display: flex;
   flex-direction: column;
-  border: 1px solid black;
-  
-  .user-project-overview-container {
-    border: 1px solid black;
+
+  .user-projects-inner-container {
     display: flex;
-    flex-direction: column;
-    margin: 5px;
-    padding: 4px;
+
+    // .user-project-overview-container {
+    //   display: flex;
+    //   flex-direction: column;
+    //   margin: 5px;
+    // }
   }
 }

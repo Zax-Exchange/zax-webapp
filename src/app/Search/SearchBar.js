@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useLazyQuery, gql } from '@apollo/client';
 import { useNavigate } from "react-router-dom";
+import { Container, Input, IconButton, Grid } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 
 const vendorQuery = gql`
   query searchCustomerProjects($seachInput: SearchProjectInput) {
@@ -21,7 +23,7 @@ const vendorQuery = gql`
 const SearchBar = () => {
   const [input, setInput] = useState("");
 
-  const [searchCustomerProjects, {data: result}] = useLazyQuery(vendorQuery);
+  const [searchCustomerProjects] = useLazyQuery(vendorQuery);
   const navigate = useNavigate();
   const handleSearchInput = (e) => {
     setInput(e.target.value);
@@ -40,15 +42,14 @@ const SearchBar = () => {
       },
       fetchPolicy: "no-cache"
     }).then(v => {
-      console.log(v.data)
       navigate("/search", {state: v.data});
     })
   };
 
-  return (<div className="search-bar-container">
-    <input value={input} onChange={handleSearchInput}/>
-    <button onClick={handleSearchOnClick}>Search</button>
-  </div>)
+  return (<Grid item xs={5} className="search-bar-container">
+    <Input value={input} onChange={handleSearchInput} />
+    <IconButton onClick={handleSearchOnClick} color="primary" ><SearchIcon/></IconButton>
+  </Grid>)
 }
 
 export default SearchBar;
