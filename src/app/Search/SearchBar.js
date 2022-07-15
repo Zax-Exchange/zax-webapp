@@ -37,7 +37,8 @@ const SearchBar = () => {
           // budget: Int
           // leadTime: Int
         }
-      }
+      },
+      fetchPolicy: "no-cache"
     }).then(v => {
       console.log(v.data)
       navigate("/search", {state: v.data});

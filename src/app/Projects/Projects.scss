@@ -1,0 +1,13 @@
+.user-projects-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  
+  .user-project-overview-container {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    padding: 4px;
+  }
+}
