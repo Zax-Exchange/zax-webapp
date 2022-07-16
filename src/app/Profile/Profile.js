@@ -1,7 +1,7 @@
 import { useQuery, gql } from '@apollo/client';
 import { Grid, Typography, Container } from '@mui/material';
 
-const getUserProfile = gql`
+export const GET_USER = gql`
   query getUserWithUserId($userId: Int) {
     getUserWithUserId(userId: $userId) {
       id
@@ -11,7 +11,7 @@ const getUserProfile = gql`
     }
   }
 `;
-const getCompanyDetail = gql`
+export const GET_COMPANY_DETAIL = gql`
   query getCompanyDetail($id: Int) {
     getCompanyDetail(companyId: $id) {
       name
@@ -24,13 +24,13 @@ const getCompanyDetail = gql`
   }
 `
 const Profile = () => {
-  const {loading: userLoading, error: userError, data: userData} = useQuery(getUserProfile, {
+  const {loading: userLoading, error: userError, data: userData} = useQuery(GET_USER, {
     variables: {
       userId: parseInt(window.sessionStorage.getItem("userId"))
     }
   });
   const companyId = userData?.getUserWithUserId.companyId;
-  const {loading, error, data: companyData} = useQuery(getCompanyDetail, {
+  const {loading, error, data: companyData} = useQuery(GET_COMPANY_DETAIL, {
     variables: {
       id: companyId
     },

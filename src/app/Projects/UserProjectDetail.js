@@ -2,7 +2,7 @@ import { useProjectDetail } from "./ProjectDetail"
 import { Stack, Container, Typography, Button } from "@mui/material";
 import "./ProjectDetail.scss";
 
-const UserProjectDetail = ({projectId, bidInfo, closeModal}) => {
+const UserProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
   const {loading, error, data} = useProjectDetail(projectId);
 
   const renderProjectDetail = () => {
@@ -73,7 +73,7 @@ const UserProjectDetail = ({projectId, bidInfo, closeModal}) => {
             })
           }
         </Container>
-        <Button onClick={closeModal}>Close</Button>
+        <Button onClick={() => setIsProjectOpen(false)}>Close</Button>
       </Stack>
   }
 

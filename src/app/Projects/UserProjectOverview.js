@@ -5,20 +5,14 @@ import Button from '@mui/material/Button';
 import { Typography } from "@mui/material";
 import { Dialog, DialogContent } from "@mui/material";
 import { Card, CardActionArea, CardContent, Grid } from "@mui/material";
+import ProjectPermission from "./ProjectPermission";
+
+
 const UserProjectOverview = ({projectData}) => {
   
-  const [isOpen, setIsOpen] = useState(false);
-  const openModal = () => {
-    setIsOpen(true);
-  }
+  const [isProjectOpen, setIsProjectOpen] = useState(false);
+  const [isPermissionOpen, setIsPermissionOpen] = useState(false);
 
-  const afterOpenModal = () => {
-    
-  }
-
-  const closeModal = () => {
-    setIsOpen(false);
-  }
 
   // TODO: use isVendor
   if (true) {
@@ -36,15 +30,24 @@ const UserProjectOverview = ({projectData}) => {
             <Typography align="left">Budget: {projectData.budget}</Typography>
             <Typography align="left">Posted on: {date}</Typography>
 
-            <Button onClick={openModal} style={{alignSelf: "center"}}>View detail</Button>
+            <Button onClick={() => setIsProjectOpen(true)} style={{alignSelf: "center"}}>View detail</Button>
+            {projectData.bidInfo.permission !== "VIEWER" && <Button onClick={() => setIsPermissionOpen(true)} style={{alignSelf: "center"}}>Share</Button>}
           </CardContent>
         </CardActionArea>
         <Dialog
-          open={isOpen}
-          onClose={closeModal}
+          open={isProjectOpen}
+          onClose={() => setIsProjectOpen(false)}
         >
           <DialogContent>
-            <UserProjectDetail projectId={projectData.id} bidInfo={projectData.bidInfo} closeModal={closeModal}/>
+            <UserProjectDetail projectId={projectData.id} bidInfo={projectData.bidInfo} setIsProjectOpen={setIsProjectOpen}/>
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={isPermissionOpen}
+          onClose={() => setIsPermissionOpen(false)}
+        >
+          <DialogContent>
+            <ProjectPermission projectData={projectData} setIsPermissionOpen={setIsPermissionOpen} isVendor={true}/>
           </DialogContent>
         </Dialog>
       </Card>
