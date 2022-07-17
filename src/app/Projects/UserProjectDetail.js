@@ -1,5 +1,14 @@
 import { useProjectDetail } from "./ProjectDetail"
-import { Stack, Container, Typography, Button } from "@mui/material";
+import { Stack, 
+  Container, 
+  Typography, 
+  Button,
+  Paper,
+  List,
+  ListItem,
+  DialogActions,
+  Grid
+} from "@mui/material";
 import "./ProjectDetail.scss";
 
 const UserProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
@@ -25,10 +34,10 @@ const UserProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
     });
 
 
-    return <Stack className="vendor-project-info-container">
-        <Typography >Project Detail</Typography>
-
-        <Container className="project-info-container">
+    return <>
+    <Grid container className="vendor-project-info-container">
+        <Grid item xs={6}>
+          <Typography >Project Detail</Typography>
           <Typography>name: {projectName}</Typography>
           <Typography>deliveryDate: {deliveryDate}</Typography>
           <Typography>deliveryCountry: {deliveryCountry}</Typography>
@@ -36,45 +45,50 @@ const UserProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
           <Typography>deliveryCity: {deliveryCity}</Typography>
           <Typography>design: {design}</Typography>
           <Typography>status: {status}</Typography>
-        </Container>
+        </Grid>
         
-        <Container className="components-detail-container">
-          <Typography className="title">Components Detail</Typography>
 
-          {
-            components.map(comp => {
-              const {
-                id,
-                name,
-                materials,
-                dimension,
-                postProcess
-              } = comp;
+          <Grid item xs={6}>
+            <Typography className="title">Components Detail</Typography>
 
-              return (
-                <Container className="component-detail-container">
-                  <Typography>name: {name}</Typography>
-                  <Typography>materials: {materials.join(",")}</Typography>
-                  <Typography>dimension: {dimension}</Typography>
-                  <Typography>post process: {postProcess}</Typography>
-                  <Container className="bid-info-container">
-                    <Typography>Bids</Typography>
-                    {
-                      bids[id].map((qp) => {
-                        return <Container className="quantity-price-container">
-                          <Typography className="quantity">Quantity: {qp.quantity}</Typography> 
-                          <Typography className="price">Price: {qp.price}</Typography>
-                        </Container>
-                      })
-                    }
-                  </Container>
-                </Container>
-              )
-            })
-          }
-        </Container>
+            {
+              components.map((comp, i) => {
+                const {
+                  id,
+                  name,
+                  materials,
+                  dimension,
+                  postProcess
+                } = comp;
+
+                return ( <>
+                      <Typography>name: {name}</Typography>
+                      <Typography>materials: {materials.join(",")}</Typography>
+                      <Typography>dimension: {dimension}</Typography>
+                      <Typography>post process: {postProcess}</Typography>
+                      <Typography>Bids</Typography>
+                      {
+                        bids[id].map((qp, i) => {
+                          return <List className="quantity-price-container">
+                              <ListItem>
+                                <Typography className="quantity">Quantity: {qp.quantity}</Typography> 
+                              </ListItem>
+                              <ListItem>
+                                <Typography className="price">Price: {qp.price}</Typography>
+                              </ListItem>
+                            </List>
+                        })
+                      }
+                    </>
+                )
+              })
+            }
+          </Grid>
+      </Grid>
+      <DialogActions>
         <Button onClick={() => setIsProjectOpen(false)}>Close</Button>
-      </Stack>
+      </DialogActions>
+    </>
   }
 
   const renderBidDetail = () => {

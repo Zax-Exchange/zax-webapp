@@ -1,7 +1,15 @@
 import { gql, useQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom"
 import "./ProjectDetail.scss";
-import { Dialog, Container, Typography, Button } from "@mui/material";
+import { Dialog, 
+  Container, 
+  Typography, 
+  Button,
+  Card,
+  CardActionArea, 
+  CardContent,
+  Paper 
+} from "@mui/material";
 import ProjectBid from "./ProjectBid";
 import { useState } from "react";
 
@@ -78,37 +86,46 @@ const ProjectDetail = () => {
     } = projectData.getProjectDetail;
 
     return <Container>
-        <Container className="project-info-container">
-          <Typography>Project Detail</Typography>
-          <Typography>name: {projectName}</Typography>
-          <Typography>deliveryDate: {deliveryDate}</Typography>
-          <Typography>deliveryCountry: {deliveryCountry}</Typography>
-          <Typography>budget: {budget}</Typography>
-          <Typography>deliveryCity: {deliveryCity}</Typography>
-          <Typography>design: {design}</Typography>
-          <Typography>status: {status}</Typography>
-        </Container>
-        
-        <Container className="components-detail-container">
-          <Typography>Components Detail</Typography>
+      <Typography>Project Detail</Typography>
+        <Paper variant="outlined" style={{padding: "12px", marginBottom:"8px"}}>
+          <Container style={{width: "60%"}}>
+            <Container className="project-info-container" style={{textAlign: "left"}}>
+              <Typography>name: {projectName}</Typography>
+              <Typography>deliveryDate: {deliveryDate}</Typography>
+              <Typography>deliveryCountry: {deliveryCountry}</Typography>
+              <Typography>budget: {budget}</Typography>
+              <Typography>deliveryCity: {deliveryCity}</Typography>
+              <Typography>design: {design}</Typography>
+              <Typography>status: {status}</Typography>
+            </Container>
+          </Container>
+        </Paper>
+          
+      
+      
+      <Typography>Components Detail</Typography>
 
-          {
-            projectData.getProjectDetail.components.map(comp => {
-              const {name,
-                materials,
-                dimension,
-                postProcess} = comp;
-              return (
-                <Container className="component-detail-container">
+      {
+        projectData.getProjectDetail.components.map((comp, i) => {
+          const {name,
+            materials,
+            dimension,
+            postProcess} = comp;
+          return (
+            <Paper style={{padding: "12px", marginBottom:"8px"}}>
+              <Container style={{width: "60%"}}>
+                <Container className="component-detail-container" key={i} style={{textAlign: "left"}}>
                   <Typography>name: {name}</Typography>
                   <Typography>materials: {materials.join(",")}</Typography>
                   <Typography>dimension: {dimension}</Typography>
                   <Typography>post process: {postProcess}</Typography>
                 </Container>
-              )
-            })
-          }
-        </Container>
+
+              </Container>
+            </Paper>
+          )
+        })
+      }
       </Container>
   }
 

@@ -26,8 +26,8 @@ const SearchResults = () => {
     <Grid item xs={10} className="search-results-inner-container">
       <Stack direction="column">
         {
-          state && state.searchCustomerProjects.map((result) => {
-            return <SearchProjectOverview projectData={result}/>
+          state && state.searchCustomerProjects.map((result, i) => {
+            return <SearchProjectOverview projectData={result} key={i}/>
           })
         }
       </Stack>

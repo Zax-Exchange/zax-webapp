@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useLazyQuery, gql } from '@apollo/client';
 import { useNavigate } from "react-router-dom";
-import { Container, Input, IconButton, Grid } from "@mui/material";
+import { Container, Input, IconButton, Grid, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 
 const vendorQuery = gql`
@@ -46,10 +46,29 @@ const SearchBar = () => {
     })
   };
 
-  return (<Grid item xs={5} className="search-bar-container">
-    <Input value={input} onChange={handleSearchInput} />
-    <IconButton onClick={handleSearchOnClick} color="primary" ><SearchIcon/></IconButton>
-  </Grid>)
+  const handleEnterPress = (e) => {
+    if (e.keyCode === 13) {
+      handleSearchOnClick();
+    }
+  };
+
+  return (
+    <TextField
+      id="search-bar"
+      autoComplete="off"
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchIcon onClick={handleSearchOnClick} style={{cursor: "pointer"}}/>
+          </InputAdornment>
+        )
+      }}
+      variant="outlined"
+      value={input} 
+      onChange={handleSearchInput}
+      onKeyDown={handleEnterPress}
+      style={{backgroundColor: "white", width: "80%"}}
+    />)
 }
 
 export default SearchBar;

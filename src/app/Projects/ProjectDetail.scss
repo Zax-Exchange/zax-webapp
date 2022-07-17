@@ -1,80 +1,80 @@
-.project-detail-container {
-  display: flex;
-  flex-direction: column;
-  .title {
-    align-self: center;
-  }
-  .field-container {
-    align-self: flex-start;
-  }
-  .project-info-container {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid black;
-    border-radius: 4px;
-  }
+// .project-detail-container {
+//   display: flex;
+//   flex-direction: column;
+//   .title {
+//     align-self: center;
+//   }
+//   .field-container {
+//     align-self: flex-start;
+//   }
+//   .project-info-container {
+//     display: flex;
+//     flex-direction: column;
+//     margin-bottom: 10px;
+//     padding: 10px;
+//     border: 1px solid black;
+//     border-radius: 4px;
+//   }
 
-  .components-detail-container {
-    .component-detail-container {
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-      border: 1px solid black;
-      border-radius: 4px;
-      margin-bottom: 5px;
-    }
-  }
-}
+//   .components-detail-container {
+//     .component-detail-container {
+//       display: flex;
+//       flex-direction: column;
+//       padding: 10px;
+//       border: 1px solid black;
+//       border-radius: 4px;
+//       margin-bottom: 5px;
+//     }
+//   }
+// }
 
 
-.vendor-project-info-container {
-  display: flex;
-    flex-direction: column;
+// .vendor-project-info-container {
+//   display: flex;
+//     flex-direction: column;
   
-    .title {
-      align-self: center;
-    }
+//     .title {
+//       align-self: center;
+//     }
   
-    .field-container {
-      align-self: flex-start;
-    }
+//     .field-container {
+//       align-self: flex-start;
+//     }
   
-    .project-info-container {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 10px;
-      padding: 10px;
-      border: 1px solid black;
-      border-radius: 4px;
-    }
+//     .project-info-container {
+//       display: flex;
+//       flex-direction: column;
+//       margin-bottom: 10px;
+//       padding: 10px;
+//       border: 1px solid black;
+//       border-radius: 4px;
+//     }
   
-    .components-detail-container {
-      .component-detail-container {
-        display: flex;
-        flex-direction: column;
-        padding: 10px;
-        border: 1px solid black;
-        border-radius: 4px;
-        margin-bottom: 5px;
+//     .components-detail-container {
+//       .component-detail-container {
+//         display: flex;
+//         flex-direction: column;
+//         padding: 10px;
+//         border: 1px solid black;
+//         border-radius: 4px;
+//         margin-bottom: 5px;
 
-        .bid-info-container {
-          border: 1px solid black;
-          margin-top: 8px;
+//         .bid-info-container {
+//           border: 1px solid black;
+//           margin-top: 8px;
           
-          & > p {
-            text-align: center;
-          }
+//           & > p {
+//             text-align: center;
+//           }
 
-          .quantity-price-container {
-            display: flex;
+//           .quantity-price-container {
+//             display: flex;
 
-            & > div {
+//             & > div {
 
-            }
-          }
-        }
-      }
-    }
-}
+//             }
+//           }
+//         }
+//       }
+//     }
+// }

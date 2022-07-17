@@ -14,26 +14,30 @@ import Profile from "./app/Profile/Profile";
 import SearchResults from "./app/Search/SearchResults";
 import ProjectDetail from './app/Projects/ProjectDetail';
 import ProjectBid from './app/Projects/ProjectBid';
+import { Container } from "@mui/material";
 
-window.sessionStorage.setItem("userId", 783)
+window.sessionStorage.setItem("userId", 786)
 
 function App() {
 
   return (
       <div className="App">
         <Nav />
-        <Routes>
-          <Route path="/" element={<Home />}/>
-          <Route path="/projects" element={<Projects />}/>
-          <Route path="profile" element={<Profile />}/>
-          <Route path="/settings" element={<Settings/>}/>
-          <Route path="/search" element={<SearchResults/>}/>
-          <Route path="/project-detail" element={<ProjectDetail/>}/>
-          <Route path="/project-bid" element={<ProjectBid/>}/>
-          <Route
-            path="*"
-            element={<Home />} />
-        </Routes>
+        <Container>
+          <Routes>
+            <Route path="/" element={<Home />}/>
+            <Route path="/projects" element={<Projects />}/>
+            <Route path="profile" element={<Profile />}/>
+            <Route path="/settings" element={<Settings/>}/>
+            <Route path="/search" element={<SearchResults/>}/>
+            <Route path="/project-detail" element={<ProjectDetail/>}/>
+            <Route path="/project-bid" element={<ProjectBid/>}/>
+            <Route
+              path="*"
+              element={<Home />} />
+          </Routes>
+
+        </Container>
       </div>
   );
 }
