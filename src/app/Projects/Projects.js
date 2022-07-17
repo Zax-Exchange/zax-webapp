@@ -1,14 +1,16 @@
 import { gql, useQuery } from "@apollo/client";
-import UserProjectOverview from "./UserProjectOverview";
+import VendorProjectOverview from "./VendorProjectOverview";
 import { Typography, Grid } from "@mui/material";
 import "./Projects.scss";
 import FullScreenLoading from "../Utils/Loading";
+import CustomerProjectOverview from "./CustomerProjectOverview";
 
 export const GET_VENDOR_PROJECTS = gql`
   query getVendorProjects($userId: Int) {
     getVendorProjects(userId: $userId) {
       bidInfo {
         id
+        companyId
         permission
         components {
           projectComponentId
@@ -47,7 +49,7 @@ export const useVendorProjects = (userId, skip) => {
     variables: {
       userId,
     },
-    fetchPolicy: "no-cache",
+    fetchPolicy: "cache-and-network",
     skip
   })
 }
@@ -80,6 +82,7 @@ export const GET_CUSTOMER_PROJECTS = gql`
       bids {
         id
         userId
+        companyId
         components {
           id
           projectBidId
@@ -101,17 +104,18 @@ export const useCustomerProjects = (userId, skip) => {
     variables: {
       userId,
     },
-    fetchPolicy: "no-cache",
+    fetchPolicy: "cache-and-network",
     skip
   })
 }
 
 const Projects = () => {
   const userId = parseInt(sessionStorage.getItem("userId"), 10);
-  const {error, loading, data: vendorProjects} = useVendorProjects(userId, true)
-  const {data: customerProjects} = useCustomerProjects(userId, false);
+  const {error: vendorProjectsError, loading: vendorProjectsLoading, data: vendorProjects} = useVendorProjects(userId, true)
+  const {error:customerProjectsError, loading: customerProjectsLoading, data: customerProjects} = useCustomerProjects(userId, false);
+  console.log({userId})
 
-  if (loading) {
+  if (vendorProjectsLoading || customerProjectsLoading) {
     return <div className="user-projects-container">
       <FullScreenLoading />
     </div>
@@ -126,7 +130,7 @@ const Projects = () => {
           <Grid container spacing={2} className="user-projects-inner-container">
             {
               vendorProjects.getVendorProjects.map((project, i) => {
-                return <UserProjectOverview projectData={project} key={i}/>
+                return <VendorProjectOverview projectData={project} key={i}/>
               })
             }
           </Grid>
@@ -135,7 +139,19 @@ const Projects = () => {
     
   }
   if (customerProjects) {
-    console.log(customerProjects)
+    return (
+      <div className="user-projects-container">
+        <Typography variant="h3">Projects PAGE</Typography>
+
+        <Grid container spacing={2} className="user-projects-inner-container">
+          {
+            customerProjects.getCustomerProjects.map((project, i) => {
+              return <CustomerProjectOverview project={project}/>
+            })
+          }
+        </Grid>
+      </div>
+    )
   }
   return null;
 };

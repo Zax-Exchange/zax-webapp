@@ -1,6 +1,21 @@
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Email } from "@mui/icons-material";
-import { Autocomplete, Button, Container, Typography, Card, Input, List, ListItem, Select, MenuItem, ListItemButton, TextField, DialogActions } from "@mui/material";
+import { 
+  Autocomplete, 
+  Button, 
+  Container, 
+  Typography, 
+  Card, 
+  Input, 
+  List, 
+  ListItem, 
+  Select, 
+  MenuItem, 
+  ListItemButton, 
+  TextField, 
+  DialogActions,
+  Stack
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { GET_USER } from "../Profile/Profile";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -102,11 +117,9 @@ const ProjectPermissionModal = ({ projectData, setIsPermissionOpen, isVendor }) 
   // this sets the email list for input dropdown
   useEffect(() => {
     const userEmails = [];
-    if (userData && allCompanyUsersData && bidData) {
+    if (userData && allCompanyUsersData) {
       if (isVendor) {
         allCompanyUsersData.getAllUsersWithinCompany.forEach((data) => {
-
-
             if (!allProjectUsers.find(user => user.email === data.email)) {
               userEmails.push(data.email);
             }
@@ -114,10 +127,8 @@ const ProjectPermissionModal = ({ projectData, setIsPermissionOpen, isVendor }) 
         });
       } else {
         allCompanyUsersData.getAllUsersWithinCompany.forEach((data) => {
-          if (!projectData.getProjectUsers.find((user) => user.email == data.email)) {
-            if (!allProjectUsers.find(user => user.email === data.email)) {
-              userEmails.push(data.email);
-            }
+          if (!allProjectUsers.find(user => user.email === data.email)) {
+            userEmails.push(data.email);
           }
         });
       }
@@ -145,9 +156,9 @@ const ProjectPermissionModal = ({ projectData, setIsPermissionOpen, isVendor }) 
     fetchPolicy: "no-cache",
     onCompleted: (data) => setAllProjectUsers(data.getProjectUsers)
   });
-  const {error: bidError, loading: bidLoading, data: bidData, refetch: bidDataRefetch} = useQuery(GET_PROJECT_BID_USERS, {
+  const {error: bidError, loading: bidLoading, data: bidUserData, refetch: bidDataRefetch} = useQuery(GET_PROJECT_BID_USERS, {
     variables: {
-      projectBidId: projectData.bidInfo.id
+      projectBidId: projectData.bidInfo ? projectData.bidInfo.id : null
     },
     skip: !isVendor,
     fetchPolicy: "no-cache",
@@ -213,7 +224,7 @@ const ProjectPermissionModal = ({ projectData, setIsPermissionOpen, isVendor }) 
 
   const isUserWithinPermission = (userId) => {
     if (isVendor) {
-      return bidData.getProjectBidUsers.findIndex(user => user.userId === userId) >= 0;
+      return bidUserData.getProjectBidUsers.findIndex(user => user.userId === userId) >= 0;
     } else {
       return projectUserData.getProjectUsers.findIndex(user => user.userId === userId) >= 0;
     }
@@ -329,27 +340,46 @@ const ProjectPermissionModal = ({ projectData, setIsPermissionOpen, isVendor }) 
     setIsLoading(false);
   }
 
+  const isUserOwner = () => {
+    // not used for now
+    if (isVendor) {
+      return projectData.bidInfo.permission === "OWNER";
+    }
+    return projectData.permission === "OWNER"
+  }
+
   const renderPermissionedUsers = () => {
-    return <List>
+    return <Stack>
       {
         allProjectUsers && allProjectUsers.map(data => {
           if (data.userId === userData.getUserWithUserId.id) return null;
-          return <ListItem key={data.email}>
-              <Typography>
-                {data.name}
-              </Typography>
-              <Typography variant="caption">
-                ({data.email})
-              </Typography>
-              <Select sx={{width: 200}} onChange={(e) => selectPermissionHandler(e, data.userId)} value={data.permission}>
-                <MenuItem value="EDITOR">EDITOR</MenuItem>
-                <MenuItem value="VIEWER">VIEWER</MenuItem>
-              </Select>
-              <Button onClick={() => removePermissionHandler(data.userId, data.permission)}>Remove</Button>
-            </ListItem>
+          return <List style={{display: "flex", flexDirection:"row"}}>
+              <ListItem>
+                <Typography>
+                  {data.name}
+                </Typography>
+              </ListItem>
+              <ListItem>
+                <Typography variant="caption">
+                  ({data.email})
+                </Typography>
+              </ListItem>
+              {
+                data.permission === "OWNER" && <ListItem><Typography>OWNER</Typography></ListItem>
+              }
+              {
+                data.permission !== "OWNER" && <ListItem>
+                  <Select autoWidth onChange={(e) => selectPermissionHandler(e, data.userId)} value={data.permission}>
+                    <MenuItem value="EDITOR">EDITOR</MenuItem>
+                    <MenuItem value="VIEWER">VIEWER</MenuItem>
+                  </Select>
+                  <Button onClick={() => removePermissionHandler(data.userId, data.permission)}>Remove</Button>
+                </ListItem>
+              }
+            </List>
         })
       }
-    </List>
+    </Stack>
   };
   
   // TODO: use isVendor

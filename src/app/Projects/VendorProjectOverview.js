@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "react-modal";
-import UserProjectDetail from "./UserProjectDetail";
+import VendorProjectDetail from "./VendorProjectDetail";
 import Button from '@mui/material/Button';
 import { Container, Typography } from "@mui/material";
 import { Dialog, DialogContent } from "@mui/material";
@@ -8,14 +8,11 @@ import { Card, CardActionArea, CardContent, Grid, Paper } from "@mui/material";
 import ProjectPermissionModal from "./ProjectPermissionModal";
 
 
-const UserProjectOverview = ({projectData}) => {
+const VendorProjectOverview = ({projectData}) => {
   
   const [isProjectOpen, setIsProjectOpen] = useState(false);
   const [isPermissionOpen, setIsPermissionOpen] = useState(false);
 
-
-  // TODO: use isVendor
-  if (true) {
     const date = new Date(Date(projectData.createdAt)).toISOString().slice(0, 10);
 
     return <Grid item xs={4} minHeight={300}>
@@ -42,7 +39,7 @@ const UserProjectOverview = ({projectData}) => {
         maxWidth="md"
       >
         <DialogContent>
-          <UserProjectDetail projectId={projectData.id} bidInfo={projectData.bidInfo} setIsProjectOpen={setIsProjectOpen}/>
+          <VendorProjectDetail projectId={projectData.id} bidInfo={projectData.bidInfo} setIsProjectOpen={setIsProjectOpen}/>
         </DialogContent>
       </Dialog>
 
@@ -57,8 +54,6 @@ const UserProjectOverview = ({projectData}) => {
         </DialogContent>
       </Dialog>
     </Grid>
-  }
-  return null;
 }
 
-export default UserProjectOverview;
+export default VendorProjectOverview;

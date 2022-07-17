@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom"
-import "./ProjectDetail.scss";
+import "./SearchProjectDetail.scss";
 import { Dialog, 
   Container, 
   Typography, 
@@ -47,7 +47,7 @@ export const useProjectDetail = (projectId) => {
   });
 }
 
-const ProjectDetail = () => {
+const SearchProjectDetail = () => {
   const {state} = useLocation();
   const {loading: projectLoading, error: projectError, data: projectData} = useProjectDetail(state.projectId);
   
@@ -152,4 +152,4 @@ const ProjectDetail = () => {
   return null;
 };
 
-export default ProjectDetail;
+export default SearchProjectDetail;

@@ -1,4 +1,4 @@
-import { useProjectDetail } from "./ProjectDetail"
+import { useProjectDetail } from "./SearchProjectDetail"
 import { Stack, 
   Container, 
   Typography, 
@@ -9,14 +9,12 @@ import { Stack,
   DialogActions,
   Grid
 } from "@mui/material";
-import "./ProjectDetail.scss";
+import "./SearchProjectDetail.scss";
 
-const UserProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
+const VendorProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
   const {loading, error, data} = useProjectDetail(projectId);
-
+  
   const renderProjectDetail = () => {
-    if (!data) return null;
-
     const {
       name: projectName,
       deliveryDate,
@@ -37,19 +35,21 @@ const UserProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
     return <>
     <Grid container className="vendor-project-info-container">
         <Grid item xs={6}>
-          <Typography >Project Detail</Typography>
-          <Typography>name: {projectName}</Typography>
-          <Typography>deliveryDate: {deliveryDate}</Typography>
-          <Typography>deliveryCountry: {deliveryCountry}</Typography>
-          <Typography>budget: {budget}</Typography>
-          <Typography>deliveryCity: {deliveryCity}</Typography>
-          <Typography>design: {design}</Typography>
-          <Typography>status: {status}</Typography>
+          <Container><Typography variant="h6">Project Detail</Typography></Container>
+          <List>
+            <ListItem><Typography>name: {projectName}</Typography></ListItem>
+            <ListItem><Typography>deliveryDate: {deliveryDate}</Typography></ListItem>
+            <ListItem><Typography>deliveryCountry: {deliveryCountry}</Typography></ListItem>
+            <ListItem><Typography>budget: {budget}</Typography></ListItem>
+            <ListItem><Typography>deliveryCity: {deliveryCity}</Typography></ListItem>
+            <ListItem><Typography>design: {design}</Typography></ListItem>
+            <ListItem><Typography>status: {status}</Typography></ListItem>
+          </List>
         </Grid>
         
 
           <Grid item xs={6}>
-            <Typography className="title">Components Detail</Typography>
+            <Container><Typography variant="h6">Components Detail</Typography></Container>
 
             {
               components.map((comp, i) => {
@@ -62,11 +62,14 @@ const UserProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
                 } = comp;
 
                 return ( <>
-                      <Typography>name: {name}</Typography>
-                      <Typography>materials: {materials.join(",")}</Typography>
-                      <Typography>dimension: {dimension}</Typography>
-                      <Typography>post process: {postProcess}</Typography>
-                      <Typography>Bids</Typography>
+                      <List>
+                        <ListItem><Typography>name: {name}</Typography></ListItem>
+                        <ListItem><Typography>materials: {materials.join(",")}</Typography></ListItem>
+                        <ListItem><Typography>dimension: {dimension}</Typography></ListItem>
+                        <ListItem><Typography>post process: {postProcess}</Typography></ListItem>
+                        <ListItem><Typography>Bids</Typography></ListItem>
+
+                      </List>
                       {
                         bids[id].map((qp, i) => {
                           return <List className="quantity-price-container">
@@ -98,9 +101,11 @@ const UserProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
     </div>
   }
 
+  if (!data) return null;
+
   return <div className="user-project-detail-container">
     {renderProjectDetail()}
   </div>
 }
 
-export default UserProjectDetail
+export default VendorProjectDetail
