@@ -10,7 +10,7 @@ import { Dialog,
   CardContent,
   Paper 
 } from "@mui/material";
-import ProjectBid from "./ProjectBid";
+import ProjectBid from "../Projects/ProjectBid";
 import { useState } from "react";
 
 export const GET_PROJECT_DETAIL = gql`
@@ -142,6 +142,8 @@ const SearchProjectDetail = () => {
         <Dialog
           open={modalIsOpen}
           onClose={closeModal}
+          fullWidth={true}
+          maxWidth="md"
         >
           <ProjectBid projectId={state.projectId} setIsOpen={setIsOpen}/>
         </Dialog>

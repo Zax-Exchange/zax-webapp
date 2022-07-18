@@ -1,4 +1,4 @@
-import { useProjectDetail } from "./SearchProjectDetail"
+import { useProjectDetail } from "../Search/SearchProjectDetail"
 import { Stack, 
   Container, 
   Typography, 
@@ -9,7 +9,6 @@ import { Stack,
   DialogActions,
   Grid
 } from "@mui/material";
-import "./SearchProjectDetail.scss";
 
 const VendorProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
   const {loading, error, data} = useProjectDetail(projectId);

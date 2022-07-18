@@ -17,6 +17,9 @@ import { GET_USER } from "../Profile/Profile";
 import { useQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import VendorBidModal from "./VendorBidModal";
+import { useEffect, useState } from "react";
+import VendorBidOverview from "./VendorBidOverview";
 
 export const useUserData = (userId) => {
   return useQuery(GET_USER, {
@@ -31,20 +34,21 @@ const CustomerProjectDetail = () => {
   const {state} = useLocation();
   const navigate = useNavigate();
   const projectData = state.project;
-  
+
   const { bids } = projectData;
   
   const getComponentName = (componentId, components) => {
     return components.find(comp => comp.id === componentId).name;
   };
-  
+
   const convertToDate = (timestamp) => {
     return new Date(Date(timestamp)).toISOString().slice(0, 10);
   }
 
   const backButtonHandler = () => {
     navigate(-1);
-  }
+  };
+
   return <Container>
   <Container disableGutters style={{textAlign: "left"}}>
     <IconButton onClick={backButtonHandler}>
@@ -59,46 +63,7 @@ const CustomerProjectDetail = () => {
       </Container>
       {
         bids.map(bid => {
-          return <Card>
-            <CardActionArea>
-              <CardContent>
-                <Container>
-                  <List>
-                    <ListItem><Typography>Vendor: {bid.companyId}</Typography></ListItem>
-                    <ListItem><Typography>Created On: {convertToDate(bid.createdAt)}</Typography></ListItem>
-
-                  </List>
-                  {/* {
-                    bid.components.map((comp) => {
-                      return <List>
-                        <ListItem>
-                          <Typography>
-                            Name: {getComponentName(comp.projectComponentId, projectData.components)}
-                          </Typography>
-                        </ListItem>
-                      {
-                        comp.quantityPrices.map((qp) => {
-                          return <>
-                            <ListItem>
-                              <Typography>
-                                Quantity: {qp.quantity}
-                              </Typography>
-                            </ListItem>
-                            <ListItem>
-                              <Typography>
-                                Price: {qp.price}
-                              </Typography>
-                            </ListItem>
-                          </>
-                        })
-                      }
-                      </List>
-                    })
-                  } */}
-                </Container>
-              </CardContent>
-            </CardActionArea>
-          </Card>
+          return <VendorBidOverview bid={bid} projectComponents={projectData.components}/>
         })
       }
     </Grid>
@@ -115,7 +80,7 @@ const CustomerProjectDetail = () => {
           <ListItem><Typography>Design: {projectData.design}</Typography></ListItem>
           <ListItem><Typography>Budget: {projectData.budget}</Typography></ListItem>
           <ListItem><Typography>Status: {projectData.status}</Typography></ListItem>
-          <ListItem><Typography>Posted on: {projectData.createdAt}</Typography></ListItem>
+          <ListItem><Typography>Posted on: {convertToDate(projectData.createdAt)}</Typography></ListItem>
 
         </List>
       </Paper>

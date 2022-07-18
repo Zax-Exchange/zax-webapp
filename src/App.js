@@ -12,7 +12,7 @@ import Projects from "./app/Projects/Projects";
 import Settings from "./app/Settings/Settings";
 import Profile from "./app/Profile/Profile";
 import SearchResults from "./app/Search/SearchResults";
-import SearchProjectDetail from './app/Projects/SearchProjectDetail';
+import SearchProjectDetail from './app/Search/SearchProjectDetail';
 import ProjectBid from './app/Projects/ProjectBid';
 import { Container } from "@mui/material";
 import CustomerProjectDetail from './app/Projects/CustomerProjectDetail';
@@ -34,6 +34,7 @@ function App() {
             <Route path="/project-detail" element={<SearchProjectDetail/>}/>
             <Route path="/project-bid" element={<ProjectBid/>}/>
             <Route path="/customer-project-detail" element={<CustomerProjectDetail/>}/>
+
             <Route
               path="*"
               element={<Home />} />

@@ -16,14 +16,16 @@ const vendorQuery = gql`
       deliveryCity
       budget
       createdAt
-    }
+    },
   }
 `;
 
 const SearchBar = () => {
   const [input, setInput] = useState("");
 
-  const [searchCustomerProjects] = useLazyQuery(vendorQuery);
+  const [searchCustomerProjects] = useLazyQuery(vendorQuery, {
+    fetchPolicy: "no-cache"
+  });
   const navigate = useNavigate();
   const handleSearchInput = (e) => {
     setInput(e.target.value);
@@ -55,7 +57,7 @@ const SearchBar = () => {
   return (
     <TextField
       id="search-bar"
-      autoComplete="off"
+      autoComplete="new-password"
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">

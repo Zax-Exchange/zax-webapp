@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Typography, Button, Input, Stack, TextField} from "@mui/material";
+import { Container, Typography, Button, Input, Stack, TextField, List, ListItem} from "@mui/material";
 const ProjectBidComponent = ({component, setComponentQpData, componentsQpData}) => {
     const {
       id,
@@ -47,23 +47,25 @@ const ProjectBidComponent = ({component, setComponentQpData, componentsQpData}) 
 
     return (
       <Container className="component-detail-container">
-        <Typography>name: {name}</Typography>
-        <Typography>materials: {materials.join(",")}</Typography>
-        <Typography>dimension: {dimension}</Typography>
-        <Typography>post process: {postProcess}</Typography>
-        
-        <Container className="quanity-price-input-container">
-          <Typography className="quantity-container">
-            Quantity
-            <TextField type="number" name="quantity" onChange={handleQpInput} value={quantity}/>
-          </Typography>
-          <Typography className="price-container">
-            Price
-            <TextField type="number" name="price" onChange={handleQpInput} value={price}/>
-          </Typography>
-          <Button onClick={addQp}>Add</Button>
+        <List>
+          <ListItem><Typography>name: {name}</Typography></ListItem>
+          <ListItem><Typography>materials: {materials.join(",")}</Typography></ListItem>
+          <ListItem><Typography>dimension: {dimension}</Typography></ListItem>
+          <ListItem><Typography>post process: {postProcess}</Typography></ListItem>
+          
+          <ListItem>
+            <Typography className="quantity-container">
+              Quantity
+              <TextField type="number" name="quantity" onChange={handleQpInput} value={quantity}/>
+            </Typography>
+            <Typography className="price-container">
+              Price
+              <TextField type="number" name="price" onChange={handleQpInput} value={price}/>
+            </Typography>
+          </ListItem>
+          <ListItem><Button onClick={addQp}>Add</Button></ListItem>
+        </List>
 
-        </Container>
         {
           componentsQpData[id] && componentsQpData[id].map((qp, i) => {
             return <Stack direction="row" >

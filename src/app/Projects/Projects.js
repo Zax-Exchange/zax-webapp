@@ -113,7 +113,6 @@ const Projects = () => {
   const userId = parseInt(sessionStorage.getItem("userId"), 10);
   const {error: vendorProjectsError, loading: vendorProjectsLoading, data: vendorProjects} = useVendorProjects(userId, true)
   const {error:customerProjectsError, loading: customerProjectsLoading, data: customerProjects} = useCustomerProjects(userId, false);
-  console.log({userId})
 
   if (vendorProjectsLoading || customerProjectsLoading) {
     return <div className="user-projects-container">

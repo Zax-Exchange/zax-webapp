@@ -1,11 +1,11 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useLocation } from "react-router-dom"
 import ProjectBidComponent from "./ProjectBidComponent";
-import { GET_PROJECT_DETAIL } from "./SearchProjectDetail"; 
+import { GET_PROJECT_DETAIL } from "../Search/SearchProjectDetail"; 
 import "./ProjectBid.scss";
 import { useState } from "react";
 import { useVendorProjects } from "./Projects";
-import { Container, Button, Typography } from "@mui/material";
+import { Container, Button, Typography, List, ListItem, Grid } from "@mui/material";
 import { useUserData } from "./CustomerProjectDetail";
 
 const CREATE_PROJECT_BID = gql`
@@ -83,31 +83,36 @@ const ProjectBid = ({projectId, setIsOpen}) => {
 
     return (
     <Container className="project-bid-container">
-      <Container className="project-info-container">
-        <Typography>Project Detail</Typography>
-        <Typography>name: {projectName}</Typography>
-        <Typography>deliveryDate: {deliveryDate}</Typography>
-        <Typography>deliveryCountry: {deliveryCountry}</Typography>
-        <Typography>budget: {budget}</Typography>
-        <Typography>deliveryCity: {deliveryCity}</Typography>
-        <Typography>design: {design}</Typography>
-        <Typography>status: {status}</Typography>
-      </Container>
-      
-      <Container className="bid-components-detail-container">
-        <Typography>Components Detail</Typography>
+      <Grid container>
+        <Grid item xs={6}>
+          <Typography>Project Detail</Typography>
+          <List>
+            <ListItem><Typography>name: {projectName}</Typography></ListItem>
+            <ListItem><Typography>deliveryDate: {deliveryDate}</Typography></ListItem>
+            <ListItem><Typography>deliveryCountry: {deliveryCountry}</Typography></ListItem>
+            <ListItem><Typography>budget: {budget}</Typography></ListItem>
+            <ListItem><Typography>deliveryCity: {deliveryCity}</Typography></ListItem>
+            <ListItem><Typography>design: {design}</Typography></ListItem>
+            <ListItem><Typography>status: {status}</Typography></ListItem>
 
-        {
-          components.map(comp => {
-            return <ProjectBidComponent component={comp} setComponentQpData={setComponentQpData} componentsQpData={componentsQpData}/>
-          })
-        }
-      </Container>
-      
-      <Container>
-        <Button onClick={submitBid}>Submit</Button>
-        <Button onClick={() => setIsOpen(false)}>Cancel</Button>
-      </Container>
+          </List>
+        </Grid>
+        
+        <Grid item xs={6}>
+          <Typography>Components Detail</Typography>
+
+          {
+            components.map(comp => {
+              return <ProjectBidComponent component={comp} setComponentQpData={setComponentQpData} componentsQpData={componentsQpData}/>
+            })
+          }
+        </Grid>
+        
+        <Container>
+          <Button onClick={submitBid}>Submit</Button>
+          <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+        </Container>
+      </Grid>
     </Container>)
 
   }
