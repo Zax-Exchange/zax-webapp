@@ -1,5 +1,7 @@
 import { useQuery, gql } from '@apollo/client';
 import { Grid, Typography, Container } from '@mui/material';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
 export const GET_USER = gql`
   query getUserWithUserId($userId: Int) {
@@ -24,9 +26,10 @@ export const GET_COMPANY_DETAIL = gql`
   }
 `
 const Profile = () => {
+  const { user } = useContext(AuthContext);
   const {loading: userLoading, error: userError, data: userData} = useQuery(GET_USER, {
     variables: {
-      userId: parseInt(window.sessionStorage.getItem("userId"))
+      userId: user.id
     }
   });
   const companyId = userData?.getUserWithUserId.companyId;

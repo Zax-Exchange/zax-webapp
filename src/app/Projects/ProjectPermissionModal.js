@@ -16,9 +16,10 @@ import {
   DialogActions,
   Stack
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GET_USER } from "../Profile/Profile";
 import CircularProgress from "@mui/material/CircularProgress";
+import { AuthContext } from "../../context/AuthContext";
 
 const GET_PROJECT_USERS = gql`
   query getProjectUsers($projectId: Int) {
@@ -85,8 +86,9 @@ const useDeletePermission = (query) => {
   const [mutationQuery] = useMutation(query);
   return mutationQuery;
 };
-const ProjectPermissionModal = ({ projectData, setIsPermissionOpen, isVendor }) => {
-
+const ProjectPermissionModal = ({ projectData, setIsPermissionOpen }) => {
+  const {user} = useContext(AuthContext);
+  const isVendor = user.isVendor;
   const [email, setEmail] = useState("");
 
   const [allProjectUsers, setAllProjectUsers] = useState([]);
@@ -138,7 +140,7 @@ const ProjectPermissionModal = ({ projectData, setIsPermissionOpen, isVendor }) 
 
   const {error: userError, loading: userLoading, data: userData} = useQuery(GET_USER, {
     variables: {
-      userId: parseInt(sessionStorage.getItem("userId"), 10)
+      userId: user.id
     }
   });
 

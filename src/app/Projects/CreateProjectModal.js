@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { 
   Button,
   DialogActions,
@@ -12,7 +12,8 @@ import {
   Input,
   Autocomplete,
  } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import { countries } from "../constants/countries";
  /**
   * name
@@ -35,10 +36,11 @@ const CREATE_PROJECT = gql`
     createProject(data: $data)
   }
 `;
-const CreateProjectMoal = () => {
+const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
+  const { user } = useContext(AuthContext);
 
   const [projectData, setProjectData] = useState({
-    userId: parseInt(sessionStorage.getItem("userId"), 10),
+    userId: user.id,
     name: "",
     deliveryDate: "",
     deliveryCountry: "",
@@ -55,6 +57,9 @@ const CreateProjectMoal = () => {
     dimension: "",
     postProcess: ""
   });
+
+  const [projectCreated, setProjectCreated] = useState(false);
+  const [createProjectMutation] = useMutation(CREATE_PROJECT);
 
   const projectInputHandler = (e) => {
     const data = projectData;
@@ -75,7 +80,10 @@ const CreateProjectMoal = () => {
   };
 
   const addComponent = () => {
-    const comp = {...componentData};
+    const comp = {
+      ...componentData,
+      materials: componentData.materials.split(",")
+    };
     setComponents([...components, comp]);
     setComponentData({
       name: "",
@@ -95,16 +103,29 @@ const CreateProjectMoal = () => {
 
   const checkProjectInput = () => {
     // check if create project button should be disabled
-    console.log(projectData)
+
     for (let key in projectData) {
+      if (key === "comments") continue;
       if (projectData[key].length === 0) return true;
     }
-    return !checkComponentInput();
+
+    return components.length === 0;
   };
 
-  const createProject = (e) => {
-    e.preventDefault();
-    console.log(e)
+  const createProject = () => {
+    createProjectMutation({
+      variables: {
+        data: {
+          ...projectData,
+          budget: parseInt(projectData.budget, 10),
+          design: null,
+          components
+        }
+      }
+    })
+    .then(() => {
+      setProjectCreated(true);
+    })
   }
   
   const renderCountrySelect = () => {
@@ -141,6 +162,16 @@ const CreateProjectMoal = () => {
       />
     );
   }
+
+  if (projectCreated) {
+    return <Grid>
+      <Typography variant="h6">Project created successfully!</Typography>
+      <DialogActions>
+        <Button onClick={() => setIsCreateProjectOpen(false)}>OK</Button>
+      </DialogActions>
+    </Grid>
+  }
+
   return <>
   <Grid container direction="row" spacing={2}>
       <Grid item xs={6}>
@@ -187,8 +218,8 @@ const CreateProjectMoal = () => {
         <Container>
           <List>
             {
-              components.map((comp) => {
-                return <ListItem>
+              components.map((comp, i) => {
+                return <ListItem key={i}>
                   <Typography>Name: {comp.name}</Typography>
                   <Typography>Materials: {comp.materials}</Typography>
                   <Typography>Dimension: {comp.dimension}</Typography>
@@ -202,7 +233,7 @@ const CreateProjectMoal = () => {
       
   </Grid>
   <DialogActions>
-    <Button variant="contained" disabled={checkProjectInput()}>CREATE</Button>
+    <Button variant="contained" disabled={checkProjectInput()} onClick={createProject}>CREATE</Button>
   </DialogActions>
   </>
 };

@@ -11,33 +11,36 @@ import Home from "./app/Home/Home";
 import Projects from "./app/Projects/Projects";
 import Settings from "./app/Settings/Settings";
 import Profile from "./app/Profile/Profile";
-import SearchResults from "./app/Search/SearchResults";
+import VendorSearchResults from "./app/Search/VendorSearchResults";
+import CustomerSearchResults from "./app/Search/CustomerSearchResults";
 import SearchProjectDetail from './app/Search/SearchProjectDetail';
 import ProjectBid from './app/Projects/ProjectBid';
 import { Container } from "@mui/material";
 import CustomerProjectDetail from './app/Projects/CustomerProjectDetail';
+import RequireAuth from './app/Auth/RequireAuth';
+import Login from './app/Login/Login';
 
-window.sessionStorage.setItem("userId", 792)
 
 function App() {
-
   return (
       <div className="App">
-        <Nav />
+        <Nav/>
         <Container>
           <Routes>
-            <Route path="/" element={<Home />}/>
-            <Route path="/projects" element={<Projects />}/>
-            <Route path="profile" element={<Profile />}/>
-            <Route path="/settings" element={<Settings/>}/>
-            <Route path="/search" element={<SearchResults/>}/>
-            <Route path="/project-detail" element={<SearchProjectDetail/>}/>
-            <Route path="/project-bid" element={<ProjectBid/>}/>
-            <Route path="/customer-project-detail" element={<CustomerProjectDetail/>}/>
+              <Route path="/" element={<RequireAuth><Home /></RequireAuth>}/>
+              <Route path="/projects" element={<RequireAuth><Projects/></RequireAuth>}/>
+              <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>}/>
+              <Route path="/settings" element={<RequireAuth><Settings/></RequireAuth>}/>
+              <Route path="/vendor-search" element={<RequireAuth><VendorSearchResults/></RequireAuth>}/>
+              <Route path="/customer-search" element={<RequireAuth><CustomerSearchResults/></RequireAuth>}/>
+              <Route path="/project-detail" element={<RequireAuth><SearchProjectDetail/></RequireAuth>}/>
+              <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/>
+              <Route path="/customer-project-detail" element={<RequireAuth><CustomerProjectDetail/></RequireAuth>}/>
 
-            <Route
-              path="*"
-              element={<Home />} />
+              <Route
+                path="*"
+                element={<RequireAuth><Home /></RequireAuth>} />
+            <Route path="/login" element={<Login />}/>
           </Routes>
 
         </Container>

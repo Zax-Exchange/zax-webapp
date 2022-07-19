@@ -4,6 +4,8 @@ import { Typography, Grid } from "@mui/material";
 import "./Projects.scss";
 import FullScreenLoading from "../Utils/Loading";
 import CustomerProjectOverview from "./CustomerProjectOverview";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export const GET_VENDOR_PROJECTS = gql`
   query getVendorProjects($userId: Int) {
@@ -110,9 +112,12 @@ export const useCustomerProjects = (userId, skip) => {
 }
 
 const Projects = () => {
-  const userId = parseInt(sessionStorage.getItem("userId"), 10);
-  const {error: vendorProjectsError, loading: vendorProjectsLoading, data: vendorProjects} = useVendorProjects(userId, true)
-  const {error:customerProjectsError, loading: customerProjectsLoading, data: customerProjects} = useCustomerProjects(userId, false);
+  const {user} = useContext(AuthContext);
+  const isVendor = user.isVendor;
+
+  const userId = user.id;
+  const {error: vendorProjectsError, loading: vendorProjectsLoading, data: vendorProjects} = useVendorProjects(userId, !isVendor)
+  const {error:customerProjectsError, loading: customerProjectsLoading, data: customerProjects} = useCustomerProjects(userId, isVendor);
 
   if (vendorProjectsLoading || customerProjectsLoading) {
     return <div className="user-projects-container">

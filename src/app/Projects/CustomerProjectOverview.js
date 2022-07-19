@@ -48,7 +48,7 @@ const CustomerProjectOverview = ({ project }) => {
         fullWidth={true}
       >
         <DialogContent>
-          <ProjectPermissionModal projectData={project} setIsPermissionOpen={setIsPermissionOpen} isVendor={false}/>
+          <ProjectPermissionModal projectData={project} setIsPermissionOpen={setIsPermissionOpen}/>
         </DialogContent>
       </Dialog>
     </Grid>

@@ -31,7 +31,7 @@ const SearchProjectOverview = ({projectData}) => {
         <CardContent>
           <Container sx={{minWidth: 400, textAlign: "left"}}>
             <Typography>Project Name: {projectData.name}</Typography>
-            <Typography>Materials: {projectData.materials}</Typography>
+            <Typography>Materials: {projectData.materials.join(",")}</Typography>
             <Typography>Company: {projectData.companyId}</Typography>
             <Typography>Delivery date: {projectData.deliveryDate}</Typography>
             <Typography>Delivery city: {projectData.deliveryCity}</Typography>

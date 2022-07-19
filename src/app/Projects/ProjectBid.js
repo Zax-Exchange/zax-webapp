@@ -3,10 +3,11 @@ import { useLocation } from "react-router-dom"
 import ProjectBidComponent from "./ProjectBidComponent";
 import { GET_PROJECT_DETAIL } from "../Search/SearchProjectDetail"; 
 import "./ProjectBid.scss";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useVendorProjects } from "./Projects";
 import { Container, Button, Typography, List, ListItem, Grid } from "@mui/material";
 import { useUserData } from "./CustomerProjectDetail";
+import { AuthContext } from "../../context/AuthContext";
 
 const CREATE_PROJECT_BID = gql`
 mutation CreateProjectBid($data: CreateProjectBidInput) {
@@ -14,7 +15,8 @@ mutation CreateProjectBid($data: CreateProjectBidInput) {
 }
 `;
 const ProjectBid = ({projectId, setIsOpen}) => {
-  const {loading:userLoading, error:userError, data: userData} = useUserData(parseInt(sessionStorage.getItem("userId"), 10))
+  const { user } = useContext(AuthContext);
+  const {loading:userLoading, error:userError, data: userData} = useUserData(user.id);
   const {loading:projectLoading, error:projectError, data: projectData} = useQuery(GET_PROJECT_DETAIL, {
     variables: {
       projectId
@@ -25,7 +27,7 @@ const ProjectBid = ({projectId, setIsOpen}) => {
   const [createProjectBid] = useMutation(CREATE_PROJECT_BID);
   const [componentsQpData, setComponentQpData] = useState({});
   const [isSuccessful, setIsSuccessful] = useState(null);
-  const { refetch } = useVendorProjects(parseInt(sessionStorage.getItem("userId"), 10))
+  const { refetch } = useVendorProjects(user.id);
   if (userLoading || projectLoading) return null;
   if (userError || projectError) return null;
 
