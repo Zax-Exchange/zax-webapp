@@ -1,13 +1,13 @@
 import { Box, Stack, TextField, Typography, Container, Button } from "@mui/material";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
-import { gql, useLazyQuery } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 
-const USER_LOGIN = gql`
-  query login($data: UserLoginInput) {
-    login(data: $data) {
+const CREATE_USER = gql`
+  mutation createUser($data: CreateUserInput) {
+    createUser(data: $data) {
       id
       companyId
       isVendor
@@ -17,15 +17,23 @@ const USER_LOGIN = gql`
       token
     }
   }
-`;
-const Login = () => {
+`
+const UserSignup = () => {
   const { user, login, logout } = useContext(AuthContext);
-  const [userLogin, {data}] = useLazyQuery(USER_LOGIN);
+  const location = useLocation();
+
+  const [createUser] = useMutation(CREATE_USER, {
+    onCompleted: (data) => {
+      login(data.createUser)
+    }
+  });
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
+    name: "",
     email: "",
-    password: ""
+    password: "",
+    companyId: 566
   });
 
   const onChange = (e) => {
@@ -35,27 +43,32 @@ const Login = () => {
     })
   };
 
-  const loginHandler = () => {
-    userLogin({
-      variables: {
-        data: values
-      }
-    });
-  }
+  const createUserHandler = () => {
 
-  if (data) {
-    login(data.login);
-  }
+    createUser({
+      variables: {
+        data: {
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          companyId: parseInt(values.companyId, 10)
+        }
+      }
+    })
+  };
 
   if (user) {
     navigate("/")
   } else {
     return <Container maxWidth="sm">
-        <Typography>Log in</Typography>
+        <Typography>Create Account</Typography>
         <Stack spacing={2} textAlign="right">
+          <TextField type="name" placeholder="name" name="name" value={values.name} onChange={onChange}></TextField>
           <TextField type="email" placeholder="email" name="email" value={values.email} onChange={onChange}></TextField>
           <TextField type="password" placeholder="password" name="password" value={values.password} onChange={onChange}></TextField>
-          <Button variant="contained" onClick={loginHandler}>Login</Button>
+
+
+          <Button variant="contained" onClick={createUserHandler}>Create</Button>
         </Stack>
     </Container>
 
@@ -63,4 +76,4 @@ const Login = () => {
 }
 
 
-export default Login;
+export default UserSignup;

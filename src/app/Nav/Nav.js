@@ -30,7 +30,9 @@ import { useContext, useState } from "react";
 import CreateProjectMoal from "../Projects/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
 
-
+const buttonStyle = {
+  cursor: "pointer"
+}
 const Nav = () => {
   const navigate = useNavigate();
   const { user, login, logout } = useContext(AuthContext);
@@ -80,9 +82,18 @@ const Nav = () => {
               <ListItemText primary="Settings" onClick={() => handleSideNavOnClick("settings")}></ListItemText>
             </ListItemButton>
           </ListItem>
+          <ListItem>
+            <ListItemButton>
+              <ListItemText primary="Log out" onClick={logout}></ListItemText>
+            </ListItemButton>
+          </ListItem>
         </List>
       </Box>
     </Drawer>
+  }
+
+  const handleLoggedOutOnClick = (page) => {
+    navigate(`/${page}`);
   }
 
   if (!user) {
@@ -90,21 +101,39 @@ const Nav = () => {
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar position="static" sx={{ backgroundColor: "rgb(43 52 89)" }}>
           <Toolbar>
-            <Typography
+            <Button variant="primary" onClick={() => handleLoggedOutOnClick("login")}>
+              Log In
+            </Button>
+            <Button variant="contained" onClick={() => handleLoggedOutOnClick("company-signup")}>
+              Get Started
+            </Button>
+            {/* <Typography
               variant="h6"
               noWrap
               component="div"
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right" }}
+              name="login"
+              onClick={() => handleLoggedOutOnClick("login")}
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right", cursor: "pointer" }}
             >
               Login
-            </Typography>
+            </Typography> */}
+            {/* <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              onClick={() => handleLoggedOutOnClick("company-signup")}
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right", cursor: "pointer" }}
+            >
+              Get Started
+            </Typography> */}
+
             <Typography
               variant="h6"
               noWrap
               component="div"
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right" }}
             >
-              Sign up
+              ZAX EXCHANGE
             </Typography>
           </Toolbar>
         </AppBar>

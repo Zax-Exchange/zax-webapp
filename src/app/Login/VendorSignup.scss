@@ -1,0 +1,25 @@
+.form-control-materials, .form-control-locations {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 300px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  border: 2px solid lightgray;
+  padding: 4px;
+  border-radius: 4px;
+
+  .container {
+    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    // span {
+    //   background-color: gray;
+    //   padding: 1px 3px;
+    //   border-radius: 4px;
+    // }
+  }
+
+}

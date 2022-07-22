@@ -19,9 +19,13 @@ import { Container } from "@mui/material";
 import CustomerProjectDetail from './app/Projects/CustomerProjectDetail';
 import RequireAuth from './app/Auth/RequireAuth';
 import Login from './app/Login/Login';
+import UserSignup from './app/Login/UserSignup';
+import VendorSignup from './app/Login/VendorSignup';
+import CompanySignup from './app/Login/CompanySignup';
 
 
 function App() {
+  
   return (
       <div className="App">
         <Nav/>
@@ -41,6 +45,9 @@ function App() {
                 path="*"
                 element={<RequireAuth><Home /></RequireAuth>} />
             <Route path="/login" element={<Login />}/>
+            <Route path="/company-signup" element={<CompanySignup />}/>
+            <Route path="/user-signup/*" element={<UserSignup />}/>
+            <Route path="/vendor-signup" element={<VendorSignup />}/>
           </Routes>
 
         </Container>

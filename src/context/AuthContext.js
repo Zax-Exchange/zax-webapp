@@ -1,6 +1,15 @@
 import jwtDecode from "jwt-decode";
 import { createContext, useReducer } from "react";
-
+/**
+ * user {
+ *  id
+ *  companyId
+ *  isVendor
+ *  isAdmin
+ *  name
+ *  email
+ * }
+ */
 const initialState = {
   user: null
 }
