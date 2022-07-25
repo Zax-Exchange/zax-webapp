@@ -19,11 +19,11 @@ const CompanySignup = () => {
     navigate("/")
   } else {
     return <Container maxWidth="sm">
-        <Typography>Select your company type</Typography>
+        <Typography variant="h6" sx={{ marginBottom: 4 }}>Select your company type</Typography>
 
         <Box sx={{display: "flex", justifyContent: "space-around"}}>
-          <Button variant="contained" name="vendor-signup" onClick={signupHandler}>I'm a vendor</Button>
-          <Button variant="contained" name="customer-signup" onClick={signupHandler}>I'm a customer</Button>
+          <Button variant="outlined" name="vendor-signup" onClick={signupHandler}>I'm a vendor</Button>
+          <Button variant="outlined" name="customer-signup" onClick={signupHandler}>I'm a customer</Button>
         </Box>
     </Container>
 

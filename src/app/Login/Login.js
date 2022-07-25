@@ -20,7 +20,7 @@ const USER_LOGIN = gql`
 `;
 const Login = () => {
   const { user, login, logout } = useContext(AuthContext);
-  const [userLogin, {data}] = useLazyQuery(USER_LOGIN);
+  const [userLogin, {error, loading, data}] = useLazyQuery(USER_LOGIN);
 
   const navigate = useNavigate();
   const [values, setValues] = useState({

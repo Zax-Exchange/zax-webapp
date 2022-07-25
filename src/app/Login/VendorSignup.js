@@ -1,25 +1,28 @@
-import { Box, Stack, TextField, Typography, Container, Button, Autocomplete, FormControl, Chip, Input } from "@mui/material";
+import { Box, Stack, TextField, Typography, Container, Button, Autocomplete, FormControl, Chip, Input, Select, MenuItem } from "@mui/material";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
 import { countries } from "../constants/countries";
 import "./VendorSignup.scss";
-
-const CREATE_COMPANY = gql`
-  mutation createCompany($data: CreateUserInput) {
-    createCompany(data: $data) 
-  }
-`;
-
+import { usePaymentInputs } from "react-payment-inputs";
+import FullScreenLoading from "../Utils/Loading";
+import { useCreateCompany, useGetAllPlans } from "./hooks";
 
 
 const CompanySignup = () => {
   const { user } = useContext(AuthContext);
-  const [createCompany] = useMutation(CREATE_COMPANY);
-  const [success, setSuccess] = useState(false);
+  const {
+    createCompany,
+    createCompanyLoading,
+    createCompanyError,
+    createCompanySuccess
+  } = useCreateCompany();
+
+  const { getAllPlansData } = useGetAllPlans();
+
   const [currentPage, setCurrentPage] = useState(0);
+  const { meta, getCVCProps, getCardNumberProps, getExpiryDateProps } = usePaymentInputs()
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -30,21 +33,21 @@ const CompanySignup = () => {
     creditCardNumber: "",
     creditCardExp: "",
     creditCardCvv: "",
-    country: null,
+    country: "",
     isActive: true,
     isVendor: true,
     isVerified: false,
-    leadTime: null,
+    leadTime: "",
     locations: [],
-    moq: null,
+    moq: "",
     materials: [],
     companyUrl: "",
-    planId: null,
+    planId: "",
     userEmail: ""
   });
 
   const [material, setMaterial] = useState("");
-
+  
   const materialOnChange = (e) => {
 
     setMaterial(e.target.value);
@@ -70,13 +73,13 @@ const CompanySignup = () => {
     } 
   };
 
-
-
   const onChange = (e) => {
-    setValues({
-      ...values,
-      [e.target.name]: e.target.value
-    })
+    if (e.target.validity === undefined || e.target.validity.valid) {
+      setValues({
+        ...values,
+        [e.target.name]: e.target.value
+      })
+    }    
   };
 
   const countryOnChange = (countryObj) => {
@@ -85,15 +88,16 @@ const CompanySignup = () => {
       country: countryObj ? countryObj.label : null
     });
   }
-  const createCompanyHandler = () => {
+  const createCompanyHandler = async () => {
 
-    createCompany({
+    await createCompany({
       variables: {
-        data: values
+        data: {
+          ...values,
+          leadTime: parseInt(values.leadTime, 10),
+          planId: parseInt(values.planId, 10),
+        }
       }
-    })
-    .then(() => {
-      
     })
   };
 
@@ -109,20 +113,22 @@ const CompanySignup = () => {
   const nextPage = () => setCurrentPage(currentPage + 1);
   const previousPage = () => setCurrentPage(currentPage - 1);
 
-  const renderNavigationButtons = () => {
+  const renderNavigationButtons = (isValidInput) => {
+    const backButton = <Button variant="primary" onClick={previousPage}>Back</Button>;
+    const nextButton = <Button variant="contained" onClick={nextPage} disabled={!isValidInput}>Next</Button>;
+    const submitButton = <Button variant="contained" onClick={createCompanyHandler}>Submit</Button>;
+
+    let buttons = [];
     if (currentPage === 0) {
-      return <Button variant="contained" onClick={nextPage}>Next</Button>
-    } else if (currentPage < 3) {
-      return <>
-        <Button variant="primary" onClick={previousPage}>Back</Button>
-        <Button variant="contained" onClick={nextPage}>Next</Button>
-      </>
+      buttons = [nextButton]
+    } else if (currentPage < 4) {
+      buttons = [backButton, nextButton]
     } else {
-      return <>
-        <Button variant="primary" onClick={previousPage}>Back</Button>
-        <Button variant="contained" onClick={createCompanyHandler}>Submit</Button>
-      </>
+      buttons = [backButton, submitButton]
     }
+    return <Container disableGutters sx={{display: "flex", justifyContent:"flex-end", gap: 4}}>
+      {buttons}
+    </Container>
   }
 
   const renderCountryDropdown = () => {
@@ -151,6 +157,7 @@ const CompanySignup = () => {
             {...params}
             label="Company location"
             name="country"
+            value={values.country}
             inputProps={{
               ...params.inputProps,
               autoComplete: 'new-password', // disable autocomplete and autofill
@@ -197,40 +204,46 @@ const CompanySignup = () => {
     );
   }
 
+  const validateInputs = (fields) => {
+    for (let field of fields) {
+      if (Array.isArray(values[field]) && values[field].length === 0) return false;
+      if (!values[field]) return false;
+    }
+    return true;
+  }
+
+
   const renderCompanySignupFlow = () => {
     if (currentPage === 0) {
+      // TODO: use email validator
       return <>
-        <Typography>Let's start with your email</Typography>
+        <Typography variant="h6" sx={{marginBottom: 4}}>Let's start with your email</Typography>
         <Stack spacing={2} textAlign="right">
-          <TextField type="email" placeholder="email" name="userEmail" value={values.userEmail} onChange={onChange}></TextField>
+          <TextField label="Email" type="email" placeholder="Email" name="userEmail" value={values.userEmail} onChange={onChange}></TextField>
 
-          <Container disableGutters>
-            {renderNavigationButtons()}
-          </Container>
+          
+          {renderNavigationButtons(true)}
         </Stack>
       </>
     } else if (currentPage === 1) {
       return <>
-        <Typography>Provide your company information</Typography>
+        <Typography variant="h6" sx={{marginBottom: 4}}>Enter your company information</Typography>
         <Stack spacing={2} textAlign="right">
-          <TextField required type="company name" placeholder="Company name" name="name" value={values.name} onChange={onChange}></TextField>
-          <TextField required type="phone" placeholder="Phone" name="phone" value={values.phone} onChange={onChange}></TextField>
-          <TextField type="phone" placeholder="Fax" name="fax" value={values.fax} onChange={onChange}></TextField>
-          <TextField type="url" placeholder="Company url" name="companyUrl" value={values.companyUrl} onChange={onChange}></TextField>
+          <TextField label="Company name" type="text" placeholder="Company name" name="name" value={values.name} onChange={onChange}></TextField>
+          <TextField label="Company phone number" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Company phone number" name="phone" value={values.phone} onChange={onChange}></TextField>
+          <TextField label="Company fax" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Comapny fax" name="fax" value={values.fax} onChange={onChange}></TextField>
+          <TextField label="Company website url" type="url" placeholder="Company website url" name="companyUrl" value={values.companyUrl} onChange={onChange}></TextField>
           {renderCountryDropdown()}
 
-          
-          <Container disableGutters>
-            {renderNavigationButtons()}
-          </Container>
+          {renderNavigationButtons(validateInputs(["name", "phone", "country"]))}
         </Stack>
       </>
     } else if (currentPage === 2) {
       return <>
-        <Typography>Since your a vendor, we're going to need a little more information.</Typography>
+        <Typography variant="h6" sx={{marginBottom: 4}}>Since your a vendor, we're going to need a little more information.</Typography>
         <Stack spacing={2} textAlign="right">
-          <TextField type="leadTime" placeholder="Typical lead time" name="leadTime" value={values.leadTime} onChange={onChange}></TextField>
-          <TextField type="minimum order quantity" placeholder="Minimum order quantity" name="moq" value={values.moq} onChange={onChange}></TextField>
+          <TextField label="Typical lead time" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Typical lead time (in months)" name="leadTime" value={values.leadTime} onChange={onChange}></TextField>
+          <TextField label="Minimum order quantity range" type="minimum order quantity" placeholder="Minimum order quantity" name="moq" value={values.moq} onChange={onChange} helperText="e.g. 5000-10000, 6000-8000"></TextField>
           
           <div className="form-control-materials">
             <div className="container">
@@ -249,22 +262,80 @@ const CompanySignup = () => {
           
           {renderFactoryLocationDropdown()}
 
-          <Container disableGutters>
-            {renderNavigationButtons()}
-          </Container>
+          
+          {renderNavigationButtons(validateInputs(["leadTime", "moq", "materials", "locations"]))}
         </Stack>
+      </>
+    } else if (currentPage === 3) {
+      return <>
+        <Typography variant="h6" sx={{marginBottom: 4}}>Pick a plan for your company</Typography>
+
+        <Stack spacing={2} textAlign="right">
+          <TextField select onChange={onChange} sx={{textAlign: "left"}} label="Select a plan" name="planId">
+            {
+              getAllPlansData && getAllPlansData.getAllPlans.map(plan => {
+                return <MenuItem value={plan.id}>{plan.name}</MenuItem>
+              })
+            }
+          </TextField>
+          
+          <TextField label="Credit card number" type="tel" inputProps={getCardNumberProps({onChange, name: "creditCardNumber"})} value={values.creditCardNumber} error={!!meta.erroredInputs.cardNumber} helperText={meta.erroredInputs.cardNumber}></TextField>
+          <TextField label="Credit card exp" type="tel" inputProps={getExpiryDateProps({onChange, name: "creditCardExp"})} value={values.creditCardExp} error={!!meta.erroredInputs.expiryDate} helperText={meta.erroredInputs.expiryDate}></TextField>
+          <TextField label="Credit car cvc" type="tel" inputProps={getCVCProps({onChange, name: "creditCardCvv"})} value={values.creditCardCvv} error={!!meta.erroredInputs.cvc} helperText={meta.erroredInputs.cvc}></TextField>
+
+          
+          {renderNavigationButtons(validateInputs(["planId"]))}
+        </Stack>
+      </>
+      // TODO: add  && meta.error === undefined to renderNavigationButtons
+    } else {
+      return <>
+        <Typography variant="h6" sx={{marginBottom: 4}}>Now let's review your company information</Typography>
+        <Container maxWidth="sm">
+          <Stack spacing={2} textAlign="left">
+            <Typography>Your email: {values.userEmail}</Typography>
+            <Typography>Company name: {values.name}</Typography>
+            <Typography>Company phone: {values.phone}</Typography>
+            {values.companyUrl && <Typography>Company url: {values.companyUrl}</Typography>}
+            {values.fax && <Typography>Company fax: {values.fax}</Typography>}
+            <Typography>Company country: {values.country}</Typography>
+            <Typography>Typical lead time: {values.leadTime}</Typography>
+            <Typography>Factory locations: {values.locations.join(",")}</Typography>
+            <Typography>Minimum order quantity: {values.moq}</Typography>
+            <Typography>Product materials: {values.materials.join(",")}</Typography>
+            {values.planId && <Typography>Selected plan: {getAllPlansData.getAllPlans.find(plan => plan.id === values.planId).name}</Typography>}
+          </Stack>
+        </Container>
+        {renderNavigationButtons()}
       </>
     }
   }
 
   if (user) {
     navigate("/") 
-  } else {
-    return <Container maxWidth="sm">
-        {renderCompanySignupFlow()}
-    </Container>
-
+    return;
   }
+
+  if (createCompanyLoading) {
+    return <FullScreenLoading />
+  }
+
+  if (createCompanyError) {
+    return <Container maxWidth="md">
+        Submission failed. Please try again later.
+    </Container>
+  }
+
+  if (createCompanySuccess) {
+    return <Container maxWidth="md">
+        Company created successfully! Please check your email and create your account!
+    </Container>
+  }
+
+  return <Container maxWidth="md">
+      {renderCompanySignupFlow()}
+  </Container>
+
 }
 
 

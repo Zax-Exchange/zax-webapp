@@ -22,35 +22,42 @@ import Login from './app/Login/Login';
 import UserSignup from './app/Login/UserSignup';
 import VendorSignup from './app/Login/VendorSignup';
 import CompanySignup from './app/Login/CompanySignup';
-
+import {ErrorBoundary} from 'react-error-boundary'
+import ErrorFallback from './app/ErrorBoundary/ErrorBoundary';
 
 function App() {
   
   return (
       <div className="App">
         <Nav/>
-        <Container>
-          <Routes>
-              <Route path="/" element={<RequireAuth><Home /></RequireAuth>}/>
-              <Route path="/projects" element={<RequireAuth><Projects/></RequireAuth>}/>
-              <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>}/>
-              <Route path="/settings" element={<RequireAuth><Settings/></RequireAuth>}/>
-              <Route path="/vendor-search" element={<RequireAuth><VendorSearchResults/></RequireAuth>}/>
-              <Route path="/customer-search" element={<RequireAuth><CustomerSearchResults/></RequireAuth>}/>
-              <Route path="/project-detail" element={<RequireAuth><SearchProjectDetail/></RequireAuth>}/>
-              <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/>
-              <Route path="/customer-project-detail" element={<RequireAuth><CustomerProjectDetail/></RequireAuth>}/>
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+        >
+          <Container maxWidth="xl">
+            <Routes>
+                <Route path="/" element={<RequireAuth><Home /></RequireAuth>}/>
+                <Route path="/projects" element={<RequireAuth><Projects/></RequireAuth>}/>
+                <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>}/>
+                <Route path="/settings" element={<RequireAuth><Settings/></RequireAuth>}/>
+                <Route path="/vendor-search" element={<RequireAuth><VendorSearchResults/></RequireAuth>}/>
+                <Route path="/customer-search" element={<RequireAuth><CustomerSearchResults/></RequireAuth>}/>
+                <Route path="/project-detail" element={<RequireAuth><SearchProjectDetail/></RequireAuth>}/>
+                <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/>
+                <Route path="/customer-project-detail" element={<RequireAuth><CustomerProjectDetail/></RequireAuth>}/>
 
-              <Route
-                path="*"
-                element={<RequireAuth><Home /></RequireAuth>} />
-            <Route path="/login" element={<Login />}/>
-            <Route path="/company-signup" element={<CompanySignup />}/>
-            <Route path="/user-signup/*" element={<UserSignup />}/>
-            <Route path="/vendor-signup" element={<VendorSignup />}/>
-          </Routes>
+                <Route
+                  path="*"
+                  element={<RequireAuth><Home /></RequireAuth>} />
 
-        </Container>
+              <Route path="/login" element={<Login />}/>
+              <Route path="/company-signup" element={<CompanySignup />}/>
+              <Route path="/user-signup/*" element={<UserSignup />}/>
+              <Route path="/vendor-signup" element={<VendorSignup />}/>
+            </Routes>
+
+          </Container>
+        </ErrorBoundary>
+
       </div>
   );
 }
