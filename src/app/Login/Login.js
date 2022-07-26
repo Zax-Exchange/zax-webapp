@@ -1,9 +1,10 @@
-import { Box, Stack, TextField, Typography, Container, Button } from "@mui/material";
+import { Box, Stack, TextField, Typography, Container, Button, ThemeProvider } from "@mui/material";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
+import { PrimaryButton, primaryButtonTheme } from "../themedComponents/PrimaryButton";
 
 const USER_LOGIN = gql`
   query login($data: UserLoginInput) {
@@ -55,7 +56,9 @@ const Login = () => {
         <Stack spacing={2} textAlign="right">
           <TextField type="email" placeholder="email" name="email" value={values.email} onChange={onChange}></TextField>
           <TextField type="password" placeholder="password" name="password" value={values.password} onChange={onChange}></TextField>
-          <Button variant="contained" onClick={loginHandler}>Login</Button>
+          <ThemeProvider theme={primaryButtonTheme}>
+            <PrimaryButton variant="contained" onClick={loginHandler}>Login</PrimaryButton>
+          </ThemeProvider>
         </Stack>
     </Container>
 

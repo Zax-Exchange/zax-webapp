@@ -13,15 +13,12 @@ export const GET_USER = gql`
     }
   }
 `;
-export const GET_COMPANY_DETAIL = gql`
-  query getCompanyDetail($id: Int) {
-    getCompanyDetail(companyId: $id) {
+export const GET_CUSTOMER_DETAIL = gql`
+  query Query($id: Int) {
+    getCustomerDetail(companyId: $id) {
       name
       phone
-      leadTime
-      moq
-      locations
-      materials
+      country
     }
   }
 `
@@ -33,7 +30,7 @@ const Profile = () => {
     }
   });
   const companyId = userData?.getUserWithUserId.companyId;
-  const {loading, error, data: companyData} = useQuery(GET_COMPANY_DETAIL, {
+  const {loading, error, data: companyData} = useQuery(GET_CUSTOMER_DETAIL, {
     variables: {
       id: companyId
     },
@@ -59,11 +56,11 @@ const Profile = () => {
       <Grid item xs={10}>
         <Container>
           COMPANY PROFILE
-          <Typography>company name: {companyData && companyData.getCompanyDetail.name}</Typography>
-          <Typography>company phone: {companyData && companyData.getCompanyDetail.phone}</Typography>
-          <Typography>company locations: {companyData && companyData.getCompanyDetail.locations}</Typography>
-          <Typography>company leadTime: {companyData && companyData.getCompanyDetail.leadTime}</Typography>
-          <Typography>company materials: {companyData && companyData.getCompanyDetail.materials}</Typography>
+          <Typography>company name: {companyData && companyData.getCustomerDetail.name}</Typography>
+          <Typography>company phone: {companyData && companyData.getCustomerDetail.phone}</Typography>
+          <Typography>company locations: {companyData && companyData.getCustomerDetail.locations}</Typography>
+          <Typography>company leadTime: {companyData && companyData.getCustomerDetail.leadTime}</Typography>
+          <Typography>company materials: {companyData && companyData.getCustomerDetail.materials}</Typography>
         </Container>
       </Grid>
     </Grid>

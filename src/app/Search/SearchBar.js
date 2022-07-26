@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useLazyQuery, gql } from '@apollo/client';
 import { useNavigate } from "react-router-dom";
 import { 
@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
+import { AuthContext } from "../../context/AuthContext";
 
 const vendorQuery = gql`
   query searchCustomerProjects($searchInput: SearchProjectInput) {
@@ -86,7 +87,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const SearchBar = ({ isVendor }) => {
+const SearchBar = () => {
+  const { user } = useContext(AuthContext);
+  const isVendor = user.isVendor;
   const [input, setInput] = useState("");
 
   const [searchCustomerProjects] = useLazyQuery(vendorQuery);
@@ -154,7 +157,6 @@ const SearchBar = ({ isVendor }) => {
       </SearchIconWrapper>
       <StyledInputBase
         placeholder="Search…"
-        inputProps={{ 'aria-label': 'search' }}
         value={input} 
         onChange={handleSearchInput}
         onKeyDown={handleEnterPress}

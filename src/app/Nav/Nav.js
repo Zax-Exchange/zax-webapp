@@ -10,16 +10,14 @@ import { Stack,
   ListItemButton, 
   ListItemText , 
   IconButton,
-  Divider,
-  ListItemIcon, 
   Typography,
-  Container,
   Button,
   Dialog,
   DialogContent, 
   AppBar,
   Toolbar,
   InputBase,
+  ThemeProvider
 } from "@mui/material";
 import { 
   Menu,
@@ -29,10 +27,9 @@ import {
 import { useContext, useState } from "react";
 import CreateProjectMoal from "../Projects/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
+import { PrimaryButton, primaryButtonTheme } from "../themedComponents/PrimaryButton";
+import { Container } from "@mui/system";
 
-const buttonStyle = {
-  cursor: "pointer"
-}
 const Nav = () => {
   const navigate = useNavigate();
   const { user, login, logout } = useContext(AuthContext);
@@ -96,36 +93,60 @@ const Nav = () => {
     navigate(`/${page}`);
   }
 
-  if (!user) {
-    return (
-      <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
-        <AppBar position="static" sx={{ backgroundColor: "rgb(43 52 89)" }}>
+  const renderCustomerNav = () => {
+    return <>
+      <Toolbar>
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="open drawer"
+          sx={{ mr: 2 }}
+          onClick={() => setSideNavOpen(true)}
+        >
+          <Menu />
+        </IconButton>
+
+        <SearchBar />
+        
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right" }}
+        >
+          ZAX EXCHANGE
+        </Typography>
+
+        <Box>
+
+          <PrimaryButton onClick={() => setIsCreateProjectOpen(true)} variant="contained">CREATE PROJECT</PrimaryButton>
+        </Box>
+        
+      </Toolbar>
+      {renderSideNav()}
+      <Dialog
+        open={isCreateProjectOpen}
+        onClose={() => setIsCreateProjectOpen(false)}
+        maxWidth="xl"
+        fullWidth={true}
+      >
+        <DialogContent>
+          <CreateProjectMoal setIsCreateProjectOpen={setIsCreateProjectOpen}/>
+        </DialogContent>
+      </Dialog>
+    </>
+  }
+
+  const renderLoggedOutNav = () => {
+    return <>
           <Toolbar>
             <Button variant="primary" onClick={() => handleLoggedOutOnClick("login")}>
               Log In
             </Button>
-            <Button variant="contained" onClick={() => handleLoggedOutOnClick("company-signup")}>
+            <PrimaryButton variant="contained" onClick={() => handleLoggedOutOnClick("company-signup")}>
               Get Started
-            </Button>
-            {/* <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              name="login"
-              onClick={() => handleLoggedOutOnClick("login")}
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right", cursor: "pointer" }}
-            >
-              Login
-            </Typography> */}
-            {/* <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              onClick={() => handleLoggedOutOnClick("company-signup")}
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right", cursor: "pointer" }}
-            >
-              Get Started
-            </Typography> */}
+            </PrimaryButton>
 
             <Typography
               variant="h6"
@@ -136,74 +157,46 @@ const Nav = () => {
               ZAX EXCHANGE
             </Typography>
           </Toolbar>
-        </AppBar>
-      </Box>
-    )
+      </>
   }
-  // if (!isVendor) {
-  //   return (<Grid className="nav-bar-container" container mb={3}>
-  //     <Grid item xs={2} alignSelf="center" textAlign="left" pl={2}>
-  //       <IconButton onClick={() => setSideNavOpen(true)}>
-  //         <Menu style={{color: "ddd"}}/>
-  //       </IconButton>
-  //     </Grid>
 
-  //     <Grid item xs={2} alignSelf="center" textAlign="left" pl={2}>
-  //       <Button onClick={() => setIsCreateProjectOpen(true)} variant="contained">CREATE PROJECT</Button>
-  //     </Grid>
-
-  //     <Grid item xs={5} alignSelf="center">
-  //       <SearchBar />
-  //     </Grid>
-
-
-  //     <Grid item xs={3} alignSelf="center">
-  //       <Container>
-  //         <Typography variant="h1" color="white" fontSize={24} fontWeight={800}>ZAX EXCHANGE</Typography>
-  //       </Container>
-  //     </Grid>
-
-  //     <Dialog
-  //       open={isCreateProjectOpen}
-  //       onClose={() => setIsCreateProjectOpen(false)}
-  //       maxWidth="md"
-  //       fullWidth={true}
-  //     >
-  //       <DialogContent>
-  //         <CreateProjectMoal setIsCreateProjectOpen={setIsCreateProjectOpen}/>
-  //       </DialogContent>
-  //     </Dialog>
-  //     {renderSideNav()}
-  //   </Grid>)
-  // }
+  const renderVendorNav = () => {
+    return <>
+      <Toolbar>
+      <IconButton
+        size="large"
+        edge="start"
+        color="inherit"
+        aria-label="open drawer"
+        sx={{ mr: 2 }}
+        onClick={() => setSideNavOpen(true)}
+      >
+        <Menu />
+      </IconButton>
+      <SearchBar />
+      <Typography
+        variant="h6"
+        noWrap
+        component="div"
+        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right" }}
+      >
+        ZAX EXCHANGE
+      </Typography>
+    </Toolbar>
+      </>
+  }
   
   return ( <>
+    <ThemeProvider theme={primaryButtonTheme}>
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
-        <AppBar position="static" sx={{ backgroundColor: "rgb(43 52 89)" }}>
-          <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              sx={{ mr: 2 }}
-              onClick={() => setSideNavOpen(true)}
-            >
-              <Menu />
-            </IconButton>
-            <SearchBar />
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right" }}
-            >
-              ZAX EXCHANGE
-            </Typography>
-          </Toolbar>
+        <AppBar position="static" sx={{ backgroundColor: "rgb(46 59 110)" }}>
+          {!user && renderLoggedOutNav()}
+          {user && user.isVendor && renderVendorNav()}
+          {user && !user.isVendor && renderCustomerNav()}
         </AppBar>
       </Box>
       {renderSideNav()}
+      </ThemeProvider>
     </>
   )
 }

@@ -1,11 +1,17 @@
 
 import { gql, useQuery, useMutation } from "@apollo/client";
 
-const CREATE_COMPANY = gql`
-  mutation createCompany($data: CreateCompanyInput) {
-    createCompany(data: $data) 
+const CREATE_VENDOR = gql`
+  mutation createVendor($data: CreateVendorInput) {
+    createVendor(data: $data) 
   }
 `;
+
+const CREATE_CUSTOMER = gql`
+  mutation createCustomer($data: CreateCustomerInput) {
+    createCustomer(data: $data)
+  }
+`
 
 const GET_ALL_PLANS = gql`
   query getAllPlans {
@@ -22,8 +28,8 @@ const GET_ALL_PLANS = gql`
  * 
  * @returns createCompany, createCompanyLoading, createCompanyError, createCompanySuccess
  */
-export const useCreateCompany = () => {
-  const [createCompany, {loading: createCompanyLoading, error: createCompanyError, data: createCompanySuccess}] = useMutation(CREATE_COMPANY);
+export const useCreateCompany = (isVendor) => {
+  const [createCompany, {loading: createCompanyLoading, error: createCompanyError, data: createCompanySuccess}] = useMutation(isVendor ? CREATE_VENDOR : CREATE_CUSTOMER);
   return {
     createCompany,
     createCompanyLoading,

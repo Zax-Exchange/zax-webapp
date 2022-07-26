@@ -24,6 +24,7 @@ import VendorSignup from './app/Login/VendorSignup';
 import CompanySignup from './app/Login/CompanySignup';
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './app/ErrorBoundary/ErrorBoundary';
+import CustomerSignup from './app/Login/CustomerSignup';
 
 function App() {
   
@@ -53,6 +54,7 @@ function App() {
               <Route path="/company-signup" element={<CompanySignup />}/>
               <Route path="/user-signup/*" element={<UserSignup />}/>
               <Route path="/vendor-signup" element={<VendorSignup />}/>
+              <Route path="/customer-signup" element={<CustomerSignup />}/>
             </Routes>
 
           </Container>

@@ -11,10 +11,20 @@ import {
   Box,
   Input,
   Autocomplete,
+  Stack,
+  Chip,
+  IconButton,
+  CircularProgress
  } from "@mui/material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { countries } from "../constants/countries";
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import AddIcon from '@mui/icons-material/Add';
+import { useCreateProject } from "./hooks";
+
  /**
   * name
   * deliveryDate
@@ -31,43 +41,86 @@ import { countries } from "../constants/countries";
   *   postProcess
   * }
   */
-const CREATE_PROJECT = gql`
-  mutation createProject($data: CreateProjectInput) {
-    createProject(data: $data)
-  }
-`;
+
 const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
   const { user } = useContext(AuthContext);
-
+  const {
+    createProjectMutation,
+    createProjectLoading,
+    createProjectError,
+    createProjectData
+  } = useCreateProject();
   const [projectData, setProjectData] = useState({
     userId: user.id,
     name: "",
-    deliveryDate: "",
     deliveryCountry: "",
     deliveryCity: "",
     budget: "",
     // design: null,
     comments: ""
   })
+  
+  const [deliveryDate, setDeliveryDate] = useState(new Date().toLocaleDateString());
+  console.log(deliveryDate)
+  const [material, setMaterial] = useState("");
+  const [materialInputBorderColor, setMaterialInputBorderColor] = useState("lightgray")
   const [components, setComponents] = useState([]);
 
   const [componentData, setComponentData] = useState({
     name: "",
-    materials: "",
+    materials: [],
     dimension: "",
     postProcess: ""
   });
+  
+  const materialOnChange = (e) => {
+    setMaterial(e.target.value);
+  }
 
-  const [projectCreated, setProjectCreated] = useState(false);
-  const [createProjectMutation] = useMutation(CREATE_PROJECT);
+  const handleMaterialKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      const materials = [...componentData.materials];
+      materials.push(material);
+      setComponentData({
+        ...componentData,
+        materials
+      });
+      setMaterial("");
+    } 
+  };
 
+  const addMaterial = () => {
+    const materials = [...componentData.materials];
+    materials.push(material);
+    setComponentData({
+      ...componentData,
+      materials
+    });
+    setMaterial("");
+  }
+
+  const handleMaterialsDelete = (i) => {
+    const arr = [...componentData.materials];
+    arr.splice(i, 1);
+    setComponentData({
+      ...componentData,
+      materials: arr
+    });
+  }
+  
+  const materialOnFocus = (e) => {
+    setMaterialInputBorderColor("rgba(0, 0, 0, 0.87)");
+  }
+  const materialonBlur = (e) => {
+    setMaterialInputBorderColor("lightgray");
+  }
   const projectInputHandler = (e) => {
-    const data = projectData;
-
-    setProjectData({
-      ...data,
-      [e.target.name]: e.target.value
-    })
+    if (e.target.type !== "tel" || e.target.validity.valid) {
+      setProjectData({
+        ...projectData,
+        [e.target.name]: e.target.value
+      })
+    }
   }
 
   const componentInputHandler = (e) => {
@@ -82,12 +135,13 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
   const addComponent = () => {
     const comp = {
       ...componentData,
-      materials: componentData.materials.split(",")
+      materials: componentData.materials
     };
+    setMaterial([]);
     setComponents([...components, comp]);
     setComponentData({
       name: "",
-      materials: "",
+      materials: [],
       dimension: "",
       postProcess: ""
     });
@@ -117,25 +171,31 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
       variables: {
         data: {
           ...projectData,
+          deliveryDate,
           budget: parseInt(projectData.budget, 10),
           design: null,
           components
         }
       }
-    })
-    .then(() => {
-      setProjectCreated(true);
-    })
+    });
   }
   
-  const renderCountrySelect = () => {
+  const countryOnChange = (v) => {
+    setProjectData({
+      ...projectData,
+      deliveryCountry: v.label
+    })
+  };
+
+  const renderCountryDropdown = () => {
     return (
       <Autocomplete
         id="country-select"
-        sx={{width: 300}}
+        sx={{ width: 300 }}
         options={countries}
         autoHighlight
         getOptionLabel={(option) => option.label}
+        onChange={(e,v) => countryOnChange(v)}
         renderOption={(props, option) => (
           <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
             <img
@@ -145,14 +205,15 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
               srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
               alt=""
             />
-            {option.label} ({option.code}) +{option.phone}
+            {option.label} ({option.code})
           </Box>
         )}
         renderInput={(params) => (
           <TextField
-            name="deliveryCountry"
             {...params}
-            label="Delivery country"
+            label="Delivery Country"
+            name="country"
+            value={projectData.deliveryCountry}
             inputProps={{
               ...params.inputProps,
               autoComplete: 'new-password', // disable autocomplete and autofill
@@ -163,75 +224,106 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
     );
   }
 
-  if (projectCreated) {
-    return <Grid>
-      <Typography variant="h6">Project created successfully!</Typography>
-      <DialogActions>
+  if (createProjectData) {
+    return <Container>
+      <Typography variant="h6" textAlign="center">Project created successfully!</Typography>
+      <DialogActions sx={{justifyContent: "center"}}>
         <Button onClick={() => setIsCreateProjectOpen(false)}>OK</Button>
       </DialogActions>
-    </Grid>
+    </Container>
+  }
+
+  if (createProjectLoading) {
+    return <Box sx={{display: "flex", justifyContent: "center"}}>
+      <CircularProgress />
+    </Box>
+  }
+
+  if (createProjectError) {
+    return <Container>
+      <Typography variant="h6" textAlign="center">Something went wrong, please try again later.</Typography>
+      <DialogActions sx={{justifyContent: "center"}}>
+        <Button onClick={() => setIsCreateProjectOpen(false)}>OK</Button>
+      </DialogActions>
+    </Container>
   }
 
   return <>
-  <Grid container direction="row" spacing={2}>
-      <Grid item xs={6}>
-        <Container>
-          <Typography variant="h6">Create Projects</Typography>
-        </Container>
-        <Container>
-          <List>
-            <ListItem>
-              <TextField autoComplete="new-password" variant="standard" label="Project Name" onChange={projectInputHandler} name="name" value={projectData.name}/>
-            </ListItem>
-            <ListItem>
-              <TextField autoComplete="new-password" variant="standard" label="Delivery Date" onChange={projectInputHandler} name="deliveryDate" value={projectData.deliveryDate}/>
-            </ListItem>
-            <ListItem>
-              {/* {renderCountrySelect()} */}
-              <TextField autoComplete="new-password" variant="standard" label="Delivery Country" onChange={projectInputHandler} name="deliveryCountry" value={projectData.deliveryCountry}/>
-            </ListItem>
-            <ListItem>
-              <TextField autoComplete="new-password" variant="standard" label="Delivery City" onChange={projectInputHandler} name="deliveryCity" value={projectData.deliveryCity}/>
-            </ListItem>
-            <ListItem>
-              <TextField autoComplete="new-password" variant="standard" label="Budget" onChange={projectInputHandler} name="budget" value={projectData.budget}/>
-            </ListItem>
-            <ListItem>
-              <TextField autoComplete="new-password" multiline variant="standard" label="Comments" onChange={projectInputHandler} name="comments" value={projectData.comments}/>
-            </ListItem>
-          </List>
-        </Container>
-      </Grid>
-
-      <Grid item xs={6}>
-        <Container>
-          <Typography variant="h6">Create Project Components</Typography>
-        </Container>
-        <Container>
-          <TextField autoComplete="new-password" variant="standard" label="Name" onChange={componentInputHandler} name="name" value={componentData.name}/>
-          <TextField autoComplete="new-password" variant="standard" label="Materials" onChange={componentInputHandler} name="materials" value={componentData.materials}/>
-          <TextField autoComplete="new-password" variant="standard" label="Dimension" onChange={componentInputHandler} name="dimension" value={componentData.dimension}/>
-          <TextField autoComplete="new-password" variant="standard" label="Post Process" onChange={componentInputHandler} name="postProcess" value={componentData.postProcess}/>
-          <Button onClick={addComponent} disabled={checkComponentInput()}>ADD</Button>
-        </Container>
 
         <Container>
-          <List>
+          <Container>
+            <Typography variant="h6">Create Project</Typography>
+          </Container>
+          <Stack spacing={2} textAlign="left">
+            <TextField autoComplete="new-password" label="Project Name" onChange={projectInputHandler} name="name" value={projectData.name}/>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DesktopDatePicker 
+                label="Delivery Date"
+                inputFormat="YYYY-MM-DD"
+                value={deliveryDate}
+                onChange={setDeliveryDate}
+                renderInput={(params) => <TextField {...params} name="deliveryDate"/>}
+              />
+            </LocalizationProvider>
+            {renderCountryDropdown()}
+            <TextField autoComplete="new-password" label="Delivery City" onChange={projectInputHandler} name="deliveryCity" value={projectData.deliveryCity}/>
+            <TextField autoComplete="new-password" type="tel" inputProps={{pattern: "[0-9]*"}} label="Budget" onChange={projectInputHandler} name="budget" value={projectData.budget}/>
+            <TextField autoComplete="new-password" multiline label="Comments" onChange={projectInputHandler} name="comments" value={projectData.comments}/>
+          </Stack>
+        </Container>
+
+
+
+        <Container>
+          <Container>
+            <Typography variant="h6">Create Project Components</Typography>
+          </Container>
+          <Stack spacing={2} textAlign="left">
+            <TextField autoComplete="new-password" label="Name" onChange={componentInputHandler} name="name" value={componentData.name}/>
+            <ListItem disableGutters>
+              <div className="form-control-materials" style={{borderColor: materialInputBorderColor}}>
+                <div className="container">
+                  {componentData.materials.map((item,index) => (
+                    <Chip size="small" onDelete={()=>handleMaterialsDelete(index)} label={item} />
+                  ))}
+                </div>
+                <Input
+                  value={material}
+                  onChange={materialOnChange}
+                  onKeyDown={handleMaterialKeyDown}
+                  placeholder="Materials"
+                  inputProps={{
+                    onFocus: materialOnFocus,
+                    onBlur: materialonBlur
+                  }}
+                  disableUnderline
+                />
+              </div>
+              <IconButton onClick={addMaterial} disabled={material.length === 0}>
+                <AddIcon />
+              </IconButton>
+            </ListItem>
+            <TextField autoComplete="new-password" label="Dimension" onChange={componentInputHandler} name="dimension" value={componentData.dimension}/>
+            <TextField autoComplete="new-password" label="Post Process" onChange={componentInputHandler} name="postProcess" value={componentData.postProcess}/>
+            <Button onClick={addComponent} disabled={checkComponentInput()}>ADD</Button>
+          </Stack>
+        </Container>
+
+        <Container>
+          <Stack spacing={2} textAlign="left">
             {
               components.map((comp, i) => {
                 return <ListItem key={i}>
                   <Typography>Name: {comp.name}</Typography>
-                  <Typography>Materials: {comp.materials}</Typography>
+                  <Typography>Materials: {comp.materials.join(",")}</Typography>
                   <Typography>Dimension: {comp.dimension}</Typography>
                   <Typography>Post Process: {comp.postProcess}</Typography>
                 </ListItem>
               })
             }
-          </List>
+          </Stack>
         </Container>
-      </Grid>
       
-  </Grid>
   <DialogActions>
     <Button variant="contained" disabled={checkProjectInput()} onClick={createProject}>CREATE</Button>
   </DialogActions>
