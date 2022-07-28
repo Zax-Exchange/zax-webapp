@@ -35,6 +35,8 @@ const SearchCompanyOverview = ({ companyData }) => {
             <Typography>Country: {companyData.country}</Typography>
             <Typography>Locations: {companyData.locations.join(",")}</Typography>
             <Typography>Materials: {companyData.materials.join(",")}</Typography>
+            <Typography>Lead time: {companyData.leadTime}</Typography>
+            <Typography>Minimum order quantity: {companyData.moq}</Typography>
           </Container>
         </CardContent>
       </CardActionArea>

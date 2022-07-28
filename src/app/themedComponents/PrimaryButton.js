@@ -10,8 +10,8 @@ export const PrimaryButton = styled(Button)(({ theme }) => ({
 export const primaryButtonTheme = createTheme({
   buttons: {
     primary: {
-      main: "#334bb0",
-      hover: "#465da9"
+      hover: "#606c97",
+      main: "#4c5678"
     }
   },
 });

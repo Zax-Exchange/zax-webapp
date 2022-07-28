@@ -8,7 +8,8 @@ import {
   Grid, 
   TextField, 
   InputAdornment,
-  InputBase
+  InputBase,
+  Box
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
@@ -37,10 +38,11 @@ const customerQuery = gql`
       name
       logo
       country
-      isVendor
       isVerified
       locations
       materials
+      moq
+      leadTime
     }
   }
 `;
@@ -48,9 +50,12 @@ const customerQuery = gql`
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  border:"1px solid #aeaeae",
+  backgroundColor: "white",
+  flexGrow: 1,
   '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
+    backgroundColor: "white",
+    borderColor: "#757575"
   },
   marginLeft: 0,
   width: '100%',
@@ -68,10 +73,11 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  color: "#9f9e9e"
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
+  color: 'black',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
@@ -151,55 +157,21 @@ const SearchBar = () => {
   };
 
   return (
-    <Search>
-      <SearchIconWrapper>
-        <SearchIcon />
-      </SearchIconWrapper>
-      <StyledInputBase
-        placeholder="Search…"
-        value={input} 
-        onChange={handleSearchInput}
-        onKeyDown={handleEnterPress}
-      />
-    </Search>
+    <Box>
+      <Search>
+        <SearchIconWrapper>
+          <SearchIcon />
+        </SearchIconWrapper>
+        <StyledInputBase
+          placeholder="Search…"
+          autoComplete="new-password"
+          value={input} 
+          onChange={handleSearchInput}
+          onKeyDown={handleEnterPress}
+        />
+      </Search>
+    </Box>
   )
-  if (isVendor) {
-    return (
-      <TextField
-        id="search-bar"
-        autoComplete="new-password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon onClick={handleSearchOnClick} style={{cursor: "pointer"}}/>
-            </InputAdornment>
-          )
-        }}
-        variant="outlined"
-        value={input} 
-        onChange={handleSearchInput}
-        onKeyDown={handleEnterPress}
-        style={{backgroundColor: "white", width: "80%"}}
-      />)
-  } 
-
-  return (
-      <TextField
-        id="search-bar"
-        autoComplete="new-password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon onClick={handleSearchOnClick} style={{cursor: "pointer"}}/>
-            </InputAdornment>
-          )
-        }}
-        variant="outlined"
-        value={input} 
-        onChange={handleSearchInput}
-        onKeyDown={handleEnterPress}
-        style={{backgroundColor: "white", width: "80%"}}
-      />)
 }
 
 export default SearchBar;

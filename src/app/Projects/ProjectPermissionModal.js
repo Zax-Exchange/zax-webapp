@@ -86,7 +86,7 @@ const useDeletePermission = (query) => {
   const [mutationQuery] = useMutation(query);
   return mutationQuery;
 };
-const ProjectPermissionModal = ({ projectData, setIsPermissionOpen }) => {
+const ProjectPermissionModal = ({ projectData, setPermissionModalOpen }) => {
   const {user} = useContext(AuthContext);
   const isVendor = user.isVendor;
   const [email, setEmail] = useState("");
@@ -338,7 +338,7 @@ const ProjectPermissionModal = ({ projectData, setIsPermissionOpen }) => {
           onCompleted: projectUserRefetch
         })
     }
-    setIsPermissionOpen(false);
+    setPermissionModalOpen(false);
     setIsLoading(false);
   }
 
@@ -422,7 +422,7 @@ const ProjectPermissionModal = ({ projectData, setIsPermissionOpen }) => {
     {renderPermissionedUsers()}
     <DialogActions>
       <Button onClick={savePermissionHandler} variant="contained">Save</Button>
-      <Button onClick={() => setIsPermissionOpen(false)} variant="primary">Cancel</Button>
+      <Button onClick={() => setPermissionModalOpen(false)} variant="primary">Cancel</Button>
     </DialogActions>
     {isLoading && <CircularProgress color="inherit" />}
   </Container>

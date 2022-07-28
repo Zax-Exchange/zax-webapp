@@ -17,12 +17,17 @@ import { Stack,
   AppBar,
   Toolbar,
   InputBase,
-  ThemeProvider
+  ThemeProvider,
+  ListItemIcon
 } from "@mui/material";
 import { 
   Menu,
   Home,
-  Search
+  Search,
+  TextSnippet,
+  AccountBox,
+  Settings,
+  Logout
 } from "@mui/icons-material";
 import { useContext, useState } from "react";
 import CreateProjectMoal from "../Projects/CreateProjectModal";
@@ -61,26 +66,41 @@ const Nav = () => {
       <List>
           <ListItem>
             <ListItemButton>
+              <ListItemIcon>
+                <Home />
+              </ListItemIcon>
               <ListItemText primary="Home" onClick={() => handleSideNavOnClick("home")}></ListItemText>
             </ListItemButton>
           </ListItem>
           <ListItem>
             <ListItemButton>
+              <ListItemIcon>
+                <TextSnippet />
+              </ListItemIcon>
               <ListItemText primary="Projects" onClick={() => handleSideNavOnClick("projects")}></ListItemText>
             </ListItemButton>
           </ListItem>
           <ListItem>
             <ListItemButton>
+              <ListItemIcon>
+                <AccountBox />
+              </ListItemIcon>
               <ListItemText primary="Profile" onClick={() => handleSideNavOnClick("profile")}></ListItemText>
             </ListItemButton>
           </ListItem>
           <ListItem>
             <ListItemButton>
+              <ListItemIcon>
+                <Settings />
+              </ListItemIcon>
               <ListItemText primary="Settings" onClick={() => handleSideNavOnClick("settings")}></ListItemText>
             </ListItemButton>
           </ListItem>
           <ListItem>
             <ListItemButton>
+              <ListItemIcon>
+                <Logout />
+              </ListItemIcon>
               <ListItemText primary="Log out" onClick={logout}></ListItemText>
             </ListItemButton>
           </ListItem>
@@ -92,34 +112,38 @@ const Nav = () => {
   const handleLoggedOutOnClick = (page) => {
     navigate(`/${page}`);
   }
+  const renderHamburger = () => {
+    return <IconButton
+        size="large"
+        edge="start"
+        color="inherit"
+        sx={{ mr: 2, color: "gray" }}
+        onClick={() => setSideNavOpen(true)}
+      >
+      <Menu />
+    </IconButton>;
+  }
 
+  const renderAppName = () => {
+    return <Typography
+      variant="h6"
+      noWrap
+      component="div"
+      sx={{ display: { xs: 'none', sm: 'block' }, textAlign: "right", color: "#212d4c" }}
+    >
+      ZAX EXCHANGE
+    </Typography>
+  }
   const renderCustomerNav = () => {
     return <>
       <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="open drawer"
-          sx={{ mr: 2 }}
-          onClick={() => setSideNavOpen(true)}
-        >
-          <Menu />
-        </IconButton>
+        {renderHamburger()}
 
-        <SearchBar />
+        {renderAppName()}
         
-        <Typography
-          variant="h6"
-          noWrap
-          component="div"
-          sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right" }}
-        >
-          ZAX EXCHANGE
-        </Typography>
+        <SearchBar />
 
-        <Box>
-
+        <Box display="flex" flexGrow={1} justifyContent="flex-end">
           <PrimaryButton onClick={() => setIsCreateProjectOpen(true)} variant="contained">CREATE PROJECT</PrimaryButton>
         </Box>
         
@@ -141,21 +165,14 @@ const Nav = () => {
   const renderLoggedOutNav = () => {
     return <>
           <Toolbar>
-            <Button variant="primary" onClick={() => handleLoggedOutOnClick("login")}>
+            <Button sx={{ color: "#4c5678" }} variant="primary" onClick={() => handleLoggedOutOnClick("login")}>
               Log In
             </Button>
             <PrimaryButton variant="contained" onClick={() => handleLoggedOutOnClick("company-signup")}>
               Get Started
             </PrimaryButton>
 
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right" }}
-            >
-              ZAX EXCHANGE
-            </Typography>
+            {renderAppName()}
           </Toolbar>
       </>
   }
@@ -163,33 +180,17 @@ const Nav = () => {
   const renderVendorNav = () => {
     return <>
       <Toolbar>
-      <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
-        aria-label="open drawer"
-        sx={{ mr: 2 }}
-        onClick={() => setSideNavOpen(true)}
-      >
-        <Menu />
-      </IconButton>
-      <SearchBar />
-      <Typography
-        variant="h6"
-        noWrap
-        component="div"
-        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "right" }}
-      >
-        ZAX EXCHANGE
-      </Typography>
-    </Toolbar>
-      </>
+        {renderHamburger()}
+        {renderAppName()}
+        <SearchBar />
+      </Toolbar>
+    </>
   }
   
   return ( <>
     <ThemeProvider theme={primaryButtonTheme}>
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
-        <AppBar position="static" sx={{ backgroundColor: "rgb(46 59 110)" }}>
+        <AppBar position="static" sx={{ backgroundColor: "white", boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)" }}>
           {!user && renderLoggedOutNav()}
           {user && user.isVendor && renderVendorNav()}
           {user && !user.isVendor && renderCustomerNav()}

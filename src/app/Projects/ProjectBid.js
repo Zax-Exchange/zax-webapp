@@ -8,6 +8,7 @@ import { useVendorProjects } from "./Projects";
 import { Container, Button, Typography, List, ListItem, Grid } from "@mui/material";
 import { useUserData } from "./CustomerProjectDetail";
 import { AuthContext } from "../../context/AuthContext";
+import { useGetVendorProjects } from "./hooks";
 
 const CREATE_PROJECT_BID = gql`
 mutation CreateProjectBid($data: CreateProjectBidInput) {
@@ -27,7 +28,7 @@ const ProjectBid = ({projectId, setIsOpen}) => {
   const [createProjectBid] = useMutation(CREATE_PROJECT_BID);
   const [componentsQpData, setComponentQpData] = useState({});
   const [isSuccessful, setIsSuccessful] = useState(null);
-  const { refetch } = useVendorProjects(user.id);
+  const { getVendorProjectsRefetch } = useGetVendorProjects(user.id);
   if (userLoading || projectLoading) return null;
   if (userError || projectError) return null;
 
@@ -51,7 +52,7 @@ const ProjectBid = ({projectId, setIsOpen}) => {
     })
     .then(() => {
       setIsSuccessful(true);
-      refetch()
+      getVendorProjectsRefetch()
     })
     .catch(() => {
       setIsSuccessful(false);

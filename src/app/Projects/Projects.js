@@ -6,135 +6,31 @@ import FullScreenLoading from "../Utils/Loading";
 import CustomerProjectOverview from "./CustomerProjectOverview";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useGetCustomerProjects, useGetVendorProjects } from "./hooks";
 
-export const GET_VENDOR_PROJECTS = gql`
-  query getVendorProjects($userId: Int) {
-    getVendorProjects(userId: $userId) {
-      bidInfo {
-        id
-        companyId
-        permission
-        components {
-          projectComponentId
-          quantityPrices {
-            quantity
-            price
-          }
-          createdAt
-        }
-      }
-      components {
-        id
-        name
-        materials
-        dimension
-        postProcess
-      }
-      id
-      userId
-      companyId
-      name
-      deliveryDate
-      deliveryCountry
-      deliveryCity
-      budget
-      design
-      status
-      permission
-      createdAt
-    }
-  }
-`;
-
-export const useVendorProjects = (userId, skip) => {
-  return useQuery(GET_VENDOR_PROJECTS, {
-    variables: {
-      userId,
-    },
-    fetchPolicy: "cache-and-network",
-    skip
-  })
-}
-
-export const GET_CUSTOMER_PROJECTS = gql`
-  query GetCustomerProjects($userId: Int) {
-    getCustomerProjects(userId: $userId) {
-      id
-      userId
-      companyId
-      name
-      deliveryDate
-      deliveryCountry
-      deliveryCity
-      design
-      budget
-      status
-      permission
-      createdAt
-      updatedAt
-      components {
-        id
-        projectId
-        name
-        materials
-        dimension
-        postProcess
-      }
-
-      bids {
-        id
-        userId
-        companyId
-        components {
-          id
-          projectBidId
-          projectComponentId
-          quantityPrices {
-            quantity
-            price
-          }
-        }
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
-
-export const useCustomerProjects = (userId, skip) => {
-  return useQuery(GET_CUSTOMER_PROJECTS, {
-    variables: {
-      userId,
-    },
-    fetchPolicy: "cache-and-network",
-    skip
-  })
-}
 
 const Projects = () => {
   const {user} = useContext(AuthContext);
   const isVendor = user.isVendor;
 
   const userId = user.id;
-  const {error: vendorProjectsError, loading: vendorProjectsLoading, data: vendorProjects} = useVendorProjects(userId, !isVendor)
-  const {error:customerProjectsError, loading: customerProjectsLoading, data: customerProjects} = useCustomerProjects(userId, isVendor);
+  const { getVendorProjectsData, getVendorProjectsError, getVendorProjectsLoading, getVendorProjectsRefetch } = useGetVendorProjects(userId, !isVendor)
+  const { getCustomerProjectsData, getCustomerProjectsError, getCustomerProjectsLoading, getCustomerProjectsRefetch } = useGetCustomerProjects(userId, isVendor);
 
-  if (vendorProjectsLoading || customerProjectsLoading) {
+  if (getVendorProjectsLoading || getCustomerProjectsLoading) {
     return <div className="user-projects-container">
       <FullScreenLoading />
     </div>
   }
-  if (vendorProjects) {
-    
-
+  if (getVendorProjectsData) {
       return (
         <div className="user-projects-container">
           <Typography variant="h3">Projects PAGE</Typography>
 
           <Grid container spacing={2} className="user-projects-inner-container">
             {
-              vendorProjects.getVendorProjects.map((project, i) => {
-                return <VendorProjectOverview projectData={project} key={i}/>
+              getVendorProjectsData.getVendorProjects.map((project, i) => {
+                return <VendorProjectOverview projectData={project} key={i} getVendorProjectsRefetch={getVendorProjectsRefetch}/>
               })
             }
           </Grid>
@@ -142,15 +38,15 @@ const Projects = () => {
       )
     
   }
-  if (customerProjects) {
+  if (getCustomerProjectsData) {
     return (
       <div className="user-projects-container">
         <Typography variant="h3">Projects PAGE</Typography>
 
         <Grid container spacing={2} className="user-projects-inner-container">
           {
-            customerProjects.getCustomerProjects.map((project, i) => {
-              return <CustomerProjectOverview project={project}/>
+            getCustomerProjectsData.getCustomerProjects.map((project, i) => {
+              return <CustomerProjectOverview project={project} getCustomerProjectsRefetch={getCustomerProjectsRefetch}/>
             })
           }
         </Grid>

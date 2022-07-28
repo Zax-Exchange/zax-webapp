@@ -51,7 +51,7 @@ const CustomerProjectDetail = () => {
 
   return <Container>
   <Container disableGutters style={{textAlign: "left"}}>
-    <IconButton onClick={backButtonHandler}>
+    <IconButton onClick={backButtonHandler} sx={{position: "absolute", left: 0}}>
       <KeyboardBackspaceIcon style={{color: "rgb(43, 52, 89)"}}/>
     </IconButton>
   </Container>

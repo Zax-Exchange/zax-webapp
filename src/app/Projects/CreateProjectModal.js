@@ -23,7 +23,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import AddIcon from '@mui/icons-material/Add';
-import { useCreateProject } from "./hooks";
+import { useCreateProject, useGetCustomerProjects } from "./hooks";
 
  /**
   * name
@@ -50,6 +50,7 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
     createProjectError,
     createProjectData
   } = useCreateProject();
+  const { getCustomerProjectsRefetch } = useGetCustomerProjects(user.id);
   const [projectData, setProjectData] = useState({
     userId: user.id,
     name: "",
@@ -60,8 +61,7 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
     comments: ""
   })
   
-  const [deliveryDate, setDeliveryDate] = useState(new Date().toLocaleDateString());
-  console.log(deliveryDate)
+  const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString().split('T')[0]);
   const [material, setMaterial] = useState("");
   const [materialInputBorderColor, setMaterialInputBorderColor] = useState("lightgray")
   const [components, setComponents] = useState([]);
@@ -166,8 +166,8 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
     return components.length === 0;
   };
 
-  const createProject = () => {
-    createProjectMutation({
+  const createProject = async () => {
+    await createProjectMutation({
       variables: {
         data: {
           ...projectData,
@@ -178,6 +178,7 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
         }
       }
     });
+    await getCustomerProjectsRefetch();
   }
   
   const countryOnChange = (v) => {
