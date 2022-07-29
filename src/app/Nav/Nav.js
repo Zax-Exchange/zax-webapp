@@ -34,6 +34,8 @@ import CreateProjectMoal from "../Projects/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
 import { PrimaryButton, primaryButtonTheme } from "../themedComponents/PrimaryButton";
 import { Container } from "@mui/system";
+import ProjectSnackbar from "../Utils/ProjectSnackbar";
+import FullScreenLoading from "../Utils/Loading";
 
 const Nav = () => {
   const navigate = useNavigate();
@@ -42,6 +44,11 @@ const Nav = () => {
 
   const [sideNavOpen, setSideNavOpen] = useState(false)
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+
+
+  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSideNavOnClick = (page) => {
     if (page === "home") {
@@ -134,8 +141,12 @@ const Nav = () => {
       ZAX EXCHANGE
     </Typography>
   }
+
   const renderCustomerNav = () => {
     return <>
+      <ProjectSnackbar severity="success" direction="right" message="Project created" open={successSnackbarOpen} onClose={() => setSuccessSnackbarOpen(false)}/>
+      <ProjectSnackbar severity="error" direction="right" message="Something went wrong, please try again." open={errorSnackbarOpen} onClose={() => setErrorSnackbarOpen(false)} />
+
       <Toolbar>
         {renderHamburger()}
 
@@ -156,7 +167,12 @@ const Nav = () => {
         fullWidth={true}
       >
         <DialogContent>
-          <CreateProjectMoal setIsCreateProjectOpen={setIsCreateProjectOpen}/>
+          <CreateProjectMoal 
+            setIsCreateProjectOpen={setIsCreateProjectOpen} 
+            setSuccessSnackbarOpen={setSuccessSnackbarOpen}
+            setErrorSnackbarOpen={setErrorSnackbarOpen}
+            setIsLoading={setIsLoading}
+          />
         </DialogContent>
       </Dialog>
     </>
@@ -186,7 +202,7 @@ const Nav = () => {
       </Toolbar>
     </>
   }
-  
+
   return ( <>
     <ThemeProvider theme={primaryButtonTheme}>
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
@@ -194,6 +210,7 @@ const Nav = () => {
           {!user && renderLoggedOutNav()}
           {user && user.isVendor && renderVendorNav()}
           {user && !user.isVendor && renderCustomerNav()}
+          {isLoading && <FullScreenLoading />}
         </AppBar>
       </Box>
       {renderSideNav()}

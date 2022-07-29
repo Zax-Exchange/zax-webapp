@@ -7,23 +7,37 @@ import {
   Typography,
   CircularProgress 
 } from "@mui/material";
+import { useState } from "react";
 import { useDeleteProject } from "./hooks";
 
 const DeleteProjectModal = ({
   deleteProjectModalOpen,
   setDeleteProjectModalOpen,
   projectId,
-  getCustomerProjectsRefetch
+  getCustomerProjectsRefetch,
+  setDeleteSnackbarOpen,
+  setErrorSnackbarOpen,
+  setIsProjectPageLoading,
 }) => {
   const { deleteProject, deleteProjectData, deleteProjectError, deleteProjectLoading } = useDeleteProject();
 
   const deleteProjectOnClick = async () => {
-    await deleteProject({
-      variables: {
-        projectId
-      }
-    });
-    await getCustomerProjectsRefetch()
+    setDeleteProjectModalOpen(false);
+    setIsProjectPageLoading(true);
+
+    try {
+      await deleteProject({
+        variables: {
+          projectId
+        }
+      })
+      await getCustomerProjectsRefetch();
+      setIsProjectPageLoading(false);
+      setDeleteSnackbarOpen(true);
+    } catch (e) {
+      setIsProjectPageLoading(false);
+      setErrorSnackbarOpen(true);
+    }
   }
 
   const renderDeleteProjectConfirmation = () => {
@@ -45,29 +59,21 @@ const DeleteProjectModal = ({
     </>
   };
 
-  const renderDeleteProjectSuccess = () => {
-    return <>
-      <Typography>Project deleted successfully.</Typography>
-      <DialogActions>
-        <Button onClick={() => setDeleteProjectModalOpen(false)}>Close</Button>
-      </DialogActions>
-    </>
-  }
+  if (deleteProjectLoading) return null;
 
   return <Dialog
       open={deleteProjectModalOpen}
       onClose={() => setDeleteProjectModalOpen(false)}
       maxWidth="xs"
     >
+
       <DialogContent>
         <Container>
-          {deleteProjectLoading && <CircularProgress />}
+          {/* {deleteProjectLoading && <CircularProgress />} */}
           {deleteProjectError && renderDeleteProjectError()}
-          {deleteProjectData && renderDeleteProjectSuccess()}
           {
             !deleteProjectLoading 
             && !deleteProjectError 
-            && !deleteProjectData
             && renderDeleteProjectConfirmation()
           }
         </Container>

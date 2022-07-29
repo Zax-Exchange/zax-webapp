@@ -16,7 +16,7 @@ import {
   IconButton,
   CircularProgress
  } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { countries } from "../constants/countries";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -42,7 +42,12 @@ import { useCreateProject, useGetCustomerProjects } from "./hooks";
   * }
   */
 
-const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
+const CreateProjectMoal = ({ 
+  setIsCreateProjectOpen, 
+  setSuccessSnackbarOpen, 
+  setErrorSnackbarOpen,
+  setIsLoading 
+}) => {
   const { user } = useContext(AuthContext);
   const {
     createProjectMutation,
@@ -50,7 +55,7 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
     createProjectError,
     createProjectData
   } = useCreateProject();
-  const { getCustomerProjectsRefetch } = useGetCustomerProjects(user.id);
+  const { getCustomerProjectsRefetch } = useGetCustomerProjects(user.id, true);
   const [projectData, setProjectData] = useState({
     userId: user.id,
     name: "",
@@ -61,6 +66,7 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
     comments: ""
   })
   
+
   const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString().split('T')[0]);
   const [material, setMaterial] = useState("");
   const [materialInputBorderColor, setMaterialInputBorderColor] = useState("lightgray")
@@ -72,7 +78,7 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
     dimension: "",
     postProcess: ""
   });
-  
+
   const materialOnChange = (e) => {
     setMaterial(e.target.value);
   }
@@ -167,20 +173,30 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
   };
 
   const createProject = async () => {
-    await createProjectMutation({
-      variables: {
-        data: {
-          ...projectData,
-          deliveryDate,
-          budget: parseInt(projectData.budget, 10),
-          design: null,
-          components
+    setIsCreateProjectOpen(false);
+    setIsLoading(true);
+
+    try {
+      await createProjectMutation({
+        variables: {
+          data: {
+            ...projectData,
+            deliveryDate,
+            budget: parseInt(projectData.budget, 10),
+            design: null,
+            components
+          }
         }
-      }
-    });
-    await getCustomerProjectsRefetch();
+      })
+      await getCustomerProjectsRefetch();
+      setIsLoading(false);
+      setSuccessSnackbarOpen(true);
+    } catch (e) {
+      setIsLoading(false);
+      setErrorSnackbarOpen(true);
+    }
   }
-  
+
   const countryOnChange = (v) => {
     setProjectData({
       ...projectData,
@@ -226,18 +242,13 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
   }
 
   if (createProjectData) {
+
     return <Container>
       <Typography variant="h6" textAlign="center">Project created successfully!</Typography>
       <DialogActions sx={{justifyContent: "center"}}>
         <Button onClick={() => setIsCreateProjectOpen(false)}>OK</Button>
       </DialogActions>
     </Container>
-  }
-
-  if (createProjectLoading) {
-    return <Box sx={{display: "flex", justifyContent: "center"}}>
-      <CircularProgress />
-    </Box>
   }
 
   if (createProjectError) {
@@ -250,7 +261,6 @@ const CreateProjectMoal = ({ setIsCreateProjectOpen }) => {
   }
 
   return <>
-
         <Container>
           <Container>
             <Typography variant="h6">Create Project</Typography>

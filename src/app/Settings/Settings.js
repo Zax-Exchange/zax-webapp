@@ -1,9 +1,17 @@
+import { Container } from "@mui/material";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Settings = () => {
+  const { user } = useContext(AuthContext);
+  const isAdmin = user.isAdmin;
+
   return (
-    <div>
+    <Container>
       Settings PAGE
-    </div>
+
+      
+    </Container>
   )
 };
 

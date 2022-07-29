@@ -11,17 +11,25 @@ import {
   Menu,
   MenuItem,
   DialogActions,
+  Stack,
  } from "@mui/material";
 import ProjectPermissionModal from "./ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import DeleteProjectModal from "./DeleteProjectModal";
 
-const CustomerProjectOverview = ({ project, getCustomerProjectsRefetch }) => {
+const CustomerProjectOverview = ({ 
+  project, 
+  getCustomerProjectsRefetch, 
+  setDeleteSnackbarOpen, 
+  setErrorSnackbarOpen,
+  setIsProjectPageLoading
+}) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [projectMenuAnchor, setProjectMenuAnchor] = useState(null);
   const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
+
   const projectMenuOpen = !!projectMenuAnchor;
   const date = new Date(parseInt(project.createdAt)).toISOString().slice(0, 10);
 
@@ -57,7 +65,7 @@ const CustomerProjectOverview = ({ project, getCustomerProjectsRefetch }) => {
   } 
 
   return <Grid item xs={4} minHeight={300}>
-    <Paper variant="elevation" elevation={3} sx={{position: "relative"}}>
+    <Paper variant="elevation" elevation={3} sx={{position: "relative", borderRadius:2}}>
       <IconButton
         sx={{position: "absolute", right: "4px" }}
         id="long-button"
@@ -91,16 +99,19 @@ const CustomerProjectOverview = ({ project, getCustomerProjectsRefetch }) => {
         </MenuItem>
 
       </Menu>
-      <Container sx={{ minHeight: 240 }}>
+      <Container sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}>
         <Typography variant="h6" align="left">{project.name}</Typography>
 
         {/* <Typography align="left">Company: {project.companyId}</Typography> */}
-        <Typography align="left">Delivery date: {project.deliveryDate}</Typography>
-        <Typography align="left">Delivery country: {project.deliveryCountry}</Typography>
-        <Typography align="left">Delivery city: {project.deliveryCity}</Typography>
-        <Typography align="left">Budget: {project.budget}</Typography>
-        <Typography align="left">Posted on: {date}</Typography>
-        <Typography align="left">Status: {project.status}</Typography>
+        <Stack spacing={2}>
+          <Typography align="left">Delivery date: {project.deliveryDate}</Typography>
+          <Typography align="left">Delivery country: {project.deliveryCountry}</Typography>
+          <Typography align="left">Delivery city: {project.deliveryCity}</Typography>
+          <Typography align="left">Budget: {project.budget}</Typography>
+          <Typography align="left">Posted on: {date}</Typography>
+          <Typography align="left">Status: {project.status}</Typography>
+
+        </Stack>
 
         {/* <Button style={{alignSelf: "center"}} onClick={viewDetailHandler}>View detail</Button> */}
         {/* {project.permission !== "VIEWER" && <Button onClick={() => setPermissionModalOpen(true)} style={{alignSelf: "center"}}>Share</Button>} */}
@@ -112,8 +123,12 @@ const CustomerProjectOverview = ({ project, getCustomerProjectsRefetch }) => {
       setDeleteProjectModalOpen={setDeleteProjectModalOpen}
       getCustomerProjectsRefetch={getCustomerProjectsRefetch}
       projectId={project.id}
+      setDeleteSnackbarOpen={setDeleteSnackbarOpen}
+      setErrorSnackbarOpen={setErrorSnackbarOpen}
+      setIsProjectPageLoading={setIsProjectPageLoading}
     />
 
+    
     <Dialog
       open={permissionModalOpen}
       onClose={() => setPermissionModalOpen(false)}
