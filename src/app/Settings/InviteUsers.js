@@ -8,10 +8,8 @@ import { AuthContext } from "../../context/AuthContext";
 
 
 const InviteUsers = ({
-  setSuccessSnackbarOpen,
-  setErrorSnackbarOpen,
-  setSuccessSnackbarMessage,
-  setErrorSnackbarMessage
+  setSnackbar,
+  setSnackbarOpen
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -21,12 +19,18 @@ const InviteUsers = ({
 
   useEffect(() => {
     if (inviteUserError) {
-      setErrorSnackbarMessage("Something went wrong. Please try again later.")
-      setErrorSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later."
+      })
+      setSnackbarOpen(true);
     }
     if (inviteUserData) {
-      setSuccessSnackbarMessage("Inivtation sent!")
-      setSuccessSnackbarOpen(true);
+      setSnackbar({
+        severity: "success",
+        message: "Invitation sent!"
+      })
+      setSnackbarOpen(true);
     }
 
   }, [inviteUserError, inviteUserData]);

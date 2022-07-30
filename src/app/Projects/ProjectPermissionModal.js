@@ -22,10 +22,10 @@ import { AuthContext } from "../../context/AuthContext";
 import { useDeleteProjectBidPermission, useDeleteProjectPermission, useGetAllCompanyUsers, useGetProjectBidUsers, useGetProjectUsers, useUpdateProjectBidPermission, useUpdateProjectPermission } from "./permissionHooks";
 
 const ProjectPermissionModal = ({ 
-  projectData, 
+  project, 
   setPermissionModalOpen,
-  renderSnackbar,
-  setDeleteSnackbarOpen 
+  setSnackbar,
+  setSnackbarOpen
 }) => {
   const { user: loggedInUser } = useContext(AuthContext);
   const isVendor = loggedInUser.isVendor;
@@ -74,12 +74,12 @@ const ProjectPermissionModal = ({
   const {
     getProjectBidUsersData,
     getProjectBidUsersRefetch
-  } = useGetProjectBidUsers(setAllProjectUsers, projectData.bidInfo, isVendor);
+  } = useGetProjectBidUsers(setAllProjectUsers, project.bidInfo, isVendor);
 
   const {
     getProjectUsersData,
     getProjectUsersRefetch
-  } = useGetProjectUsers(setAllProjectUsers, projectData.id, isVendor);
+  } = useGetProjectUsers(setAllProjectUsers, project.id, isVendor);
   const { getAllCompanyUsersData } = useGetAllCompanyUsers(loggedInUser.companyId);
 
 
@@ -234,12 +234,12 @@ const ProjectPermissionModal = ({
             data: {
               viewers: {
                 userIds: toUpdate.viewers,
-                projectBidId: projectData.bidInfo.id,
+                projectBidId: project.bidInfo.id,
                 permission: "VIEWER"
               },
               editors: {
                 userIds: toUpdate.editors,
-                projectBidId: projectData.bidInfo.id,
+                projectBidId: project.bidInfo.id,
                 permission: "EDITOR"
               }
             }
@@ -249,7 +249,7 @@ const ProjectPermissionModal = ({
             variables: {
               data: {
                 userIds: toUpdate.toDelete,
-                projectBidId: projectData.bidInfo.id
+                projectBidId: project.bidInfo.id
               }
             }
           })
@@ -260,12 +260,12 @@ const ProjectPermissionModal = ({
             data: {
               viewers: {
                 userIds: toUpdate.viewers,
-                projectId: projectData.id,
+                projectId: project.id,
                 permission: "VIEWER"
               },
               editors: {
                 userIds: toUpdate.editors,
-                projectId: projectData.id,
+                projectId: project.id,
                 permission: "EDITOR"
               }
             }
@@ -275,16 +275,18 @@ const ProjectPermissionModal = ({
             variables: {
               data: {
                 userIds: toUpdate.toDelete,
-                projectId: projectData.id
+                projectId: project.id
               }
             }
         })
         getProjectUsersRefetch()
       }
-      
-      renderSnackbar(true, "test", "success", () => {})
     } catch (error) {
-      
+      setSnackbar({
+        severity: "error",
+        message: "Could not perform action. Please try again later."
+      })
+      setSnackbarOpen(true)
     } finally {
       setPermissionModalOpen(false);
     }
@@ -293,9 +295,9 @@ const ProjectPermissionModal = ({
   const isUserOwner = () => {
     // not used for now
     if (isVendor) {
-      return projectData.bidInfo.permission === "OWNER";
+      return project.bidInfo.permission === "OWNER";
     }
-    return projectData.permission === "OWNER"
+    return project.permission === "OWNER"
   }
 
   const renderPermissionedUsers = () => {

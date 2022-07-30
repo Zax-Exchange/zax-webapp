@@ -8,10 +8,8 @@ import FullScreenLoading from "../Utils/Loading";
 import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "./hooks";
 
 const EditBilling = ({
-  setSuccessSnackbarOpen,
-  setErrorSnackbarOpen,
-  setSuccessSnackbarMessage,
-  setErrorSnackbarMessage
+  setSnackbar,
+  setSnackbarOpen
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -81,11 +79,17 @@ const EditBilling = ({
         })
       }
       getCompanyDetailRefetch();
-      setSuccessSnackbarOpen(true);
-      setSuccessSnackbarMessage("Billing info updated.")
+      setSnackbar({
+        severity: "success",
+        message: "Billing info updated."
+      })
     } catch (e) {
-      setErrorSnackbarOpen(true);
-      setErrorSnackbarMessage("Something went wrong. Please try again later.")
+      setSnackbar({
+        severity: "error",
+        message: "Could not perform action. Please try again later."
+      })
+    } finally {
+      setSnackbarOpen(true)
     }
   }
 

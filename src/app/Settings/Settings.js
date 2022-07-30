@@ -36,10 +36,13 @@ const Settings = () => {
   const { user } = useContext(AuthContext);
   const [view, setView] = useState(null);
   const [panel, setPanel] = useState(null); 
-  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
-  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
-  const [successSnackbarMessage, setSuccessSnackbarMessage] = useState("");
-  const [errorSnackbarMessage, setErrorSnackbarMessage] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    message: "",
+    severity: "",
+  });
+  
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const isAdmin = user.isAdmin;
 
   const renderSettingsView = () => {
@@ -47,27 +50,21 @@ const Settings = () => {
 
     if (view === "edit-company-profile") {
       return <EditCompanyProfile 
-        setSuccessSnackbarOpen={setSuccessSnackbarOpen}
-        setErrorSnackbarOpen={setErrorSnackbarOpen}
-        setSuccessSnackbarMessage={setSuccessSnackbarMessage}
-        setErrorSnackbarMessage={setErrorSnackbarMessage}
+        setSnackbar={setSnackbar}
+        setSnackbarOpen={setSnackbarOpen}
       />
     }
     if (view === "invite-users") {
       return <InviteUsers 
-        setSuccessSnackbarOpen={setSuccessSnackbarOpen}
-        setErrorSnackbarOpen={setErrorSnackbarOpen}
-        setSuccessSnackbarMessage={setSuccessSnackbarMessage}
-        setErrorSnackbarMessage={setErrorSnackbarMessage}
+        setSnackbar={setSnackbar}
+        setSnackbarOpen={setSnackbarOpen}
       />
     }
 
     if (view === "edit-billing") {
       return <EditBilling 
-        setSuccessSnackbarOpen={setSuccessSnackbarOpen}
-        setErrorSnackbarOpen={setErrorSnackbarOpen}
-        setSuccessSnackbarMessage={setSuccessSnackbarMessage}
-        setErrorSnackbarMessage={setErrorSnackbarMessage}
+        setSnackbar={setSnackbar}
+        setSnackbarOpen={setSnackbarOpen}
       />
     }
   }
@@ -77,8 +74,7 @@ const Settings = () => {
   }
   return (
     <Container maxWidth="lg">
-      <CustomSnackbar direction="right" message={successSnackbarMessage} open={successSnackbarOpen} onClose={() => setSuccessSnackbarOpen(false)} severity="success" />
-      <CustomSnackbar direction="right" message={errorSnackbarMessage} open={errorSnackbarOpen} onClose={() => setErrorSnackbarOpen(false)} severity="error" />
+      <CustomSnackbar direction="right" severity={snackbar.severity} message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <Paper sx={{borderRadius: 1}}>

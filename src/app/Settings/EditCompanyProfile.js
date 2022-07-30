@@ -31,10 +31,8 @@ import "../Login/VendorSignup.scss";
  */
 
 const EditCompanyProfile = ({
-  setSuccessSnackbarOpen,
-  setErrorSnackbarOpen,
-  setSuccessSnackbarMessage,
-  setErrorSnackbarMessage
+  setSnackbar,
+  setSnackbarOpen
 }) => {
 
   const {
@@ -378,12 +376,18 @@ const EditCompanyProfile = ({
           }
         })
       }
-      setSuccessSnackbarMessage("Company profile updated!");
-      setSuccessSnackbarOpen(true);
+      setSnackbar({
+        severity: "success",
+        message: "Company profile updated."
+      })
       getCompanyDetailRefetch()
     } catch (error) {
-      setErrorSnackbarMessage("Something went wrong. Please try again later.")
-      setErrorSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Could not perform action. Please try again later."
+      })
+    } finally {
+      setSnackbarOpen(true);
     }
   }
 

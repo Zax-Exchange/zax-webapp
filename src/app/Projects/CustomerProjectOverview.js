@@ -21,10 +21,8 @@ import DeleteProjectModal from "./DeleteProjectModal";
 const CustomerProjectOverview = ({ 
   project, 
   getCustomerProjectsRefetch, 
-  setDeleteSnackbarOpen, 
-  setErrorSnackbarOpen,
-  setIsProjectPageLoading,
-  renderSnackbar
+  setSnackbar,
+  setSnackbarOpen
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
@@ -124,9 +122,8 @@ const CustomerProjectOverview = ({
       setDeleteProjectModalOpen={setDeleteProjectModalOpen}
       getCustomerProjectsRefetch={getCustomerProjectsRefetch}
       projectId={project.id}
-      setDeleteSnackbarOpen={setDeleteSnackbarOpen}
-      setErrorSnackbarOpen={setErrorSnackbarOpen}
-      setIsProjectPageLoading={setIsProjectPageLoading}
+      setSnackbar={setSnackbar}
+      setSnackbarOpen={setSnackbarOpen}
     />
 
     
@@ -138,10 +135,10 @@ const CustomerProjectOverview = ({
     >
       <DialogContent>
         <ProjectPermissionModal 
-          projectData={project} 
+          project={project} 
           setPermissionModalOpen={setPermissionModalOpen}
-          setDeleteSnackbarOpen={setDeleteSnackbarOpen}
-          renderSnackbar={renderSnackbar}
+          setSnackbar={setSnackbar}
+          setSnackbarOpen={setSnackbarOpen}
         />
       </DialogContent>
     </Dialog>
