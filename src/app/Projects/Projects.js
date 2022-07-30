@@ -7,7 +7,7 @@ import CustomerProjectOverview from "./CustomerProjectOverview";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useGetCustomerProjects, useGetVendorProjects } from "./hooks";
-import ProjectSnackbar from "../Utils/ProjectSnackbar";
+import CustomSnackbar from "../Utils/CustomSnackbar";
 
 
 const Projects = () => {
@@ -55,8 +55,8 @@ const Projects = () => {
   }
 
   return <Container className="user-projects-container">
-    <ProjectSnackbar severity="success" direction="right" message="Project deleted." open={deleteSnackbarOpen} onClose={() => setDeleteSnackbarOpen(false)} />
-    <ProjectSnackbar severity="error" direction="right" message="Something went wrong, please try again." open={errorSnackbarOpen} onClose={() => setErrorSnackbarOpen(false)} />
+    <CustomSnackbar severity="success" direction="right" message="Project deleted." open={deleteSnackbarOpen} onClose={() => setDeleteSnackbarOpen(false)} />
+    <CustomSnackbar severity="error" direction="right" message="Something went wrong, please try again." open={errorSnackbarOpen} onClose={() => setErrorSnackbarOpen(false)} />
     <Grid container spacing={2} className="user-projects-inner-container">
       {projectOverview}
     </Grid>

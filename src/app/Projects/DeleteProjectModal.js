@@ -50,17 +50,6 @@ const DeleteProjectModal = ({
     </>
   };
 
-  const renderDeleteProjectError = () => {
-    return <>
-      <Typography>Something went wrong, Try again later!</Typography>
-      <DialogActions>
-        <Button onClick={() => setDeleteProjectModalOpen(false)}>Close</Button>
-      </DialogActions>
-    </>
-  };
-
-  if (deleteProjectLoading) return null;
-
   return <Dialog
       open={deleteProjectModalOpen}
       onClose={() => setDeleteProjectModalOpen(false)}
@@ -70,7 +59,6 @@ const DeleteProjectModal = ({
       <DialogContent>
         <Container>
           {/* {deleteProjectLoading && <CircularProgress />} */}
-          {deleteProjectError && renderDeleteProjectError()}
           {
             !deleteProjectLoading 
             && !deleteProjectError 

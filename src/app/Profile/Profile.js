@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
 export const GET_USER = gql`
-  query getUserWithUserId($userId: Int) {
+  query getUserWithUserId($userId: String) {
     getUserWithUserId(userId: $userId) {
       id
       name
@@ -14,7 +14,7 @@ export const GET_USER = gql`
   }
 `;
 export const GET_CUSTOMER_DETAIL = gql`
-  query Query($id: Int) {
+  query Query($id: String) {
     getCustomerDetail(companyId: $id) {
       name
       phone

@@ -140,7 +140,7 @@ const SearchBar = () => {
         },
         fetchPolicy: "no-cache"
       }).then(v => {
-
+        console.log(v)
         navigate("/customer-search", {
           state: {
             searchResults: v.data.searchVendorCompanies

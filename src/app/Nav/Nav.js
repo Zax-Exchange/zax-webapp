@@ -32,9 +32,9 @@ import {
 import { useContext, useState } from "react";
 import CreateProjectMoal from "../Projects/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
-import { PrimaryButton, primaryButtonTheme } from "../themedComponents/PrimaryButton";
+import { PrimaryButton, buttonTheme } from "../themedComponents/PrimaryButton";
 import { Container } from "@mui/system";
-import ProjectSnackbar from "../Utils/ProjectSnackbar";
+import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 
 const Nav = () => {
@@ -71,44 +71,48 @@ const Nav = () => {
         onKeyDown={() => setSideNavOpen(false)}
       > 
       <List>
-          <ListItem>
+          <ListItem onClick={() => handleSideNavOnClick("home")}>
             <ListItemButton>
               <ListItemIcon>
                 <Home />
               </ListItemIcon>
-              <ListItemText primary="Home" onClick={() => handleSideNavOnClick("home")}></ListItemText>
+              <ListItemText primary="Home"></ListItemText>
             </ListItemButton>
           </ListItem>
-          <ListItem>
+
+          <ListItem onClick={() => handleSideNavOnClick("projects")}>
             <ListItemButton>
               <ListItemIcon>
                 <TextSnippet />
               </ListItemIcon>
-              <ListItemText primary="Projects" onClick={() => handleSideNavOnClick("projects")}></ListItemText>
+              <ListItemText primary="Projects"></ListItemText>
             </ListItemButton>
           </ListItem>
-          <ListItem>
+
+          {/* <ListItem onClick={() => handleSideNavOnClick("profile")}>
             <ListItemButton>
               <ListItemIcon>
                 <AccountBox />
               </ListItemIcon>
-              <ListItemText primary="Profile" onClick={() => handleSideNavOnClick("profile")}></ListItemText>
+              <ListItemText primary="Profile"></ListItemText>
             </ListItemButton>
-          </ListItem>
-          <ListItem>
+          </ListItem> */}
+
+          <ListItem onClick={() => handleSideNavOnClick("settings")}>
             <ListItemButton>
               <ListItemIcon>
                 <Settings />
               </ListItemIcon>
-              <ListItemText primary="Settings" onClick={() => handleSideNavOnClick("settings")}></ListItemText>
+              <ListItemText primary="Settings"></ListItemText>
             </ListItemButton>
           </ListItem>
-          <ListItem>
+
+          <ListItem onClick={logout}>
             <ListItemButton>
               <ListItemIcon>
                 <Logout />
               </ListItemIcon>
-              <ListItemText primary="Log out" onClick={logout}></ListItemText>
+              <ListItemText primary="Log out"></ListItemText>
             </ListItemButton>
           </ListItem>
         </List>
@@ -144,8 +148,8 @@ const Nav = () => {
 
   const renderCustomerNav = () => {
     return <>
-      <ProjectSnackbar severity="success" direction="right" message="Project created" open={successSnackbarOpen} onClose={() => setSuccessSnackbarOpen(false)}/>
-      <ProjectSnackbar severity="error" direction="right" message="Something went wrong, please try again." open={errorSnackbarOpen} onClose={() => setErrorSnackbarOpen(false)} />
+      <CustomSnackbar severity="success" direction="right" message="Project created" open={successSnackbarOpen} onClose={() => setSuccessSnackbarOpen(false)}/>
+      <CustomSnackbar severity="error" direction="right" message="Something went wrong, please try again." open={errorSnackbarOpen} onClose={() => setErrorSnackbarOpen(false)} />
 
       <Toolbar>
         {renderHamburger()}
@@ -204,7 +208,7 @@ const Nav = () => {
   }
 
   return ( <>
-    <ThemeProvider theme={primaryButtonTheme}>
+    <ThemeProvider theme={buttonTheme}>
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar position="static" sx={{ backgroundColor: "white", boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)" }}>
           {!user && renderLoggedOutNav()}

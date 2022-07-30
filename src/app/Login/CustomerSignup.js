@@ -57,13 +57,13 @@ const CustomerSignup = () => {
       country: countryObj ? countryObj.label : null
     });
   }
+  console.log(values.planId)
   const createCompanyHandler = async () => {
-
     await createCompany({
       variables: {
         data: {
           ...values,
-          planId: parseInt(values.planId, 10),
+          planId: values.planId
         }
       }
     })

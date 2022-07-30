@@ -36,7 +36,7 @@ const ProjectBid = ({projectId, setIsOpen}) => {
     const components = [];
     for (let id in componentsQpData) {
       components.push({
-        projectComponentId: parseInt(id, 10),
+        projectComponentId: id,
         quantityPrices: componentsQpData[id]
       })
     }

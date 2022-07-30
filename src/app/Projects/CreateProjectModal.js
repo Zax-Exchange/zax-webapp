@@ -208,6 +208,7 @@ const CreateProjectMoal = ({
     return (
       <Autocomplete
         id="country-select"
+        blurOnSelect
         sx={{ width: 300 }}
         options={countries}
         autoHighlight
@@ -239,25 +240,6 @@ const CreateProjectMoal = ({
         )}
       />
     );
-  }
-
-  if (createProjectData) {
-
-    return <Container>
-      <Typography variant="h6" textAlign="center">Project created successfully!</Typography>
-      <DialogActions sx={{justifyContent: "center"}}>
-        <Button onClick={() => setIsCreateProjectOpen(false)}>OK</Button>
-      </DialogActions>
-    </Container>
-  }
-
-  if (createProjectError) {
-    return <Container>
-      <Typography variant="h6" textAlign="center">Something went wrong, please try again later.</Typography>
-      <DialogActions sx={{justifyContent: "center"}}>
-        <Button onClick={() => setIsCreateProjectOpen(false)}>OK</Button>
-      </DialogActions>
-    </Container>
   }
 
   return <>

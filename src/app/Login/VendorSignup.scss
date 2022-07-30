@@ -5,9 +5,15 @@
   width: 300px;
   flex-wrap: wrap;
   flex-direction: row;
-  border: 2px solid lightgray;
-  padding: 4px;
+  border: 1px solid lightgray;
+  padding: 10px;
   border-radius: 4px;
+
+  &:hover {
+    cursor: text;
+    border-color: black;
+
+  }
 
   .container {
     gap: 8px;

@@ -113,7 +113,7 @@ const VendorSignup = () => {
         data: {
           ...values,
           leadTime: parseInt(values.leadTime, 10),
-          planId: parseInt(values.planId, 10),
+          planId: values.planId
         }
       }
     })

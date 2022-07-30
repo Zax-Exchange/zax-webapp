@@ -7,11 +7,22 @@ export const PrimaryButton = styled(Button)(({ theme }) => ({
   } 
 }));
 
-export const primaryButtonTheme = createTheme({
+export const buttonTheme = createTheme({
   buttons: {
     primary: {
       hover: "#606c97",
       main: "#4c5678"
+    },
+    secondary: {
+      main: "#2d567d",
+      hover: "#2d567d"
     }
   },
 });
+
+export const SecondaryButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.buttons.secondary.main,
+  "&:hover": {
+    backgroundColor: theme.buttons.secondary.hover
+  }
+}))

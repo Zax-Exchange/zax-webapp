@@ -5,7 +5,7 @@ import {
 } from "@mui/material"
 
 
-const ProjectSnackbar = ({ direction, message, open, onClose, severity }) => {
+const CustomSnackbar = ({ direction, message, open, onClose, severity }) => {
 
   const renderTransition = (props) => {
     return <Slide {...props} direction={direction}/>;
@@ -23,4 +23,4 @@ const ProjectSnackbar = ({ direction, message, open, onClose, severity }) => {
   </Snackbar>;
 }
 
-export default ProjectSnackbar;
+export default CustomSnackbar;

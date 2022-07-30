@@ -14,7 +14,7 @@ import ProjectBid from "../Projects/ProjectBid";
 import { useState } from "react";
 
 export const GET_PROJECT_DETAIL = gql`
-  query getProjectDetail($projectId: Int) {
+  query getProjectDetail($projectId: String) {
     getProjectDetail(projectId: $projectId) {
       id
       userId

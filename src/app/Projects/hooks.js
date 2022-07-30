@@ -18,7 +18,7 @@ export const useCreateProject = () => {
 
 
 const DELETE_PROJECT = gql`
-  mutation deleteProject($projectId: Int) {
+  mutation deleteProject($projectId: String) {
     deleteProject(projectId: $projectId)
   }
 `;
@@ -37,7 +37,7 @@ export const useDeleteProject = () => {
 
 
 export const GET_VENDOR_PROJECTS = gql`
-  query getVendorProjects($userId: Int) {
+  query getVendorProjects($userId: String) {
     getVendorProjects(userId: $userId) {
       bidInfo {
         id
@@ -93,7 +93,7 @@ export const useGetVendorProjects = (userId, skip) => {
 }
 
 export const GET_CUSTOMER_PROJECTS = gql`
-  query GetCustomerProjects($userId: Int) {
+  query GetCustomerProjects($userId: String) {
     getCustomerProjects(userId: $userId) {
       id
       userId

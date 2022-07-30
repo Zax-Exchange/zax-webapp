@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
-import { PrimaryButton, primaryButtonTheme } from "../themedComponents/PrimaryButton";
+import { PrimaryButton, buttonTheme } from "../themedComponents/PrimaryButton";
 
 const USER_LOGIN = gql`
   query login($data: UserLoginInput) {
@@ -56,7 +56,7 @@ const Login = () => {
         <Stack spacing={2} textAlign="right">
           <TextField type="email" placeholder="email" name="email" value={values.email} onChange={onChange}></TextField>
           <TextField type="password" placeholder="password" name="password" value={values.password} onChange={onChange}></TextField>
-          <ThemeProvider theme={primaryButtonTheme}>
+          <ThemeProvider theme={buttonTheme}>
             <PrimaryButton variant="contained" onClick={loginHandler}>Login</PrimaryButton>
           </ThemeProvider>
         </Stack>

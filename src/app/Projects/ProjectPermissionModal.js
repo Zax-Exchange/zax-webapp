@@ -22,7 +22,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../../context/AuthContext";
 
 const GET_PROJECT_USERS = gql`
-  query getProjectUsers($projectId: Int) {
+  query getProjectUsers($projectId: String) {
     getProjectUsers(projectId: $projectId) {
       userId
       name
@@ -33,7 +33,7 @@ const GET_PROJECT_USERS = gql`
 `;
 
 const GET_PROJECT_BID_USERS = gql`
-  query getProjectBidUsers($projectBidId: Int) {
+  query getProjectBidUsers($projectBidId: String) {
     getProjectBidUsers(projectBidId: $projectBidId) {
       userId
       name
@@ -44,7 +44,7 @@ const GET_PROJECT_BID_USERS = gql`
 `;
 
 const GET_ALL_COMPANY_USERS = gql`
-  query getAllUsersWithinCompany($companyId: Int) {
+  query getAllUsersWithinCompany($companyId: String) {
     getAllUsersWithinCompany(companyId: $companyId) {
       id
       email
