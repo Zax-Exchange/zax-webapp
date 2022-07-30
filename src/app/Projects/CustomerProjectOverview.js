@@ -23,7 +23,8 @@ const CustomerProjectOverview = ({
   getCustomerProjectsRefetch, 
   setDeleteSnackbarOpen, 
   setErrorSnackbarOpen,
-  setIsProjectPageLoading
+  setIsProjectPageLoading,
+  renderSnackbar
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
@@ -136,7 +137,12 @@ const CustomerProjectOverview = ({
       fullWidth={true}
     >
       <DialogContent>
-        <ProjectPermissionModal projectData={project} setPermissionModalOpen={setPermissionModalOpen}/>
+        <ProjectPermissionModal 
+          projectData={project} 
+          setPermissionModalOpen={setPermissionModalOpen}
+          setDeleteSnackbarOpen={setDeleteSnackbarOpen}
+          renderSnackbar={renderSnackbar}
+        />
       </DialogContent>
     </Dialog>
     </Grid>

@@ -8,7 +8,7 @@ import { useVendorProjects } from "./Projects";
 import { Container, Button, Typography, List, ListItem, Grid } from "@mui/material";
 import { useUserData } from "./CustomerProjectDetail";
 import { AuthContext } from "../../context/AuthContext";
-import { useGetVendorProjects } from "./hooks";
+import { useGetVendorProjects } from "./projectHooks";
 
 const CREATE_PROJECT_BID = gql`
 mutation CreateProjectBid($data: CreateProjectBidInput) {

@@ -42,11 +42,12 @@ export const useCreateCompany = (isVendor) => {
  * @returns getAllPlansData, getAllPlansError, getAllPlansLoading
  */
 export const useGetAllPlans = () => {
-  const {error: getAllPlansError, loading: getAllPlansLoading, data: getAllPlansData} = useQuery(GET_ALL_PLANS);
+  const {error: getAllPlansError, loading: getAllPlansLoading, data: getAllPlansData, refetch: getAllPlansRefetch} = useQuery(GET_ALL_PLANS);
 
   return {
     getAllPlansData,
     getAllPlansError,
-    getAllPlansLoading
+    getAllPlansLoading,
+    getAllPlansRefetch
   }
 }

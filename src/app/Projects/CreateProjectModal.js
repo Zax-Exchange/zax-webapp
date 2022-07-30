@@ -23,7 +23,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import AddIcon from '@mui/icons-material/Add';
-import { useCreateProject, useGetCustomerProjects } from "./hooks";
+import { useCreateProject, useGetCustomerProjects } from "./projectHooks";
 
  /**
   * name

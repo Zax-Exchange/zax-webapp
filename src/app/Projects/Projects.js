@@ -6,7 +6,7 @@ import FullScreenLoading from "../Utils/Loading";
 import CustomerProjectOverview from "./CustomerProjectOverview";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useGetCustomerProjects, useGetVendorProjects } from "./hooks";
+import { useGetCustomerProjects, useGetVendorProjects } from "./projectHooks";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 
 
@@ -17,22 +17,30 @@ const Projects = () => {
   const userId = user.id;
   const { getVendorProjectsData, getVendorProjectsError, getVendorProjectsLoading, getVendorProjectsRefetch } = useGetVendorProjects(userId, !isVendor)
   const { getCustomerProjectsData, getCustomerProjectsError, getCustomerProjectsLoading, getCustomerProjectsRefetch } = useGetCustomerProjects(userId, isVendor);
-  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    messsage: "",
+    severity: "",
+  })
+  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
   
-  useEffect(() => {}, [])
-  if (isProjectPageLoading) {
+  const renderSnackbar = (open, message, severity, onClose) => {
+    return <CustomSnackbar open={open} message={message} severity={severity} onClose={onClose} />
+  }
+
+  if (getVendorProjectsLoading || getCustomerProjectsLoading) {
     return <Container className="user-projects-container">
       <FullScreenLoading />
     </Container>
   }
 
-  // if (getVendorProjectsError || getCustomerProjectsError) {
-  //   return <Container className="user-projects-container">
-  //     Something went wrong!
-  //   </Container>
-  // }
+  if (getVendorProjectsError || getCustomerProjectsError) {
+    return <Container className="user-projects-container">
+      Something went wrong!
+    </Container>
+  }
 
   let projectOverview;
 
@@ -50,12 +58,13 @@ const Projects = () => {
         setDeleteSnackbarOpen={setDeleteSnackbarOpen}
         setIsProjectPageLoading={setIsProjectPageLoading}
         setErrorSnackbarOpen={setErrorSnackbarOpen}
+        renderSnackbar={renderSnackbar}
       />
     });
   }
 
   return <Container className="user-projects-container">
-    <CustomSnackbar severity="success" direction="right" message="Project deleted." open={deleteSnackbarOpen} onClose={() => setDeleteSnackbarOpen(false)} />
+    <CustomSnackbar severity="success" direction="right" message="Project deleted." open={successSnackbarOpen} onClose={() => setSuccessSnackbarOpen(false)} />
     <CustomSnackbar severity="error" direction="right" message="Something went wrong, please try again." open={errorSnackbarOpen} onClose={() => setErrorSnackbarOpen(false)} />
     <Grid container spacing={2} className="user-projects-inner-container">
       {projectOverview}

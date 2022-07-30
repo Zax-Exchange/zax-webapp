@@ -8,7 +8,7 @@ import {
   CircularProgress 
 } from "@mui/material";
 import { useState } from "react";
-import { useDeleteProject } from "./hooks";
+import { useDeleteProject } from "./projectHooks";
 
 const DeleteProjectModal = ({
   deleteProjectModalOpen,
