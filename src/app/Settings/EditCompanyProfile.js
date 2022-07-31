@@ -4,7 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { countries } from "../constants/countries";
 import { buttonTheme, PrimaryButton } from "../themedComponents/PrimaryButton";
 import FullScreenLoading from "../Utils/Loading";
-import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "./hooks";
+import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "./hooks/companyHooks";
 import AddIcon from '@mui/icons-material/Add';
 import "../Login/VendorSignup.scss";
 

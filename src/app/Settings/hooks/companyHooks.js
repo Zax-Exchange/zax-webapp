@@ -1,6 +1,6 @@
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 const INVITE_USER = gql`
   mutation inviteUser($email: String, $userId: String) {

@@ -2,7 +2,7 @@ import { Container, Stack, TextField, ThemeProvider, Typography } from "@mui/mat
 import { useContext, useEffect, useState } from "react"
 import { buttonTheme, PrimaryButton } from "../themedComponents/PrimaryButton";
 import { validate } from "react-email-validator";
-import { useInviteUser } from "./hooks";
+import { useInviteUser } from "./hooks/companyHooks";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import { AuthContext } from "../../context/AuthContext";
 

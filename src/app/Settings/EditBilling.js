@@ -5,7 +5,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { buttonTheme, PrimaryButton } from "../themedComponents/PrimaryButton";
 import { ShrinkTextField } from "../themedComponents/ShrinkTextField";
 import FullScreenLoading from "../Utils/Loading";
-import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "./hooks";
+import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "./hooks/companyHooks";
 
 const EditBilling = ({
   setSnackbar,
