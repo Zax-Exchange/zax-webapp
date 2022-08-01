@@ -33,9 +33,6 @@ const GET_COMPANY_DETAIL= gql`
       isVendor
       isVerified
       companyUrl
-      creditCardNumber
-      creditCardExp
-      creditCardCvv
 
       locations
       materials

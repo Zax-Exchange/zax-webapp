@@ -6,7 +6,7 @@ import { useState } from "react";
 import { countries } from "../constants/countries";
 import { usePaymentInputs } from "react-payment-inputs";
 import FullScreenLoading from "../Utils/Loading";
-import { useCreateCompany, useGetAllPlans } from "./hooks";
+import { useCreateCompany, useGetAllPlans } from "../hooks/signupHooks";
 
 
 const CustomerSignup = () => {
@@ -29,9 +29,6 @@ const CustomerSignup = () => {
     logo: null,
     phone: "",
     fax: "",
-    creditCardNumber: "",
-    creditCardExp: "",
-    creditCardCvv: "",
     country: "",
     isActive: true,
     isVendor: false,
@@ -173,10 +170,7 @@ const CustomerSignup = () => {
             }
           </TextField>
           
-          <TextField label="Credit card number" type="tel" inputProps={getCardNumberProps({onChange, name: "creditCardNumber"})} value={values.creditCardNumber} error={!!meta.erroredInputs.cardNumber} helperText={meta.erroredInputs.cardNumber}></TextField>
-          <TextField label="Credit card exp" type="tel" inputProps={getExpiryDateProps({onChange, name: "creditCardExp"})} value={values.creditCardExp} error={!!meta.erroredInputs.expiryDate} helperText={meta.erroredInputs.expiryDate}></TextField>
-          <TextField label="Credit car cvc" type="tel" inputProps={getCVCProps({onChange, name: "creditCardCvv"})} value={values.creditCardCvv} error={!!meta.erroredInputs.cvc} helperText={meta.erroredInputs.cvc}></TextField>
-
+          
           
           {renderNavigationButtons(validateInputs(["planId"]))}
         </Stack>

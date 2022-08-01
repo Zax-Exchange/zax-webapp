@@ -7,7 +7,7 @@ import { countries } from "../constants/countries";
 import "./VendorSignup.scss";
 import { usePaymentInputs } from "react-payment-inputs";
 import FullScreenLoading from "../Utils/Loading";
-import { useCreateCompany, useGetAllPlans } from "./hooks";
+import { useCreateCompany, useGetAllPlans } from "../hooks/signupHooks";
 import AddIcon from '@mui/icons-material/Add';
 
 const VendorSignup = () => {
@@ -30,9 +30,6 @@ const VendorSignup = () => {
     logo: null,
     phone: "",
     fax: "",
-    creditCardNumber: "",
-    creditCardExp: "",
-    creditCardCvv: "",
     country: "",
     isActive: true,
     isVendor: true,
@@ -305,10 +302,6 @@ const VendorSignup = () => {
             }
           </TextField>
           
-          <TextField label="Credit card number" type="tel" inputProps={getCardNumberProps({onChange, name: "creditCardNumber"})} value={values.creditCardNumber} error={!!meta.erroredInputs.cardNumber} helperText={meta.erroredInputs.cardNumber}></TextField>
-          <TextField label="Credit card exp" type="tel" inputProps={getExpiryDateProps({onChange, name: "creditCardExp"})} value={values.creditCardExp} error={!!meta.erroredInputs.expiryDate} helperText={meta.erroredInputs.expiryDate}></TextField>
-          <TextField label="Credit car cvc" type="tel" inputProps={getCVCProps({onChange, name: "creditCardCvv"})} value={values.creditCardCvv} error={!!meta.erroredInputs.cvc} helperText={meta.erroredInputs.cvc}></TextField>
-
           
           {renderNavigationButtons(validateInputs(["planId"]))}
         </Stack>

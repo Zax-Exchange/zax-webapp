@@ -28,7 +28,7 @@ const CustomerProjectDetail = () => {
 
   const { bids } = projectData;
   
-  
+
   const getComponentName = (componentId, components) => {
     return components.find(comp => comp.id === componentId).name;
   };
@@ -88,6 +88,9 @@ const CustomerProjectDetail = () => {
               </ListItem>
               <ListItem>
                 <Typography>Dimension: {comp.dimension}</Typography>
+              </ListItem>
+              <ListItem>
+                <Typography>Post process: {comp.postProcess}</Typography>
               </ListItem>
             </List>
           </Paper>

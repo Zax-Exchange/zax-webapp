@@ -8,6 +8,7 @@ import EditBilling from "./EditBilling";
 import EditCompanyProfile from "./EditCompanyProfile";
 import DeactivateUsers from "./DeactivateUsers";
 import ChangePassword from "./ChangePassword";
+import ChangePlan from "./ChangePlan";
 
 const NoWrapListItemText = styled(ListItemText)(({ theme }) => ({
   whiteSpace: "nowrap",
@@ -87,7 +88,12 @@ const Settings = () => {
         setSnackbarOpen={setSnackbarOpen}
       />
     }
-    
+    if (view === "change-plan") {
+      return <ChangePlan 
+        setSnackbar={setSnackbar}
+        setSnackbarOpen={setSnackbarOpen}
+      />
+    }
 
   }
 
@@ -103,11 +109,11 @@ const Settings = () => {
               </SettingsAccordionSummary>
               <AccordionDetails>
                 <Stack>
-                  <ListItem disableGutters>
+                  {/* <ListItem disableGutters>
                     <ListItemButton>
                       <NoWrapListItemText primary="Edit user profile"></NoWrapListItemText>
                     </ListItemButton>
-                  </ListItem>
+                  </ListItem> */}
 
                   <ListItem disableGutters onClick={() => setView("change-password")}>
                     <ListItemButton>
@@ -127,18 +133,6 @@ const Settings = () => {
                   <ListItem disableGutters onClick={() => setView("edit-company-profile")}>
                     <ListItemButton>
                       <NoWrapListItemText primary="Edit company profile"></NoWrapListItemText>
-                    </ListItemButton>
-                  </ListItem>
-
-                  <ListItem disableGutters onClick={() => setView("edit-billing")}>
-                    <ListItemButton>
-                      <NoWrapListItemText primary="Edit billing"></NoWrapListItemText>
-                    </ListItemButton>
-                  </ListItem>
-
-                  <ListItem disableGutters>
-                    <ListItemButton>
-                      <NoWrapListItemText primary="Change plan"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
 
@@ -184,6 +178,33 @@ const Settings = () => {
                   <ListItem disableGutters onClick={() => setView("update-user-status")}>
                     <ListItemButton>
                       <NoWrapListItemText primary="Update user status"></NoWrapListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                </Stack>
+              </AccordionDetails>
+            </SettingsAccordion>
+
+            <SettingsAccordion expanded={expanded === "panel4"} onChange={handleChange("panel4")}>
+              <SettingsAccordionSummary>
+                <Typography>Billing</Typography>
+              </SettingsAccordionSummary>
+              <AccordionDetails>
+                <Stack>
+                  <ListItem disableGutters onClick={() => setView("edit-billing")}>
+                    <ListItemButton>
+                      <NoWrapListItemText primary="Edit billing"></NoWrapListItemText>
+                    </ListItemButton>
+                  </ListItem>
+
+                  <ListItem disableGutters onClick={() => setView("view-statements")}>
+                    <ListItemButton>
+                      <NoWrapListItemText primary="View statements"></NoWrapListItemText>
+                    </ListItemButton>
+                  </ListItem>
+
+                  <ListItem disableGutters onClick={() => setView("change-plan")}>
+                    <ListItemButton>
+                      <NoWrapListItemText primary="Change plan"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
                 </Stack>

@@ -20,9 +20,6 @@ import "../Login/VendorSignup.scss";
   isActive
   isVendor
   isVerified
-  creditCardNumber
-  creditCardExp
-  creditCardCvv
 
   locations
   materials

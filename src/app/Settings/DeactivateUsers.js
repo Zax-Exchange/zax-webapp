@@ -1,7 +1,7 @@
 import { Autocomplete, Container, Dialog, DialogActions, DialogContent, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useGetAllCompanyUsers } from "../Projects/permissionHooks";
+import { useGetAllCompanyUsers } from "../hooks/permissionHooks";
 import { buttonTheme, PrimaryButton, SecondaryButton, WarningButton } from "../themedComponents/Buttons";
 import FullScreenLoading from "../Utils/Loading";
 import { useDeactivateUser } from "../hooks/userHooks";
@@ -84,7 +84,7 @@ const DeactivateUsers = ({
     <ThemeProvider theme={buttonTheme}>
       <Stack spacing={4} sx={{marginTop: 2}}>
         <Autocomplete
-          sx={{width: 300}}
+          // sx={{width: 300}}
           freeSolo
           disableClearable
           options={emailsList}
@@ -123,7 +123,7 @@ const DeactivateUsers = ({
             <WarningButton onClick={deactivateOnClick} variant="contained">
               Confirm
             </WarningButton>
-            <SecondaryButton onClick={() => setDialogOpen(true)} variant="contained">
+            <SecondaryButton onClick={() => setDialogOpen(false)} variant="contained">
               Cancel
             </SecondaryButton>
           </DialogActions>

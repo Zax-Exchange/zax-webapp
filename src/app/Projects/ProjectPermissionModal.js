@@ -19,7 +19,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../../context/AuthContext";
-import { useDeleteProjectBidPermission, useDeleteProjectPermission, useGetAllCompanyUsers, useGetProjectBidUsers, useGetProjectUsers, useUpdateProjectBidPermission, useUpdateProjectPermission } from "./permissionHooks";
+import { useDeleteProjectBidPermission, useDeleteProjectPermission, useGetAllCompanyUsers, useGetProjectBidUsers, useGetProjectUsers, useUpdateProjectBidPermission, useUpdateProjectPermission } from "../hooks/permissionHooks";
 
 const ProjectPermissionModal = ({ 
   project, 

@@ -1,10 +1,11 @@
 import { Box, Stack, TextField, Typography, Container, Button, ThemeProvider } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import { PrimaryButton, buttonTheme } from "../themedComponents/Buttons";
+import FullScreenLoading from "../Utils/Loading";
 
 const USER_LOGIN = gql`
   query login($data: UserLoginInput) {
@@ -29,6 +30,10 @@ const Login = () => {
     password: ""
   });
 
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user])
+
   const onChange = (e) => {
     setValues({
       ...values,
@@ -45,24 +50,25 @@ const Login = () => {
   }
 
   if (data) {
+    console.log("here")
     login(data.login);
   }
 
-  if (user) {
-    navigate("/")
-  } else {
-    return <Container maxWidth="sm">
-        <Typography>Log in</Typography>
-        <Stack spacing={2} textAlign="right">
-          <TextField type="email" placeholder="email" name="email" value={values.email} onChange={onChange}></TextField>
-          <TextField type="password" placeholder="password" name="password" value={values.password} onChange={onChange}></TextField>
-          <ThemeProvider theme={buttonTheme}>
-            <PrimaryButton variant="contained" onClick={loginHandler}>Login</PrimaryButton>
-          </ThemeProvider>
-        </Stack>
-    </Container>
-
+  if (loading || user) {
+    return <FullScreenLoading />
   }
+
+
+  return <Container maxWidth="sm">
+      <Typography>Log in</Typography>
+      <Stack spacing={2} textAlign="right">
+        <TextField type="email" placeholder="email" name="email" value={values.email} onChange={onChange}></TextField>
+        <TextField type="password" placeholder="password" name="password" value={values.password} onChange={onChange}></TextField>
+        <ThemeProvider theme={buttonTheme}>
+          <PrimaryButton variant="contained" onClick={loginHandler}>Login</PrimaryButton>
+        </ThemeProvider>
+      </Stack>
+  </Container>
 }
 
 
