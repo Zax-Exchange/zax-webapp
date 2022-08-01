@@ -6,6 +6,7 @@ import { createContext, useReducer } from "react";
  *  companyId
  *  isVendor
  *  isAdmin
+ *  isActive
  *  name
  *  email
  * }

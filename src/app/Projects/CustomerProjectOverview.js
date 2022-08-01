@@ -22,13 +22,14 @@ const CustomerProjectOverview = ({
   project, 
   getCustomerProjectsRefetch, 
   setSnackbar,
-  setSnackbarOpen
+  setSnackbarOpen,
+  setIsProjectPageLoading
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [projectMenuAnchor, setProjectMenuAnchor] = useState(null);
   const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
-
+  
   const projectMenuOpen = !!projectMenuAnchor;
   const date = new Date(parseInt(project.createdAt)).toISOString().slice(0, 10);
 
@@ -52,16 +53,24 @@ const CustomerProjectOverview = ({
     if (e.target.innerText === "View detail") {
       viewDetailHandler();
     }
-    if (e.target.innerText === "Share") {
+    if (e.target.innerText === "Share" && canShare()) {
       setPermissionModalOpen(true)
     }
 
-    if (e.target.innerText === "Delete") {
+    if (e.target.innerText === "Delete" && canDelete()) {
       setDeleteProjectModalOpen(true);
     }
 
     moreOnClose();
   } 
+
+  const canShare = () => {
+    return project.permission !== "VIEWER";
+  }
+
+  const canDelete = () => {
+    return project.permission !== "VIEWER" && project.status === "OPEN";
+  }
 
   return <Grid item xs={4} minHeight={300}>
     <Paper variant="elevation" elevation={3} sx={{position: "relative", borderRadius:2}}>
@@ -89,11 +98,11 @@ const CustomerProjectOverview = ({
           View detail
         </MenuItem>
 
-        <MenuItem onClick={projectMenuOnClick} disabled={project.permission === "VIEWER"}>
+        <MenuItem onClick={projectMenuOnClick} disabled={!canShare()}>
           Share
         </MenuItem>
 
-        <MenuItem onClick={projectMenuOnClick} disabled={project.permission === "VIEWER" || project.status !== "OPEN"}>
+        <MenuItem onClick={projectMenuOnClick} disabled={!canDelete()}>
           Delete
         </MenuItem>
 
@@ -121,6 +130,7 @@ const CustomerProjectOverview = ({
       deleteProjectModalOpen={deleteProjectModalOpen}
       setDeleteProjectModalOpen={setDeleteProjectModalOpen}
       getCustomerProjectsRefetch={getCustomerProjectsRefetch}
+      setIsProjectPageLoading={setIsProjectPageLoading}
       projectId={project.id}
       setSnackbar={setSnackbar}
       setSnackbarOpen={setSnackbarOpen}

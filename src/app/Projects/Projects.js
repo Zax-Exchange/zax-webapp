@@ -17,6 +17,7 @@ const Projects = () => {
   const userId = user.id;
   const { getVendorProjectsData, getVendorProjectsError, getVendorProjectsLoading, getVendorProjectsRefetch } = useGetVendorProjects(userId, !isVendor)
   const { getCustomerProjectsData, getCustomerProjectsError, getCustomerProjectsLoading, getCustomerProjectsRefetch } = useGetCustomerProjects(userId, isVendor);
+  const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
     message: "",
     severity: "",
@@ -46,6 +47,7 @@ const Projects = () => {
         getVendorProjectsRefetch={getVendorProjectsRefetch}
         setSnackbar={setSnackbar}
         setSnackbarOpen={setSnackbarOpen}
+        setIsProjectPageLoading={setIsProjectPageLoading}
       />
     });
 
@@ -58,11 +60,13 @@ const Projects = () => {
         getCustomerProjectsRefetch={getCustomerProjectsRefetch}
         setSnackbar={setSnackbar}
         setSnackbarOpen={setSnackbarOpen}
+        setIsProjectPageLoading={setIsProjectPageLoading}
       />
     });
   }
 
   return <Container className="user-projects-container">
+    {isProjectPageLoading && <FullScreenLoading />}
     <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
     <Grid container spacing={2} className="user-projects-inner-container">
       {projectOverview}

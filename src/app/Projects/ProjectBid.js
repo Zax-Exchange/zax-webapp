@@ -6,7 +6,6 @@ import "./ProjectBid.scss";
 import { useContext, useState } from "react";
 import { useVendorProjects } from "./Projects";
 import { Container, Button, Typography, List, ListItem, Grid } from "@mui/material";
-import { useUserData } from "./CustomerProjectDetail";
 import { AuthContext } from "../../context/AuthContext";
 import { useGetVendorProjects } from "./projectHooks";
 
@@ -17,7 +16,7 @@ mutation CreateProjectBid($data: CreateProjectBidInput) {
 `;
 const ProjectBid = ({projectId, setIsOpen}) => {
   const { user } = useContext(AuthContext);
-  const {loading:userLoading, error:userError, data: userData} = useUserData(user.id);
+
   const {loading:projectLoading, error:projectError, data: projectData} = useQuery(GET_PROJECT_DETAIL, {
     variables: {
       projectId
@@ -29,8 +28,9 @@ const ProjectBid = ({projectId, setIsOpen}) => {
   const [componentsQpData, setComponentQpData] = useState({});
   const [isSuccessful, setIsSuccessful] = useState(null);
   const { getVendorProjectsRefetch } = useGetVendorProjects(user.id);
-  if (userLoading || projectLoading) return null;
-  if (userError || projectError) return null;
+
+  if (projectLoading) return null;
+  if (projectError) return null;
 
   const submitBid = () => {
     const components = [];
@@ -43,7 +43,7 @@ const ProjectBid = ({projectId, setIsOpen}) => {
     createProjectBid({
       variables: {
         data: {
-          userId: userData.getUserWithUserId.id,
+          userId: user.id,
           projectId,
           comments,
           components

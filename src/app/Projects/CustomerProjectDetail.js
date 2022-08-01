@@ -13,22 +13,13 @@ import {
   Button,
   IconButton
  } from "@mui/material";
-import { GET_USER } from "../Profile/Profile";
 import { useQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import VendorBidModal from "./VendorBidModal";
 import { useEffect, useState } from "react";
 import VendorBidOverview from "./VendorBidOverview";
-
-export const useUserData = (userId) => {
-  return useQuery(GET_USER, {
-    variables: {
-      userId
-    }
-  });
-};
-
+import { useUserData } from "./projectHooks";
 
 const CustomerProjectDetail = () => {
   const {state} = useLocation();
@@ -36,6 +27,7 @@ const CustomerProjectDetail = () => {
   const projectData = state.project;
 
   const { bids } = projectData;
+  
   
   const getComponentName = (componentId, components) => {
     return components.find(comp => comp.id === componentId).name;

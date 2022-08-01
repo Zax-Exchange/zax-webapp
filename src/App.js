@@ -29,7 +29,7 @@ import CustomerSignup from './app/Login/CustomerSignup';
 function App() {
   
   return (
-      <div className="App" style={{ minWidth: "860px" }}>
+      <div className="App" style={{ minWidth: "960px" }}>
         <Nav/>
         <ErrorBoundary
           FallbackComponent={ErrorFallback}

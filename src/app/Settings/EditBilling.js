@@ -2,10 +2,10 @@ import { CircularProgress, Container, Stack, TextField, ThemeProvider, Typograph
 import { useContext, useEffect, useState } from "react";
 import { usePaymentInputs } from "react-payment-inputs";
 import { AuthContext } from "../../context/AuthContext";
-import { buttonTheme, PrimaryButton } from "../themedComponents/PrimaryButton";
+import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
 import { ShrinkTextField } from "../themedComponents/ShrinkTextField";
 import FullScreenLoading from "../Utils/Loading";
-import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "./hooks/companyHooks";
+import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "../hooks/companyHooks";
 
 const EditBilling = ({
   setSnackbar,

@@ -69,14 +69,17 @@ const GET_ALL_COMPANY_USERS = gql`
 `;
 
 export const useGetAllCompanyUsers = (companyId) => {
-    const  {data: getAllCompanyUsersData } = useQuery(GET_ALL_COMPANY_USERS, {
+    const  { data: getAllCompanyUsersData, error: getAllCompanyUsersError, loading: getAllCompanyUsersLoading } = useQuery(GET_ALL_COMPANY_USERS, {
         variables: {
           companyId
-        }
+        },
+        fetchPolicy: "no-cache"
     });
 
     return {
-        getAllCompanyUsersData
+        getAllCompanyUsersData,
+        getAllCompanyUsersError,
+        getAllCompanyUsersLoading
     }
 }
 

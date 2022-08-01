@@ -1,13 +1,23 @@
 import { Button, Container, DialogActions, List, ListItem, Typography } from "@mui/material";
 
+/**
+ * Bid modal shown in CustomerProjectDetail
+ * @param {*} param0 
+ * @returns 
+ */
+const VendorBidModal = ({ 
+  bid, 
+  projectComponents, 
+  setIsBidModalOpen,
+  vendorData 
+}) => {
 
-const VendorBidModal = ({ bid, projectComponents, setIsBidModalOpen }) => {
   const getComponentName = (id) => {
     return projectComponents.find(comp => comp.id === id).name;
   }
 
   return <Container>
-    <Typography>Vendor: {bid.companyId}</Typography>
+    <Typography>Vendor: {vendorData.name}</Typography>
     {
       bid.components.map(comp => {
         return <>

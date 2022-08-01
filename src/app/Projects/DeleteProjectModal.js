@@ -16,7 +16,7 @@ const DeleteProjectModal = ({
   projectId,
   getCustomerProjectsRefetch,
   setSnackbar,
-  setSnackbaropen,
+  setSnackbarOpen,
   setIsProjectPageLoading,
 }) => {
   const { deleteProject, deleteProjectData, deleteProjectError, deleteProjectLoading } = useDeleteProject();
@@ -32,19 +32,19 @@ const DeleteProjectModal = ({
         }
       })
       await getCustomerProjectsRefetch();
-      setIsProjectPageLoading(false);
       setSnackbar({
         message: "Project deleted.",
         severity: "success"
       })
-      setSnackbaropen(true);
     } catch (e) {
-      setIsProjectPageLoading(false);
       setSnackbar({
         message: "Something went wrong. Please try again later.",
         severity: "error"
       })
-      setSnackbaropen(true);
+    } finally {
+      setIsProjectPageLoading(false);
+      setSnackbarOpen(true);
+
     }
   }
 

@@ -2,9 +2,9 @@ import { Autocomplete, Box, Chip, Container, IconButton, Input, ListItem, Stack,
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { countries } from "../constants/countries";
-import { buttonTheme, PrimaryButton } from "../themedComponents/PrimaryButton";
+import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
 import FullScreenLoading from "../Utils/Loading";
-import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "./hooks/companyHooks";
+import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "../hooks/companyHooks";
 import AddIcon from '@mui/icons-material/Add';
 import "../Login/VendorSignup.scss";
 

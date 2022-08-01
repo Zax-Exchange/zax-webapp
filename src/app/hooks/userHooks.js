@@ -17,3 +17,19 @@ export const useUpdateUserPassword = () => {
   }
 }
 
+const DEACTIVATE_USER = gql`
+  mutation deactivateUser($email: String) {
+    deactivateUser(email: $email)
+  }
+`;
+
+export const useDeactivateUser = () => {
+  const [deactivateUser, { error: deactivateUserError, loading: deactivateUserLoading, data: deactivateUserData }] = useMutation(DEACTIVATE_USER);
+
+  return {
+    deactivateUser,
+    deactivateUserData,
+    deactivateUserError,
+    deactivateUserLoading
+  }
+}

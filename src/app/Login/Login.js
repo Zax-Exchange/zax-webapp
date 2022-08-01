@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
-import { PrimaryButton, buttonTheme } from "../themedComponents/PrimaryButton";
+import { PrimaryButton, buttonTheme } from "../themedComponents/Buttons";
 
 const USER_LOGIN = gql`
   query login($data: UserLoginInput) {

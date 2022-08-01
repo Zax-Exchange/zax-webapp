@@ -94,7 +94,7 @@ const Settings = () => {
   return (
     <Container maxWidth="lg">
       <CustomSnackbar direction="right" severity={snackbar.severity} message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
-      <Grid container spacing={2}>
+      <Grid container spacing={2.5}>
         <Grid item xs={3.5}>
           <Paper sx={{borderRadius: 1}}>
             <SettingsAccordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>

@@ -32,7 +32,7 @@ import {
 import { useContext, useState } from "react";
 import CreateProjectMoal from "../Projects/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
-import { PrimaryButton, buttonTheme } from "../themedComponents/PrimaryButton";
+import { PrimaryButton, buttonTheme } from "../themedComponents/Buttons";
 import { Container } from "@mui/system";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
@@ -44,11 +44,11 @@ const Nav = () => {
 
   const [sideNavOpen, setSideNavOpen] = useState(false)
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
-  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
-
-
-  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    severity: "",
+    message: ""
+  });
 
   const handleSideNavOnClick = (page) => {
     if (page === "home") {
@@ -148,9 +148,6 @@ const Nav = () => {
 
   const renderCustomerNav = () => {
     return <>
-      <CustomSnackbar severity="success" direction="right" message="Project created" open={successSnackbarOpen} onClose={() => setSuccessSnackbarOpen(false)}/>
-      <CustomSnackbar severity="error" direction="right" message="Something went wrong, please try again." open={errorSnackbarOpen} onClose={() => setErrorSnackbarOpen(false)} />
-
       <Toolbar>
         {renderHamburger()}
 
@@ -173,9 +170,8 @@ const Nav = () => {
         <DialogContent>
           <CreateProjectMoal 
             setIsCreateProjectOpen={setIsCreateProjectOpen} 
-            setSuccessSnackbarOpen={setSuccessSnackbarOpen}
-            setErrorSnackbarOpen={setErrorSnackbarOpen}
-            setIsLoading={setIsLoading}
+            setSnackbar={setSnackbar}
+            setSnackbarOpen={setSnackbarOpen}
           />
         </DialogContent>
       </Dialog>
@@ -208,13 +204,13 @@ const Nav = () => {
   }
 
   return ( <>
+    {snackbarOpen && <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)}/>}
     <ThemeProvider theme={buttonTheme}>
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar position="static" sx={{ backgroundColor: "white", boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)" }}>
           {!user && renderLoggedOutNav()}
           {user && user.isVendor && renderVendorNav()}
           {user && !user.isVendor && renderCustomerNav()}
-          {isLoading && <FullScreenLoading />}
         </AppBar>
       </Box>
       {renderSideNav()}

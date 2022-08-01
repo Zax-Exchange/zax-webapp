@@ -1,6 +1,6 @@
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const INVITE_USER = gql`
   mutation inviteUser($email: String, $userId: String) {
@@ -100,3 +100,34 @@ export const useUpdateCustomerData = () => {
     updateCustomerDataData
   }
 };
+
+const GET_VENDOR_DETAIL = gql`
+  query getVendorDetail($companyId: String) {
+    getVendorDetail(companyId: $companyId) {
+      id
+      name
+      phone
+      logo
+      country
+      isActive
+      companyUrl
+      fax
+      isVerified
+      locations
+      materials
+      moq
+      leadTime
+    }
+  }
+`;
+
+export const useGetVendorDetail = () => {
+  const [getVendorDetail, { error:getVendorDetailError, loading: getVendorDetailLoading, data: getVendorDetailData}] = useLazyQuery(GET_VENDOR_DETAIL);
+
+  return {
+    getVendorDetail,
+    getVendorDetailData,
+    getVendorDetailError,
+    getVendorDetailLoading
+  }
+}

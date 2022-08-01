@@ -1,9 +1,9 @@
 import { Container, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { buttonTheme, PrimaryButton } from "../themedComponents/PrimaryButton";
+import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
 import FullScreenLoading from "../Utils/Loading";
-import { useUpdateUserPassword } from "./hooks/userHooks";
+import { useUpdateUserPassword } from "../hooks/userHooks";
 
 
 const ChangePassword = ({
@@ -57,7 +57,7 @@ const ChangePassword = ({
 
   return <Container>
     {updateUserPasswordLoading && <FullScreenLoading />}
-    
+
     <Typography variant="h6">Change password</Typography>
     <Stack spacing={4} sx={{marginTop: 2}}>
       <TextField 

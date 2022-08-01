@@ -16,6 +16,10 @@ export const buttonTheme = createTheme({
     secondary: {
       main: "#2d567d",
       hover: "#2d567d"
+    },
+    warning: {
+      main: "#eb5e5e",
+      hover: "#e47272"
     }
   },
 });
@@ -25,4 +29,12 @@ export const SecondaryButton = styled(Button)(({ theme }) => ({
   "&:hover": {
     backgroundColor: theme.buttons.secondary.hover
   }
+}));
+
+export const WarningButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.buttons.warning.main,
+  "&:hover": {
+    backgroundColor: theme.buttons.warning.hover
+  }
 }))
+

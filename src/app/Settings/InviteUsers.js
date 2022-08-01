@@ -1,9 +1,8 @@
 import { Container, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react"
-import { buttonTheme, PrimaryButton } from "../themedComponents/PrimaryButton";
+import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
 import { validate } from "react-email-validator";
-import { useInviteUser } from "./hooks/companyHooks";
-import CustomSnackbar from "../Utils/CustomSnackbar";
+import { useInviteUser } from "../hooks/companyHooks";
 import { AuthContext } from "../../context/AuthContext";
 
 
@@ -33,7 +32,7 @@ const InviteUsers = ({
       setSnackbarOpen(true);
     }
 
-  }, [inviteUserError, inviteUserData]);
+  }, [inviteUserError, inviteUserData, setSnackbar, setSnackbarOpen]);
 
   const emailOnChange = (e) => {
     setEmail(e.target.value);

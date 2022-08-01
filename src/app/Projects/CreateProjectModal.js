@@ -24,6 +24,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import AddIcon from '@mui/icons-material/Add';
 import { useCreateProject, useGetCustomerProjects } from "./projectHooks";
+import { useLocation, useNavigate } from "react-router-dom";
+import FullScreenLoading from "../Utils/Loading";
 
  /**
   * name
@@ -44,11 +46,13 @@ import { useCreateProject, useGetCustomerProjects } from "./projectHooks";
 
 const CreateProjectMoal = ({ 
   setIsCreateProjectOpen, 
-  setSuccessSnackbarOpen, 
-  setErrorSnackbarOpen,
-  setIsLoading 
+  setSnackbar,
+  setSnackbarOpen
 }) => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const {
     createProjectMutation,
     createProjectLoading,
@@ -173,9 +177,7 @@ const CreateProjectMoal = ({
   };
 
   const createProject = async () => {
-    setIsCreateProjectOpen(false);
-    setIsLoading(true);
-
+    
     try {
       await createProjectMutation({
         variables: {
@@ -188,12 +190,25 @@ const CreateProjectMoal = ({
           }
         }
       })
-      await getCustomerProjectsRefetch();
-      setIsLoading(false);
-      setSuccessSnackbarOpen(true);
+      setIsCreateProjectOpen(false);
+      setSnackbar({
+        severity: "success",
+        message: "Project created."
+      });
+      
+      if (location.pathname.indexOf("/projects")) {
+        navigate("/projects")
+      } else {
+        await getCustomerProjectsRefetch();
+      }
     } catch (e) {
-      setIsLoading(false);
-      setErrorSnackbarOpen(true);
+
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later."
+      })
+    } finally {
+      setSnackbarOpen(true)
     }
   }
 
@@ -243,6 +258,7 @@ const CreateProjectMoal = ({
   }
 
   return <>
+    {createProjectLoading && <FullScreenLoading />}
         <Container>
           <Container>
             <Typography variant="h6">Create Project</Typography>

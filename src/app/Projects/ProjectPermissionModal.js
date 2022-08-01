@@ -28,6 +28,7 @@ const ProjectPermissionModal = ({
   setSnackbarOpen
 }) => {
   const { user: loggedInUser } = useContext(AuthContext);
+
   const isVendor = loggedInUser.isVendor;
   const [email, setEmail] = useState("");
 
