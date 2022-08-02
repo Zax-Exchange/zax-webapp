@@ -1,4 +1,3 @@
-import { useProjectDetail } from "../Search/SearchProjectDetail"
 import { Stack, 
   Container, 
   Typography, 
@@ -7,11 +6,29 @@ import { Stack,
   List,
   ListItem,
   DialogActions,
-  Grid
+  Grid,
+  IconButton
 } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useGetProjectDetail } from "../hooks/projectHooks";
+import FullScreenLoading from "../Utils/Loading";
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
-const VendorProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
-  const {loading, error, data} = useProjectDetail(projectId);
+const VendorProjectDetail = () => {
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  
+  const {
+    projectId,
+    bidInfo
+  } = state;
+
+  const {
+    getProjectDetailData,
+    getProjectDetailError,
+    getProjectDetailLoading,
+    getProjectDetailRefetch
+  } = useGetProjectDetail(projectId);
   
   const renderProjectDetail = () => {
     const {
@@ -22,33 +39,38 @@ const VendorProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
       deliveryCity,
       design,
       status,
-      components
-    } = data.getProjectDetail
+      components,
+      companyId
+    } = getProjectDetailData.getProjectDetail
 
     const bids = {};
+
     bidInfo.components.forEach(comp => {
       bids[comp.projectComponentId] = comp.quantityPrices;
     });
 
 
     return <>
-    <Grid container className="vendor-project-info-container">
-        <Grid item xs={6}>
+    <Grid container className="vendor-project-info-container" spacing={2}>
+        <Grid item xs={5}>
           <Container><Typography variant="h6">Project Detail</Typography></Container>
-          <List>
-            <ListItem><Typography>name: {projectName}</Typography></ListItem>
-            <ListItem><Typography>deliveryDate: {deliveryDate}</Typography></ListItem>
-            <ListItem><Typography>deliveryCountry: {deliveryCountry}</Typography></ListItem>
-            <ListItem><Typography>budget: {budget}</Typography></ListItem>
-            <ListItem><Typography>deliveryCity: {deliveryCity}</Typography></ListItem>
-            <ListItem><Typography>design: {design}</Typography></ListItem>
-            <ListItem><Typography>status: {status}</Typography></ListItem>
-          </List>
+          <Paper>
+            <List>
+              <ListItem><Typography>Customer: {companyId}</Typography></ListItem>
+              <ListItem><Typography>name: {projectName}</Typography></ListItem>
+              <ListItem><Typography>deliveryDate: {deliveryDate}</Typography></ListItem>
+              <ListItem><Typography>deliveryCountry: {deliveryCountry}</Typography></ListItem>
+              <ListItem><Typography>budget: {budget}</Typography></ListItem>
+              <ListItem><Typography>deliveryCity: {deliveryCity}</Typography></ListItem>
+              <ListItem><Typography>design: {design}</Typography></ListItem>
+              <ListItem><Typography>status: {status}</Typography></ListItem>
+            </List>
+          </Paper>
         </Grid>
         
 
-          <Grid item xs={6}>
-            <Container><Typography variant="h6">Components Detail</Typography></Container>
+          <Grid item xs={7}>
+            <Container><Typography variant="h6">Bid Detail</Typography></Container>
 
             {
               components.map((comp, i) => {
@@ -61,50 +83,54 @@ const VendorProjectDetail = ({projectId, bidInfo, setIsProjectOpen}) => {
                 } = comp;
 
                 return ( <>
-                      <List>
-                        <ListItem><Typography>name: {name}</Typography></ListItem>
-                        <ListItem><Typography>materials: {materials.join(",")}</Typography></ListItem>
-                        <ListItem><Typography>dimension: {dimension}</Typography></ListItem>
-                        <ListItem><Typography>post process: {postProcess}</Typography></ListItem>
-                        <ListItem><Typography>Bids</Typography></ListItem>
+                  <Paper>
+                    <List>
+                      <ListItem><Typography>name: {name}</Typography></ListItem>
+                      <ListItem><Typography>materials: {materials.join(",")}</Typography></ListItem>
+                      <ListItem><Typography>dimension: {dimension}</Typography></ListItem>
+                      <ListItem><Typography>post process: {postProcess}</Typography></ListItem>
+                      <ListItem><Typography>Bids</Typography></ListItem>
 
-                      </List>
-                      {
-                        bids[id].map((qp, i) => {
-                          return <List className="quantity-price-container">
-                              <ListItem>
-                                <Typography className="quantity">Quantity: {qp.quantity}</Typography> 
-                              </ListItem>
-                              <ListItem>
-                                <Typography className="price">Price: {qp.price}</Typography>
-                              </ListItem>
-                            </List>
-                        })
-                      }
-                    </>
+                    </List>
+                    {
+                      bids[id].map((qp, i) => {
+                        return <List className="quantity-price-container">
+                            <ListItem>
+                              <Typography className="quantity">Quantity: {qp.quantity}</Typography> 
+                            </ListItem>
+                            <ListItem>
+                              <Typography className="price">Price: {qp.price}</Typography>
+                            </ListItem>
+                          </List>
+                      })
+                    }
+                  </Paper>
+                </>
                 )
               })
             }
           </Grid>
       </Grid>
-      <DialogActions>
-        <Button onClick={() => setIsProjectOpen(false)}>Close</Button>
-      </DialogActions>
     </>
   }
 
-  const renderBidDetail = () => {
-
-    return <div className="bid-info-container">
-
-    </div>
+  if (getProjectDetailLoading) {
+    return <FullScreenLoading />
   }
 
-  if (!data) return null;
-
-  return <div className="user-project-detail-container">
+  if (getProjectDetailError) {
+    return <Container>
+      <Button onClick={getProjectDetailRefetch}>try again</Button>
+    </Container>
+  }
+  return <Container>
+    <Container disableGutters style={{textAlign: "left"}}>
+      <IconButton onClick={() => navigate(-1)} sx={{ position: "absolute" }}>
+        <KeyboardBackspaceIcon style={{color: "rgb(43, 52, 89)"}}/>
+      </IconButton>
+    </Container>
     {renderProjectDetail()}
-  </div>
+  </Container>
 }
 
 export default VendorProjectDetail

@@ -79,7 +79,7 @@ const DeactivateUsers = ({
   }
   return <Container>
     
-    <Typography variant="h6">Deactive Users</Typography>
+    <Typography variant="h6">Deactivate Users</Typography>
 
     <ThemeProvider theme={buttonTheme}>
       <Stack spacing={4} sx={{marginTop: 2}}>

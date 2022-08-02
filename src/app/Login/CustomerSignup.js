@@ -4,10 +4,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { countries } from "../constants/countries";
-import { usePaymentInputs } from "react-payment-inputs";
 import FullScreenLoading from "../Utils/Loading";
-import { useCreateCompany, useGetAllPlans } from "../hooks/signupHooks";
+import { useCreateCompany, useCreateStripeCustomer, useCreateSubscription, useGetAllPlans } from "../hooks/signupHooks";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import Checkout from "./Checkout";
 
+
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST);
+const CUSTOMER_INDIVIDUAL_MONTHLY_PRICE_ID = "price_1LSBTMEZqkVG9UR3HZhwZEsT"
 
 const CustomerSignup = () => {
   const { user } = useContext(AuthContext);
@@ -18,10 +23,27 @@ const CustomerSignup = () => {
     createCompanySuccess
   } = useCreateCompany(false);
 
+  const {
+    createStripeCustomer,
+    createStripeCustomerData,
+    createStripeCustomerLoading,
+    createStripeCustomerError
+  } = useCreateStripeCustomer();
+
+  const {
+    createSubscription,
+    createSubscriptionLoading,
+    createSubscriptionError,
+    createSubscriptionData
+  } = useCreateSubscription();
   const { getAllPlansData } = useGetAllPlans();
 
   const [currentPage, setCurrentPage] = useState(0);
-  const { meta, getCVCProps, getCardNumberProps, getExpiryDateProps } = usePaymentInputs()
+  const [stripeData, setStripeData] = useState({
+    customerId: "",
+    subscriptionId: "",
+    clientSecret: ""
+  });
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -54,7 +76,7 @@ const CustomerSignup = () => {
       country: countryObj ? countryObj.label : null
     });
   }
-  console.log(values.planId)
+
   const createCompanyHandler = async () => {
     await createCompany({
       variables: {
@@ -66,7 +88,47 @@ const CustomerSignup = () => {
     })
   };
 
-  const nextPage = () => setCurrentPage(currentPage + 1);
+  const nextPage = async () => {
+    if (currentPage === 0) {
+      // need to create stripe customer using email
+      try {
+        const { data } = await createStripeCustomer({
+          variables: {
+            email: values.userEmail
+          }
+        })
+
+        setStripeData({
+          ...stripeData,
+          customerId: data.createStripeCustomer
+        })
+        setCurrentPage(currentPage + 1);
+      } catch (error) {
+        console.error(error)
+      }
+    } else if (currentPage === 2) {
+      try {
+        const { data } = await createSubscription({
+          variables: {
+            priceId: CUSTOMER_INDIVIDUAL_MONTHLY_PRICE_ID,
+            customerId: stripeData.customerId
+          }
+        })
+        setStripeData({
+          ...stripeData,
+          subscriptionId: data.createSubscription.subscriptionId,
+          clientSecret: data.createSubscription.clientSecret
+        })
+        setCurrentPage(currentPage + 1);
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    else {
+      setCurrentPage(currentPage + 1);
+    }
+  }
+
   const previousPage = () => setCurrentPage(currentPage - 1);
 
   const renderNavigationButtons = (isValidInput) => {
@@ -176,7 +238,14 @@ const CustomerSignup = () => {
         </Stack>
       </>
       // TODO: add  && meta.error === undefined to renderNavigationButtons
-    } else {
+    } else if (currentPage === 3) {
+      return <Elements stripe={stripePromise} options={{ clientSecret: stripeData.clientSecret }}>
+        <Checkout 
+          setCurrentPage={setCurrentPage}
+        />
+      </Elements>
+    }
+    else {
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}}>Now let's review your company information</Typography>
         <Container maxWidth="sm">
@@ -200,13 +269,13 @@ const CustomerSignup = () => {
     return;
   }
 
-  if (createCompanyLoading) {
+  if (createCompanyLoading || createStripeCustomerLoading || createSubscriptionLoading) {
     return <FullScreenLoading />
   }
 
-  if (createCompanyError) {
+  if (createCompanyError || createStripeCustomerError || createSubscriptionError) {
     return <Container maxWidth="md">
-        Submission failed. Please try again later.
+        Something went wrong. Please try again later.
     </Container>
   }
 

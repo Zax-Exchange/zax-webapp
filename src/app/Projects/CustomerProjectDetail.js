@@ -11,7 +11,8 @@ import {
   List,
   ListItem,
   Button,
-  IconButton
+  IconButton,
+  Stack
  } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -43,7 +44,7 @@ const CustomerProjectDetail = () => {
 
   return <Container>
   <Container disableGutters style={{textAlign: "left"}}>
-    <IconButton onClick={backButtonHandler} sx={{position: "absolute", left: 0}}>
+    <IconButton onClick={backButtonHandler} sx={{ position: "absolute" }}>
       <KeyboardBackspaceIcon style={{color: "rgb(43, 52, 89)"}}/>
     </IconButton>
   </Container>
@@ -53,11 +54,17 @@ const CustomerProjectDetail = () => {
       <Container>
         <Typography variant="h6">Vendor Bids</Typography>
       </Container>
-      {
-        bids.map(bid => {
-          return <VendorBidOverview bid={bid} projectComponents={projectData.components}/>
-        })
-      }
+      <List sx={{maxHeight: 500}}>
+        {
+          bids.map(bid => {
+            return <>
+              <ListItem><VendorBidOverview bid={bid} projectComponents={projectData.components}/></ListItem>
+              <ListItem><VendorBidOverview bid={bid} projectComponents={projectData.components}/></ListItem>
+              <ListItem><VendorBidOverview bid={bid} projectComponents={projectData.components}/></ListItem>
+            </>
+          })
+        }
+      </List>
     </Grid>
     <Grid item xs={8}>
       <Container>

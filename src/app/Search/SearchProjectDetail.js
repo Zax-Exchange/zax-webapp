@@ -10,49 +10,28 @@ import { Dialog,
   CardContent,
   Paper 
 } from "@mui/material";
-import ProjectBid from "../Projects/ProjectBid";
+import ProjectBidModal from "../Projects/ProjectBidModal";
 import { useState } from "react";
-
-export const GET_PROJECT_DETAIL = gql`
-  query getProjectDetail($projectId: String) {
-    getProjectDetail(projectId: $projectId) {
-      id
-      userId
-      companyId
-      name
-      deliveryDate
-      deliveryCountry
-      budget
-      deliveryCity
-      design
-      status
-      components {
-        id
-        projectId
-        name
-        materials
-        dimension
-        postProcess
-      }
-      createdAt
-    }
-  }
-`;
-
-export const useProjectDetail = (projectId) => {
-  return useQuery(GET_PROJECT_DETAIL, {
-    variables: {
-      projectId
-    }
-  });
-}
+import { useGetProjectDetail } from "../hooks/projectHooks";
+import FullScreenLoading from "../Utils/Loading";
+import CustomSnackbar from "../Utils/CustomSnackbar";
 
 const SearchProjectDetail = () => {
   const {state} = useLocation();
-  const {loading: projectLoading, error: projectError, data: projectData} = useProjectDetail(state.projectId);
+
+  const {
+    getProjectDetailData,
+    getProjectDetailError,
+    getProjectDetailLoading
+  } = useGetProjectDetail(state.projectId);
   
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    severity: "",
+    message: ""
+  });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const openModal = () => {
     setIsOpen(true);
@@ -82,8 +61,9 @@ const SearchProjectDetail = () => {
       budget,
       deliveryCity,
       design,
-      status
-    } = projectData.getProjectDetail;
+      status,
+      components
+    } = getProjectDetailData.getProjectDetail;
 
     return <Container>
       <Typography>Project Detail</Typography>
@@ -106,11 +86,13 @@ const SearchProjectDetail = () => {
       <Typography>Components Detail</Typography>
 
       {
-        projectData.getProjectDetail.components.map((comp, i) => {
-          const {name,
+        components.map((comp, i) => {
+          const {
+            name,
             materials,
             dimension,
-            postProcess} = comp;
+            postProcess
+          } = comp;
           return (
             <Paper style={{padding: "12px", marginBottom:"8px"}}>
               <Container style={{width: "60%"}}>
@@ -129,27 +111,33 @@ const SearchProjectDetail = () => {
       </Container>
   }
 
-  if (projectData) {
+  if (getProjectDetailLoading) {
+    return <FullScreenLoading />
+  }
+
+  if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
     
-      // TODO: use isVendor
-    if (true) {
-      return (<Container className="project-detail-container">
-        {renderProjectDetail()}
+    return (<Container className="project-detail-container">
+      <CustomSnackbar open={snackbarOpen} severity={snackbar.severity} message={snackbar.message} direction="right" onClose={() => setSnackbarOpen(false)}/>
+      {renderProjectDetail()}
 
-        <Button onClick={bidProjectHandler}>Bid Project</Button>
-        <Button onClick={backHandler}>Back</Button>
+      <Button onClick={bidProjectHandler}>Bid Project</Button>
+      <Button onClick={backHandler}>Back</Button>
 
-        <Dialog
-          open={modalIsOpen}
-          onClose={closeModal}
-          fullWidth={true}
-          maxWidth="md"
-        >
-          <ProjectBid projectId={state.projectId} setIsOpen={setIsOpen}/>
-        </Dialog>
-      </Container>)
-    }
-
+      <Dialog
+        open={modalIsOpen}
+        onClose={closeModal}
+        fullWidth={true}
+        maxWidth="md"
+      >
+        <ProjectBidModal 
+          projectId={state.projectId} 
+          setIsOpen={setIsOpen}
+          setSnackbar={setSnackbar}
+          setSnackbarOpen={setSnackbarOpen}
+        />
+      </Dialog>
+    </Container>)
   }
   return null;
 };

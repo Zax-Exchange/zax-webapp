@@ -1,38 +1,45 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import ProjectBidComponent from "./ProjectBidComponent";
-import { GET_PROJECT_DETAIL } from "../Search/SearchProjectDetail"; 
 import "./ProjectBid.scss";
 import { useContext, useState } from "react";
 import { useVendorProjects } from "./Projects";
 import { Container, Button, Typography, List, ListItem, Grid } from "@mui/material";
 import { AuthContext } from "../../context/AuthContext";
 import { useGetVendorProjects } from "./projectHooks";
+import { useCreateProjectBid, useGetProjectDetail } from "../hooks/projectHooks";
+import FullScreenLoading from "../Utils/Loading";
 
-const CREATE_PROJECT_BID = gql`
-mutation CreateProjectBid($data: CreateProjectBidInput) {
-  createProjectBid(data: $data)
-}
-`;
-const ProjectBid = ({projectId, setIsOpen}) => {
+
+const ProjectBidModal = ({
+  projectId, 
+  setIsOpen,
+  setSnackbar,
+  setSnackbarOpen
+}) => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const {loading:projectLoading, error:projectError, data: projectData} = useQuery(GET_PROJECT_DETAIL, {
-    variables: {
-      projectId
-    }
-  });
+  const {
+    getProjectDetailData,
+    getProjectDetailError,
+    getProjectDetailLoading
+  } = useGetProjectDetail(projectId);
 
-  const [comments, setComments] = useState("");
-  const [createProjectBid] = useMutation(CREATE_PROJECT_BID);
-  const [componentsQpData, setComponentQpData] = useState({});
-  const [isSuccessful, setIsSuccessful] = useState(null);
+  const {
+    createProjectBid,
+    createProjectBidLoading,
+    createProjectBidError
+  } = useCreateProjectBid();
+  
   const { getVendorProjectsRefetch } = useGetVendorProjects(user.id);
 
-  if (projectLoading) return null;
-  if (projectError) return null;
+  const [comments, setComments] = useState("");
+  const [componentsQpData, setComponentQpData] = useState({});
 
-  const submitBid = () => {
+  if (getProjectDetailLoading) return <FullScreenLoading />;
+
+  const submitBid = async () => {
     const components = [];
     for (let id in componentsQpData) {
       components.push({
@@ -40,39 +47,37 @@ const ProjectBid = ({projectId, setIsOpen}) => {
         quantityPrices: componentsQpData[id]
       })
     }
-    createProjectBid({
-      variables: {
-        data: {
-          userId: user.id,
-          projectId,
-          comments,
-          components
+
+    try {
+      await createProjectBid({
+        variables: {
+          data: {
+            userId: user.id,
+            projectId,
+            comments,
+            components
+          }
         }
-      }
-    })
-    .then(() => {
-      setIsSuccessful(true);
-      getVendorProjectsRefetch()
-    })
-    .catch(() => {
-      setIsSuccessful(false);
-    })
+      })
+      setSnackbar({
+        severity: "success",
+        message: "Bid created."
+      })
+      setSnackbarOpen(true);
+      navigate("/projects");
+      
+    } catch (error) {
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later."
+      })
+    } finally {
+      setIsOpen(false)
+      setSnackbarOpen(true);
+    }
   }
 
-  if (projectData) {
-    if (isSuccessful) {
-      return <div className="project-bid-container">
-        Submission successful!
-        <button onClick={() => setIsOpen(false)}>OK</button>
-      </div>
-    }
-    if (isSuccessful === false) {
-      // bid submission failed
-      return <div className="project-bid-container">
-        Submission failed!
-        <button onClick={() => setIsOpen(false)}>Ok</button>
-      </div>
-    }
+  if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
     const {
       name: projectName,
       deliveryDate,
@@ -82,8 +87,9 @@ const ProjectBid = ({projectId, setIsOpen}) => {
       design,
       status,
       components
-    } = projectData.getProjectDetail;
+    } = getProjectDetailData.getProjectDetail;
 
+    {createProjectBidLoading && <FullScreenLoading />}
     return (
     <Container className="project-bid-container">
       <Grid container>
@@ -121,4 +127,4 @@ const ProjectBid = ({projectId, setIsOpen}) => {
   }
 }
 
-export default ProjectBid;
+export default ProjectBidModal;

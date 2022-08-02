@@ -51,3 +51,40 @@ export const useGetAllPlans = () => {
     getAllPlansRefetch
   }
 }
+
+const CREATE_STRIPE_CUSTOMER = gql`
+  mutation createStripeCustomer($email: String) {
+    createStripeCustomer(email: $email)
+  }
+`;
+
+export const useCreateStripeCustomer = () => {
+  const [createStripeCustomer, { data: createStripeCustomerData, loading: createStripeCustomerLoading, error: createStripeCustomerError }] = useMutation(CREATE_STRIPE_CUSTOMER);
+
+  return {
+    createStripeCustomer,
+    createStripeCustomerLoading,
+    createStripeCustomerError,
+    createStripeCustomerData
+  }
+}
+
+const CREATE_SUBSCRIPTION = gql`
+  mutation createSubscription($priceId: String, $customerId: String) {
+    createSubscription(priceId: $priceId, customerId: $customerId) {
+      clientSecret
+      subscriptionId
+    }
+  }
+`;
+
+export const useCreateSubscription = () => {
+  const [createSubscription, { data: createSubscriptionData, loading: createSubscriptionLoading, error: createSubscriptionError }] = useMutation(CREATE_SUBSCRIPTION);
+
+  return {
+    createSubscription,
+    createSubscriptionLoading,
+    createSubscriptionError,
+    createSubscriptionData
+  }
+}

@@ -14,38 +14,9 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import { AuthContext } from "../../context/AuthContext";
+import { useSearchProjects, useSearchVendors } from "../hooks/searchHooks";
+import FullScreenLoading from "../Utils/Loading";
 
-const vendorQuery = gql`
-  query searchCustomerProjects($searchInput: SearchProjectInput) {
-    searchCustomerProjects(searchInput: $searchInput) {
-      name
-      materials
-      id
-      companyId
-      deliveryDate
-      deliveryCountry
-      deliveryCity
-      budget
-      createdAt
-    },
-  }
-`;
-
-const customerQuery = gql`
-  query searchVendorCompanies($searchInput: SearchCompanyInput) {
-    searchVendorCompanies(searchInput: $searchInput) {
-      id
-      name
-      logo
-      country
-      isVerified
-      locations
-      materials
-      moq
-      leadTime
-    }
-  }
-`;
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -96,57 +67,68 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const SearchBar = () => {
   const { user } = useContext(AuthContext);
   const isVendor = user.isVendor;
+  const navigate = useNavigate();
+  
+  const {
+    searchProjects,
+    searchProjectsData,
+    searchProjectsError,
+    searchProjectsLoading
+  } = useSearchProjects();
+
+  const {
+    searchVendors,
+    searchVendorsData,
+    searchVendorsError,
+    searchVendorsLoading
+  } = useSearchVendors();
+  
   const [input, setInput] = useState("");
 
-  const [searchCustomerProjects] = useLazyQuery(vendorQuery);
-
-  const [searchVendorCompanies] = useLazyQuery(customerQuery);
-
-  const navigate = useNavigate();
   const handleSearchInput = (e) => {
     setInput(e.target.value);
   };
 
   const handleSearchOnClick = async () => {
-    if (isVendor) {
-      await searchCustomerProjects({
-        variables: {
-          searchInput: {
-            userInput: input
-            // deliveryCountries: [String]
-            // deliveryCities: [String]
-            // budget: Int
-            // leadTime: Int
-          }
-        },
-        fetchPolicy: "no-cache"
-      }).then(v => {
-        navigate("/vendor-search", {
+    try {
+      if (isVendor) {
+        await searchProjects({
+          variables: {
+            searchInput: {
+              userInput: input
+              // deliveryCountries: [String]
+              // deliveryCities: [String]
+              // budget: Int
+              // leadTime: Int
+            }
+          },
+          fetchPolicy: "no-cache"
+        })
+        navigate("/vendor-search-results", {
           state: {
-            searchResults: v.data.searchCustomerProjects
+            searchResults: searchProjectsData.searchCustomerProjects
           }
         });
-      })
-    } else {
-
-      await searchVendorCompanies({
-        variables: {
-          searchInput: {
-            userInput: input
-            // locations: [String]
-            // moq: Int
-            // leadTime: Int
-          }
-        },
-        fetchPolicy: "no-cache"
-      }).then(v => {
-        console.log(v)
-        navigate("/customer-search", {
+      } else {
+        await searchVendors({
+          variables: {
+            searchInput: {
+              userInput: input
+              // locations: [String]
+              // moq: Int
+              // leadTime: Int
+            }
+          },
+          fetchPolicy: "no-cache"
+        })
+        navigate("/customer-search-results", {
           state: {
-            searchResults: v.data.searchVendorCompanies
+            searchResults: searchVendorsData.searchVendorCompanies
           }
         });
-      })
+      }
+    } catch (error) {
+      
     }
   };
 
@@ -155,6 +137,8 @@ const SearchBar = () => {
       handleSearchOnClick();
     }
   };
+  console.log(searchProjectsLoading)
+  if (searchProjectsLoading || searchVendorsLoading) return <FullScreenLoading />
 
   return (
     <Box>

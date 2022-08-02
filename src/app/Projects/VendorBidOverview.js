@@ -53,7 +53,7 @@ const VendorBidOverview = ({ bid, projectComponents }) => {
   }
 
 
-  return <Card>
+  return <Card sx={{ width: "100%" }}>
 
     {getVendorDetailError && <Typography>Something went wrong.</Typography>}
 

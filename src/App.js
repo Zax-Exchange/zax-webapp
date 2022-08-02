@@ -14,7 +14,7 @@ import Profile from "./app/Profile/Profile";
 import VendorSearchResults from "./app/Search/VendorSearchResults";
 import CustomerSearchResults from "./app/Search/CustomerSearchResults";
 import SearchProjectDetail from './app/Search/SearchProjectDetail';
-import ProjectBid from './app/Projects/ProjectBid';
+// import ProjectBid from './app/Projects/ProjectBid';
 import { Container } from "@mui/material";
 import CustomerProjectDetail from './app/Projects/CustomerProjectDetail';
 import RequireAuth from './app/Auth/RequireAuth';
@@ -25,6 +25,7 @@ import CompanySignup from './app/Login/CompanySignup';
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './app/ErrorBoundary/ErrorBoundary';
 import CustomerSignup from './app/Login/CustomerSignup';
+import VendorProjectDetail from './app/Projects/VendorProjectDetail';
 
 function App() {
   
@@ -40,12 +41,12 @@ function App() {
                 <Route path="/projects" element={<RequireAuth><Projects/></RequireAuth>}/>
                 <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>}/>
                 <Route path="/settings" element={<RequireAuth><Settings/></RequireAuth>}/>
-                <Route path="/vendor-search" element={<RequireAuth><VendorSearchResults/></RequireAuth>}/>
-                <Route path="/customer-search" element={<RequireAuth><CustomerSearchResults/></RequireAuth>}/>
+                <Route path="/vendor-search-results" element={<RequireAuth><VendorSearchResults/></RequireAuth>}/>
+                <Route path="/customer-search-results" element={<RequireAuth><CustomerSearchResults/></RequireAuth>}/>
                 <Route path="/project-detail" element={<RequireAuth><SearchProjectDetail/></RequireAuth>}/>
-                <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/>
+                {/* <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/> */}
                 <Route path="/customer-project-detail" element={<RequireAuth><CustomerProjectDetail/></RequireAuth>}/>
-
+                <Route path="/vendor-project-detail" element={<RequireAuth><VendorProjectDetail /></RequireAuth>}/>
                 <Route
                   path="*"
                   element={<RequireAuth><Home /></RequireAuth>} />
