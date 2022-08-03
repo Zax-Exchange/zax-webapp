@@ -29,12 +29,12 @@ const GET_ALL_PLANS = gql`
  * @returns createCompany, createCompanyLoading, createCompanyError, createCompanySuccess
  */
 export const useCreateCompany = (isVendor) => {
-  const [createCompany, {loading: createCompanyLoading, error: createCompanyError, data: createCompanySuccess}] = useMutation(isVendor ? CREATE_VENDOR : CREATE_CUSTOMER);
+  const [createCompany, {loading: createCompanyLoading, error: createCompanyError, data: createCompanyData}] = useMutation(isVendor ? CREATE_VENDOR : CREATE_CUSTOMER);
   return {
     createCompany,
     createCompanyLoading,
     createCompanyError,
-    createCompanySuccess
+    createCompanyData
   }
 }
 /**

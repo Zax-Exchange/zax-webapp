@@ -13,6 +13,16 @@ import Checkout from "./Checkout";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST);
 const CUSTOMER_INDIVIDUAL_MONTHLY_PRICE_ID = "price_1LSBTMEZqkVG9UR3HZhwZEsT"
+const CUSTOMER_INDIVIDUAL_DAILY_PRICE_ID = "price_1LSb23EZqkVG9UR3LMrI0iJg";
+
+export const CustomerSignupPage = {
+  EMAIL_PAGE: "EMAIL_PAGE",
+  COMPANY_INFO_PAGE: "COMPANY_INFO_PAGE",
+  PAYMENT_PAGE: "PAYMENT_PAGE",
+  PLAN_SELECTION_PAGE: "PLAN_SELECTION_PAGE",
+  REVIEW_PAGE: "REVIEW_PAGE",
+  SUCCESS_PAGE: "SUCCESS_PAGE"
+}
 
 const CustomerSignup = () => {
   const { user } = useContext(AuthContext);
@@ -20,7 +30,7 @@ const CustomerSignup = () => {
     createCompany,
     createCompanyLoading,
     createCompanyError,
-    createCompanySuccess
+    createCompanyData
   } = useCreateCompany(false);
 
   const {
@@ -38,7 +48,7 @@ const CustomerSignup = () => {
   } = useCreateSubscription();
   const { getAllPlansData } = useGetAllPlans();
 
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(CustomerSignupPage.EMAIL_PAGE);
   const [stripeData, setStripeData] = useState({
     customerId: "",
     subscriptionId: "",
@@ -89,7 +99,7 @@ const CustomerSignup = () => {
   };
 
   const nextPage = async () => {
-    if (currentPage === 0) {
+    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // need to create stripe customer using email
       try {
         const { data } = await createStripeCustomer({
@@ -102,15 +112,17 @@ const CustomerSignup = () => {
           ...stripeData,
           customerId: data.createStripeCustomer
         })
-        setCurrentPage(currentPage + 1);
+        setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
       } catch (error) {
         console.error(error)
       }
-    } else if (currentPage === 2) {
+    } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
+      setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
+    } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       try {
         const { data } = await createSubscription({
           variables: {
-            priceId: CUSTOMER_INDIVIDUAL_MONTHLY_PRICE_ID,
+            priceId: CUSTOMER_INDIVIDUAL_DAILY_PRICE_ID,
             customerId: stripeData.customerId
           }
         })
@@ -119,17 +131,34 @@ const CustomerSignup = () => {
           subscriptionId: data.createSubscription.subscriptionId,
           clientSecret: data.createSubscription.clientSecret
         })
-        setCurrentPage(currentPage + 1);
+        setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
       } catch (error) {
         console.error(error)
       }
-    }
-    else {
-      setCurrentPage(currentPage + 1);
+    } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
+      setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
     }
   }
 
-  const previousPage = () => setCurrentPage(currentPage - 1);
+  const previousPage = () => {
+    switch (currentPage) {
+      case CustomerSignupPage.EMAIL_PAGE:
+        navigate(-1);
+        break;
+      case CustomerSignupPage.COMPANY_INFO_PAGE:
+        setCurrentPage(CustomerSignupPage.EMAIL_PAGE);
+        break;
+      case CustomerSignupPage.PLAN_SELECTION_PAGE:
+        setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
+        break;
+      case CustomerSignupPage.REVIEW_PAGE:
+        setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
+        break;
+      case CustomerSignupPage.PAYMENT_PAGE:
+        setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
+        break;
+    }
+  }
 
   const renderNavigationButtons = (isValidInput) => {
     const backButton = <Button key="back" variant="primary" onClick={previousPage}>Back</Button>;
@@ -137,13 +166,12 @@ const CustomerSignup = () => {
     const submitButton = <Button key="submit" variant="contained" onClick={createCompanyHandler}>Submit</Button>;
 
     let buttons = [];
-    if (currentPage === 0) {
+    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       buttons = [nextButton]
-    } else if (currentPage < 3) {
+    } else if (currentPage !== CustomerSignupPage.PAYMENT_PAGE) {
       buttons = [backButton, nextButton]
-    } else {
-      buttons = [backButton, submitButton]
     }
+
     return <Container disableGutters sx={{display: "flex", justifyContent:"flex-end", gap: 4}}>
       {buttons}
     </Container>
@@ -196,7 +224,7 @@ const CustomerSignup = () => {
 
 
   const renderCompanySignupFlow = () => {
-    if (currentPage === 0) {
+    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // TODO: use email validator
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}}>Let's start with your email</Typography>
@@ -206,7 +234,7 @@ const CustomerSignup = () => {
           {renderNavigationButtons(true)}
         </Stack>
       </>
-    } else if (currentPage === 1) {
+    } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}}>Enter your company information</Typography>
         <Stack spacing={2} textAlign="right">
@@ -219,7 +247,7 @@ const CustomerSignup = () => {
           {renderNavigationButtons(validateInputs(["name", "phone", "country"]))}
         </Stack>
       </>
-    } else if (currentPage === 2) {
+    } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}}>Pick a plan for your company</Typography>
 
@@ -238,14 +266,7 @@ const CustomerSignup = () => {
         </Stack>
       </>
       // TODO: add  && meta.error === undefined to renderNavigationButtons
-    } else if (currentPage === 3) {
-      return <Elements stripe={stripePromise} options={{ clientSecret: stripeData.clientSecret }}>
-        <Checkout 
-          setCurrentPage={setCurrentPage}
-        />
-      </Elements>
-    }
-    else {
+    } else if (currentPage === CustomerSignupPage.REVIEW_PAGE){
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}}>Now let's review your company information</Typography>
         <Container maxWidth="sm">
@@ -259,16 +280,24 @@ const CustomerSignup = () => {
             {values.planId && <Typography>Selected plan: {getAllPlansData.getAllPlans.find(plan => plan.id === values.planId).name}</Typography>}
           </Stack>
         </Container>
-        {renderNavigationButtons()}
+        {renderNavigationButtons(true)}
       </>
+    } else if (currentPage === CustomerSignupPage.PAYMENT_PAGE) {
+      return <Elements stripe={stripePromise} options={{ clientSecret: stripeData.clientSecret }}>
+        <Checkout 
+          setCurrentPage={setCurrentPage}
+          createCompanyHandler={createCompanyHandler}
+        />
+      </Elements>
     }
+
   }
 
   if (user) {
     navigate("/") 
     return;
   }
-
+  console.log({createCompanyData})
   if (createCompanyLoading || createStripeCustomerLoading || createSubscriptionLoading) {
     return <FullScreenLoading />
   }
@@ -279,7 +308,7 @@ const CustomerSignup = () => {
     </Container>
   }
 
-  if (createCompanySuccess) {
+  if (createCompanyData) {
     return <Container maxWidth="md">
         Company created successfully! Please check your email and create your account!
     </Container>

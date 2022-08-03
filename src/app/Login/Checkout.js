@@ -5,10 +5,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FullScreenLoading from '../Utils/Loading';
 
-
+import { CustomerSignupPage } from './CustomerSignup';
 
 const Checkout = ({
-  setCurrentPage
+  setCurrentPage,
+  createCompanyHandler
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -17,16 +18,9 @@ const Checkout = ({
   const [errorMessage, setErrorMessage] = useState(null);
 
   const handleSubmit = async (event) => {
-    // We don't want to let default form submission happen here,
-    // which would refresh the page.
-    event.preventDefault();
-
     if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return <FullScreenLoading />
+      return;
     }
-
     const {error} = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
       elements,
@@ -41,19 +35,19 @@ const Checkout = ({
       setErrorMessage(error.message);
       console.error(error)
     } else {
-      // Your customer will be redirected to your `return_url`. For some payment
-      // methods like iDEAL, your customer will be redirected to an intermediate
-      // site first to authorize the payment, then redirected to the `return_url`.
-      setCurrentPage(4)
+      await createCompanyHandler();
+      setCurrentPage(CustomerSignupPage.SUCCESS_PAGE)
     }
   };
 
+  console.log({stripe, elements})
   return (
     <>
-      <Typography>Complete your payment profile</Typography>
+      {(!stripe || !elements) && <FullScreenLoading />}
+      <Typography >Complete Payment Information</Typography>
       <PaymentElement />
-      <Button onClick={() => setCurrentPage(2)}>Back</Button>
-      <Button onClick={handleSubmit}>Next</Button>
+      <Button onClick={() => setCurrentPage(CustomerSignupPage.REVIEW_PAGE)}>Back</Button>
+      <Button onClick={handleSubmit}>Confirm Payment</Button>
       {errorMessage && <Typography>There were errors processing your payment information.</Typography>}
     </>
   );
