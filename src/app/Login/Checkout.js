@@ -1,54 +1,88 @@
 import { Button, Typography } from '@mui/material';
 import { Elements,useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUpdateCompanyPlanSubscriptionInfo } from '../hooks/signupHooks';
 import FullScreenLoading from '../Utils/Loading';
 
 import { CustomerSignupPage } from './CustomerSignup';
 
 const Checkout = ({
   setCurrentPage,
-  createCompanyHandler
+  createCompanyHandler,
+  subscriptionId,
+  setSnackbar,
+  setSnackbarOpen,
+  companyCreated,
+  setCompanyCreated,
+  createCompanyLoading
 }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [errorMessage, setErrorMessage] = useState(null);
-
+  const {
+    updateCompanyPlanSubscriptionInfo,
+    updateCompanyPlanSubscriptionInfoData,
+    updateCompanyPlanSubscriptionInfoError,
+    updateCompanyPlanSubscriptionInfoLoading
+  } = useUpdateCompanyPlanSubscriptionInfo();
+  
   const handleSubmit = async (event) => {
-    if (!stripe || !elements) {
-      return;
+    
+    if (!companyCreated) {
+      try {
+        await createCompanyHandler();
+      
+        setCompanyCreated(true);
+      } catch (error) {
+        setSnackbar({
+          severity: "error",
+          message: "Something went wrong. Please try again later."
+        });
+        setSnackbarOpen(true);
+      }
     }
-    const {error} = await stripe.confirmPayment({
-      //`Elements` instance that was used to create the Payment Element
-      elements,
-      redirect: 'if_required'
-    });
 
+    if (stripe && elements) {
+      setIsLoading(true);
+      const { error } = await stripe.confirmPayment({
+        elements,
+        redirect: 'if_required'
+      });
+      setIsLoading(false);
 
-    if (error) {
-      // This point will only be reached if there is an immediate error when
-      // confirming the payment. Show error to your customer (for example, payment
-      // details incomplete)
-      setErrorMessage(error.message);
-      console.error(error)
-    } else {
-      await createCompanyHandler();
-      setCurrentPage(CustomerSignupPage.SUCCESS_PAGE)
+      if (error) {
+        // This point will only be reached if there is an immediate error when
+        // confirming the payment. Show error to your customer (for example, payment
+        // details incomplete)
+        setSnackbar({
+          severity: "error",
+          message: error.message
+        });
+        setSnackbarOpen(true);
+      } else {
+          // if payment succeeds, should update company_plans subsciprtion start/end fields
+        await updateCompanyPlanSubscriptionInfo({
+          variables: {
+            subscriptionId
+          }
+        })
+        setCurrentPage(CustomerSignupPage.SUCCESS_PAGE)
+      }
     }
+    
   };
 
-  console.log({stripe, elements})
   return (
     <>
-      {(!stripe || !elements) && <FullScreenLoading />}
+      {(!stripe || !elements || createCompanyLoading || isLoading || updateCompanyPlanSubscriptionInfoLoading) && <FullScreenLoading />}
       <Typography >Complete Payment Information</Typography>
       <PaymentElement />
       <Button onClick={() => setCurrentPage(CustomerSignupPage.REVIEW_PAGE)}>Back</Button>
       <Button onClick={handleSubmit}>Confirm Payment</Button>
-      {errorMessage && <Typography>There were errors processing your payment information.</Typography>}
     </>
   );
 }

@@ -9,6 +9,7 @@ import { useCreateCompany, useCreateStripeCustomer, useCreateSubscription, useGe
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import Checkout from "./Checkout";
+import CustomSnackbar from "../Utils/CustomSnackbar";
 
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST);
@@ -26,6 +27,7 @@ export const CustomerSignupPage = {
 
 const CustomerSignup = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const {
     createCompany,
     createCompanyLoading,
@@ -54,8 +56,8 @@ const CustomerSignup = () => {
     subscriptionId: "",
     clientSecret: ""
   });
+  const [companyCreated, setCompanyCreated] = useState(false);
 
-  const navigate = useNavigate();
   const [values, setValues] = useState({
     name: "",
     logo: null,
@@ -70,6 +72,12 @@ const CustomerSignup = () => {
     userEmail: ""
   });
 
+  const [snackbar, setSnackbar] = useState({
+    message: "",
+    severity: "",
+  });
+  
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const onChange = (e) => {
     if (e.target.type !== "tel" || e.target.validity.valid) {
@@ -94,7 +102,7 @@ const CustomerSignup = () => {
           ...values,
           planId: values.planId
         }
-      }
+      },
     })
   };
 
@@ -229,7 +237,7 @@ const CustomerSignup = () => {
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}}>Let's start with your email</Typography>
         <Stack spacing={2} textAlign="right">
-          <TextField label="Email" type="email" placeholder="Email" name="userEmail" value={values.userEmail} onChange={onChange}></TextField>
+          <TextField label="Email" type="email" placeholder="Email" name="userEmail" value={values.userEmail} onChange={onChange} helperText="This should be an email that we can send billing information to."></TextField>
 
           {renderNavigationButtons(true)}
         </Stack>
@@ -287,8 +295,18 @@ const CustomerSignup = () => {
         <Checkout 
           setCurrentPage={setCurrentPage}
           createCompanyHandler={createCompanyHandler}
+          subscriptionId={stripeData.subscriptionId}
+          setSnackbar={setSnackbar}
+          setSnackbarOpen={setSnackbarOpen}
+          companyCreated={companyCreated}
+          setCompanyCreated={setCompanyCreated}
+          createCompanyLoading={createCompanyLoading}
         />
       </Elements>
+    } else if (currentPage === CustomerSignupPage.SUCCESS_PAGE) {
+      return <>
+        <Typography variant="h6">You have signed up successfully! Check your email and finish signing up for your account.</Typography>
+      </>
     }
 
   }
@@ -297,8 +315,8 @@ const CustomerSignup = () => {
     navigate("/") 
     return;
   }
-  console.log({createCompanyData})
-  if (createCompanyLoading || createStripeCustomerLoading || createSubscriptionLoading) {
+
+  if (createStripeCustomerLoading || createSubscriptionLoading) {
     return <FullScreenLoading />
   }
 
@@ -308,13 +326,9 @@ const CustomerSignup = () => {
     </Container>
   }
 
-  if (createCompanyData) {
-    return <Container maxWidth="md">
-        Company created successfully! Please check your email and create your account!
-    </Container>
-  }
-
   return <Container maxWidth="md">
+      <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
+
       {renderCompanySignupFlow()}
   </Container>
 
