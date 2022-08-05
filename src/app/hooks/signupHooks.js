@@ -88,24 +88,3 @@ export const useCreateSubscription = () => {
     createSubscriptionData
   }
 }
-
-const UPDATE_COMPANY_PLAN_SUBSCRIPTION_INFO = gql`
-  mutation updateCompanyPlanSubscriptionInfo($subscriptionId: String) {
-    updateCompanyPlanSubscriptionInfo(subscriptionId: $subscriptionId)
-  }
-`;
-
-export const useUpdateCompanyPlanSubscriptionInfo = () => {
-  const [updateCompanyPlanSubscriptionInfo, {
-    data: updateCompanyPlanSubscriptionInfoData,
-    error: updateCompanyPlanSubscriptionInfoError,
-    loading: updateCompanyPlanSubscriptionInfoLoading
-  }] = useMutation(UPDATE_COMPANY_PLAN_SUBSCRIPTION_INFO);
-
-  return {
-    updateCompanyPlanSubscriptionInfo,
-    updateCompanyPlanSubscriptionInfoData,
-    updateCompanyPlanSubscriptionInfoError,
-    updateCompanyPlanSubscriptionInfoLoading
-  }
-}

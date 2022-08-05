@@ -1,4 +1,4 @@
-import { Box, Stack, TextField, Typography, Container, Button, Autocomplete, FormControl, Chip, Input, Select, MenuItem } from "@mui/material";
+import { Box, Stack, TextField, Typography, Container, Button, Autocomplete, FormControl, Chip, Input, Select, MenuItem, Paper } from "@mui/material";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -28,12 +28,7 @@ export const CustomerSignupPage = {
 const CustomerSignup = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const {
-    createCompany,
-    createCompanyLoading,
-    createCompanyError,
-    createCompanyData
-  } = useCreateCompany(false);
+  
 
   const {
     createStripeCustomer,
@@ -56,7 +51,6 @@ const CustomerSignup = () => {
     subscriptionId: "",
     clientSecret: ""
   });
-  const [companyCreated, setCompanyCreated] = useState(false);
 
   const [values, setValues] = useState({
     name: "",
@@ -64,7 +58,7 @@ const CustomerSignup = () => {
     phone: "",
     fax: "",
     country: "",
-    isActive: true,
+    isActive: false,
     isVendor: false,
     isVerified: false,
     companyUrl: "",
@@ -95,17 +89,6 @@ const CustomerSignup = () => {
     });
   }
 
-  const createCompanyHandler = async () => {
-    await createCompany({
-      variables: {
-        data: {
-          ...values,
-          planId: values.planId
-        }
-      },
-    })
-  };
-
   const nextPage = async () => {
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // need to create stripe customer using email
@@ -122,7 +105,11 @@ const CustomerSignup = () => {
         })
         setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
       } catch (error) {
-        console.error(error)
+        setSnackbar({
+          severity: "error",
+          message: "Something went wrong. Please try again later."
+        });
+        setSnackbarOpen(true);
       }
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
       setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
@@ -130,7 +117,7 @@ const CustomerSignup = () => {
       try {
         const { data } = await createSubscription({
           variables: {
-            priceId: CUSTOMER_INDIVIDUAL_DAILY_PRICE_ID,
+            priceId: CUSTOMER_INDIVIDUAL_MONTHLY_PRICE_ID,
             customerId: stripeData.customerId
           }
         })
@@ -141,7 +128,11 @@ const CustomerSignup = () => {
         })
         setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
       } catch (error) {
-        console.error(error)
+        setSnackbar({
+          severity: "error",
+          message: "Something went wrong. Please try again later."
+        });
+        setSnackbarOpen(true);
       }
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
       setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
@@ -171,7 +162,6 @@ const CustomerSignup = () => {
   const renderNavigationButtons = (isValidInput) => {
     const backButton = <Button key="back" variant="primary" onClick={previousPage}>Back</Button>;
     const nextButton = <Button key="next" variant="contained" onClick={nextPage} disabled={!isValidInput}>Next</Button>;
-    const submitButton = <Button key="submit" variant="contained" onClick={createCompanyHandler}>Submit</Button>;
 
     let buttons = [];
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
@@ -235,7 +225,7 @@ const CustomerSignup = () => {
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // TODO: use email validator
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}}>Let's start with your email</Typography>
+        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Let's start with your email</Typography>
         <Stack spacing={2} textAlign="right">
           <TextField label="Email" type="email" placeholder="Email" name="userEmail" value={values.userEmail} onChange={onChange} helperText="This should be an email that we can send billing information to."></TextField>
 
@@ -244,7 +234,7 @@ const CustomerSignup = () => {
       </>
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}}>Enter your company information</Typography>
+        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Enter your company information</Typography>
         <Stack spacing={2} textAlign="right">
           <TextField label="Company name" type="text" placeholder="Company name" name="name" value={values.name} onChange={onChange}></TextField>
           <TextField label="Company phone number" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Company phone number" name="phone" value={values.phone} onChange={onChange}></TextField>
@@ -257,7 +247,7 @@ const CustomerSignup = () => {
       </>
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}}>Pick a plan for your company</Typography>
+        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Pick a plan for your company</Typography>
 
         <Stack spacing={2} textAlign="right">
           <TextField select onChange={onChange} sx={{textAlign: "left"}} label="Select a plan" name="planId">
@@ -276,8 +266,8 @@ const CustomerSignup = () => {
       // TODO: add  && meta.error === undefined to renderNavigationButtons
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE){
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}}>Now let's review your company information</Typography>
-        <Container maxWidth="sm">
+        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Review your company information</Typography>
+        <Container maxWidth="sm" disableGutters sx={{ margin: 0 }}>
           <Stack spacing={2} textAlign="left">
             <Typography>Your email: {values.userEmail}</Typography>
             <Typography>Company name: {values.name}</Typography>
@@ -292,15 +282,14 @@ const CustomerSignup = () => {
       </>
     } else if (currentPage === CustomerSignupPage.PAYMENT_PAGE) {
       return <Elements stripe={stripePromise} options={{ clientSecret: stripeData.clientSecret }}>
+        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Complete Payment Information</Typography>
         <Checkout 
           setCurrentPage={setCurrentPage}
-          createCompanyHandler={createCompanyHandler}
+          companyData={values}
           subscriptionId={stripeData.subscriptionId}
           setSnackbar={setSnackbar}
           setSnackbarOpen={setSnackbarOpen}
-          companyCreated={companyCreated}
-          setCompanyCreated={setCompanyCreated}
-          createCompanyLoading={createCompanyLoading}
+          isVendor={false}
         />
       </Elements>
     } else if (currentPage === CustomerSignupPage.SUCCESS_PAGE) {
@@ -320,16 +309,12 @@ const CustomerSignup = () => {
     return <FullScreenLoading />
   }
 
-  if (createCompanyError || createStripeCustomerError || createSubscriptionError) {
-    return <Container maxWidth="md">
-        Something went wrong. Please try again later.
-    </Container>
-  }
-
   return <Container maxWidth="md">
+    <Paper sx={{padding: 8}}>
       <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
 
       {renderCompanySignupFlow()}
+    </Paper>
   </Container>
 
 }

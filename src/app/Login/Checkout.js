@@ -3,40 +3,82 @@ import { Elements,useStripe, useElements, PaymentElement } from '@stripe/react-s
 import { loadStripe } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUpdateCompanyPlanSubscriptionInfo } from '../hooks/signupHooks';
+import { useUpdateCompanyPlanSubscriptionInfo, useUpdateCompanyStatus } from '../hooks/companyHooks';
+import { useCreateCompany } from '../hooks/signupHooks';
 import FullScreenLoading from '../Utils/Loading';
 
 import { CustomerSignupPage } from './CustomerSignup';
 
 const Checkout = ({
   setCurrentPage,
-  createCompanyHandler,
+  companyData,
   subscriptionId,
   setSnackbar,
   setSnackbarOpen,
-  companyCreated,
-  setCompanyCreated,
-  createCompanyLoading
+  isVendor
 }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [updateCompanyPlanSuccess, setUpdateCompanyPlanSuccess] = useState(false);
+  const [updateCompanyStatusSuccess, setUpdateCompanyStatusSuccess] = useState(false);
+
+  // this is a flag to trigger useEffect in case user needs to retry
+  const [submitClicked, setSubmitClicked] = useState(false);
 
   const {
-    updateCompanyPlanSubscriptionInfo,
-    updateCompanyPlanSubscriptionInfoData,
-    updateCompanyPlanSubscriptionInfoError,
-    updateCompanyPlanSubscriptionInfoLoading
+    createCompany,
+    createCompanyLoading,
+    createCompanyError,
+    createCompanyData
+  } = useCreateCompany(isVendor);
+
+  const {
+    updateCompanyPlanSubscriptionInfo
   } = useUpdateCompanyPlanSubscriptionInfo();
-  
-  const handleSubmit = async (event) => {
-    
-    if (!companyCreated) {
+
+  const {
+    updateCompanyStatus
+  } = useUpdateCompanyStatus();
+
+  useEffect(() => {
+    if (stripe && elements) {
+      setIsLoading(false);
+    }
+  }, [stripe, elements])
+
+  useEffect(() => {
+    setIsLoading(true);
+    const submit = async () => {
       try {
-        await createCompanyHandler();
-      
-        setCompanyCreated(true);
+        if (paymentSuccess && !updateCompanyPlanSuccess) {
+          await updateCompanyPlanSubscriptionInfo({
+            variables: {
+              subscriptionId
+            }
+          });
+          setUpdateCompanyPlanSuccess(true)
+        }
+
+        if (updateCompanyPlanSuccess && !updateCompanyStatusSuccess) {
+          if (isVendor && createCompanyData && createCompanyData.createVendor) {
+            await updateCompanyStatus({
+              variables: {
+                companyId: createCompanyData.createVendor,
+                isActive: true
+              }
+            });
+          } else if (!isVendor && createCompanyData && createCompanyData.createCustomer) {
+            await updateCompanyStatus({
+              companyId: createCompanyData.createCustomer,
+              isActive: true
+            });
+          }
+          setUpdateCompanyStatusSuccess(true);
+          setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
+        }
       } catch (error) {
         setSnackbar({
           severity: "error",
@@ -44,45 +86,60 @@ const Checkout = ({
         });
         setSnackbarOpen(true);
       }
-    }
 
-    if (stripe && elements) {
-      setIsLoading(true);
-      const { error } = await stripe.confirmPayment({
-        elements,
-        redirect: 'if_required'
-      });
       setIsLoading(false);
-
-      if (error) {
-        // This point will only be reached if there is an immediate error when
-        // confirming the payment. Show error to your customer (for example, payment
-        // details incomplete)
-        setSnackbar({
-          severity: "error",
-          message: error.message
-        });
-        setSnackbarOpen(true);
-      } else {
-          // if payment succeeds, should update company_plans subsciprtion start/end fields
-        await updateCompanyPlanSubscriptionInfo({
-          variables: {
-            subscriptionId
-          }
-        })
-        setCurrentPage(CustomerSignupPage.SUCCESS_PAGE)
-      }
     }
-    
+    submit();
+  }, [submitClicked, paymentSuccess, updateCompanyPlanSuccess, updateCompanyStatusSuccess]);
+
+  const handleSubmit = async (event) => {
+    setSubmitClicked(!submitClicked)
+    try {
+      setIsLoading(true);
+      if (!createCompanyData) {
+        await createCompany({
+          variables: {
+            data: {
+              ...companyData
+            }
+          }
+        });
+      }
+      
+      if (stripe && elements && !paymentSuccess) {
+        const { error } = await stripe.confirmPayment({
+          elements,
+          redirect: 'if_required'
+        });
+        
+        if (error) {
+          throw error
+        } else {
+          setPaymentSuccess(true);
+        }
+      }
+
+    } catch (error) {
+      let message = "Something went wrong. Please try again later.";
+      if (error.type === "card_error") {
+        message = error.message
+      }
+      setSnackbar({
+        severity: "error",
+        message
+      });
+      setSnackbarOpen(true);
+    } finally {
+      setIsLoading(false)
+    }
   };
 
   return (
     <>
-      {(!stripe || !elements || createCompanyLoading || isLoading || updateCompanyPlanSubscriptionInfoLoading) && <FullScreenLoading />}
-      <Typography >Complete Payment Information</Typography>
+      {(!stripe || !elements || createCompanyLoading || isLoading) && <FullScreenLoading />}
       <PaymentElement />
       <Button onClick={() => setCurrentPage(CustomerSignupPage.REVIEW_PAGE)}>Back</Button>
-      <Button onClick={handleSubmit}>Confirm Payment</Button>
+      <Button onClick={handleSubmit}>Finish and Pay</Button>
     </>
   );
 }

@@ -83,7 +83,7 @@ const ChangePassword = ({
 
             onClick={updatePassword}
           >
-            Update Passwird
+            Update Password
           </PrimaryButton>
       </ThemeProvider>
       </Container>
