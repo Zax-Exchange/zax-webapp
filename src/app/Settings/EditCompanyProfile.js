@@ -6,7 +6,7 @@ import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
 import FullScreenLoading from "../Utils/Loading";
 import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "../hooks/companyHooks";
 import AddIcon from '@mui/icons-material/Add';
-import "../Login/VendorSignup.scss";
+import "../Login/vendor/VendorSignup.scss";
 
 /**
  * 

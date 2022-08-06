@@ -1,5 +1,5 @@
 
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation, useLazyQuery } from "@apollo/client";
 
 const CREATE_VENDOR = gql`
   mutation createVendor($data: CreateVendorInput) {
@@ -14,12 +14,28 @@ const CREATE_CUSTOMER = gql`
 `
 
 const GET_ALL_PLANS = gql`
-  query getAllPlans {
-    getAllPlans {
+  query getAllPlans($isVendor: Boolean) {
+    getAllPlans(isVendor: $isVendor) {
       id
+      isVendor
+      planTier
       name
-      price
       licensedUsers
+      features
+      pricings {
+        monthly {
+          price
+          priceId
+        }
+        annual {
+          price
+          priceId
+        }
+        additionalLicense {
+          price 
+          priceId
+        }
+      }
     }
   }
 `;
@@ -41,8 +57,12 @@ export const useCreateCompany = (isVendor) => {
  * 
  * @returns getAllPlansData, getAllPlansError, getAllPlansLoading
  */
-export const useGetAllPlans = () => {
-  const {error: getAllPlansError, loading: getAllPlansLoading, data: getAllPlansData, refetch: getAllPlansRefetch} = useQuery(GET_ALL_PLANS);
+export const useGetAllPlans = (isVendor) => {
+  const {error: getAllPlansError, loading: getAllPlansLoading, data: getAllPlansData, refetch: getAllPlansRefetch} = useQuery(GET_ALL_PLANS, {
+    variables: {
+      isVendor
+    }
+  });
 
   return {
     getAllPlansData,
@@ -88,3 +108,51 @@ export const useCreateSubscription = () => {
     createSubscriptionData
   }
 }
+
+const CHECK_COMPANY_NAME = gql`
+  query checkCompanyName($name: String) {
+    checkCompanyName(name: $name)
+  }
+`;
+
+export const useCheckCompanyName = () => {
+  const [
+    checkCompanyName,
+    {
+      data: checkCompanyNameData,
+      loading: checkCompanyNameLoading,
+      error: checkCompanyNameError
+    }
+  ] = useLazyQuery(CHECK_COMPANY_NAME)
+
+  return {
+    checkCompanyName,
+    checkCompanyNameData,
+    checkCompanyNameLoading,
+    checkCompanyNameError
+  }
+};
+
+const CHECK_USER_EMAIL = gql`
+  query checkUserEmail($email: String) {
+    checkUserEmail(email: $email)
+  }
+`;
+
+export const useCheckUserEmail = () => {
+  const [
+    checkUserEmail,
+    {
+      data: checkUserEmailData,
+      error: checkUserEmailError,
+      loading: checkUserEmailLoading
+    }
+  ] = useLazyQuery(CHECK_USER_EMAIL)
+
+  return {
+    checkUserEmail,
+    checkUserEmailData,
+    checkUserEmailLoading,
+    checkUserEmailError
+  }
+};

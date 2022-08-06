@@ -1,13 +1,13 @@
 import { Box, Stack, TextField, Typography, Container, Button, Autocomplete, FormControl, Chip, Input, Select, MenuItem, ListItem, IconButton } from "@mui/material";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
-import { countries } from "../constants/countries";
+import { countries } from "../../constants/countries";
 import "./VendorSignup.scss";
 import { usePaymentInputs } from "react-payment-inputs";
-import FullScreenLoading from "../Utils/Loading";
-import { useCreateCompany, useGetAllPlans } from "../hooks/signupHooks";
+import FullScreenLoading from "../../Utils/Loading";
+import { useCreateCompany, useGetAllPlans } from "../../hooks/signupHooks";
 import AddIcon from '@mui/icons-material/Add';
 
 const VendorSignup = () => {

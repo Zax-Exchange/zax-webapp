@@ -7,7 +7,7 @@ import { useUpdateCompanyPlanSubscriptionInfo, useUpdateCompanyStatus } from '..
 import { useCreateCompany } from '../hooks/signupHooks';
 import FullScreenLoading from '../Utils/Loading';
 
-import { CustomerSignupPage } from './CustomerSignup';
+import { CustomerSignupPage } from './customer/CustomerSignup';
 
 const Checkout = ({
   setCurrentPage,
@@ -48,10 +48,10 @@ const Checkout = ({
       setIsLoading(false);
     }
   }, [stripe, elements])
-
+  
   useEffect(() => {
-    setIsLoading(true);
     const submit = async () => {
+      setIsLoading(true);
       try {
         if (paymentSuccess && !updateCompanyPlanSuccess) {
           await updateCompanyPlanSubscriptionInfo({
@@ -120,6 +120,7 @@ const Checkout = ({
       }
 
     } catch (error) {
+      console.log(error)
       let message = "Something went wrong. Please try again later.";
       if (error.type === "card_error") {
         message = error.message
@@ -129,11 +130,10 @@ const Checkout = ({
         message
       });
       setSnackbarOpen(true);
-    } finally {
-      setIsLoading(false)
     }
   };
 
+  console.log(isLoading)
   return (
     <>
       {(!stripe || !elements || createCompanyLoading || isLoading) && <FullScreenLoading />}

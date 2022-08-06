@@ -1,20 +1,21 @@
 import { Box, Stack, TextField, Typography, Container, Button, Autocomplete, FormControl, Chip, Input, Select, MenuItem, Paper } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
-import { countries } from "../constants/countries";
-import FullScreenLoading from "../Utils/Loading";
-import { useCreateCompany, useCreateStripeCustomer, useCreateSubscription, useGetAllPlans } from "../hooks/signupHooks";
+import { countries } from "../../constants/countries";
+import FullScreenLoading from "../../Utils/Loading";
+import { useCheckCompanyName, useCreateCompany, useCreateStripeCustomer, useCreateSubscription, useGetAllPlans } from "../../hooks/signupHooks";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import Checkout from "./Checkout";
-import CustomSnackbar from "../Utils/CustomSnackbar";
+import Checkout from "../Checkout";
+import CustomSnackbar from "../../Utils/CustomSnackbar";
+import CustomerPlanSelection from "./CustomerPlanSelection";
+import EmailPage from "../EmailPage";
+import CustomerInfo from "./CustomerInfo";
 
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST);
-const CUSTOMER_INDIVIDUAL_MONTHLY_PRICE_ID = "price_1LSBTMEZqkVG9UR3HZhwZEsT"
-const CUSTOMER_INDIVIDUAL_DAILY_PRICE_ID = "price_1LSb23EZqkVG9UR3LMrI0iJg";
 
 export const CustomerSignupPage = {
   EMAIL_PAGE: "EMAIL_PAGE",
@@ -43,7 +44,10 @@ const CustomerSignup = () => {
     createSubscriptionError,
     createSubscriptionData
   } = useCreateSubscription();
-  const { getAllPlansData } = useGetAllPlans();
+
+  const { getAllPlansData } = useGetAllPlans(false);
+
+  const [priceId, setPriceId] = useState("");
 
   const [currentPage, setCurrentPage] = useState(CustomerSignupPage.EMAIL_PAGE);
   const [stripeData, setStripeData] = useState({
@@ -65,13 +69,47 @@ const CustomerSignup = () => {
     planId: "",
     userEmail: ""
   });
-
+  
   const [snackbar, setSnackbar] = useState({
     message: "",
     severity: "",
   });
   
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  useEffect(() => {
+    if (createStripeCustomerData) {
+      setStripeData({
+          ...stripeData,
+          customerId: createStripeCustomerData.createStripeCustomer
+        })
+        setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
+    }
+  }, [createStripeCustomerData]);
+
+  useEffect(() => {
+    if (createSubscriptionData) {
+      setStripeData({
+        ...stripeData,
+        subscriptionId: createSubscriptionData.createSubscription.subscriptionId,
+        clientSecret: createSubscriptionData.createSubscription.clientSecret
+      })
+      setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
+    }
+  }, [createSubscriptionData]);
+
+  useEffect(() => {
+    if (priceId && currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
+      nextPage();
+    }
+  }, [priceId, currentPage]);
+
+  const selectPlan = (planId) => {
+    setValues({
+      ...values,
+      planId
+    });
+  };
 
   const onChange = (e) => {
     if (e.target.type !== "tel" || e.target.validity.valid) {
@@ -81,6 +119,8 @@ const CustomerSignup = () => {
       })
     }    
   };
+
+  
 
   const countryOnChange = (countryObj) => {
     setValues({
@@ -93,21 +133,16 @@ const CustomerSignup = () => {
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // need to create stripe customer using email
       try {
-        const { data } = await createStripeCustomer({
+        await createStripeCustomer({
           variables: {
             email: values.userEmail
           }
         })
 
-        setStripeData({
-          ...stripeData,
-          customerId: data.createStripeCustomer
-        })
-        setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
       } catch (error) {
         setSnackbar({
           severity: "error",
-          message: "Something went wrong. Please try again later."
+          message: error.message
         });
         setSnackbarOpen(true);
       }
@@ -115,22 +150,16 @@ const CustomerSignup = () => {
       setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       try {
-        const { data } = await createSubscription({
+        await createSubscription({
           variables: {
-            priceId: CUSTOMER_INDIVIDUAL_MONTHLY_PRICE_ID,
+            priceId,
             customerId: stripeData.customerId
           }
         })
-        setStripeData({
-          ...stripeData,
-          subscriptionId: data.createSubscription.subscriptionId,
-          clientSecret: data.createSubscription.clientSecret
-        })
-        setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
       } catch (error) {
         setSnackbar({
           severity: "error",
-          message: "Something went wrong. Please try again later."
+          message: error.message
         });
         setSnackbarOpen(true);
       }
@@ -166,51 +195,18 @@ const CustomerSignup = () => {
     let buttons = [];
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       buttons = [nextButton]
+    } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
+      buttons = [backButton]
     } else if (currentPage !== CustomerSignupPage.PAYMENT_PAGE) {
       buttons = [backButton, nextButton]
     }
 
-    return <Container disableGutters sx={{display: "flex", justifyContent:"flex-end", gap: 4}}>
+    return <Container disableGutters sx={{display: "flex", justifyContent:"flex-end", gap: 4, position: "absolute", right: 24, bottom: 12}}>
       {buttons}
     </Container>
   }
 
-  const renderCountryDropdown = () => {
-    return (
-      <Autocomplete
-        id="country-select"
-        sx={{ width: 300 }}
-        options={countries}
-        autoHighlight
-        getOptionLabel={(option) => option.label}
-        onChange={(e,v) => countryOnChange(v)}
-        renderOption={(props, option) => (
-          <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-            <img
-              loading="lazy"
-              width="20"
-              src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-              srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-              alt=""
-            />
-            {option.label} ({option.code}) +{option.phone}
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Company location"
-            name="country"
-            value={values.country}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: 'new-password', // disable autocomplete and autofill
-            }}
-          />
-        )}
-      />
-    );
-  }
+  
 
   const validateInputs = (fields) => {
     for (let field of fields) {
@@ -225,43 +221,39 @@ const CustomerSignup = () => {
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // TODO: use email validator
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Let's start with your email</Typography>
-        <Stack spacing={2} textAlign="right">
-          <TextField label="Email" type="email" placeholder="Email" name="userEmail" value={values.userEmail} onChange={onChange} helperText="This should be an email that we can send billing information to."></TextField>
-
-          {renderNavigationButtons(true)}
-        </Stack>
+        <EmailPage 
+          onChange={onChange}
+          email={values.email}
+        />
+        {renderNavigationButtons(true)}
       </>
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Enter your company information</Typography>
-        <Stack spacing={2} textAlign="right">
-          <TextField label="Company name" type="text" placeholder="Company name" name="name" value={values.name} onChange={onChange}></TextField>
-          <TextField label="Company phone number" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Company phone number" name="phone" value={values.phone} onChange={onChange}></TextField>
-          <TextField label="Company fax" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Comapny fax" name="fax" value={values.fax} onChange={onChange}></TextField>
-          <TextField label="Company website url" type="url" placeholder="Company website url" name="companyUrl" value={values.companyUrl} onChange={onChange}></TextField>
-          {renderCountryDropdown()}
-
-          {renderNavigationButtons(validateInputs(["name", "phone", "country"]))}
-        </Stack>
+        <CustomerInfo 
+          values={values}
+          onChange={onChange}
+          countryOnChange={countryOnChange}
+        />
+        {renderNavigationButtons(validateInputs(["name", "phone", "country"]))}
       </>
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Pick a plan for your company</Typography>
-
-        <Stack spacing={2} textAlign="right">
-          <TextField select onChange={onChange} sx={{textAlign: "left"}} label="Select a plan" name="planId">
-            {
-              getAllPlansData && getAllPlansData.getAllPlans.map(plan => {
-                return <MenuItem value={plan.id}>{plan.name}</MenuItem>
-              })
-            }
-          </TextField>
-          
-          
-          
-          {renderNavigationButtons(validateInputs(["planId"]))}
+        
+        <Stack direction="row" justifyContent="space-between">
+          {
+            getAllPlansData && 
+            getAllPlansData.getAllPlans &&
+            getAllPlansData.getAllPlans.map(planData => {
+              return <CustomerPlanSelection 
+                planData={planData}
+                selectPlan={selectPlan}
+                setPriceId={setPriceId}
+              />
+            })
+          }
         </Stack>
+        {renderNavigationButtons()}
       </>
       // TODO: add  && meta.error === undefined to renderNavigationButtons
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE){
@@ -309,8 +301,8 @@ const CustomerSignup = () => {
     return <FullScreenLoading />
   }
 
-  return <Container maxWidth="md">
-    <Paper sx={{padding: 8}}>
+  return <Container maxWidth="lg">
+    <Paper sx={{padding: 8, position: "relative"}}>
       <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
 
       {renderCompanySignupFlow()}
