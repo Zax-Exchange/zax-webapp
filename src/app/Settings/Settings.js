@@ -1,5 +1,5 @@
 import { ExpandMore } from "@mui/icons-material";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Divider, Grid, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, Stack, styled, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Divider, Fade, Grid, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, Stack, styled, TextField, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import CustomSnackbar from "../Utils/CustomSnackbar";
@@ -111,7 +111,7 @@ const Settings = () => {
     }
   }
 
-  return (
+  return ( <Fade in={true} timeout={500}>
     <Container maxWidth="lg">
       <CustomSnackbar direction="right" severity={snackbar.severity} message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
       <Grid container spacing={2.5}>
@@ -248,6 +248,7 @@ const Settings = () => {
         
       </Grid>
     </Container>
+    </Fade>
   )
 };
 

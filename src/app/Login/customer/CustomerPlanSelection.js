@@ -49,6 +49,7 @@ const CustomerPlanSelection = ({
   if (name === "Individual") svg = singlePlan;
   if (name === "Group") svg = groupPlan;
   if (name === "Business") svg = businessPlan;
+  
   return <Card elevation={3} sx={{":hover": { backgroundColor: "#fcfafa"}}}>
       <CardMedia 
         component="img"

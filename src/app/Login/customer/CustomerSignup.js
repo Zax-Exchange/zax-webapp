@@ -1,22 +1,23 @@
-import { Box, Stack, TextField, Typography, Container, Button, Autocomplete, FormControl, Chip, Input, Select, MenuItem, Paper } from "@mui/material";
+import { Stack, Typography, Container, Button, Paper, Fade } from "@mui/material";
 import { useContext, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
-import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
-import { useCheckCompanyName, useCreateCompany, useCreateStripeCustomer, useCreateSubscription } from "../../hooks/signupHooks";
+import { useCreateStripeCustomer, useCreateSubscription } from "../../hooks/signupHooks";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import Checkout from "../Checkout";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
 import CustomerPlanSelection from "./CustomerPlanSelection";
 import EmailPage from "../EmailPage";
-import CustomerInfo from "./CustomerInfo";
+import CompanyInfo from "../CompanyInfo";
 import CustomerCompanyReview from "./CustomerCompanyReview";
 import "./CustomerSignup.scss";
 import { CSSTransition } from "react-transition-group";
 import { useGetAllPlans } from "../../hooks/planHooks";
+import CheckoutSuccess from "../CheckoutSuccess";
+import { validate } from "email-validator";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST);
 
@@ -24,9 +25,9 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TE
 export const CustomerSignupPage = {
   EMAIL_PAGE: "EMAIL_PAGE",
   COMPANY_INFO_PAGE: "COMPANY_INFO_PAGE",
-  PAYMENT_PAGE: "PAYMENT_PAGE",
   PLAN_SELECTION_PAGE: "PLAN_SELECTION_PAGE",
   REVIEW_PAGE: "REVIEW_PAGE",
+  PAYMENT_PAGE: "PAYMENT_PAGE",
   SUCCESS_PAGE: "SUCCESS_PAGE"
 }
 
@@ -51,6 +52,8 @@ const CustomerSignup = () => {
 
   const { getAllPlansData } = useGetAllPlans(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [shouldDisableNext, setShouldDisableNext] = useState(true);
+
   const [subscriptionInfo, setSubscriptionInfo] = useState({
     price: "",
     priceId: "",
@@ -193,7 +196,7 @@ const CustomerSignup = () => {
 
   const renderNavigationButtons = (isValidInput) => {
     const backButton = <Button key="back" variant="primary" onClick={previousPage}>Back</Button>;
-    const nextButton = <Button key="next" variant="contained" onClick={nextPage} disabled={!isValidInput}>Next</Button>;
+    const nextButton = <Button key="next" variant="contained" onClick={nextPage} disabled={!isValidInput || shouldDisableNext}>Next</Button>;
 
     let buttons = [];
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
@@ -223,60 +226,30 @@ const CustomerSignup = () => {
   const renderCompanySignupFlow = () => {
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // TODO: use email validator
-      return <CSSTransition
-            in={true}
-            timeout={500}
-            appear={true}
-            classNames={{
-              appear: 'my-appear',
-              appearActive: 'my-active-appear',
-              appearDone: 'my-done-appear',
-              enter: 'my-enter',
-              enterActive: 'my-active-enter',
-              enterDone: 'my-done-enter',
-              exit: 'my-exit',
-              exitActive: 'my-active-exit',
-              exitDone: 'my-done-exit',
-              }}
-            unmountOnExit
-          >
+      return <Fade in={true} mountOnEnter unmountOnExit>
       <div>
         <EmailPage 
           onChange={onChange}
           userEmail={values.userEmail}
           setSnackbar={setSnackbar}
           setSnackbarOpen={setSnackbarOpen}
+          setShouldDisableNext={setShouldDisableNext}
         />
-        {renderNavigationButtons(true)}
+        {renderNavigationButtons(validate(values.userEmail))}
       </div>
-      </CSSTransition>
+      </Fade>
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
-      return <CSSTransition
-        in={true}
-        timeout={500}
-        appear={true}
-        classNames={{
-          appear: 'my-appear',
-          appearActive: 'my-active-appear',
-          appearDone: 'my-done-appear',
-          enter: 'my-enter',
-          enterActive: 'my-active-enter',
-          enterDone: 'my-done-enter',
-          exit: 'my-exit',
-          exitActive: 'my-active-exit',
-          exitDone: 'my-done-exit',
-          }}
-        unmountOnExit
-      >
+      return <Fade in={true} mountOnEnter unmountOnExit appear>
       <div>
-        <CustomerInfo 
+        <CompanyInfo 
           values={values}
           onChange={onChange}
           countryOnChange={countryOnChange}
+          setShouldDisableNext={setShouldDisableNext}
         />
         {renderNavigationButtons(validateInputs(["name", "phone", "country"]))}
       </div>
-      </CSSTransition>
+      </Fade>
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       return <CSSTransition
         in={true}
@@ -337,9 +310,7 @@ const CustomerSignup = () => {
         />
       </Elements>
     } else if (currentPage === CustomerSignupPage.SUCCESS_PAGE) {
-      return <>
-        <Typography variant="subtitle2" fontSize="1.2em">You have signed up successfully! Check your email and finish signing up for your account.</Typography>
-      </>
+      return <CheckoutSuccess />
     }
 
   }

@@ -1,7 +1,6 @@
 import { Button, Container, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
 import FullScreenLoading from "../Utils/Loading";
 import { useUpdateUserPassword } from "../hooks/userHooks";
 

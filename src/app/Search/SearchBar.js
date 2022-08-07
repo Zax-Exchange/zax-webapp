@@ -64,7 +64,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const SearchBar = () => {
+const SearchBar = ({
+  setSnackbar,
+  setSnackbarOpen
+}) => {
   const { user } = useContext(AuthContext);
   const isVendor = user.isVendor;
   const navigate = useNavigate();
@@ -90,9 +93,10 @@ const SearchBar = () => {
   };
 
   const handleSearchOnClick = async () => {
+
     try {
       if (isVendor) {
-        await searchProjects({
+        const { data } = await searchProjects({
           variables: {
             searchInput: {
               userInput: input
@@ -106,11 +110,11 @@ const SearchBar = () => {
         })
         navigate("/vendor-search-results", {
           state: {
-            searchResults: searchProjectsData.searchCustomerProjects
+            searchResults: data.searchCustomerProjects
           }
         });
       } else {
-        await searchVendors({
+        const { data } = await searchVendors({
           variables: {
             searchInput: {
               userInput: input
@@ -123,12 +127,16 @@ const SearchBar = () => {
         })
         navigate("/customer-search-results", {
           state: {
-            searchResults: searchVendorsData.searchVendorCompanies
+            searchResults: data.searchVendorCompanies
           }
         });
       }
     } catch (error) {
-      
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later."
+      })
+      setSnackbarOpen(true);
     }
   };
 
@@ -137,7 +145,7 @@ const SearchBar = () => {
       handleSearchOnClick();
     }
   };
-  console.log(searchProjectsLoading)
+  console.log({input, searchProjectsData})
   if (searchProjectsLoading || searchVendorsLoading) return <FullScreenLoading />
 
   return (

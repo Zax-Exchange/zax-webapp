@@ -1,10 +1,9 @@
-import { Box, Stack, TextField, Typography, Container, Button, ThemeProvider } from "@mui/material";
+import { Box, Stack, TextField, Typography, Container, Button, ThemeProvider, Fade } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
-import { PrimaryButton, buttonTheme } from "../themedComponents/Buttons";
 import FullScreenLoading from "../Utils/Loading";
 
 const USER_LOGIN = gql`
@@ -59,16 +58,16 @@ const Login = () => {
   }
 
 
-  return <Container maxWidth="sm">
-      <Typography>Log in</Typography>
+  return <Fade in={true} timeout={500}>
+  <Container maxWidth="sm">
+      <Typography variant="h6" sx={{mb: 5}}>Log in</Typography>
       <Stack spacing={2} textAlign="right">
-        <TextField type="email" placeholder="email" name="email" value={values.email} onChange={onChange}></TextField>
-        <TextField type="password" placeholder="password" name="password" value={values.password} onChange={onChange}></TextField>
-        <ThemeProvider theme={buttonTheme}>
-          <PrimaryButton variant="contained" onClick={loginHandler}>Login</PrimaryButton>
-        </ThemeProvider>
+        <TextField type="email" label="email" name="email" value={values.email} onChange={onChange}></TextField>
+        <TextField type="password" label="password" name="password" value={values.password} onChange={onChange}></TextField>
+        <Button variant="outlined" onClick={loginHandler}>Login</Button>
       </Stack>
   </Container>
+  </Fade>
 }
 
 

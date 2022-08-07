@@ -90,7 +90,8 @@ const theme = createTheme({
           sx: {
             fontSize: 17
           }
-        }
+        },
+        variant: "standard"
       }
     },
   }
@@ -101,10 +102,10 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <div className="App" style={{ minWidth: "960px" }}>
-        <Nav/>
         <ErrorBoundary
-          FallbackComponent={ErrorFallback}
+        FallbackComponent={ErrorFallback}
         >
+          <Nav/>
           <Container maxWidth="xl">
             <Routes>
                 <Route path="/" element={<RequireAuth><Home /></RequireAuth>}/>

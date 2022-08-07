@@ -1,29 +1,57 @@
-import { Box, Stack, TextField, Typography, Container, Button, Autocomplete, FormControl, Chip, Input, Select, MenuItem, ListItem, IconButton } from "@mui/material";
-import { useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Stack, TextField, Typography, Container, Button, MenuItem, Paper } from "@mui/material";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
-import { countries } from "../../constants/countries";
 import "./VendorSignup.scss";
-import { usePaymentInputs } from "react-payment-inputs";
 import FullScreenLoading from "../../Utils/Loading";
-import { useCreateCompany } from "../../hooks/signupHooks";
-import AddIcon from '@mui/icons-material/Add';
+import { useCreateStripeCustomer, useCreateSubscription } from "../../hooks/signupHooks";
 import { useGetAllPlans } from "../../hooks/planHooks";
+import EmailPage from "../EmailPage";
+import CompanyInfo from "../CompanyInfo";
+import { loadStripe } from "@stripe/stripe-js";
+import VendorInfo from "./VendorInfo";
+import { Elements } from "@stripe/react-stripe-js";
+import Checkout from "../Checkout";
+import CheckoutSuccess from "../CheckoutSuccess";
+import CustomSnackbar from "../../Utils/CustomSnackbar";
+import { validate } from "email-validator";
+
+
+export const VendorSignupPage = {
+  EMAIL_PAGE: "EMAIL_PAGE",
+  COMPANY_INFO_PAGE: "COMPANY_INFO_PAGE",
+  VENDOR_INFO_PAGE: "VENDOR_INFO_PAGE",
+  PLAN_SELECTION_PAGE: "PLAN_SELECTION_PAGE",
+  REVIEW_PAGE: "REVIEW_PAGE",
+  PAYMENT_PAGE: "PAYMENT_PAGE",
+  SUCCESS_PAGE: "SUCCESS_PAGE"
+}
+
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST);
 
 const VendorSignup = () => {
   const { user } = useContext(AuthContext);
+  
   const {
-    createCompany,
-    createCompanyLoading,
-    createCompanyError,
-    createCompanySuccess
-  } = useCreateCompany(true);
+    createStripeCustomer,
+    createStripeCustomerData,
+    createStripeCustomerLoading,
+    createStripeCustomerError
+  } = useCreateStripeCustomer();
 
-  const { getAllPlansData } = useGetAllPlans();
+  const {
+    createSubscription,
+    createSubscriptionLoading,
+    createSubscriptionError,
+    createSubscriptionData
+  } = useCreateSubscription();
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const { meta, getCVCProps, getCardNumberProps, getExpiryDateProps } = usePaymentInputs()
+  const { getAllPlansData } = useGetAllPlans(true);
+
+  const [currentPage, setCurrentPage] = useState(VendorSignupPage.EMAIL_PAGE);
+  const [isLoading, setIsLoading] = useState(false);
+  const [shouldDisableNext, setShouldDisableNext] = useState(true);
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -44,50 +72,50 @@ const VendorSignup = () => {
     userEmail: ""
   });
 
-  const [material, setMaterial] = useState("");
-  const [materialInputBorderColor, setMaterialInputBorderColor] = useState("lightgray");
+  const [snackbar, setSnackbar] = useState({
+    message: "",
+    severity: "",
+  });
+  
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const materialOnChange = (e) => {
+  const [subscriptionInfo, setSubscriptionInfo] = useState({
+    price: "",
+    priceId: "",
+    billingFrequency: ""
+  });
 
-    setMaterial(e.target.value);
-  }
+  const [stripeData, setStripeData] = useState({
+    customerId: "",
+    subscriptionId: "",
+    clientSecret: ""
+  });
 
-  const locationOnChange = (locations) => {
-    locations = locations.map(l => l.label);
-    setValues({
-      ...values,
-      locations
-    });
-  }
+  useEffect(() => {
+    if (createStripeCustomerData) {
+      setStripeData({
+          ...stripeData,
+          customerId: createStripeCustomerData.createStripeCustomer
+        })
+    }
+  }, [createStripeCustomerData]);
 
-  const handleMaterialKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      const materials = [...values.materials];
-      materials.push(material);
-      setValues({
-        ...values,
-        materials
-      });
-      setMaterial("");
-    } 
-  };
+  useEffect(() => {
+    if (createSubscriptionData) {
+      setStripeData({
+        ...stripeData,
+        subscriptionId: createSubscriptionData.createSubscription.subscriptionId,
+        clientSecret: createSubscriptionData.createSubscription.clientSecret
+      })
+      setCurrentPage(VendorSignupPage.REVIEW_PAGE);
+    }
+  }, [createSubscriptionData]);
 
-  const addMaterial = () => {
-    const materials = [...values.materials];
-    materials.push(material);
-    setValues({
-      ...values,
-      materials
-    });
-    setMaterial("");
-  }
-
-  const materialOnFocus = (e) => {
-    setMaterialInputBorderColor("rgba(0, 0, 0, 0.87)");
-  }
-  const materialonBlur = (e) => {
-    setMaterialInputBorderColor("lightgray");
-  }
+  useEffect(() => {
+    if (subscriptionInfo.priceId) {
+      nextPage();
+    }
+  }, [subscriptionInfo]);
 
   const onChange = (e) => {
     if (e.target.type !== "tel" || e.target.validity.valid) {
@@ -104,121 +132,86 @@ const VendorSignup = () => {
       country: countryObj ? countryObj.label : null
     });
   }
-  const createCompanyHandler = async () => {
 
-    await createCompany({
-      variables: {
-        data: {
-          ...values,
-          leadTime: parseInt(values.leadTime, 10),
-          planId: values.planId
-        }
+  const nextPage = async () => {
+    if (currentPage === VendorSignupPage.EMAIL_PAGE) {
+      setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
+    } else if (currentPage === VendorSignupPage.COMPANY_INFO_PAGE) {
+      setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
+    } else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
+      setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
+    }
+    else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+      try {
+        const { data } = await createStripeCustomer({
+          variables: {
+            email: values.userEmail
+          }
+        })
+        await createSubscription({
+          variables: {
+            priceId: subscriptionInfo.priceId,
+            customerId: data.createStripeCustomer
+          }
+        })
+      } catch (error) {
+        setSnackbar({
+          severity: "error",
+          message: error.message
+        });
+        setSnackbarOpen(true);
       }
-    })
+    } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
+      setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
+    }
   };
 
-  const handleMaterialsDelete = (i) => {
-    const arr = [...values.materials];
-    arr.splice(i, 1);
-    setValues({
-      ...values,
-      materials: arr
-    });
+  const previousPage = () => {
+    switch (currentPage) {
+      case VendorSignupPage.EMAIL_PAGE:
+        navigate(-1);
+        break;
+      case VendorSignupPage.COMPANY_INFO_PAGE:
+        setCurrentPage(VendorSignupPage.EMAIL_PAGE);
+        break;
+      case VendorSignupPage.VENDOR_INFO_PAGE:
+        setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
+        break;
+      case VendorSignupPage.PLAN_SELECTION_PAGE:
+        setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
+        break;
+      case VendorSignupPage.REVIEW_PAGE:
+        setSubscriptionInfo({
+          price: "",
+          priceId: "",
+          billingFrequency: ""
+        })
+        setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
+        break;
+      case VendorSignupPage.PAYMENT_PAGE:
+        setCurrentPage(VendorSignupPage.REVIEW_PAGE);
+        break;
+    }
   }
-
-  const nextPage = () => setCurrentPage(currentPage + 1);
-  const previousPage = () => setCurrentPage(currentPage - 1);
 
   const renderNavigationButtons = (isValidInput) => {
     const backButton = <Button variant="primary" onClick={previousPage}>Back</Button>;
-    const nextButton = <Button variant="contained" onClick={nextPage} disabled={!isValidInput}>Next</Button>;
-    const submitButton = <Button variant="contained" onClick={createCompanyHandler}>Submit</Button>;
+    const nextButton = <Button variant="contained" onClick={nextPage} disabled={!isValidInput || shouldDisableNext}>Next</Button>;
 
     let buttons = [];
-    if (currentPage === 0) {
+    if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       buttons = [nextButton]
-    } else if (currentPage < 4) {
-      buttons = [backButton, nextButton]
+    } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+      buttons = [backButton]
     } else {
-      buttons = [backButton, submitButton]
+      buttons = [backButton, nextButton]
     }
     return <Container disableGutters sx={{display: "flex", justifyContent:"flex-end", gap: 4}}>
       {buttons}
     </Container>
   }
 
-  const renderCountryDropdown = () => {
-    return (
-      <Autocomplete
-        id="country-select"
-        sx={{ width: 300 }}
-        options={countries}
-        autoHighlight
-        getOptionLabel={(option) => option.label}
-        onChange={(e,v) => countryOnChange(v)}
-        renderOption={(props, option) => (
-          <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-            <img
-              loading="lazy"
-              width="20"
-              src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-              srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-              alt=""
-            />
-            {option.label} ({option.code}) +{option.phone}
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Company location"
-            name="country"
-            value={values.country}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: 'new-password', // disable autocomplete and autofill
-            }}
-          />
-        )}
-      />
-    );
-  }
-
-  const renderFactoryLocationDropdown = () => {
-    return (
-      <Autocomplete
-        id="factory-location-select"
-        sx={{ width: 300 }}
-        options={countries}
-        autoHighlight
-        getOptionLabel={(option) => option.label}
-        onChange={(e, v) => locationOnChange(v)}
-        multiple
-        renderOption={(props, option) => (
-          <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-            <img
-              loading="lazy"
-              width="20"
-              src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-              srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-              alt=""
-            />
-            {option.label} ({option.code})
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Factory locations"
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: 'new-password', // disable autocomplete and autofill
-            }}
-          />
-        )}
-      />
-    );
-  }
+  
 
   const validateInputs = (fields) => {
     for (let field of fields) {
@@ -230,67 +223,38 @@ const VendorSignup = () => {
 
 
   const renderCompanySignupFlow = () => {
-    if (currentPage === 0) {
+    if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       // TODO: use email validator
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}}>Let's start with your email</Typography>
-        <Stack spacing={2} textAlign="right">
-          <TextField label="Email" type="email" placeholder="Email" name="userEmail" value={values.userEmail} onChange={onChange}></TextField>
-
-          
-          {renderNavigationButtons(true)}
-        </Stack>
+        <EmailPage 
+          onChange={onChange}
+          userEmail={values.userEmail}
+          setSnackbar={setSnackbar}
+          setSnackbarOpen={setSnackbarOpen}
+          setShouldDisableNext={setShouldDisableNext}
+        />
+        {renderNavigationButtons(validate(values.userEmail))}
       </>
-    } else if (currentPage === 1) {
+    } else if (currentPage === VendorSignupPage.COMPANY_INFO_PAGE) {
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}}>Enter your company information</Typography>
-        <Stack spacing={2} textAlign="right">
-          <TextField label="Company name" type="text" placeholder="Company name" name="name" value={values.name} onChange={onChange}></TextField>
-          <TextField label="Company phone number" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Company phone number" name="phone" value={values.phone} onChange={onChange}></TextField>
-          <TextField label="Company fax" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Comapny fax" name="fax" value={values.fax} onChange={onChange}></TextField>
-          <TextField label="Company website url" type="url" placeholder="Company website url" name="companyUrl" value={values.companyUrl} onChange={onChange}></TextField>
-          {renderCountryDropdown()}
-
+          <CompanyInfo 
+            values={values}
+            onChange={onChange}
+            countryOnChange={countryOnChange}
+            setShouldDisableNext={setShouldDisableNext}
+          />
           {renderNavigationButtons(validateInputs(["name", "phone", "country"]))}
-        </Stack>
       </>
-    } else if (currentPage === 2) {
+    } else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}}>Since your a vendor, we're going to need a little more information.</Typography>
-        <Stack spacing={2} textAlign="right">
-          <TextField label="Typical lead time" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Typical lead time (in months)" name="leadTime" value={values.leadTime} onChange={onChange}></TextField>
-          <TextField label="Minimum order quantity range" type="minimum order quantity" placeholder="Minimum order quantity" name="moq" value={values.moq} onChange={onChange} helperText="e.g. 5000-10000, 6000-8000"></TextField>
-          
-          <ListItem disableGutters>
-            <div className="form-control-materials" style={{borderColor: materialInputBorderColor}}>
-              <div className="container">
-                {values.materials.map((item,index) => (
-                  <Chip size="small" onDelete={()=>handleMaterialsDelete(index)} label={item} />
-                ))}
-              </div>
-              <Input
-                value={material}
-                onChange={materialOnChange}
-                onKeyDown={handleMaterialKeyDown}
-                placeholder="Material"
-                inputProps={{
-                  onFocus: materialOnFocus,
-                  onBlur: materialonBlur
-                }}
-                disableUnderline
-              />
-            </div>
-            <IconButton onClick={addMaterial} disabled={material.length === 0}>
-              <AddIcon />
-            </IconButton>
-          </ListItem>
-          {renderFactoryLocationDropdown()}
-
-          
-          {renderNavigationButtons(validateInputs(["leadTime", "moq", "materials", "locations"]))}
-        </Stack>
+        <VendorInfo 
+          values={values}
+          setValues={setValues}
+          onChange={onChange}
+        />
+        {renderNavigationButtons(validateInputs(["leadTime", "moq", "materials", "locations"]))}
       </>
-    } else if (currentPage === 3) {
+    } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}}>Pick a plan for your company</Typography>
 
@@ -308,7 +272,7 @@ const VendorSignup = () => {
         </Stack>
       </>
       // TODO: add  && meta.error === undefined to renderNavigationButtons
-    } else {
+    } else if (currentPage === VendorSignupPage.REVIEW_PAGE){
       return <>
         <Typography variant="h6" sx={{marginBottom: 4}}>Now let's review your company information</Typography>
         <Container maxWidth="sm">
@@ -328,6 +292,21 @@ const VendorSignup = () => {
         </Container>
         {renderNavigationButtons()}
       </>
+    } else if (currentPage === VendorSignupPage.PAYMENT_PAGE) {
+      return <Elements stripe={stripePromise} options={{ clientSecret: stripeData.clientSecret }}>
+        <Typography variant="subtitle2" sx={{marginBottom: 4}} textAlign="left" fontSize="1.2em">Complete Payment Information</Typography>
+        <Checkout 
+          setCurrentPage={setCurrentPage}
+          companyData={values}
+          subscriptionId={stripeData.subscriptionId}
+          setSnackbar={setSnackbar}
+          setSnackbarOpen={setSnackbarOpen}
+          isVendor={true}
+          setIsLoading={setIsLoading}
+        />
+      </Elements>
+    } else if (currentPage === VendorSignupPage.SUCCESS_PAGE) {
+      return <CheckoutSuccess />
     }
   }
 
@@ -336,24 +315,12 @@ const VendorSignup = () => {
     return;
   }
 
-  if (createCompanyLoading) {
-    return <FullScreenLoading />
-  }
-
-  if (createCompanyError) {
-    return <Container maxWidth="md">
-        Submission failed. Please try again later.
-    </Container>
-  }
-
-  if (createCompanySuccess) {
-    return <Container maxWidth="md">
-        Company created successfully! Please check your email and create your account!
-    </Container>
-  }
-
   return <Container maxWidth="md">
+    {(createStripeCustomerLoading || createSubscriptionLoading || isLoading) && <FullScreenLoading />}
+    <Paper sx={{padding: 8, position: "relative"}}>
+      <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />  
       {renderCompanySignupFlow()}
+    </Paper>
   </Container>
 
 }

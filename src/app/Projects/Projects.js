@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import VendorProjectOverview from "./VendorProjectOverview";
-import { Typography, Grid, Container } from "@mui/material";
+import { Typography, Grid, Container, Fade } from "@mui/material";
 import "./Projects.scss";
 import FullScreenLoading from "../Utils/Loading";
 import CustomerProjectOverview from "./CustomerProjectOverview";
@@ -68,9 +68,11 @@ const Projects = () => {
   return <Container className="user-projects-container">
     {isProjectPageLoading && <FullScreenLoading />}
     <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
-    <Grid container spacing={2} className="user-projects-inner-container">
-      {projectOverview}
-    </Grid>
+    <Fade in={true}>
+      <Grid container spacing={2} className="user-projects-inner-container">
+        {projectOverview}
+      </Grid>
+    </Fade>
   </Container>
 };
 

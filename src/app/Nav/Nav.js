@@ -139,6 +139,12 @@ const Nav = () => {
 
   }
 
+  const renderSearchBar = () => {
+    return <SearchBar 
+      setSnackbar={setSnackbar}
+      setSnackbarOpen={setSnackbarOpen}
+    />
+  }
   const renderCustomerNav = () => {
     return <>
       <Toolbar>
@@ -146,7 +152,7 @@ const Nav = () => {
 
         {renderLogo()}
         
-        <SearchBar />
+        {renderSearchBar()}
 
         <Box display="flex" flexGrow={1} justifyContent="flex-end">
           <Button onClick={() => setIsCreateProjectOpen(true)} variant="contained">CREATE PROJECT</Button>
@@ -174,14 +180,18 @@ const Nav = () => {
   const renderLoggedOutNav = () => {
     return <>
           <Toolbar>
-            <Button sx={{ color: "#4c5678" }} variant="primary" onClick={() => handleLoggedOutOnClick("login")}>
-              Log In
-            </Button>
-            <Button variant="contained" onClick={() => handleLoggedOutOnClick("company-signup")}>
-              Get Started
-            </Button>
-
             {renderLogo()}
+
+            <Box display="flex" flexGrow={1} justifyContent="flex-end">
+              <Button sx={{ color: "#4c5678", mr: 2 }} variant="primary" onClick={() => handleLoggedOutOnClick("login")}>
+                Log In
+              </Button>
+              <Button variant="contained" onClick={() => handleLoggedOutOnClick("company-signup")}>
+                Get Started
+              </Button>
+
+            </Box>
+
           </Toolbar>
       </>
   }
@@ -191,13 +201,13 @@ const Nav = () => {
       <Toolbar>
         {renderHamburger()}
         {renderLogo()}
-        <SearchBar />
+        {renderSearchBar()}
       </Toolbar>
     </>
   }
 
   return ( <>
-    {snackbarOpen && <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)}/>}
+    <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)}/>
 
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar position="static" sx={{ backgroundColor: "white", boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)" }}>

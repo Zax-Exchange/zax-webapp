@@ -1,11 +1,7 @@
-import { Button, CircularProgress, Container, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Button, Container, Stack, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { usePaymentInputs } from "react-payment-inputs";
 import { AuthContext } from "../../context/AuthContext";
-import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
-import { ShrinkTextField } from "../themedComponents/ShrinkTextField";
 import FullScreenLoading from "../Utils/Loading";
-import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "../hooks/companyHooks";
 import { validate } from "email-validator";
 
 const UpdateBillingEmail = ({
@@ -24,7 +20,7 @@ const UpdateBillingEmail = ({
 
   }
   // TODO: also need to check duplication
-  
+
   return <Container>
     
     <Typography variant="h6">Update Billing Email</Typography>

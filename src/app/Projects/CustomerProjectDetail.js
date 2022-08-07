@@ -12,7 +12,8 @@ import {
   ListItem,
   Button,
   IconButton,
-  Stack
+  Stack,
+  Fade
  } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -42,7 +43,8 @@ const CustomerProjectDetail = () => {
     navigate(-1);
   };
 
-  return <Container>
+  return <Fade in={true}>
+  <Container>
   <Container disableGutters style={{textAlign: "left"}}>
     <IconButton onClick={backButtonHandler} sx={{ position: "absolute" }}>
       <KeyboardBackspaceIcon style={{color: "rgb(43, 52, 89)"}}/>
@@ -107,6 +109,7 @@ const CustomerProjectDetail = () => {
     </Grid>
   </Grid>
   </Container>
+  </Fade>
 }
 
 export default CustomerProjectDetail;

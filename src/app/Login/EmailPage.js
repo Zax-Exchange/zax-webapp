@@ -1,4 +1,5 @@
 import { CircularProgress, Fade, Stack, TextField, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { useCheckUserEmail } from "../hooks/signupHooks";
 
 
@@ -6,7 +7,8 @@ const EmailPage = ({
   onChange,
   userEmail,
   setSnackbar,
-  setSnackbarOpen
+  setSnackbarOpen,
+  setShouldDisableNext
 }) => {
 
   const {
@@ -23,6 +25,14 @@ const EmailPage = ({
     return "Email taken."
   }
 
+  useEffect(() => {
+    if (checkUserEmailData && checkUserEmailData.checkUserEmail) {
+      // is duplicate
+      setShouldDisableNext(true);
+    } else {
+      setShouldDisableNext(false);
+    }
+  }, [checkUserEmailData])
   const emailOnChange = async (e) => {
     onChange(e);
     try {
@@ -48,14 +58,13 @@ const EmailPage = ({
           <TextField 
             label="Billing Email" 
             type="email" 
-            placeholder="Email" 
             name="userEmail" 
             value={userEmail} 
             onChange={emailOnChange} 
             helperText={renderEmailHelperText()}
             error={checkUserEmailData && checkUserEmailData.checkUserEmail}
             InputProps={{
-              endAdornment: checkUserEmailLoading && <CircularProgress />
+              endAdornment: checkUserEmailLoading && <CircularProgress size={20} />
             }}
           >
 

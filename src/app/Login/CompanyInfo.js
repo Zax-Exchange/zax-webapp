@@ -1,12 +1,14 @@
 import { Autocomplete, Box, CircularProgress, Stack, TextField, Typography } from "@mui/material";
-import { countries } from "../../constants/countries";
-import { useCheckCompanyName } from "../../hooks/signupHooks";
+import { useEffect } from "react";
+import { countries } from "../constants/countries";
+import { useCheckCompanyName } from "../hooks/signupHooks";
 
 
-const CustomerInfo = ({
+const CompanyInfo = ({
   values,
   onChange,
-  countryOnChange
+  countryOnChange,
+  setShouldDisableNext
 }) => {
 
   const {
@@ -16,6 +18,13 @@ const CustomerInfo = ({
     checkCompanyNameError
   } = useCheckCompanyName()
 
+  useEffect(() => {
+    if (checkCompanyNameData && checkCompanyNameData.checkCompanyName) {
+      setShouldDisableNext(true);
+    } else {
+      setShouldDisableNext(false);
+    }
+  }, [checkCompanyNameData])
   const renderCompanyNameHelperText = () => {
     if ((checkCompanyNameData && !checkCompanyNameData.checkCompanyName) || !checkCompanyNameData) {
       return ""
@@ -74,14 +83,14 @@ const CustomerInfo = ({
   return <>
     <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Enter your company information</Typography>
     <Stack spacing={2} textAlign="right">
-      <TextField label="Company name" type="text" placeholder="Company name" name="name" value={values.name} onChange={companyNameOnChange} error={checkCompanyNameData && checkCompanyNameData.checkCompanyName} helperText={renderCompanyNameHelperText()} InputProps={{endAdornment: checkCompanyNameLoading && <CircularProgress />}}></TextField>
-      <TextField label="Company phone number" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Company phone number" name="phone" value={values.phone} onChange={onChange}></TextField>
-      <TextField label="Company fax" inputProps={{pattern: "[0-9]*"}} type="tel" placeholder="Comapny fax" name="fax" value={values.fax} onChange={onChange}></TextField>
-      <TextField label="Company website url" type="url" placeholder="Company website url" name="companyUrl" value={values.companyUrl} onChange={onChange}></TextField>
+      <TextField label="Company name" type="text" name="name" value={values.name} onChange={companyNameOnChange} error={checkCompanyNameData && checkCompanyNameData.checkCompanyName} helperText={renderCompanyNameHelperText()} InputProps={{endAdornment: checkCompanyNameLoading && <CircularProgress size={20}/>}}></TextField>
+      <TextField label="Company phone number" inputProps={{pattern: "[0-9]*"}} type="tel" name="phone" value={values.phone} onChange={onChange}></TextField>
+      <TextField label="Company fax" inputProps={{pattern: "[0-9]*"}} type="tel" name="fax" value={values.fax} onChange={onChange}></TextField>
+      <TextField label="Company website url" type="url" name="companyUrl" value={values.companyUrl} onChange={onChange}></TextField>
       {renderCountryDropdown()}
 
     </Stack>
   </>
 }
 
-export default CustomerInfo;
+export default CompanyInfo;
