@@ -1,0 +1,38 @@
+.my-appear {
+  opacity: 0;
+}
+
+.my-active-appear{
+  opacity: 1;
+  transition: opacity 500ms;
+}
+
+.my-done-appear {
+  opacity: 1;
+}
+
+.my-enter {
+  opacity: 0;
+}
+
+.my-active-enter {
+  opacity: 1;
+  transition: opacity 500ms;
+}
+
+.my-done-enter {
+  opacity: 1;
+}
+
+.my-exit {
+  opacity: 1;
+}
+
+.my-active-exit {
+  opacity: 0;
+  transition: opacity 500ms;
+}
+
+.my-done-exit {
+  opacity: 0;
+}

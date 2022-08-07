@@ -1,10 +1,12 @@
-import { Stack, TextField, Typography } from "@mui/material";
+import { CircularProgress, Fade, Stack, TextField, Typography } from "@mui/material";
 import { useCheckUserEmail } from "../hooks/signupHooks";
 
 
 const EmailPage = ({
   onChange,
-  email
+  userEmail,
+  setSnackbar,
+  setSnackbarOpen
 }) => {
 
   const {
@@ -23,31 +25,44 @@ const EmailPage = ({
 
   const emailOnChange = async (e) => {
     onChange(e);
-    await checkUserEmail({
-      variables: {
-        email: e.target.value
-      },
-      fetchPolicy: "no-cache"
-    })
+    try {
+      await checkUserEmail({
+        variables: {
+          email: e.target.value
+        },
+        fetchPolicy: "no-cache"
+      })
+    } catch (error) {
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again."
+      })
+      setSnackbarOpen(true)
+    }
   }
 
   return <>
     <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Let's start with your email</Typography>
-    <Stack spacing={2} textAlign="right">
-      <TextField 
-        label="Billing Email" 
-        type="email" 
-        placeholder="Email" 
-        name="userEmail" 
-        value={email} 
-        onChange={emailOnChange} 
-        helperText={renderEmailHelperText()}
-        error={checkUserEmailData && checkUserEmailData.checkUserEmail}
-      >
+      <Stack spacing={2} textAlign="right">
+        <Fade in={true}>
+          <TextField 
+            label="Billing Email" 
+            type="email" 
+            placeholder="Email" 
+            name="userEmail" 
+            value={userEmail} 
+            onChange={emailOnChange} 
+            helperText={renderEmailHelperText()}
+            error={checkUserEmailData && checkUserEmailData.checkUserEmail}
+            InputProps={{
+              endAdornment: checkUserEmailLoading && <CircularProgress />
+            }}
+          >
 
-      </TextField>
+          </TextField>
 
-    </Stack>
+        </Fade>
+      </Stack>
   </>
 }
 

@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 import { Elements,useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
@@ -15,12 +15,13 @@ const Checkout = ({
   subscriptionId,
   setSnackbar,
   setSnackbarOpen,
-  isVendor
+  isVendor,
+  setIsLoading
 }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [updateCompanyPlanSuccess, setUpdateCompanyPlanSuccess] = useState(false);
   const [updateCompanyStatusSuccess, setUpdateCompanyStatusSuccess] = useState(false);
@@ -42,6 +43,11 @@ const Checkout = ({
   const {
     updateCompanyStatus
   } = useUpdateCompanyStatus();
+
+  useEffect(() => {
+    console.log("here")
+    setIsLoading(true);
+  },[]);
 
   useEffect(() => {
     if (stripe && elements) {
@@ -93,7 +99,6 @@ const Checkout = ({
   }, [submitClicked, paymentSuccess, updateCompanyPlanSuccess, updateCompanyStatusSuccess]);
 
   const handleSubmit = async (event) => {
-    setSubmitClicked(!submitClicked)
     try {
       setIsLoading(true);
       if (!createCompanyData) {
@@ -120,7 +125,6 @@ const Checkout = ({
       }
 
     } catch (error) {
-      console.log(error)
       let message = "Something went wrong. Please try again later.";
       if (error.type === "card_error") {
         message = error.message
@@ -131,15 +135,19 @@ const Checkout = ({
       });
       setSnackbarOpen(true);
     }
+    setSubmitClicked(!submitClicked);
   };
 
-  console.log(isLoading)
+
   return (
     <>
-      {(!stripe || !elements || createCompanyLoading || isLoading) && <FullScreenLoading />}
+      {(!stripe || !elements || createCompanyLoading) && <FullScreenLoading />}
       <PaymentElement />
-      <Button onClick={() => setCurrentPage(CustomerSignupPage.REVIEW_PAGE)}>Back</Button>
-      <Button onClick={handleSubmit}>Finish and Pay</Button>
+
+      <Container disableGutters sx={{display: "flex", justifyContent:"flex-end", gap: 4, position: "absolute", right: 24, bottom: 12}}>
+        <Button variant="primary" onClick={() => setCurrentPage(CustomerSignupPage.REVIEW_PAGE)}>Back</Button>
+        <Button variant="contained" onClick={handleSubmit}>Finish and Pay</Button>
+      </Container>
     </>
   );
 }

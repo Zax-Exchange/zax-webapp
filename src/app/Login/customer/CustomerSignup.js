@@ -13,9 +13,12 @@ import CustomSnackbar from "../../Utils/CustomSnackbar";
 import CustomerPlanSelection from "./CustomerPlanSelection";
 import EmailPage from "../EmailPage";
 import CustomerInfo from "./CustomerInfo";
-
+import CustomerCompanyReview from "./CustomerCompanyReview";
+import "./CustomerSignup.scss";
+import { CSSTransition } from "react-transition-group";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST);
+
 
 export const CustomerSignupPage = {
   EMAIL_PAGE: "EMAIL_PAGE",
@@ -46,8 +49,12 @@ const CustomerSignup = () => {
   } = useCreateSubscription();
 
   const { getAllPlansData } = useGetAllPlans(false);
-
-  const [priceId, setPriceId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [subscriptionInfo, setSubscriptionInfo] = useState({
+    price: "",
+    priceId: "",
+    billingFrequency: ""
+  });
 
   const [currentPage, setCurrentPage] = useState(CustomerSignupPage.EMAIL_PAGE);
   const [stripeData, setStripeData] = useState({
@@ -83,7 +90,6 @@ const CustomerSignup = () => {
           ...stripeData,
           customerId: createStripeCustomerData.createStripeCustomer
         })
-        setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
     }
   }, [createStripeCustomerData]);
 
@@ -99,10 +105,10 @@ const CustomerSignup = () => {
   }, [createSubscriptionData]);
 
   useEffect(() => {
-    if (priceId && currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
+    if (subscriptionInfo.priceId) {
       nextPage();
     }
-  }, [priceId, currentPage]);
+  }, [subscriptionInfo]);
 
   const selectPlan = (planId) => {
     setValues({
@@ -131,29 +137,20 @@ const CustomerSignup = () => {
 
   const nextPage = async () => {
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
-      // need to create stripe customer using email
-      try {
-        await createStripeCustomer({
-          variables: {
-            email: values.userEmail
-          }
-        })
-
-      } catch (error) {
-        setSnackbar({
-          severity: "error",
-          message: error.message
-        });
-        setSnackbarOpen(true);
-      }
+      setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
       setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       try {
+        const { data } = await createStripeCustomer({
+          variables: {
+            email: values.userEmail
+          }
+        })
         await createSubscription({
           variables: {
-            priceId,
-            customerId: stripeData.customerId
+            priceId: subscriptionInfo.priceId,
+            customerId: data.createStripeCustomer
           }
         })
       } catch (error) {
@@ -180,6 +177,11 @@ const CustomerSignup = () => {
         setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
         break;
       case CustomerSignupPage.REVIEW_PAGE:
+        setSubscriptionInfo({
+          price: "",
+          priceId: "",
+          billingFrequency: ""
+        })
         setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
         break;
       case CustomerSignupPage.PAYMENT_PAGE:
@@ -220,26 +222,80 @@ const CustomerSignup = () => {
   const renderCompanySignupFlow = () => {
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // TODO: use email validator
-      return <>
+      return <CSSTransition
+            in={true}
+            timeout={500}
+            appear={true}
+            classNames={{
+              appear: 'my-appear',
+              appearActive: 'my-active-appear',
+              appearDone: 'my-done-appear',
+              enter: 'my-enter',
+              enterActive: 'my-active-enter',
+              enterDone: 'my-done-enter',
+              exit: 'my-exit',
+              exitActive: 'my-active-exit',
+              exitDone: 'my-done-exit',
+              }}
+            unmountOnExit
+          >
+      <div>
         <EmailPage 
           onChange={onChange}
-          email={values.email}
+          userEmail={values.userEmail}
+          setSnackbar={setSnackbar}
+          setSnackbarOpen={setSnackbarOpen}
         />
         {renderNavigationButtons(true)}
-      </>
+      </div>
+      </CSSTransition>
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
-      return <>
+      return <CSSTransition
+        in={true}
+        timeout={500}
+        appear={true}
+        classNames={{
+          appear: 'my-appear',
+          appearActive: 'my-active-appear',
+          appearDone: 'my-done-appear',
+          enter: 'my-enter',
+          enterActive: 'my-active-enter',
+          enterDone: 'my-done-enter',
+          exit: 'my-exit',
+          exitActive: 'my-active-exit',
+          exitDone: 'my-done-exit',
+          }}
+        unmountOnExit
+      >
+      <div>
         <CustomerInfo 
           values={values}
           onChange={onChange}
           countryOnChange={countryOnChange}
         />
         {renderNavigationButtons(validateInputs(["name", "phone", "country"]))}
-      </>
+      </div>
+      </CSSTransition>
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
-      return <>
+      return <CSSTransition
+        in={true}
+        timeout={500}
+        appear={true}
+        classNames={{
+          appear: 'my-appear',
+          appearActive: 'my-active-appear',
+          appearDone: 'my-done-appear',
+          enter: 'my-enter',
+          enterActive: 'my-active-enter',
+          enterDone: 'my-done-enter',
+          exit: 'my-exit',
+          exitActive: 'my-active-exit',
+          exitDone: 'my-done-exit',
+          }}
+        unmountOnExit
+      >
+      <div>
         <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Pick a plan for your company</Typography>
-        
         <Stack direction="row" justifyContent="space-between">
           {
             getAllPlansData && 
@@ -248,33 +304,27 @@ const CustomerSignup = () => {
               return <CustomerPlanSelection 
                 planData={planData}
                 selectPlan={selectPlan}
-                setPriceId={setPriceId}
+                setSubscriptionInfo={setSubscriptionInfo}
               />
             })
           }
         </Stack>
         {renderNavigationButtons()}
-      </>
+      </div>
+      </CSSTransition>
       // TODO: add  && meta.error === undefined to renderNavigationButtons
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE){
       return <>
-        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Review your company information</Typography>
-        <Container maxWidth="sm" disableGutters sx={{ margin: 0 }}>
-          <Stack spacing={2} textAlign="left">
-            <Typography>Your email: {values.userEmail}</Typography>
-            <Typography>Company name: {values.name}</Typography>
-            <Typography>Company phone: {values.phone}</Typography>
-            {values.companyUrl && <Typography>Company url: {values.companyUrl}</Typography>}
-            {values.fax && <Typography>Company fax: {values.fax}</Typography>}
-            <Typography>Company country: {values.country}</Typography>
-            {values.planId && <Typography>Selected plan: {getAllPlansData.getAllPlans.find(plan => plan.id === values.planId).name}</Typography>}
-          </Stack>
-        </Container>
+        <CustomerCompanyReview 
+          values={values}
+          getAllPlansData={getAllPlansData}
+          subscriptionInfo={subscriptionInfo}
+        />
         {renderNavigationButtons(true)}
       </>
     } else if (currentPage === CustomerSignupPage.PAYMENT_PAGE) {
       return <Elements stripe={stripePromise} options={{ clientSecret: stripeData.clientSecret }}>
-        <Typography variant="h6" sx={{marginBottom: 4}} textAlign="left">Complete Payment Information</Typography>
+        <Typography variant="subtitle2" sx={{marginBottom: 4}} textAlign="left" fontSize="1.2em">Complete Payment Information</Typography>
         <Checkout 
           setCurrentPage={setCurrentPage}
           companyData={values}
@@ -282,11 +332,12 @@ const CustomerSignup = () => {
           setSnackbar={setSnackbar}
           setSnackbarOpen={setSnackbarOpen}
           isVendor={false}
+          setIsLoading={setIsLoading}
         />
       </Elements>
     } else if (currentPage === CustomerSignupPage.SUCCESS_PAGE) {
       return <>
-        <Typography variant="h6">You have signed up successfully! Check your email and finish signing up for your account.</Typography>
+        <Typography variant="subtitle2" fontSize="1.2em">You have signed up successfully! Check your email and finish signing up for your account.</Typography>
       </>
     }
 
@@ -297,17 +348,13 @@ const CustomerSignup = () => {
     return;
   }
 
-  if (createStripeCustomerLoading || createSubscriptionLoading) {
-    return <FullScreenLoading />
-  }
-
-  return <Container maxWidth="lg">
-    <Paper sx={{padding: 8, position: "relative"}}>
-      <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
-
-      {renderCompanySignupFlow()}
-    </Paper>
-  </Container>
+  return  <Container maxWidth="lg">
+        {(createStripeCustomerLoading || createSubscriptionLoading || isLoading) && <FullScreenLoading />}
+        <Paper sx={{padding: 8, position: "relative"}}>
+          <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />  
+          {renderCompanySignupFlow()}
+        </Paper>
+      </Container>
 
 }
 
