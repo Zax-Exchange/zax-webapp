@@ -15,7 +15,7 @@ import VendorSearchResults from "./app/Search/VendorSearchResults";
 import CustomerSearchResults from "./app/Search/CustomerSearchResults";
 import SearchProjectDetail from './app/Search/SearchProjectDetail';
 // import ProjectBid from './app/Projects/ProjectBid';
-import { Container } from "@mui/material";
+import { Container, createTheme } from "@mui/material";
 import CustomerProjectDetail from './app/Projects/CustomerProjectDetail';
 import RequireAuth from './app/Auth/RequireAuth';
 import Login from './app/Login/Login';
@@ -26,10 +26,59 @@ import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './app/ErrorBoundary/ErrorBoundary';
 import CustomerSignup from './app/Login/customer/CustomerSignup';
 import VendorProjectDetail from './app/Projects/VendorProjectDetail';
+import { ThemeProvider } from '@mui/system';
+
+const theme = createTheme({
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#34477f',
+      light: '#3f4f7d',
+    },
+    secondary: {
+      main: '#1b60a0',
+      light: '#457baf',
+      dark: '#12436f',
+      contrastText: '#ffffff',
+    },
+    text: {
+      disabled: 'rgba(146,146,146,0.38)',
+      primary: 'rgba(0,0,0,0.87)',
+      secondary: 'rgba(49,49,49,0.54)',
+    },
+    warning: {
+      main: '#667123',
+    },
+  },
+  typography: {
+    body1: {
+      fontSize: '1.2rem',
+    },
+    subtitle1: {
+      fontSize: '1.1rem',
+      fontWeight: 500,
+    },
+    subtitle2: {
+      fontSize: '1rem',
+    },
+    caption: {
+      fontSize: '0.9rem',
+    },
+    h6: {
+      fontWeight: 500,
+    },
+    button: {
+      lineHeight: 1.48,
+      letterSpacing: '0em',
+    }
+  },
+
+});
 
 function App() {
   
   return (
+    <ThemeProvider theme={theme}>
       <div className="App" style={{ minWidth: "960px" }}>
         <Nav/>
         <ErrorBoundary
@@ -62,6 +111,7 @@ function App() {
         </ErrorBoundary>
 
       </div>
+      </ThemeProvider>
   );
 }
 

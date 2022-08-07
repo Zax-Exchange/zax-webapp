@@ -20,7 +20,7 @@ import FullScreenLoading from "../Utils/Loading";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: 40,
   border:"1px solid #aeaeae",
   backgroundColor: "white",
   flexGrow: 1,

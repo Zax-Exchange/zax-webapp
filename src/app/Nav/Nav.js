@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../Search/SearchBar";
 import "./Nav.scss";
-import { Stack, 
-  Grid, 
+import { 
   Drawer, 
   Box, 
   List, 
@@ -16,26 +15,21 @@ import { Stack,
   DialogContent, 
   AppBar,
   Toolbar,
-  InputBase,
-  ThemeProvider,
   ListItemIcon
 } from "@mui/material";
 import { 
   Menu,
   Home,
-  Search,
   TextSnippet,
-  AccountBox,
   Settings,
   Logout
 } from "@mui/icons-material";
 import { useContext, useState } from "react";
 import CreateProjectMoal from "../Projects/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
-import { PrimaryButton, buttonTheme } from "../themedComponents/Buttons";
-import { Container } from "@mui/system";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
+import logo from "../../static/logo.png";
 
 const Nav = () => {
   const navigate = useNavigate();
@@ -76,7 +70,7 @@ const Nav = () => {
               <ListItemIcon>
                 <Home />
               </ListItemIcon>
-              <ListItemText primary="Home"></ListItemText>
+              <ListItemText primary="Home" primaryTypographyProps={{variant: "subtitle1"}}></ListItemText>
             </ListItemButton>
           </ListItem>
 
@@ -85,7 +79,7 @@ const Nav = () => {
               <ListItemIcon>
                 <TextSnippet />
               </ListItemIcon>
-              <ListItemText primary="Projects"></ListItemText>
+              <ListItemText primary="Projects" primaryTypographyProps={{variant: "subtitle1"}}></ListItemText>
             </ListItemButton>
           </ListItem>
 
@@ -103,7 +97,7 @@ const Nav = () => {
               <ListItemIcon>
                 <Settings />
               </ListItemIcon>
-              <ListItemText primary="Settings"></ListItemText>
+              <ListItemText primary="Settings" primaryTypographyProps={{variant: "subtitle1"}}></ListItemText>
             </ListItemButton>
           </ListItem>
 
@@ -112,7 +106,7 @@ const Nav = () => {
               <ListItemIcon>
                 <Logout />
               </ListItemIcon>
-              <ListItemText primary="Log out"></ListItemText>
+              <ListItemText primary="Log out" primaryTypographyProps={{variant: "subtitle1"}}></ListItemText>
             </ListItemButton>
           </ListItem>
         </List>
@@ -128,22 +122,21 @@ const Nav = () => {
         size="large"
         edge="start"
         color="inherit"
-        sx={{ mr: 2, color: "gray" }}
+        sx={{ color: "gray" }}
         onClick={() => setSideNavOpen(true)}
       >
       <Menu />
     </IconButton>;
   }
 
-  const renderAppName = () => {
-    return <Typography
-      variant="h6"
-      noWrap
-      component="div"
-      sx={{ display: { xs: 'none', sm: 'block' }, textAlign: "right", color: "#212d4c" }}
-    >
-      ZAX EXCHANGE
-    </Typography>
+  const renderLogo = () => {
+    return <img 
+      src={logo}
+      height={44}
+      style={{ marginBottom: 2, cursor: "pointer" }}
+      onClick={() => navigate("/")}
+    />
+
   }
 
   const renderCustomerNav = () => {
@@ -151,12 +144,12 @@ const Nav = () => {
       <Toolbar>
         {renderHamburger()}
 
-        {renderAppName()}
+        {renderLogo()}
         
         <SearchBar />
 
         <Box display="flex" flexGrow={1} justifyContent="flex-end">
-          <PrimaryButton onClick={() => setIsCreateProjectOpen(true)} variant="contained">CREATE PROJECT</PrimaryButton>
+          <Button onClick={() => setIsCreateProjectOpen(true)} variant="contained">CREATE PROJECT</Button>
         </Box>
         
       </Toolbar>
@@ -184,11 +177,11 @@ const Nav = () => {
             <Button sx={{ color: "#4c5678" }} variant="primary" onClick={() => handleLoggedOutOnClick("login")}>
               Log In
             </Button>
-            <PrimaryButton variant="contained" onClick={() => handleLoggedOutOnClick("company-signup")}>
+            <Button variant="contained" onClick={() => handleLoggedOutOnClick("company-signup")}>
               Get Started
-            </PrimaryButton>
+            </Button>
 
-            {renderAppName()}
+            {renderLogo()}
           </Toolbar>
       </>
   }
@@ -197,7 +190,7 @@ const Nav = () => {
     return <>
       <Toolbar>
         {renderHamburger()}
-        {renderAppName()}
+        {renderLogo()}
         <SearchBar />
       </Toolbar>
     </>
@@ -205,7 +198,7 @@ const Nav = () => {
 
   return ( <>
     {snackbarOpen && <CustomSnackbar severity={snackbar.severity} direction="right" message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)}/>}
-    <ThemeProvider theme={buttonTheme}>
+
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar position="static" sx={{ backgroundColor: "white", boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)" }}>
           {!user && renderLoggedOutNav()}
@@ -214,7 +207,6 @@ const Nav = () => {
         </AppBar>
       </Box>
       {renderSideNav()}
-      </ThemeProvider>
     </>
   )
 }

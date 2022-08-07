@@ -6,7 +6,7 @@ const ListItem = styled(MuiListItem)(() => ({
   flexDirection: "column",
   alignItems: "flex-start",
   paddingLeft: 0,
-  "&.MuiTypography-root": {
+  "& .MuiTypography-root": {
     textAlign: "left"
   },
 

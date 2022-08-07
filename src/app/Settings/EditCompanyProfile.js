@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Chip, Container, IconButton, Input, ListItem, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Chip, Container, IconButton, Input, ListItem, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { countries } from "../constants/countries";
@@ -423,7 +423,7 @@ const EditCompanyProfile = ({
           {renderVendorOrCustomerForm()}
 
           <Container sx={{ display: "flex", justifyContent:"flex-end", marginTop: 2 }} disableGutters>
-            <ThemeProvider theme={buttonTheme}>
+            {/* <ThemeProvider theme={buttonTheme}>
               <PrimaryButton 
                 variant="contained" 
                 disabled={shouldDisableUpdateButton()}
@@ -431,7 +431,13 @@ const EditCompanyProfile = ({
               >
                 Update
               </PrimaryButton>
-          </ThemeProvider>
+          </ThemeProvider> */}
+          <Button
+            disabled={shouldDisableUpdateButton()}
+            onClick={updateCompanyData}
+          >
+            Update
+          </Button>
           </Container>
         </Stack>
       </>

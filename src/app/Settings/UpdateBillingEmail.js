@@ -7,7 +7,7 @@ import { ShrinkTextField } from "../themedComponents/ShrinkTextField";
 import FullScreenLoading from "../Utils/Loading";
 import { useGetCompanyDetail, useUpdateCustomerData, useUpdateVendorData } from "../hooks/companyHooks";
 
-const EditBilling = ({
+const UpdateBillingEmail = ({
   setSnackbar,
   setSnackbarOpen
 }) => {
@@ -15,9 +15,9 @@ const EditBilling = ({
 
 
   return <Container>
-    <Typography variant="h6">Change Billing Information</Typography>
+    <Typography variant="h6">Update Billing Email</Typography>
     
   </Container>
 }
 
-export default EditBilling;
+export default UpdateBillingEmail;

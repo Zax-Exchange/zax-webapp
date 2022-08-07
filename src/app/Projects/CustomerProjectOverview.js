@@ -4,19 +4,35 @@ import {
   Paper,
   Container,
   Typography,
-  Button,
   Dialog,
   DialogContent,
   IconButton,
   Menu,
   MenuItem,
-  DialogActions,
-  Stack,
+  List,
+  MenuList,
  } from "@mui/material";
 import ProjectPermissionModal from "./ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import DeleteProjectModal from "./DeleteProjectModal";
+import MuiListItem from "@mui/material/ListItem";
+import { styled } from "@mui/system";
+
+const ListItem = styled(MuiListItem)(() => ({
+  justifyContent: "flex-start",
+  paddingLeft: 0,
+  "& .MuiTypography-root": {
+    textAlign: "left",
+    "&:nth-of-type(1)": {
+      flexBasis: "50%"
+    },
+    "&:nth-of-type(2)": {
+      flexBasis: "30%"
+    }
+  }
+}));
+
 
 const CustomerProjectOverview = ({ 
   project, 
@@ -87,39 +103,62 @@ const CustomerProjectOverview = ({
         anchorEl={projectMenuAnchor}
         open={projectMenuOpen}
         onClose={moreOnClose}
-        
         PaperProps={{
           style: {
             maxHeight: "120px"
           },
         }}
       >
-        <MenuItem onClick={projectMenuOnClick}>
-          View detail
-        </MenuItem>
+        <MenuList dense sx={{padding: "4px 0 4px"}}>
+          <MenuItem onClick={projectMenuOnClick}>
+            View detail
+          </MenuItem>
 
-        <MenuItem onClick={projectMenuOnClick} disabled={!canShare()}>
-          Share
-        </MenuItem>
+          <MenuItem onClick={projectMenuOnClick} disabled={!canShare()}>
+            Share
+          </MenuItem>
 
-        <MenuItem onClick={projectMenuOnClick} disabled={!canDelete()}>
-          Delete
-        </MenuItem>
-
+          <MenuItem onClick={projectMenuOnClick} disabled={!canDelete()}>
+            Delete
+          </MenuItem>
+        </MenuList>
       </Menu>
       <Container sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}>
         <Typography variant="h6" align="left">{project.name}</Typography>
 
         {/* <Typography align="left">Company: {project.companyId}</Typography> */}
-        <Stack spacing={2}>
-          <Typography align="left">Delivery date: {project.deliveryDate}</Typography>
-          <Typography align="left">Delivery country: {project.deliveryCountry}</Typography>
-          <Typography align="left">Delivery city: {project.deliveryCity}</Typography>
-          <Typography align="left">Budget: {project.budget}</Typography>
-          <Typography align="left">Posted on: {date}</Typography>
-          <Typography align="left">Status: {project.status}</Typography>
+        <List>
+          <ListItem>
+            <Typography variant="subtitle2">Delivery date</Typography>
+            <Typography variant="caption">{project.deliveryDate}</Typography>
+          </ListItem>
 
-        </Stack>
+          <ListItem>
+            <Typography variant="subtitle2">Delivery country</Typography>
+            <Typography variant="caption">{project.deliveryCountry}</Typography>
+          </ListItem>
+
+          <ListItem>
+            <Typography variant="subtitle2">Delivery city</Typography>
+            <Typography variant="caption">{project.deliveryCity}</Typography>
+          </ListItem>
+
+          <ListItem>
+            <Typography variant="subtitle2">Budget</Typography>
+            <Typography variant="caption">${project.budget}</Typography>
+          </ListItem>
+
+          <ListItem>
+            <Typography variant="subtitle2">Posted on</Typography>
+            <Typography variant="caption">{date}</Typography>
+          </ListItem>
+
+          <ListItem>
+            <Typography variant="subtitle2">Status</Typography>
+            <Typography variant="caption">{project.status}</Typography>
+          </ListItem>
+
+        </List>
 
         {/* <Button style={{alignSelf: "center"}} onClick={viewDetailHandler}>View detail</Button> */}
         {/* {project.permission !== "VIEWER" && <Button onClick={() => setPermissionModalOpen(true)} style={{alignSelf: "center"}}>Share</Button>} */}

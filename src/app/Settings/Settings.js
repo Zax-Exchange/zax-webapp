@@ -4,17 +4,20 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import InviteUsers from "./InviteUsers";
-import EditBilling from "./EditBilling";
+import UpdateBillingEmail from "./UpdateBillingEmail";
 import EditCompanyProfile from "./EditCompanyProfile";
 import DeactivateUsers from "./DeactivateUsers";
 import ChangePassword from "./ChangePassword";
 import ChangePlan from "./ChangePlan";
+import CurrentPlan from "./CurrentPlan";
 
-const NoWrapListItemText = styled(ListItemText)(({ theme }) => ({
+const NoWrapListItemText = styled((props) => {
+  return <ListItemText {...props} primary={<Typography variant="subtitle2" color="#545454" fontSize="0.9em">{props.text}</Typography>}/>
+})(({ theme }) => ({
   whiteSpace: "nowrap",
   "& > .MuiTypography-root": {
     textOverflow: "ellipsis",
-    overflow: "auto"
+    overflow: "auto",
   }
 }))
 
@@ -34,6 +37,11 @@ const SettingsAccordionSummary = styled((props) => {
   }
 }));
 
+const SettingsTitleTypography = styled((props) => {
+  return <Typography variant="h6" {...props}/>
+})(() => ({
+  fontSize: 16
+}));
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
@@ -82,8 +90,8 @@ const Settings = () => {
         setSnackbarOpen={setSnackbarOpen}
       />
     }
-    if (view === "edit-billing") {
-      return <EditBilling 
+    if (view === "update-billing-email") {
+      return <UpdateBillingEmail 
         setSnackbar={setSnackbar}
         setSnackbarOpen={setSnackbarOpen}
       />
@@ -95,6 +103,12 @@ const Settings = () => {
       />
     }
 
+    if (view === "view-current-plan") {
+      return <CurrentPlan 
+        setSnackbar={setSnackbar}
+        setSnackbarOpen={setSnackbarOpen}
+      />
+    }
   }
 
   return (
@@ -105,7 +119,7 @@ const Settings = () => {
           <Paper sx={{borderRadius: 1}}>
             <SettingsAccordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
               <SettingsAccordionSummary>
-                <Typography>Account Settings</Typography>
+                <SettingsTitleTypography>Account Settings</SettingsTitleTypography>
               </SettingsAccordionSummary>
               <AccordionDetails>
                 <Stack>
@@ -117,7 +131,7 @@ const Settings = () => {
 
                   <ListItem disableGutters onClick={() => setView("change-password")}>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Change password"></NoWrapListItemText>
+                      <NoWrapListItemText text="Change password"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
                 </Stack>
@@ -126,31 +140,31 @@ const Settings = () => {
 
             <SettingsAccordion expanded={expanded === "panel2"} onChange={handleChange("panel2")}>
               <SettingsAccordionSummary>
-                <Typography>Company Settings</Typography>
+                <SettingsTitleTypography>Company Settings</SettingsTitleTypography>
               </SettingsAccordionSummary>
               <AccordionDetails>
                 <Stack>
                   <ListItem disableGutters onClick={() => setView("edit-company-profile")}>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Edit company profile"></NoWrapListItemText>
+                      <NoWrapListItemText text="Edit company profile"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
 
                   <ListItem disableGutters>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Upload certifications"></NoWrapListItemText>
+                      <NoWrapListItemText text="Upload certifications"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
 
                   <ListItem disableGutters>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Request verification"></NoWrapListItemText>
+                      <NoWrapListItemText text="Request verification"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
 
                   <ListItem disableGutters>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Deactivate company"></NoWrapListItemText>
+                      <NoWrapListItemText text="Deactivate company"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
                 </Stack>
@@ -159,25 +173,25 @@ const Settings = () => {
 
             <SettingsAccordion expanded={expanded === "panel3"} onChange={handleChange("panel3")}>
               <SettingsAccordionSummary>
-                <Typography>Manage Company Users</Typography>
+                <SettingsTitleTypography>Manage Company Users</SettingsTitleTypography>
               </SettingsAccordionSummary>
               <AccordionDetails>
                 <Stack>
                   <ListItem disableGutters onClick={() => setView("invite-users")}>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Invite users"></NoWrapListItemText>
+                      <NoWrapListItemText text="Invite users"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
 
                   <ListItem disableGutters onClick={() => setView("deactivate-users")}>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Deactivate users"></NoWrapListItemText>
+                      <NoWrapListItemText text="Deactivate users"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
 
                   <ListItem disableGutters onClick={() => setView("update-user-status")}>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Update user status"></NoWrapListItemText>
+                      <NoWrapListItemText text="Update user status"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
                 </Stack>
@@ -186,25 +200,37 @@ const Settings = () => {
 
             <SettingsAccordion expanded={expanded === "panel4"} onChange={handleChange("panel4")}>
               <SettingsAccordionSummary>
-                <Typography>Billing</Typography>
+                <SettingsTitleTypography>Manage Billing</SettingsTitleTypography>
               </SettingsAccordionSummary>
               <AccordionDetails>
                 <Stack>
-                  <ListItem disableGutters onClick={() => setView("edit-billing")}>
+                  <ListItem disableGutters onClick={() => setView("view-current-plan")}>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Edit billing"></NoWrapListItemText>
+                      <NoWrapListItemText text="View current plan"></NoWrapListItemText>
+                    </ListItemButton>
+                  </ListItem>
+
+                  <ListItem disableGutters onClick={() => setView("update-billing-email")}>
+                    <ListItemButton>
+                      <NoWrapListItemText text="Update billing email"></NoWrapListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                  
+                  <ListItem disableGutters onClick={() => setView("update-billing-card")}>
+                    <ListItemButton>
+                      <NoWrapListItemText text="Update billing card"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
 
                   <ListItem disableGutters onClick={() => setView("view-statements")}>
                     <ListItemButton>
-                      <NoWrapListItemText primary="View statements"></NoWrapListItemText>
+                      <NoWrapListItemText text="View statements"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
 
                   <ListItem disableGutters onClick={() => setView("change-plan")}>
                     <ListItemButton>
-                      <NoWrapListItemText primary="Change plan"></NoWrapListItemText>
+                      <NoWrapListItemText text="Change plan"></NoWrapListItemText>
                     </ListItemButton>
                   </ListItem>
                 </Stack>
