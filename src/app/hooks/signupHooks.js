@@ -12,34 +12,6 @@ const CREATE_CUSTOMER = gql`
     createCustomer(data: $data)
   }
 `
-
-const GET_ALL_PLANS = gql`
-  query getAllPlans($isVendor: Boolean) {
-    getAllPlans(isVendor: $isVendor) {
-      id
-      isVendor
-      planTier
-      name
-      licensedUsers
-      features
-      pricings {
-        monthly {
-          price
-          priceId
-        }
-        annual {
-          price
-          priceId
-        }
-        additionalLicense {
-          price 
-          priceId
-        }
-      }
-    }
-  }
-`;
-
 /**
  * 
  * @returns createCompany, createCompanyLoading, createCompanyError, createCompanySuccess
@@ -51,24 +23,6 @@ export const useCreateCompany = (isVendor) => {
     createCompanyLoading,
     createCompanyError,
     createCompanyData
-  }
-}
-/**
- * 
- * @returns getAllPlansData, getAllPlansError, getAllPlansLoading
- */
-export const useGetAllPlans = (isVendor) => {
-  const {error: getAllPlansError, loading: getAllPlansLoading, data: getAllPlansData, refetch: getAllPlansRefetch} = useQuery(GET_ALL_PLANS, {
-    variables: {
-      isVendor
-    }
-  });
-
-  return {
-    getAllPlansData,
-    getAllPlansError,
-    getAllPlansLoading,
-    getAllPlansRefetch
   }
 }
 

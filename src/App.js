@@ -72,7 +72,28 @@ const theme = createTheme({
       letterSpacing: '0em',
     }
   },
-
+  components: {
+    MuiInputBase: {
+      "defaultProps": {
+        "size": "small"
+      },
+      styleOverrides: {
+        "sizeSmall": {
+          "fontSize": "1em"
+        }
+      }
+    },
+    MuiTextField: {
+      defaultProps: {
+        InputLabelProps: {
+          size: "small",
+          sx: {
+            fontSize: 17
+          }
+        }
+      }
+    },
+  }
 });
 
 function App() {

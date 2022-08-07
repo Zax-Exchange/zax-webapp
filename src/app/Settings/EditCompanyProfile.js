@@ -100,6 +100,16 @@ const EditCompanyProfile = ({
     }
   }, [getCompanyDetailData]);
 
+  useEffect(() => {
+    if (getCompanyDetailError) {
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later."
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getCompanyDetailError]);
+
   const onChange = (e) => {
     setCompanyData({
       ...companyData,
@@ -390,24 +400,11 @@ const EditCompanyProfile = ({
 
   const isLoading = getCompanyDetailLoading || updateCustomerDataLoading || updateVendorDataLoading;
 
+  if (isLoading) return <FullScreenLoading />
+  if (getCompanyDetailError) return null;
+
   return <Container>
     <Typography variant="h6">Edit Company Profile</Typography>
-    {isLoading && <FullScreenLoading />}
-
-    {getCompanyDetailError && 
-      <>
-      <Typography>Something went wrong</Typography>
-
-        <ThemeProvider theme={buttonTheme}>
-          <PrimaryButton 
-            variant="contained" 
-            onClick={getCompanyDetailRefetch}
-          >
-            Retry
-          </PrimaryButton>
-      </ThemeProvider>
-      </>
-    }
 
     { 
       companyData && 

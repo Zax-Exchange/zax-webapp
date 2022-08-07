@@ -7,8 +7,9 @@ import { countries } from "../../constants/countries";
 import "./VendorSignup.scss";
 import { usePaymentInputs } from "react-payment-inputs";
 import FullScreenLoading from "../../Utils/Loading";
-import { useCreateCompany, useGetAllPlans } from "../../hooks/signupHooks";
+import { useCreateCompany } from "../../hooks/signupHooks";
 import AddIcon from '@mui/icons-material/Add';
+import { useGetAllPlans } from "../../hooks/planHooks";
 
 const VendorSignup = () => {
   const { user } = useContext(AuthContext);

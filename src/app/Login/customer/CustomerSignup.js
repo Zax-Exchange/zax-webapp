@@ -5,7 +5,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
 import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
-import { useCheckCompanyName, useCreateCompany, useCreateStripeCustomer, useCreateSubscription, useGetAllPlans } from "../../hooks/signupHooks";
+import { useCheckCompanyName, useCreateCompany, useCreateStripeCustomer, useCreateSubscription } from "../../hooks/signupHooks";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import Checkout from "../Checkout";
@@ -16,6 +16,7 @@ import CustomerInfo from "./CustomerInfo";
 import CustomerCompanyReview from "./CustomerCompanyReview";
 import "./CustomerSignup.scss";
 import { CSSTransition } from "react-transition-group";
+import { useGetAllPlans } from "../../hooks/planHooks";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST);
 

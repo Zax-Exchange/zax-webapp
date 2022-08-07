@@ -1,9 +1,10 @@
 import { Container, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react"
 import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
-import { validate } from "react-email-validator";
+import { validate } from "email-validator";
 import { useInviteUser } from "../hooks/companyHooks";
 import { AuthContext } from "../../context/AuthContext";
+import FullScreenLoading from "../Utils/Loading";
 
 
 const InviteUsers = ({
@@ -46,6 +47,10 @@ const InviteUsers = ({
       }
     })
   }
+
+  if (inviteUserLoading) return <FullScreenLoading />;
+
+  if (inviteUserError) return null;
   return <Container>
     
     <Typography variant="h6">Invite Users</Typography>

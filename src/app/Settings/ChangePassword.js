@@ -1,4 +1,4 @@
-import { Container, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Button, Container, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
@@ -45,15 +45,18 @@ const ChangePassword = ({
         severity: "success",
         message: "Password updated."
       })
+      setCurrentPassword("");
+      setNewPassword("");
     } catch (e) {
       setSnackbar({
         severity: "error",
-        message: e.message
+        message: "Incorrect passwords."
       })
     } finally {
       setSnackbarOpen(true);
     }
   }
+
 
   return <Container>
     {updateUserPasswordLoading && <FullScreenLoading />}
@@ -61,31 +64,28 @@ const ChangePassword = ({
     <Typography variant="h6">Change password</Typography>
     <Stack spacing={4} sx={{marginTop: 2}}>
       <TextField 
+        required
         type="password"
         label="Current password"
-        placeholder="Enter you current password"
         value={currentPassword}
         onChange={currentPasswordOnChange}
       />
       
       <TextField 
+        required
         type="password"
         label="New password"
-        placeholder="Enter your new password"
         value={newPassword}
         onChange={newPasswordOnChange}
       />
 
       <Container sx={{ display: "flex", justifyContent:"flex-end" }} disableGutters>
-        <ThemeProvider theme={buttonTheme}>
-          <PrimaryButton 
-            variant="contained" 
-
+          <Button 
+            disabled={!newPassword || !currentPassword}
             onClick={updatePassword}
           >
             Update Password
-          </PrimaryButton>
-      </ThemeProvider>
+          </Button>
       </Container>
     </Stack>
   </Container>

@@ -18,6 +18,11 @@ const GET_COMPANY_PLAN = gql`
   }
 `
 
+/**
+ * Gets company plan details
+ * @param {string} companyId 
+ * @returns 
+ */
 export const useGetCompanyPlan = (companyId) => {
   const {
     data: getCompanyPlanData,
@@ -33,5 +38,52 @@ export const useGetCompanyPlan = (companyId) => {
     getCompanyPlanData,
     getCompanyPlanError,
     getCompanyPlanLoading
+  }
+};
+
+const GET_ALL_PLANS = gql`
+  query getAllPlans($isVendor: Boolean) {
+    getAllPlans(isVendor: $isVendor) {
+      id
+      isVendor
+      planTier
+      name
+      licensedUsers
+      features
+      pricings {
+        monthly {
+          price
+          priceId
+        }
+        annual {
+          price
+          priceId
+        }
+        additionalLicense {
+          price 
+          priceId
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * Gets all customer/vendor plan details
+ * @param {boolean} isVendor 
+ * @returns 
+ */
+export const useGetAllPlans = (isVendor) => {
+  const {error: getAllPlansError, loading: getAllPlansLoading, data: getAllPlansData, refetch: getAllPlansRefetch} = useQuery(GET_ALL_PLANS, {
+    variables: {
+      isVendor
+    }
+  });
+
+  return {
+    getAllPlansData,
+    getAllPlansError,
+    getAllPlansLoading,
+    getAllPlansRefetch
   }
 }

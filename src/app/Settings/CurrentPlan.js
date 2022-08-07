@@ -1,5 +1,5 @@
 import { Container, List, Typography, useTheme } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useGetCompanyPlan } from "../hooks/planHooks";
 import FullScreenLoading from "../Utils/Loading";
@@ -36,16 +36,21 @@ const CurrentPlan = ({
   } = useGetCompanyPlan(user.companyId);
 
 
+  useEffect(() => {
+    if (getCompanyPlanError) {
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later."
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getCompanyPlanError]);
+  
   if (getCompanyPlanLoading) {
     return <FullScreenLoading />
   }
 
   if (getCompanyPlanError) {
-    setSnackbar({
-      severity: "error",
-      message: "Something went wrong. Please try again later."
-    });
-    setSnackbarOpen(true);
     return null;
   }
 

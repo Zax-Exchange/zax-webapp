@@ -38,23 +38,24 @@ const DeactivateUsers = ({
       }
       setEmailsList(res);
     }
-  }, [getAllCompanyUsersData])
+  }, [getAllCompanyUsersData]);
+
+  useEffect(() => {
+    if (getAllCompanyUsersError) {
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later."
+      })
+      setSnackbarOpen(true);
+    }
+  }, [getAllCompanyUsersError]);
+
   const emailOnChange = (e) => {
     setEmail(e.target.value);
   }
 
   const selectHandler = (e) => {
     setEmail(e.target.innerHTML)
-  }
-
-  if (getAllCompanyUsersLoading || deactivateUserLoading) return <FullScreenLoading />
-
-  if (getAllCompanyUsersError || deactivateUserError) {
-    setSnackbar({
-      severity: "error",
-      message: "Something went wrong. Please try again later."
-    })
-    setSnackbarOpen(true);
   }
 
   const deactivateOnClick = async () => {
@@ -77,6 +78,13 @@ const DeactivateUsers = ({
       setSnackbarOpen(true);
     }
   }
+
+  if (getAllCompanyUsersLoading || deactivateUserLoading) return <FullScreenLoading />
+
+  if (getAllCompanyUsersError) {
+    return null;
+  }
+
   return <Container>
     
     <Typography variant="h6">Deactivate Users</Typography>
