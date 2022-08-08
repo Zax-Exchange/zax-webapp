@@ -1,14 +1,14 @@
-import { 
-  Button, 
-  Container, 
-  Dialog, 
-  DialogActions, 
-  DialogContent, 
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
   Typography,
-  CircularProgress 
+  CircularProgress,
 } from "@mui/material";
 import { useState } from "react";
-import { useDeleteProject } from "./projectHooks";
+import { useDeleteProject } from "../hooks/projectHooks";
 
 const DeleteProjectModal = ({
   deleteProjectModalOpen,
@@ -19,7 +19,12 @@ const DeleteProjectModal = ({
   setSnackbarOpen,
   setIsProjectPageLoading,
 }) => {
-  const { deleteProject, deleteProjectData, deleteProjectError, deleteProjectLoading } = useDeleteProject();
+  const {
+    deleteProject,
+    deleteProjectData,
+    deleteProjectError,
+    deleteProjectLoading,
+  } = useDeleteProject();
 
   const deleteProjectOnClick = async () => {
     setDeleteProjectModalOpen(false);
@@ -28,53 +33,55 @@ const DeleteProjectModal = ({
     try {
       await deleteProject({
         variables: {
-          projectId
-        }
-      })
+          projectId,
+        },
+      });
       await getCustomerProjectsRefetch();
       setSnackbar({
         message: "Project deleted.",
-        severity: "success"
-      })
+        severity: "success",
+      });
     } catch (e) {
       setSnackbar({
         message: "Something went wrong. Please try again later.",
-        severity: "error"
-      })
+        severity: "error",
+      });
     } finally {
       setIsProjectPageLoading(false);
       setSnackbarOpen(true);
-
     }
-  }
-
-  const renderDeleteProjectConfirmation = () => {
-    return <>
-      <Typography>Do you want to delete the project?</Typography>
-      <DialogActions>
-        <Button onClick={deleteProjectOnClick}>Confirm</Button>
-        <Button onClick={() => setDeleteProjectModalOpen(false)}>Cancel</Button>
-      </DialogActions>
-    </>
   };
 
-  return <Dialog
+  const renderDeleteProjectConfirmation = () => {
+    return (
+      <>
+        <Typography>Do you want to delete the project?</Typography>
+        <DialogActions>
+          <Button onClick={deleteProjectOnClick}>Confirm</Button>
+          <Button onClick={() => setDeleteProjectModalOpen(false)}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </>
+    );
+  };
+
+  return (
+    <Dialog
       open={deleteProjectModalOpen}
       onClose={() => setDeleteProjectModalOpen(false)}
       maxWidth="xs"
     >
-
       <DialogContent>
         <Container>
           {/* {deleteProjectLoading && <CircularProgress />} */}
-          {
-            !deleteProjectLoading 
-            && !deleteProjectError 
-            && renderDeleteProjectConfirmation()
-          }
+          {!deleteProjectLoading &&
+            !deleteProjectError &&
+            renderDeleteProjectConfirmation()}
         </Container>
       </DialogContent>
     </Dialog>
+  );
 };
 
 export default DeleteProjectModal;

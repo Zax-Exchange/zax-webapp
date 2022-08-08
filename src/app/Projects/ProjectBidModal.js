@@ -1,21 +1,28 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import ProjectBidComponent from "./ProjectBidComponent";
 import "./ProjectBid.scss";
 import { useContext, useState } from "react";
-import { useVendorProjects } from "./Projects";
-import { Container, Button, Typography, List, ListItem, Grid } from "@mui/material";
+import {
+  Container,
+  Button,
+  Typography,
+  List,
+  ListItem,
+  Grid,
+} from "@mui/material";
 import { AuthContext } from "../../context/AuthContext";
-import { useGetVendorProjects } from "./projectHooks";
-import { useCreateProjectBid, useGetProjectDetail } from "../hooks/projectHooks";
+import {
+  useGetVendorProjects,
+  useCreateProjectBid,
+  useGetProjectDetail,
+} from "../hooks/projectHooks";
 import FullScreenLoading from "../Utils/Loading";
 
-
 const ProjectBidModal = ({
-  projectId, 
+  projectId,
   setIsOpen,
   setSnackbar,
-  setSnackbarOpen
+  setSnackbarOpen,
 }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -23,15 +30,12 @@ const ProjectBidModal = ({
   const {
     getProjectDetailData,
     getProjectDetailError,
-    getProjectDetailLoading
+    getProjectDetailLoading,
   } = useGetProjectDetail(projectId);
 
-  const {
-    createProjectBid,
-    createProjectBidLoading,
-    createProjectBidError
-  } = useCreateProjectBid();
-  
+  const { createProjectBid, createProjectBidLoading, createProjectBidError } =
+    useCreateProjectBid();
+
   const { getVendorProjectsRefetch } = useGetVendorProjects(user.id);
 
   const [comments, setComments] = useState("");
@@ -44,8 +48,8 @@ const ProjectBidModal = ({
     for (let id in componentsQpData) {
       components.push({
         projectComponentId: id,
-        quantityPrices: componentsQpData[id]
-      })
+        quantityPrices: componentsQpData[id],
+      });
     }
 
     try {
@@ -55,27 +59,26 @@ const ProjectBidModal = ({
             userId: user.id,
             projectId,
             comments,
-            components
-          }
-        }
-      })
+            components,
+          },
+        },
+      });
       setSnackbar({
         severity: "success",
-        message: "Bid created."
-      })
+        message: "Bid created.",
+      });
       setSnackbarOpen(true);
       navigate("/projects");
-      
     } catch (error) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later."
-      })
+        message: "Something went wrong. Please try again later.",
+      });
     } finally {
-      setIsOpen(false)
+      setIsOpen(false);
       setSnackbarOpen(true);
     }
-  }
+  };
 
   if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
     const {
@@ -86,45 +89,64 @@ const ProjectBidModal = ({
       deliveryCity,
       design,
       status,
-      components
+      components,
     } = getProjectDetailData.getProjectDetail;
 
-    {createProjectBidLoading && <FullScreenLoading />}
+    {
+      createProjectBidLoading && <FullScreenLoading />;
+    }
     return (
-    <Container className="project-bid-container">
-      <Grid container>
-        <Grid item xs={6}>
-          <Typography>Project Detail</Typography>
-          <List>
-            <ListItem><Typography>name: {projectName}</Typography></ListItem>
-            <ListItem><Typography>deliveryDate: {deliveryDate}</Typography></ListItem>
-            <ListItem><Typography>deliveryCountry: {deliveryCountry}</Typography></ListItem>
-            <ListItem><Typography>budget: {budget}</Typography></ListItem>
-            <ListItem><Typography>deliveryCity: {deliveryCity}</Typography></ListItem>
-            <ListItem><Typography>design: {design}</Typography></ListItem>
-            <ListItem><Typography>status: {status}</Typography></ListItem>
+      <Container className="project-bid-container">
+        <Grid container>
+          <Grid item xs={6}>
+            <Typography>Project Detail</Typography>
+            <List>
+              <ListItem>
+                <Typography>name: {projectName}</Typography>
+              </ListItem>
+              <ListItem>
+                <Typography>deliveryDate: {deliveryDate}</Typography>
+              </ListItem>
+              <ListItem>
+                <Typography>deliveryCountry: {deliveryCountry}</Typography>
+              </ListItem>
+              <ListItem>
+                <Typography>budget: {budget}</Typography>
+              </ListItem>
+              <ListItem>
+                <Typography>deliveryCity: {deliveryCity}</Typography>
+              </ListItem>
+              <ListItem>
+                <Typography>design: {design}</Typography>
+              </ListItem>
+              <ListItem>
+                <Typography>status: {status}</Typography>
+              </ListItem>
+            </List>
+          </Grid>
 
-          </List>
+          <Grid item xs={6}>
+            <Typography>Components Detail</Typography>
+
+            {components.map((comp) => {
+              return (
+                <ProjectBidComponent
+                  component={comp}
+                  setComponentQpData={setComponentQpData}
+                  componentsQpData={componentsQpData}
+                />
+              );
+            })}
+          </Grid>
+
+          <Container>
+            <Button onClick={submitBid}>Submit</Button>
+            <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+          </Container>
         </Grid>
-        
-        <Grid item xs={6}>
-          <Typography>Components Detail</Typography>
-
-          {
-            components.map(comp => {
-              return <ProjectBidComponent component={comp} setComponentQpData={setComponentQpData} componentsQpData={componentsQpData}/>
-            })
-          }
-        </Grid>
-        
-        <Container>
-          <Button onClick={submitBid}>Submit</Button>
-          <Button onClick={() => setIsOpen(false)}>Cancel</Button>
-        </Container>
-      </Grid>
-    </Container>)
-
+      </Container>
+    );
   }
-}
+};
 
 export default ProjectBidModal;

@@ -1,96 +1,101 @@
-import { Autocomplete, Container, Dialog, DialogActions, DialogContent, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Stack,
+  TextField,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useGetAllCompanyUsers } from "../hooks/permissionHooks";
-import { buttonTheme, PrimaryButton, SecondaryButton, WarningButton } from "../themedComponents/Buttons";
 import FullScreenLoading from "../Utils/Loading";
 import { useDeactivateUser } from "../hooks/userHooks";
 
-
-
-const DeactivateUsers = ({
-  setSnackbar,
-  setSnackbarOpen
-}) => {
+const DeactivateUsers = ({ setSnackbar, setSnackbarOpen }) => {
   const { user } = useContext(AuthContext);
 
-  const { 
+  const {
     getAllCompanyUsersData,
     getAllCompanyUsersLoading,
-    getAllCompanyUsersError
+    getAllCompanyUsersError,
   } = useGetAllCompanyUsers(user.companyId);
 
-  const {
-    deactivateUser,
-    deactivateUserLoading,
-    deactivateUserError
-  } = useDeactivateUser();
+  const { deactivateUser, deactivateUserLoading, deactivateUserError } =
+    useDeactivateUser();
 
   const [emailsList, setEmailsList] = useState([]);
   const [email, setEmail] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    if (getAllCompanyUsersData && getAllCompanyUsersData.getAllUsersWithinCompany) {
+    if (
+      getAllCompanyUsersData &&
+      getAllCompanyUsersData.getAllUsersWithinCompany
+    ) {
       const res = [];
       for (let u of getAllCompanyUsersData.getAllUsersWithinCompany) {
         if (u.email !== user.email) res.push(u.email);
       }
       setEmailsList(res);
     }
-  }, [getAllCompanyUsersData]);
+  }, [getAllCompanyUsersData, user.email]);
 
   useEffect(() => {
     if (getAllCompanyUsersError) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later."
-      })
+        message: "Something went wrong. Please try again later.",
+      });
       setSnackbarOpen(true);
     }
-  }, [getAllCompanyUsersError]);
+  }, [getAllCompanyUsersError, setSnackbar, setSnackbarOpen]);
 
   const emailOnChange = (e) => {
     setEmail(e.target.value);
-  }
+  };
 
   const selectHandler = (e) => {
-    setEmail(e.target.innerHTML)
-  }
+    setEmail(e.target.innerHTML);
+  };
 
   const deactivateOnClick = async () => {
     try {
       await deactivateUser({
         variables: {
-          email
-        }
+          email,
+        },
       });
       setSnackbar({
         severity: "success",
-        message: "User deactivated."
-      })
+        message: "User deactivated.",
+      });
     } catch (e) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later."
-      })
+        message: "Something went wrong. Please try again later.",
+      });
     } finally {
       setSnackbarOpen(true);
     }
-  }
+  };
 
-  if (getAllCompanyUsersLoading || deactivateUserLoading) return <FullScreenLoading />
+  if (getAllCompanyUsersLoading || deactivateUserLoading)
+    return <FullScreenLoading />;
 
   if (getAllCompanyUsersError) {
     return null;
   }
 
-  return <Container>
-    
-    <Typography variant="h6">Deactivate Users</Typography>
+  return (
+    <Container>
+      <Typography variant="h6">Deactivate Users</Typography>
 
-    <ThemeProvider theme={buttonTheme}>
-      <Stack spacing={4} sx={{marginTop: 2}}>
+      <Stack spacing={4} sx={{ marginTop: 2 }}>
         <Autocomplete
           // sx={{width: 300}}
           freeSolo
@@ -104,41 +109,46 @@ const DeactivateUsers = ({
               label="User email"
               InputProps={{
                 ...params.InputProps,
-                type: 'search',
+                type: "search",
               }}
-              onChange={emailOnChange} 
+              onChange={emailOnChange}
               value={email}
             />
-
           )}
         />
-        
-        <Container sx={{ display: "flex", justifyContent:"flex-end" }} disableGutters>
-            <PrimaryButton 
-              variant="contained" 
-              onClick={() => setDialogOpen(true)}
-            >
-              Deactivate user
-            </PrimaryButton>
+
+        <Container
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+          disableGutters
+        >
+          <Button onClick={() => setDialogOpen(true)}>Deactivate user</Button>
         </Container>
       </Stack>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md">
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="md"
+      >
         <DialogContent>
-          <Typography variant="h6" textAlign="center">Are you sure?</Typography>
+          <Typography variant="h6" textAlign="center">
+            Are you sure?
+          </Typography>
 
           <DialogActions>
-            <WarningButton onClick={deactivateOnClick} variant="contained">
+            <Button
+              onClick={deactivateOnClick}
+              variant="contained"
+              color="error"
+            >
               Confirm
-            </WarningButton>
-            <SecondaryButton onClick={() => setDialogOpen(false)} variant="contained">
-              Cancel
-            </SecondaryButton>
+            </Button>
+            <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
           </DialogActions>
         </DialogContent>
       </Dialog>
-    </ThemeProvider>
-  </Container>
-}
+    </Container>
+  );
+};
 
 export default DeactivateUsers;

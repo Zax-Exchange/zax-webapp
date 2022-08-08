@@ -7,68 +7,76 @@ const ListItem = styled(MuiListItem)(() => ({
   alignItems: "flex-start",
   paddingLeft: 0,
   "& .MuiTypography-root": {
-    textAlign: "left"
+    textAlign: "left",
   },
-
-}))
+}));
 
 const CustomerCompanyReview = ({
   values,
   getAllPlansData,
-  subscriptionInfo
+  subscriptionInfo,
 }) => {
+  const plan = getAllPlansData.getAllPlans.find(
+    (plan) => plan.id === values.planId
+  );
 
-  const plan = getAllPlansData.getAllPlans.find(plan => plan.id === values.planId);
-
-  return <>
-    <Typography textAlign="left" variant="h6" fontSize="1.2em" sx={{marginBottom: 4}}>Review your company information</Typography>
-    <Container maxWidth="sm" disableGutters sx={{ margin: 0 }}>
-      <List>
-        <ListItem>
-          <Typography variant="subtitle2">Billing Email</Typography>
-          <Typography variant="caption">{values.userEmail}</Typography>
-        </ListItem>
-        <ListItem>
-          <Typography variant="subtitle2">Company Name</Typography>
-          <Typography variant="caption">{values.name}</Typography>
-        </ListItem>
-        <ListItem>
-          <Typography variant="subtitle2">Company Phone</Typography>
-          <Typography variant="caption">{values.phone}</Typography>
-        </ListItem>
-        <ListItem>
-          <Typography variant="subtitle2">Company Country</Typography>
-          <Typography variant="caption">{values.country}</Typography>
-        </ListItem>
-        {
-          values.companyUrl && 
+  return (
+    <>
+      <Typography
+        textAlign="left"
+        variant="h6"
+        fontSize="1.2em"
+        sx={{ marginBottom: 4 }}
+      >
+        Review your company information
+      </Typography>
+      <Container maxWidth="sm" disableGutters sx={{ margin: 0 }}>
+        <List>
           <ListItem>
-            <Typography variant="subtitle2">Company URL</Typography>
-            <Typography variant="caption">{values.companyUrl}</Typography>
+            <Typography variant="subtitle2">Billing Email</Typography>
+            <Typography variant="caption">{values.userEmail}</Typography>
           </ListItem>
-        }
-
-        {
-          values.fax && 
           <ListItem>
-            <Typography variant="subtitle2">Company Fax</Typography>
-            <Typography variant="caption">{values.fax}</Typography>
+            <Typography variant="subtitle2">Company Name</Typography>
+            <Typography variant="caption">{values.name}</Typography>
           </ListItem>
-        }
+          <ListItem>
+            <Typography variant="subtitle2">Company Phone</Typography>
+            <Typography variant="caption">{values.phone}</Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="subtitle2">Company Country</Typography>
+            <Typography variant="caption">{values.country}</Typography>
+          </ListItem>
+          {values.companyUrl && (
+            <ListItem>
+              <Typography variant="subtitle2">Company URL</Typography>
+              <Typography variant="caption">{values.companyUrl}</Typography>
+            </ListItem>
+          )}
 
-        
-        <ListItem>
-          <Typography variant="subtitle2">Selected Plan</Typography>
-          <Typography variant="caption">{plan.name} Plan</Typography>
-        </ListItem>
+          {values.fax && (
+            <ListItem>
+              <Typography variant="subtitle2">Company Fax</Typography>
+              <Typography variant="caption">{values.fax}</Typography>
+            </ListItem>
+          )}
 
-        <ListItem>
-          <Typography variant="subtitle2">Billing Detail</Typography>
-          <Typography variant="caption">${subscriptionInfo.price} {subscriptionInfo.billingFrequency}</Typography>
-        </ListItem>
-      </List>
-    </Container>
-  </>
-}
+          <ListItem>
+            <Typography variant="subtitle2">Selected Plan</Typography>
+            <Typography variant="caption">{plan.name} Plan</Typography>
+          </ListItem>
+
+          <ListItem>
+            <Typography variant="subtitle2">Billing Detail</Typography>
+            <Typography variant="caption">
+              ${subscriptionInfo.price} {subscriptionInfo.billingFrequency}
+            </Typography>
+          </ListItem>
+        </List>
+      </Container>
+    </>
+  );
+};
 
 export default CustomerCompanyReview;
