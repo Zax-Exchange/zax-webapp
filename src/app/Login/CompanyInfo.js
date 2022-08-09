@@ -90,7 +90,7 @@ const CompanyInfo = ({
             InputLabelProps={{
               sx: {
                 fontSize: 16,
-                // transform: "translate(14px, 9px) scale(1)",
+                top: -7,
               },
             }}
           />

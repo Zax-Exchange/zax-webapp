@@ -7,6 +7,9 @@ import {
   Button,
   MenuItem,
   Paper,
+  Card,
+  CardActionArea,
+  CardContent,
 } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -70,6 +73,9 @@ const VendorSignup = () => {
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
   const [companySize, setCompanySize] = useState("");
 
+  // determines whether createSubscription should run
+  const [previousPlanIds, setPreviousPlanIds] = useState([]);
+
   const navigate = useNavigate();
   const [values, setValues] = useState({
     name: "",
@@ -114,16 +120,24 @@ const VendorSignup = () => {
 
   // set stripeData.customerId once createStripeCustomer succeeds
   useEffect(() => {
+    // don't run if we already have valid stripe data so back button can work correctly from payment page
+    if (isValidStripeData()) {
+      return;
+    }
     if (createStripeCustomerData) {
       setStripeData({
         ...stripeData,
         customerId: createStripeCustomerData.createStripeCustomer,
       });
     }
-  }, [createStripeCustomerData, stripeData]);
+  }, [createStripeCustomerData]);
 
   // set stripeData.subscriptionId/clientSecret once createSubscription succeeds and proceed to payment page
   useEffect(() => {
+    // don't run if we already have valid stripe data so back button can work correctly from payment page
+    if (isValidStripeData() && !shouldRerunMutation()) {
+      return;
+    }
     if (createSubscriptionData) {
       setStripeData({
         ...stripeData,
@@ -134,40 +148,50 @@ const VendorSignup = () => {
       });
       setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
     }
-  }, [createSubscriptionData, stripeData]);
+  }, [createSubscriptionData]);
 
-  // // goes to review page once user
-  // useEffect(() => {
-  //   if (
-  //     subscriptionInfo.perUserPriceId &&
-  //     subscriptionInfo.subscriptionPriceId
-  //   ) {
-  //     nextPage();
-  //   }
-  // }, [subscriptionInfo]);
+  const shouldRerunMutation = () => {
+    return !previousPlanIds.includes(values.planId);
+  };
+  const isValidStripeData = () => {
+    for (let key in stripeData) {
+      if (!stripeData[key]) return false;
+    }
+    return true;
+  };
+  // goes to review page once user selects a plan
+  // we need this because it's possible for nextPage to render before subscriptionInfo settles
+  useEffect(() => {
+    if (
+      subscriptionInfo.perUserPriceId &&
+      subscriptionInfo.subscriptionPriceId
+    ) {
+      nextPage();
+    }
+  }, [subscriptionInfo]);
 
   const onChange = (e) => {
     const intOnlyRegEx = /^[0-9\b]+$/;
-
+    let val = e.target.value;
     let isAllowed = true;
 
     switch (e.target.name) {
       case "phone":
       case "fax":
-        isAllowed = intOnlyRegEx.test(e.target.value);
+        isAllowed = intOnlyRegEx.test(val);
         break;
       case "leadTime":
-        const month = parseInt(e.target.value, 10);
-        isAllowed =
-          intOnlyRegEx.test(e.target.value) && month > 0 && month <= 18;
+        const month = parseInt(val, 10);
+        isAllowed = intOnlyRegEx.test(val) && month > 0 && month <= 18;
         break;
       default:
         break;
     }
-    if (isAllowed || e.target.value === "") {
+    if (isAllowed || val === "") {
+      if (e.target.name === "leadTime") val = parseInt(val, 10);
       setValues({
         ...values,
-        [e.target.name]: e.target.value,
+        [e.target.name]: val,
       });
     }
   };
@@ -180,7 +204,7 @@ const VendorSignup = () => {
   };
 
   const companySizeOnClick = (e) => {
-    setCompanySize(e.target.name);
+    setCompanySize(e.currentTarget.dataset.name);
     nextPage();
   };
 
@@ -224,6 +248,11 @@ const VendorSignup = () => {
     } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(VendorSignupPage.REVIEW_PAGE);
     } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
+      if (createSubscriptionData && !shouldRerunMutation()) {
+        // if subscription created already and theres no change to email & selected plan, go to next page directly
+        setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
+        return;
+      }
       try {
         const { data } = await createStripeCustomer({
           variables: {
@@ -240,6 +269,7 @@ const VendorSignup = () => {
             },
           },
         });
+        setPreviousPlanIds([...previousPlanIds, values.planId]);
       } catch (error) {
         setSnackbar({
           severity: "error",
@@ -308,7 +338,14 @@ const VendorSignup = () => {
     return (
       <Container
         disableGutters
-        sx={{ display: "flex", justifyContent: "flex-end", gap: 4 }}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 4,
+          position: "absolute",
+          right: 24,
+          bottom: 12,
+        }}
       >
         {buttons}
       </Container>
@@ -364,17 +401,44 @@ const VendorSignup = () => {
         <>
           <Typography variant="h6">Choose your company size</Typography>
 
-          <Stack direction="row" spacing={2}>
-            <Box>
-              <Button name="XS" onClick={companySizeOnClick}>
-                XS
-              </Button>
-              <Typography variant="subtitle2">1 - 25 FTE</Typography>
-            </Box>
-            <Box></Box>
-            <Box></Box>
-            <Box></Box>
+          <Stack direction="row" spacing={2} justifyContent="space-around">
+            <Card>
+              <CardActionArea data-name="XS" onClick={companySizeOnClick}>
+                <CardContent>
+                  <Typography variant="subtitle2">XS</Typography>
+                  <Typography variant="subtitle2">1 - 25 FTE</Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+
+            <Card>
+              <CardActionArea data-name="S" onClick={companySizeOnClick}>
+                <CardContent>
+                  <Typography variant="subtitle2">Small</Typography>
+                  <Typography variant="subtitle2">26 - 99 FTE</Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+
+            <Card>
+              <CardActionArea data-name="M" onClick={companySizeOnClick}>
+                <CardContent>
+                  <Typography variant="subtitle2">Medium</Typography>
+                  <Typography variant="subtitle2">100 - 999 FTE</Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+
+            <Card>
+              <CardActionArea data-name="L" onClick={companySizeOnClick}>
+                <CardContent>
+                  <Typography variant="subtitle2">Large</Typography>
+                  <Typography variant="subtitle2">1000+ FTE</Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
           </Stack>
+          {renderNavigationButtons(true)}
         </>
       );
     } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
@@ -393,7 +457,6 @@ const VendorSignup = () => {
                   planData={plan}
                   selectPlan={selectPlan}
                   setSubscriptionInfo={setSubscriptionInfo}
-                  nextPage={nextPage}
                 />
               ))}
             </Stack>

@@ -57,8 +57,6 @@ const VendorInfo = ({
   moqDetail,
 }) => {
   const [material, setMaterial] = useState("");
-  const [materialInputBorderColor, setMaterialInputBorderColor] =
-    useState("lightgray");
 
   const locationOnChange = (locations) => {
     locations = locations.map((l) => l.label);
@@ -68,51 +66,23 @@ const VendorInfo = ({
     });
   };
 
-  const handleMaterialKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      const materials = [...values.materials];
-      materials.push(material.trim());
-      setValues({
-        ...values,
-        materials,
-      });
-      setMaterial("");
-    }
-  };
-
+  // used for controlling materials input to now allow characters other than alphanumeric and white space chars
   const materialOnChange = (e) => {
     const val = e.target.value;
     const stringOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
 
-    if (stringOnlyRegEx.test(e.target.value) || val === "") {
+    if ((stringOnlyRegEx.test(e.target.value) || val === "") && val !== " ") {
       setMaterial(val);
     }
   };
 
-  const addMaterial = () => {
-    const materials = [...values.materials];
-    materials.push(material.trim());
+  const addMaterial = (value) => {
+    const materials = [...value].map((v) => v.trim());
     setValues({
       ...values,
       materials,
     });
     setMaterial("");
-  };
-
-  const handleMaterialsDelete = (i) => {
-    const arr = [...values.materials];
-    arr.splice(i, 1);
-    setValues({
-      ...values,
-      materials: arr,
-    });
-  };
-
-  const materialOnFocus = (e) => {
-    setMaterialInputBorderColor("rgba(0, 0, 0, 0.87)");
-  };
-  const materialonBlur = (e) => {
-    setMaterialInputBorderColor("lightgray");
   };
 
   const moqOnChange = (e) => {
@@ -130,7 +100,7 @@ const VendorInfo = ({
     if (isAllowed || e.target.value === "") {
       setMoqDetail({
         ...moqDetail,
-        [e.target.name]: e.target.value,
+        [e.target.name]: parseInt(e.target.value, 10),
       });
     }
   };
@@ -169,6 +139,53 @@ const VendorInfo = ({
               ...params.inputProps,
               autoComplete: "new-password", // disable autocomplete and autofill
             }}
+            InputLabelProps={{
+              sx: {
+                fontSize: 16,
+                top: -7,
+              },
+            }}
+          />
+        )}
+      />
+    );
+  };
+
+  const renderMaterialsDropdown = () => {
+    return (
+      <Autocomplete
+        id="materials-select"
+        sx={{ width: 400 }}
+        options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
+        autoHighlight
+        inputValue={material}
+        inputOnChange={materialOnChange}
+        onChange={(e, v) => addMaterial(v)}
+        // value={values.materials}
+        multiple
+        freeSolo
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Manufacturing materials"
+            value={material}
+            onChange={materialOnChange}
+            inputProps={{
+              ...params.inputProps,
+              autoComplete: "new-password",
+            }}
+            helperText="This helps customers to find your company easier."
+            FormHelperTextProps={{
+              sx: {
+                fontSize: 12,
+              },
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: 16,
+                top: -7,
+              },
+            }}
           />
         )}
       />
@@ -190,8 +207,9 @@ const VendorInfo = ({
           onChange={onChange}
         ></TextField>
 
-        <Box>
+        <Box display="flex">
           <TextField
+            sx={{ mr: 2, flexBasis: "35%" }}
             label="Minimum order quantity min"
             name="min"
             value={moqDetail.min}
@@ -199,6 +217,7 @@ const VendorInfo = ({
             helperText="e.g. 5000"
           ></TextField>
           <TextField
+            sx={{ flexBasis: "35%" }}
             label="Minimum order quantity max"
             name="max"
             value={moqDetail.max}
@@ -207,36 +226,7 @@ const VendorInfo = ({
           ></TextField>
         </Box>
 
-        <ListItem disableGutters>
-          <div
-            className="form-control-materials"
-            style={{ borderColor: materialInputBorderColor }}
-          >
-            <div className="container">
-              {values.materials.map((item, index) => (
-                <Chip
-                  size="small"
-                  onDelete={() => handleMaterialsDelete(index)}
-                  label={item}
-                />
-              ))}
-            </div>
-            <Input
-              value={material}
-              onChange={materialOnChange}
-              onKeyDown={handleMaterialKeyDown}
-              placeholder="Material"
-              inputProps={{
-                onFocus: materialOnFocus,
-                onBlur: materialonBlur,
-              }}
-              disableUnderline
-            />
-          </div>
-          <IconButton onClick={addMaterial} disabled={material.length === 0}>
-            <AddIcon />
-          </IconButton>
-        </ListItem>
+        {renderMaterialsDropdown()}
         {renderFactoryLocationDropdown()}
       </Stack>
     </>

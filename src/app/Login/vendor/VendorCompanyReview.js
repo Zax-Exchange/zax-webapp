@@ -6,6 +6,8 @@ const VendorCompanyReview = ({ values, subscriptionInfo, getAllPlansData }) => {
     (plan) => plan.id === values.planId
   );
 
+  console.log({ plan });
+
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }}>
@@ -60,6 +62,17 @@ const VendorCompanyReview = ({ values, subscriptionInfo, getAllPlansData }) => {
             <Typography variant="subtitle2">Materials</Typography>
             <Typography variant="caption">
               {values.materials.join(",")}
+            </Typography>
+          </ListItem>
+
+          <ListItem>
+            <Typography variant="subtitle2">Pricing Detail</Typography>
+            <Typography variant="caption">
+              ${plan.pricings[subscriptionInfo.billingFrequency].price} /{" "}
+              {subscriptionInfo.billingFrequency}
+            </Typography>
+            <Typography variant="caption">
+              ${plan.pricings.perUser.price} / user
             </Typography>
           </ListItem>
         </List>

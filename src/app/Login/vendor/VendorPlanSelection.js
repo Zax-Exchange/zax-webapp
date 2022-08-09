@@ -26,12 +26,7 @@ const PlanListItem = styled(ListItem)(() => ({
   },
 }));
 
-const VendorPlanSelection = ({
-  planData,
-  selectPlan,
-  setSubscriptionInfo,
-  nextPage,
-}) => {
+const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
   const { id, tier, pricings } = planData;
 
   const { monthly, annual, perUser } = pricings;
@@ -41,7 +36,6 @@ const VendorPlanSelection = ({
       ...data,
     });
     selectPlan(id);
-    nextPage();
   };
 
   let svg;
@@ -86,7 +80,7 @@ const VendorPlanSelection = ({
             planOnClick({
               subscriptionPriceId: monthly.priceId,
               perUserPriceId: perUser.priceId,
-              billingFrequency: "Month",
+              billingFrequency: "monthly",
             })
           }
         >
@@ -97,7 +91,7 @@ const VendorPlanSelection = ({
             planOnClick({
               subscriptionPriceId: annual.priceId,
               perUserPriceId: perUser.priceId,
-              billingFrequency: "Year",
+              billingFrequency: "annual",
             })
           }
         >

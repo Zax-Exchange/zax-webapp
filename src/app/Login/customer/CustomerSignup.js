@@ -99,6 +99,9 @@ const CustomerSignup = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
+    if (isValidStripeData()) {
+      return;
+    }
     if (createStripeCustomerData) {
       setStripeData({
         ...stripeData,
@@ -108,6 +111,9 @@ const CustomerSignup = () => {
   }, [createStripeCustomerData]);
 
   useEffect(() => {
+    if (isValidStripeData()) {
+      return;
+    }
     if (createSubscriptionData) {
       setStripeData({
         ...stripeData,
@@ -120,6 +126,12 @@ const CustomerSignup = () => {
     }
   }, [createSubscriptionData]);
 
+  const isValidStripeData = () => {
+    for (let key in stripeData) {
+      if (!stripeData[key]) return false;
+    }
+    return true;
+  };
   const selectPlan = (planId) => {
     setValues({
       ...values,
@@ -151,6 +163,10 @@ const CustomerSignup = () => {
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
+      if (createSubscriptionData) {
+        setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
+        return;
+      }
       try {
         const { data } = await createStripeCustomer({
           variables: {
