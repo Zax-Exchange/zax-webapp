@@ -1,9 +1,8 @@
-
 import { gql, useQuery, useMutation, useLazyQuery } from "@apollo/client";
 
 const CREATE_VENDOR = gql`
   mutation createVendor($data: CreateVendorInput) {
-    createVendor(data: $data) 
+    createVendor(data: $data)
   }
 `;
 
@@ -11,20 +10,27 @@ const CREATE_CUSTOMER = gql`
   mutation createCustomer($data: CreateCustomerInput) {
     createCustomer(data: $data)
   }
-`
+`;
 /**
- * 
+ *
  * @returns createCompany, createCompanyLoading, createCompanyError, createCompanySuccess
  */
 export const useCreateCompany = (isVendor) => {
-  const [createCompany, {loading: createCompanyLoading, error: createCompanyError, data: createCompanyData}] = useMutation(isVendor ? CREATE_VENDOR : CREATE_CUSTOMER);
+  const [
+    createCompany,
+    {
+      loading: createCompanyLoading,
+      error: createCompanyError,
+      data: createCompanyData,
+    },
+  ] = useMutation(isVendor ? CREATE_VENDOR : CREATE_CUSTOMER);
   return {
     createCompany,
     createCompanyLoading,
     createCompanyError,
-    createCompanyData
-  }
-}
+    createCompanyData,
+  };
+};
 
 const CREATE_STRIPE_CUSTOMER = gql`
   mutation createStripeCustomer($email: String) {
@@ -33,35 +39,66 @@ const CREATE_STRIPE_CUSTOMER = gql`
 `;
 
 export const useCreateStripeCustomer = () => {
-  const [createStripeCustomer, { data: createStripeCustomerData, loading: createStripeCustomerLoading, error: createStripeCustomerError }] = useMutation(CREATE_STRIPE_CUSTOMER);
+  const [
+    createStripeCustomer,
+    {
+      data: createStripeCustomerData,
+      loading: createStripeCustomerLoading,
+      error: createStripeCustomerError,
+    },
+  ] = useMutation(CREATE_STRIPE_CUSTOMER);
 
   return {
     createStripeCustomer,
     createStripeCustomerLoading,
     createStripeCustomerError,
-    createStripeCustomerData
-  }
-}
+    createStripeCustomerData,
+  };
+};
 
-const CREATE_SUBSCRIPTION = gql`
-  mutation createSubscription($priceId: String, $customerId: String) {
-    createSubscription(priceId: $priceId, customerId: $customerId) {
+const CREATE_CUSTOMER_SUBSCRIPTION = gql`
+  mutation createCustomerSubscription(
+    $priceId: String
+    $stripeCustomerId: String
+  ) {
+    createCustomerSubscription(
+      priceId: $priceId
+      stripeCustomerId: $stripeCustomerId
+    ) {
       clientSecret
       subscriptionId
     }
   }
 `;
 
-export const useCreateSubscription = () => {
-  const [createSubscription, { data: createSubscriptionData, loading: createSubscriptionLoading, error: createSubscriptionError }] = useMutation(CREATE_SUBSCRIPTION);
+const CREATE_VENDOR_SUBSCRIPTION = gql`
+  mutation createVendorSubscription($data: CreateVendorSubscriptionInput) {
+    createVendorSubscription(data: $data) {
+      clientSecret
+      subscriptionId
+    }
+  }
+`;
+
+export const useCreateSubscription = (isVendor) => {
+  const [
+    createSubscription,
+    {
+      data: createSubscriptionData,
+      loading: createSubscriptionLoading,
+      error: createSubscriptionError,
+    },
+  ] = useMutation(
+    isVendor ? CREATE_VENDOR_SUBSCRIPTION : CREATE_CUSTOMER_SUBSCRIPTION
+  );
 
   return {
     createSubscription,
     createSubscriptionLoading,
     createSubscriptionError,
-    createSubscriptionData
-  }
-}
+    createSubscriptionData,
+  };
+};
 
 const CHECK_COMPANY_NAME = gql`
   query checkCompanyName($name: String) {
@@ -75,16 +112,16 @@ export const useCheckCompanyName = () => {
     {
       data: checkCompanyNameData,
       loading: checkCompanyNameLoading,
-      error: checkCompanyNameError
-    }
-  ] = useLazyQuery(CHECK_COMPANY_NAME)
+      error: checkCompanyNameError,
+    },
+  ] = useLazyQuery(CHECK_COMPANY_NAME);
 
   return {
     checkCompanyName,
     checkCompanyNameData,
     checkCompanyNameLoading,
-    checkCompanyNameError
-  }
+    checkCompanyNameError,
+  };
 };
 
 const CHECK_USER_EMAIL = gql`
@@ -99,14 +136,14 @@ export const useCheckUserEmail = () => {
     {
       data: checkUserEmailData,
       error: checkUserEmailError,
-      loading: checkUserEmailLoading
-    }
-  ] = useLazyQuery(CHECK_USER_EMAIL)
+      loading: checkUserEmailLoading,
+    },
+  ] = useLazyQuery(CHECK_USER_EMAIL);
 
   return {
     checkUserEmail,
     checkUserEmailData,
     checkUserEmailLoading,
-    checkUserEmailError
-  }
+    checkUserEmailError,
+  };
 };

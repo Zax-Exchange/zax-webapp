@@ -78,6 +78,7 @@ const CompanyInfo = ({
         )}
         renderInput={(params) => (
           <TextField
+            required
             {...params}
             label="Company location"
             name="country"
@@ -85,6 +86,12 @@ const CompanyInfo = ({
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password", // disable autocomplete and autofill
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: 16,
+                // transform: "translate(14px, 9px) scale(1)",
+              },
             }}
           />
         )}
@@ -98,6 +105,7 @@ const CompanyInfo = ({
       </Typography>
       <Stack spacing={2} textAlign="right">
         <TextField
+          required
           label="Company name"
           type="text"
           name="name"
@@ -112,6 +120,7 @@ const CompanyInfo = ({
           }}
         ></TextField>
         <TextField
+          required
           label="Company phone number"
           inputProps={{ pattern: "[0-9]*" }}
           type="tel"

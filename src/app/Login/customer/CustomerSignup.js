@@ -58,7 +58,7 @@ const CustomerSignup = () => {
     createSubscriptionLoading,
     createSubscriptionError,
     createSubscriptionData,
-  } = useCreateSubscription();
+  } = useCreateSubscription(false);
 
   const { getAllPlansData } = useGetAllPlans(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -112,18 +112,13 @@ const CustomerSignup = () => {
       setStripeData({
         ...stripeData,
         subscriptionId:
-          createSubscriptionData.createSubscription.subscriptionId,
-        clientSecret: createSubscriptionData.createSubscription.clientSecret,
+          createSubscriptionData.createCustomerSubscription.subscriptionId,
+        clientSecret:
+          createSubscriptionData.createCustomerSubscription.clientSecret,
       });
-      setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
+      setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
     }
   }, [createSubscriptionData]);
-
-  useEffect(() => {
-    if (subscriptionInfo.priceId) {
-      nextPage();
-    }
-  }, [subscriptionInfo]);
 
   const selectPlan = (planId) => {
     setValues({
@@ -154,6 +149,8 @@ const CustomerSignup = () => {
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
       setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
+      setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
+    } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
       try {
         const { data } = await createStripeCustomer({
           variables: {
@@ -163,7 +160,7 @@ const CustomerSignup = () => {
         await createSubscription({
           variables: {
             priceId: subscriptionInfo.priceId,
-            customerId: data.createStripeCustomer,
+            stripeCustomerId: data.createStripeCustomer,
           },
         });
       } catch (error) {
@@ -173,8 +170,6 @@ const CustomerSignup = () => {
         });
         setSnackbarOpen(true);
       }
-    } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
-      setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
     }
   };
 
@@ -200,6 +195,8 @@ const CustomerSignup = () => {
       case CustomerSignupPage.PAYMENT_PAGE:
         setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
         break;
+      default:
+        return;
     }
   };
 
@@ -290,28 +287,12 @@ const CustomerSignup = () => {
       );
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       return (
-        <CSSTransition
-          in={true}
-          timeout={500}
-          appear={true}
-          classNames={{
-            appear: "my-appear",
-            appearActive: "my-active-appear",
-            appearDone: "my-done-appear",
-            enter: "my-enter",
-            enterActive: "my-active-enter",
-            enterDone: "my-done-enter",
-            exit: "my-exit",
-            exitActive: "my-active-exit",
-            exitDone: "my-done-exit",
-          }}
-          unmountOnExit
-        >
+        <Fade in={true} mountOnEnter unmountOnExit appear>
           <div>
             <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
               Pick a plan for your company
             </Typography>
-            <Stack direction="row" justifyContent="space-between">
+            <Stack direction="row" justifyContent="space-around">
               {getAllPlansData &&
                 getAllPlansData.getAllPlans &&
                 getAllPlansData.getAllPlans.map((planData) => {
@@ -320,13 +301,14 @@ const CustomerSignup = () => {
                       planData={planData}
                       selectPlan={selectPlan}
                       setSubscriptionInfo={setSubscriptionInfo}
+                      nextPage={nextPage}
                     />
                   );
                 })}
             </Stack>
             {renderNavigationButtons()}
           </div>
-        </CSSTransition>
+        </Fade>
       );
       // TODO: add  && meta.error === undefined to renderNavigationButtons
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {

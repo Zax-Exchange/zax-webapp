@@ -74,6 +74,18 @@ const theme = createTheme({
       lineHeight: 1.48,
       letterSpacing: "0em",
     },
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
   },
   components: {
     MuiInputBase: {
@@ -91,10 +103,9 @@ const theme = createTheme({
         InputLabelProps: {
           size: "small",
           sx: {
-            fontSize: 14,
+            fontSize: 16,
           },
         },
-        variant: "standard",
       },
     },
   },
@@ -106,7 +117,7 @@ function App() {
       <div className="App" style={{ minWidth: "960px" }}>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Nav />
-          <Container maxWidth="xl">
+          <Container maxWidth="xl" sx={{ mb: 12 }}>
             <Routes>
               <Route
                 path="/"

@@ -4,6 +4,7 @@ import {
   Chip,
   IconButton,
   Input,
+  InputBase,
   ListItem,
   Stack,
   TextField,
@@ -12,8 +13,49 @@ import {
 import { useState } from "react";
 import { countries } from "../../constants/countries";
 import AddIcon from "@mui/icons-material/Add";
+import styled from "@emotion/styled";
 
-const VendorInfo = ({ onChange, values, setValues }) => {
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+  "label + &": {
+    marginTop: theme.spacing(3),
+  },
+  "& .MuiInputBase-input": {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: theme.palette.background.paper,
+    border: "1px solid #ced4da",
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    "&:focus": {
+      borderRadius: 4,
+      borderColor: "#80bdff",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+    },
+  },
+}));
+
+const VendorInfo = ({
+  onChange,
+  values,
+  setValues,
+  setShouldDisableNext,
+  setMoqDetail,
+  moqDetail,
+}) => {
   const [material, setMaterial] = useState("");
   const [materialInputBorderColor, setMaterialInputBorderColor] =
     useState("lightgray");
@@ -29,7 +71,7 @@ const VendorInfo = ({ onChange, values, setValues }) => {
   const handleMaterialKeyDown = (e) => {
     if (e.keyCode === 13) {
       const materials = [...values.materials];
-      materials.push(material);
+      materials.push(material.trim());
       setValues({
         ...values,
         materials,
@@ -39,12 +81,17 @@ const VendorInfo = ({ onChange, values, setValues }) => {
   };
 
   const materialOnChange = (e) => {
-    setMaterial(e.target.value);
+    const val = e.target.value;
+    const stringOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
+
+    if (stringOnlyRegEx.test(e.target.value) || val === "") {
+      setMaterial(val);
+    }
   };
 
   const addMaterial = () => {
     const materials = [...values.materials];
-    materials.push(material);
+    materials.push(material.trim());
     setValues({
       ...values,
       materials,
@@ -66,6 +113,26 @@ const VendorInfo = ({ onChange, values, setValues }) => {
   };
   const materialonBlur = (e) => {
     setMaterialInputBorderColor("lightgray");
+  };
+
+  const moqOnChange = (e) => {
+    const intOnlyRegEx = /^[0-9\b]+$/;
+    let isAllowed = true;
+    switch (e.target.name) {
+      case "min":
+      case "max":
+        isAllowed = intOnlyRegEx.test(e.target.value);
+        break;
+      default:
+        break;
+    }
+
+    if (isAllowed || e.target.value === "") {
+      setMoqDetail({
+        ...moqDetail,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const renderFactoryLocationDropdown = () => {
@@ -116,22 +183,29 @@ const VendorInfo = ({ onChange, values, setValues }) => {
       <Stack spacing={2} textAlign="right">
         <TextField
           label="Typical lead time"
-          inputProps={{ pattern: "[0-9]*" }}
-          type="tel"
+          type="text"
           placeholder="Typical lead time (in months)"
           name="leadTime"
           value={values.leadTime}
           onChange={onChange}
         ></TextField>
-        <TextField
-          label="Minimum order quantity range"
-          type="minimum order quantity"
-          placeholder="Minimum order quantity"
-          name="moq"
-          value={values.moq}
-          onChange={onChange}
-          helperText="e.g. 5000-10000, 6000-8000"
-        ></TextField>
+
+        <Box>
+          <TextField
+            label="Minimum order quantity min"
+            name="min"
+            value={moqDetail.min}
+            onChange={moqOnChange}
+            helperText="e.g. 5000"
+          ></TextField>
+          <TextField
+            label="Minimum order quantity max"
+            name="max"
+            value={moqDetail.max}
+            onChange={moqOnChange}
+            helperText="e.g. 10000"
+          ></TextField>
+        </Box>
 
         <ListItem disableGutters>
           <div

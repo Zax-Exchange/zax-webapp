@@ -7,8 +7,6 @@ const GET_COMPANY_PLAN = gql`
       tier
       price
       billingFrequency
-      licensedUsers
-      remainingQuota
       memberSince
       subscriptionStartDate
       subscriptionEndDate
@@ -16,29 +14,29 @@ const GET_COMPANY_PLAN = gql`
       trialEndDate
     }
   }
-`
+`;
 
 /**
  * Gets company plan details
- * @param {string} companyId 
- * @returns 
+ * @param {string} companyId
+ * @returns
  */
 export const useGetCompanyPlan = (companyId) => {
   const {
     data: getCompanyPlanData,
     error: getCompanyPlanError,
-    loading: getCompanyPlanLoading
+    loading: getCompanyPlanLoading,
   } = useQuery(GET_COMPANY_PLAN, {
     variables: {
-      companyId
-    }
+      companyId,
+    },
   });
 
   return {
     getCompanyPlanData,
     getCompanyPlanError,
-    getCompanyPlanLoading
-  }
+    getCompanyPlanLoading,
+  };
 };
 
 const GET_ALL_PLANS = gql`
@@ -46,10 +44,8 @@ const GET_ALL_PLANS = gql`
     getAllPlans(isVendor: $isVendor) {
       id
       isVendor
-      planTier
-      name
-      licensedUsers
-      features
+      companySize
+      tier
       pricings {
         monthly {
           price
@@ -59,8 +55,8 @@ const GET_ALL_PLANS = gql`
           price
           priceId
         }
-        additionalLicense {
-          price 
+        perUser {
+          price
           priceId
         }
       }
@@ -70,20 +66,25 @@ const GET_ALL_PLANS = gql`
 
 /**
  * Gets all customer/vendor plan details
- * @param {boolean} isVendor 
- * @returns 
+ * @param {boolean} isVendor
+ * @returns
  */
 export const useGetAllPlans = (isVendor) => {
-  const {error: getAllPlansError, loading: getAllPlansLoading, data: getAllPlansData, refetch: getAllPlansRefetch} = useQuery(GET_ALL_PLANS, {
+  const {
+    error: getAllPlansError,
+    loading: getAllPlansLoading,
+    data: getAllPlansData,
+    refetch: getAllPlansRefetch,
+  } = useQuery(GET_ALL_PLANS, {
     variables: {
-      isVendor
-    }
+      isVendor,
+    },
   });
 
   return {
     getAllPlansData,
     getAllPlansError,
     getAllPlansLoading,
-    getAllPlansRefetch
-  }
-}
+    getAllPlansRefetch,
+  };
+};

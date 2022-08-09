@@ -23,9 +23,17 @@ import CreateProjectMoal from "../Projects/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
-import logo from "../../static/logo.png";
+import logo from "../../static/logo2.png";
+import { gql, useMutation } from "@apollo/client";
+
+const query = gql`
+  mutation reset($t: Int) {
+    reset(t: $t)
+  }
+`;
 
 const Nav = () => {
+  const [reset, { loading: resetLoading }] = useMutation(query);
   const navigate = useNavigate();
   const { user, login, logout } = useContext(AuthContext);
   const isVendor = user?.isVendor;
@@ -233,6 +241,22 @@ const Nav = () => {
     );
   };
 
+  const resetData = async () => {
+    try {
+      await reset({
+        variables: {
+          t: 1,
+        },
+      });
+    } catch (error) {
+      setSnackbar({
+        severity: "error",
+        message: error.message,
+      });
+      setSnackbarOpen(true);
+    }
+  };
+
   return (
     <>
       <CustomSnackbar
@@ -242,7 +266,7 @@ const Nav = () => {
         open={snackbarOpen}
         onClose={() => setSnackbarOpen(false)}
       />
-
+      {resetLoading && <FullScreenLoading />}
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar
           position="static"
@@ -254,6 +278,7 @@ const Nav = () => {
           {!user && renderLoggedOutNav()}
           {user && user.isVendor && renderVendorNav()}
           {user && !user.isVendor && renderCustomerNav()}
+          <Button onClick={resetData}>RESET</Button>
         </AppBar>
       </Box>
       {renderSideNav()}

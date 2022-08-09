@@ -28,11 +28,14 @@ import Checkout from "../Checkout";
 import CheckoutSuccess from "../CheckoutSuccess";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
 import { validate } from "email-validator";
+import VendorPlanSelection from "./VendorPlanSelection";
+import VendorCompanyReview from "./VendorCompanyReview";
 
 export const VendorSignupPage = {
   EMAIL_PAGE: "EMAIL_PAGE",
   COMPANY_INFO_PAGE: "COMPANY_INFO_PAGE",
   VENDOR_INFO_PAGE: "VENDOR_INFO_PAGE",
+  COMPANY_SIZE_PAGE: "COMPANY_SIZE_PAGE",
   PLAN_SELECTION_PAGE: "PLAN_SELECTION_PAGE",
   REVIEW_PAGE: "REVIEW_PAGE",
   PAYMENT_PAGE: "PAYMENT_PAGE",
@@ -58,13 +61,14 @@ const VendorSignup = () => {
     createSubscriptionLoading,
     createSubscriptionError,
     createSubscriptionData,
-  } = useCreateSubscription();
+  } = useCreateSubscription(true);
 
   const { getAllPlansData } = useGetAllPlans(true);
 
   const [currentPage, setCurrentPage] = useState(VendorSignupPage.EMAIL_PAGE);
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
+  const [companySize, setCompanySize] = useState("");
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -73,7 +77,7 @@ const VendorSignup = () => {
     phone: "",
     fax: "",
     country: "",
-    isActive: true,
+    isActive: false,
     isVendor: true,
     isVerified: false,
     leadTime: "",
@@ -84,6 +88,10 @@ const VendorSignup = () => {
     planId: "",
     userEmail: "",
   });
+  const [moqDetail, setMoqDetail] = useState({
+    min: "",
+    max: "",
+  });
 
   const [snackbar, setSnackbar] = useState({
     message: "",
@@ -93,8 +101,8 @@ const VendorSignup = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const [subscriptionInfo, setSubscriptionInfo] = useState({
-    price: "",
-    priceId: "",
+    subscriptionPriceId: "",
+    perUserPriceId: "",
     billingFrequency: "",
   });
 
@@ -104,6 +112,7 @@ const VendorSignup = () => {
     clientSecret: "",
   });
 
+  // set stripeData.customerId once createStripeCustomer succeeds
   useEffect(() => {
     if (createStripeCustomerData) {
       setStripeData({
@@ -111,28 +120,51 @@ const VendorSignup = () => {
         customerId: createStripeCustomerData.createStripeCustomer,
       });
     }
-  }, [createStripeCustomerData]);
+  }, [createStripeCustomerData, stripeData]);
 
+  // set stripeData.subscriptionId/clientSecret once createSubscription succeeds and proceed to payment page
   useEffect(() => {
     if (createSubscriptionData) {
       setStripeData({
         ...stripeData,
         subscriptionId:
-          createSubscriptionData.createSubscription.subscriptionId,
-        clientSecret: createSubscriptionData.createSubscription.clientSecret,
+          createSubscriptionData.createVendorSubscription.subscriptionId,
+        clientSecret:
+          createSubscriptionData.createVendorSubscription.clientSecret,
       });
-      setCurrentPage(VendorSignupPage.REVIEW_PAGE);
+      setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
     }
-  }, [createSubscriptionData]);
+  }, [createSubscriptionData, stripeData]);
 
-  useEffect(() => {
-    if (subscriptionInfo.priceId) {
-      nextPage();
-    }
-  }, [subscriptionInfo]);
+  // // goes to review page once user
+  // useEffect(() => {
+  //   if (
+  //     subscriptionInfo.perUserPriceId &&
+  //     subscriptionInfo.subscriptionPriceId
+  //   ) {
+  //     nextPage();
+  //   }
+  // }, [subscriptionInfo]);
 
   const onChange = (e) => {
-    if (e.target.type !== "tel" || e.target.validity.valid) {
+    const intOnlyRegEx = /^[0-9\b]+$/;
+
+    let isAllowed = true;
+
+    switch (e.target.name) {
+      case "phone":
+      case "fax":
+        isAllowed = intOnlyRegEx.test(e.target.value);
+        break;
+      case "leadTime":
+        const month = parseInt(e.target.value, 10);
+        isAllowed =
+          intOnlyRegEx.test(e.target.value) && month > 0 && month <= 18;
+        break;
+      default:
+        break;
+    }
+    if (isAllowed || e.target.value === "") {
       setValues({
         ...values,
         [e.target.name]: e.target.value,
@@ -147,24 +179,65 @@ const VendorSignup = () => {
     });
   };
 
+  const companySizeOnClick = (e) => {
+    setCompanySize(e.target.name);
+    nextPage();
+  };
+
+  const selectPlan = (planId) => {
+    setValues({
+      ...values,
+      planId,
+    });
+  };
+
+  // used for determining if we should disable next button
+  const validateInputs = (fields) => {
+    for (let field of fields) {
+      if (field === "moq") {
+        if (moqDetail.min === "" || moqDetail.max === "") return false;
+
+        if (parseInt(moqDetail.min, 10) > parseInt(moqDetail.max, 10))
+          return false;
+        continue;
+      }
+      if (Array.isArray(values[field]) && values[field].length === 0)
+        return false;
+      if (!values[field]) return false;
+    }
+    return true;
+  };
+
   const nextPage = async () => {
     if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
     } else if (currentPage === VendorSignupPage.COMPANY_INFO_PAGE) {
       setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
     } else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
+      setValues({
+        ...values,
+        moq: [moqDetail.min, moqDetail.max].join("-"),
+      });
+      setCurrentPage(VendorSignupPage.COMPANY_SIZE_PAGE);
+    } else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
       setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
     } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+      setCurrentPage(VendorSignupPage.REVIEW_PAGE);
+    } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
       try {
         const { data } = await createStripeCustomer({
           variables: {
             email: values.userEmail,
           },
         });
+
         await createSubscription({
           variables: {
-            priceId: subscriptionInfo.priceId,
-            customerId: data.createStripeCustomer,
+            data: {
+              stripeCustomerId: data.createStripeCustomer,
+              subscriptionPriceId: subscriptionInfo.subscriptionPriceId,
+              perUserPriceId: subscriptionInfo.perUserPriceId,
+            },
           },
         });
       } catch (error) {
@@ -174,8 +247,6 @@ const VendorSignup = () => {
         });
         setSnackbarOpen(true);
       }
-    } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
-      setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
     }
   };
 
@@ -190,15 +261,13 @@ const VendorSignup = () => {
       case VendorSignupPage.VENDOR_INFO_PAGE:
         setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
         break;
+      case VendorSignupPage.COMPANY_SIZE_PAGE:
+        setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
+        break;
       case VendorSignupPage.PLAN_SELECTION_PAGE:
-        setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
+        setCurrentPage(VendorSignupPage.COMPANY_SIZE_PAGE);
         break;
       case VendorSignupPage.REVIEW_PAGE:
-        setSubscriptionInfo({
-          price: "",
-          priceId: "",
-          billingFrequency: "",
-        });
         setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
         break;
       case VendorSignupPage.PAYMENT_PAGE:
@@ -228,7 +297,10 @@ const VendorSignup = () => {
     let buttons = [];
     if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       buttons = [nextButton];
-    } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+    } else if (
+      currentPage === VendorSignupPage.PLAN_SELECTION_PAGE ||
+      currentPage === VendorSignupPage.COMPANY_SIZE_PAGE
+    ) {
       buttons = [backButton];
     } else {
       buttons = [backButton, nextButton];
@@ -243,18 +315,8 @@ const VendorSignup = () => {
     );
   };
 
-  const validateInputs = (fields) => {
-    for (let field of fields) {
-      if (Array.isArray(values[field]) && values[field].length === 0)
-        return false;
-      if (!values[field]) return false;
-    }
-    return true;
-  };
-
   const renderCompanySignupFlow = () => {
     if (currentPage === VendorSignupPage.EMAIL_PAGE) {
-      // TODO: use email validator
       return (
         <>
           <EmailPage
@@ -288,75 +350,68 @@ const VendorSignup = () => {
             values={values}
             setValues={setValues}
             onChange={onChange}
+            setShouldDisableNext={setShouldDisableNext}
+            setMoqDetail={setMoqDetail}
+            moqDetail={moqDetail}
           />
           {renderNavigationButtons(
             validateInputs(["leadTime", "moq", "materials", "locations"])
           )}
         </>
       );
-    } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+    } else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
       return (
         <>
-          <Typography variant="h6" sx={{ marginBottom: 4 }}>
-            Pick a plan for your company
-          </Typography>
+          <Typography variant="h6">Choose your company size</Typography>
 
-          <Stack spacing={2} textAlign="right">
-            <TextField
-              select
-              onChange={onChange}
-              sx={{ textAlign: "left" }}
-              label="Select a plan"
-              name="planId"
-            >
-              {getAllPlansData &&
-                getAllPlansData.getAllPlans.map((plan) => {
-                  return <MenuItem value={plan.id}>{plan.name}</MenuItem>;
-                })}
-            </TextField>
-
-            {renderNavigationButtons(validateInputs(["planId"]))}
+          <Stack direction="row" spacing={2}>
+            <Box>
+              <Button name="XS" onClick={companySizeOnClick}>
+                XS
+              </Button>
+              <Typography variant="subtitle2">1 - 25 FTE</Typography>
+            </Box>
+            <Box></Box>
+            <Box></Box>
+            <Box></Box>
           </Stack>
         </>
       );
+    } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+      if (getAllPlansData && getAllPlansData.getAllPlans) {
+        const plans = getAllPlansData.getAllPlans.filter(
+          (p) => p.companySize === companySize
+        );
+        return (
+          <>
+            <Typography variant="h6" sx={{ marginBottom: 4 }}>
+              Pick a plan for your company
+            </Typography>
+            <Stack direction="row" justifyContent="space-around">
+              {plans.map((plan) => (
+                <VendorPlanSelection
+                  planData={plan}
+                  selectPlan={selectPlan}
+                  setSubscriptionInfo={setSubscriptionInfo}
+                  nextPage={nextPage}
+                />
+              ))}
+            </Stack>
+            {renderNavigationButtons(true)}
+          </>
+        );
+      }
+      return renderNavigationButtons(true);
       // TODO: add  && meta.error === undefined to renderNavigationButtons
     } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
       return (
         <>
-          <Typography variant="h6" sx={{ marginBottom: 4 }}>
-            Now let's review your company information
-          </Typography>
-          <Container maxWidth="sm">
-            <Stack spacing={2} textAlign="left">
-              <Typography>Your email: {values.userEmail}</Typography>
-              <Typography>Company name: {values.name}</Typography>
-              <Typography>Company phone: {values.phone}</Typography>
-              {values.companyUrl && (
-                <Typography>Company url: {values.companyUrl}</Typography>
-              )}
-              {values.fax && <Typography>Company fax: {values.fax}</Typography>}
-              <Typography>Company country: {values.country}</Typography>
-              <Typography>Typical lead time: {values.leadTime}</Typography>
-              <Typography>
-                Factory locations: {values.locations.join(",")}
-              </Typography>
-              <Typography>Minimum order quantity: {values.moq}</Typography>
-              <Typography>
-                Product materials: {values.materials.join(",")}
-              </Typography>
-              {values.planId && (
-                <Typography>
-                  Selected plan:{" "}
-                  {
-                    getAllPlansData.getAllPlans.find(
-                      (plan) => plan.id === values.planId
-                    ).name
-                  }
-                </Typography>
-              )}
-            </Stack>
-          </Container>
-          {renderNavigationButtons()}
+          <VendorCompanyReview
+            values={values}
+            getAllPlansData={getAllPlansData}
+            subscriptionInfo={subscriptionInfo}
+          />
+          {renderNavigationButtons(true)}
         </>
       );
     } else if (currentPage === VendorSignupPage.PAYMENT_PAGE) {
