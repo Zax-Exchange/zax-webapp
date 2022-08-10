@@ -103,7 +103,7 @@ const theme = createTheme({
         InputLabelProps: {
           size: "small",
           sx: {
-            fontSize: 16,
+            fontSize: 17,
           },
         },
       },

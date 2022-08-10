@@ -113,7 +113,9 @@ const VendorInfo = ({
         options={countries}
         autoHighlight
         getOptionLabel={(option) => option.label}
+        isOptionEqualToValue={(option, val) => option.label === val.label}
         onChange={(e, v) => locationOnChange(v)}
+        value={values.locations.map((location) => ({ label: location }))}
         multiple
         renderOption={(props, option) => (
           <Box
@@ -159,9 +161,9 @@ const VendorInfo = ({
         options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
         autoHighlight
         inputValue={material}
-        inputOnChange={materialOnChange}
+        onInputChange={materialOnChange}
         onChange={(e, v) => addMaterial(v)}
-        // value={values.materials}
+        value={values.materials}
         multiple
         freeSolo
         renderInput={(params) => (

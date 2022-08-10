@@ -77,6 +77,9 @@ const CustomerSignup = () => {
     clientSecret: "",
   });
 
+  const [previousPlanIds, setPreviousPlanIds] = useState([]);
+
+  // TODO: add shouldRerunMutation check (look at VendorSignup)
   const [values, setValues] = useState({
     name: "",
     logo: null,
@@ -99,9 +102,6 @@ const CustomerSignup = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    if (isValidStripeData()) {
-      return;
-    }
     if (createStripeCustomerData) {
       setStripeData({
         ...stripeData,
@@ -111,7 +111,7 @@ const CustomerSignup = () => {
   }, [createStripeCustomerData]);
 
   useEffect(() => {
-    if (isValidStripeData()) {
+    if (isValidStripeData() && !shouldRerunMutation()) {
       return;
     }
     if (createSubscriptionData) {
@@ -123,8 +123,13 @@ const CustomerSignup = () => {
           createSubscriptionData.createCustomerSubscription.clientSecret,
       });
       setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
+      setPreviousPlanIds([...previousPlanIds, values.planId]);
     }
   }, [createSubscriptionData]);
+
+  const shouldRerunMutation = () => {
+    return !previousPlanIds.includes(values.planId);
+  };
 
   const isValidStripeData = () => {
     for (let key in stripeData) {
@@ -151,7 +156,7 @@ const CustomerSignup = () => {
   const countryOnChange = (countryObj) => {
     setValues({
       ...values,
-      country: countryObj ? countryObj.label : null,
+      country: countryObj ? countryObj.label : "",
     });
   };
 
@@ -163,7 +168,7 @@ const CustomerSignup = () => {
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
-      if (createSubscriptionData) {
+      if (createSubscriptionData && !shouldRerunMutation()) {
         setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
         return;
       }

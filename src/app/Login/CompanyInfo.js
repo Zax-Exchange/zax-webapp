@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { countries } from "../constants/countries";
 import { useCheckCompanyName } from "../hooks/signupHooks";
 
@@ -60,6 +60,10 @@ const CompanyInfo = ({
         autoHighlight
         getOptionLabel={(option) => option.label}
         onChange={(e, v) => countryOnChange(v)}
+        // isOptionEqualToValue={(option, val) => option.label === val}
+        value={countries.find((c) => c.label === values.country)}
+        // inputValue={values.country}
+        // onInputChange={countryInputOnChange}
         renderOption={(props, option) => (
           <Box
             component="li"
@@ -81,8 +85,6 @@ const CompanyInfo = ({
             required
             {...params}
             label="Company location"
-            name="country"
-            value={values.country}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password", // disable autocomplete and autofill
@@ -103,7 +105,7 @@ const CompanyInfo = ({
       <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
         Enter your company information
       </Typography>
-      <Stack spacing={2} textAlign="right">
+      <Stack spacing={3} textAlign="right">
         <TextField
           required
           label="Company name"

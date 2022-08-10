@@ -120,10 +120,6 @@ const VendorSignup = () => {
 
   // set stripeData.customerId once createStripeCustomer succeeds
   useEffect(() => {
-    // don't run if we already have valid stripe data so back button can work correctly from payment page
-    if (isValidStripeData()) {
-      return;
-    }
     if (createStripeCustomerData) {
       setStripeData({
         ...stripeData,
@@ -147,6 +143,7 @@ const VendorSignup = () => {
           createSubscriptionData.createVendorSubscription.clientSecret,
       });
       setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
+      setPreviousPlanIds([...previousPlanIds, values.planId]);
     }
   }, [createSubscriptionData]);
 
@@ -197,9 +194,10 @@ const VendorSignup = () => {
   };
 
   const countryOnChange = (countryObj) => {
+    console.log({ countryObj });
     setValues({
       ...values,
-      country: countryObj ? countryObj.label : null,
+      country: countryObj ? countryObj.label : "",
     });
   };
 
@@ -269,7 +267,6 @@ const VendorSignup = () => {
             },
           },
         });
-        setPreviousPlanIds([...previousPlanIds, values.planId]);
       } catch (error) {
         setSnackbar({
           severity: "error",
