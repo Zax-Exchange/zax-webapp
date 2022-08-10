@@ -89,24 +89,16 @@ const CreateProjectMoal = ({
   });
 
   const materialOnChange = (e) => {
-    setMaterial(e.target.value);
-  };
+    const val = e.target.value;
+    const stringOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
 
-  const handleMaterialKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      const materials = [...componentData.materials];
-      materials.push(material);
-      setComponentData({
-        ...componentData,
-        materials,
-      });
-      setMaterial("");
+    if ((stringOnlyRegEx.test(e.target.value) || val === "") && val !== " ") {
+      setMaterial(val);
     }
   };
 
-  const addMaterial = () => {
-    const materials = [...componentData.materials];
-    materials.push(material);
+  const addMaterial = (value) => {
+    const materials = [...value].map((v) => v.trim());
     setComponentData({
       ...componentData,
       materials,
@@ -114,21 +106,6 @@ const CreateProjectMoal = ({
     setMaterial("");
   };
 
-  const handleMaterialsDelete = (i) => {
-    const arr = [...componentData.materials];
-    arr.splice(i, 1);
-    setComponentData({
-      ...componentData,
-      materials: arr,
-    });
-  };
-
-  const materialOnFocus = (e) => {
-    setMaterialInputBorderColor("rgba(0, 0, 0, 0.87)");
-  };
-  const materialonBlur = (e) => {
-    setMaterialInputBorderColor("lightgray");
-  };
   const projectInputHandler = (e) => {
     if (e.target.type !== "tel" || e.target.validity.valid) {
       setProjectData({
@@ -232,31 +209,26 @@ const CreateProjectMoal = ({
         autoHighlight
         getOptionLabel={(option) => option.label}
         onChange={(e, v) => countryOnChange(v)}
+        value={countries.find((c) => c.label === projectData.deliveryCountry)}
         renderOption={(props, option) => (
-          <Box
-            component="li"
-            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-            {...props}
-          >
-            <img
-              loading="lazy"
-              width="20"
-              src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-              srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-              alt=""
-            />
-            {option.label} ({option.code})
+          <Box component="li" {...props}>
+            {option.label}
           </Box>
         )}
         renderInput={(params) => (
           <TextField
+            required
             {...params}
             label="Delivery Country"
-            name="country"
-            value={projectData.deliveryCountry}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password", // disable autocomplete and autofill
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: 16,
+                top: -7,
+              },
             }}
           />
         )}
@@ -264,6 +236,40 @@ const CreateProjectMoal = ({
     );
   };
 
+  const renderMaterialsDropdown = () => {
+    return (
+      <Autocomplete
+        id="materials-select"
+        sx={{ width: 400 }}
+        options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
+        autoHighlight
+        inputValue={material}
+        onInputChange={materialOnChange}
+        onChange={(e, v) => addMaterial(v)}
+        value={componentData.materials}
+        multiple
+        freeSolo
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Component materials"
+            value={material}
+            onChange={materialOnChange}
+            inputProps={{
+              ...params.inputProps,
+              autoComplete: "new-password",
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: 16,
+                top: -7,
+              },
+            }}
+          />
+        )}
+      />
+    );
+  };
   return (
     <>
       {createProjectLoading && <FullScreenLoading />}
@@ -330,36 +336,7 @@ const CreateProjectMoal = ({
             name="name"
             value={componentData.name}
           />
-          <ListItem disableGutters>
-            <div
-              className="form-control-materials"
-              style={{ borderColor: materialInputBorderColor }}
-            >
-              <div className="container">
-                {componentData.materials.map((item, index) => (
-                  <Chip
-                    size="small"
-                    onDelete={() => handleMaterialsDelete(index)}
-                    label={item}
-                  />
-                ))}
-              </div>
-              <Input
-                value={material}
-                onChange={materialOnChange}
-                onKeyDown={handleMaterialKeyDown}
-                placeholder="Materials"
-                inputProps={{
-                  onFocus: materialOnFocus,
-                  onBlur: materialonBlur,
-                }}
-                disableUnderline
-              />
-            </div>
-            <IconButton onClick={addMaterial} disabled={material.length === 0}>
-              <AddIcon />
-            </IconButton>
-          </ListItem>
+          {renderMaterialsDropdown()}
           <TextField
             autoComplete="new-password"
             label="Dimension"

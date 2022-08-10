@@ -52,8 +52,11 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
         sx={{
           objectFit: "contain",
           padding: "14px",
-          width: "13em",
+          width: "21em",
           marginLeft: "10px",
+          ":hover": {
+            backgroundColor: "#f6f6f6",
+          },
         }}
       />
       <CardContent>
@@ -74,8 +77,9 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
           </PlanListItem>
         </List>
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ justifyContent: "space-around" }}>
         <Button
+          variant="outlined"
           onClick={() =>
             planOnClick({
               subscriptionPriceId: monthly.priceId,
@@ -84,9 +88,10 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
             })
           }
         >
-          Select Monthly Plan
+          Monthly Plan
         </Button>
         <Button
+          variant="outlined"
           onClick={() =>
             planOnClick({
               subscriptionPriceId: annual.priceId,
@@ -95,7 +100,7 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
             })
           }
         >
-          Select Annual Plan
+          Annual Plan
         </Button>
       </CardActions>
     </Card>

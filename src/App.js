@@ -103,8 +103,20 @@ const theme = createTheme({
         InputLabelProps: {
           size: "small",
           sx: {
-            fontSize: 17,
+            fontSize: 16,
           },
+        },
+        FormHelperTextProps: {
+          sx: {
+            fontSize: 12,
+          },
+        },
+      },
+    },
+    MuiButton: {
+      defaultProps: {
+        sx: {
+          borderRadius: 40,
         },
       },
     },

@@ -177,11 +177,6 @@ const VendorInfo = ({
               autoComplete: "new-password",
             }}
             helperText="This helps customers to find your company easier."
-            FormHelperTextProps={{
-              sx: {
-                fontSize: 12,
-              },
-            }}
             InputLabelProps={{
               sx: {
                 fontSize: 16,
@@ -199,7 +194,7 @@ const VendorInfo = ({
       <Typography variant="h6" sx={{ marginBottom: 4 }}>
         Since your a vendor, we're going to need a little more information.
       </Typography>
-      <Stack spacing={2} textAlign="right">
+      <Stack spacing={3} textAlign="right">
         <TextField
           label="Typical lead time"
           type="text"

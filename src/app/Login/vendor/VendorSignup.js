@@ -194,7 +194,6 @@ const VendorSignup = () => {
   };
 
   const countryOnChange = (countryObj) => {
-    console.log({ countryObj });
     setValues({
       ...values,
       country: countryObj ? countryObj.label : "",
@@ -403,7 +402,7 @@ const VendorSignup = () => {
               <CardActionArea data-name="XS" onClick={companySizeOnClick}>
                 <CardContent>
                   <Typography variant="subtitle2">XS</Typography>
-                  <Typography variant="subtitle2">1 - 25 FTE</Typography>
+                  <Typography variant="caption">1 - 25 FTE</Typography>
                 </CardContent>
               </CardActionArea>
             </Card>
@@ -412,7 +411,7 @@ const VendorSignup = () => {
               <CardActionArea data-name="S" onClick={companySizeOnClick}>
                 <CardContent>
                   <Typography variant="subtitle2">Small</Typography>
-                  <Typography variant="subtitle2">26 - 99 FTE</Typography>
+                  <Typography variant="caption">26 - 99 FTE</Typography>
                 </CardContent>
               </CardActionArea>
             </Card>
@@ -421,7 +420,7 @@ const VendorSignup = () => {
               <CardActionArea data-name="M" onClick={companySizeOnClick}>
                 <CardContent>
                   <Typography variant="subtitle2">Medium</Typography>
-                  <Typography variant="subtitle2">100 - 999 FTE</Typography>
+                  <Typography variant="caption">100 - 999 FTE</Typography>
                 </CardContent>
               </CardActionArea>
             </Card>
@@ -430,7 +429,7 @@ const VendorSignup = () => {
               <CardActionArea data-name="L" onClick={companySizeOnClick}>
                 <CardContent>
                   <Typography variant="subtitle2">Large</Typography>
-                  <Typography variant="subtitle2">1000+ FTE</Typography>
+                  <Typography variant="caption">1000+ FTE</Typography>
                 </CardContent>
               </CardActionArea>
             </Card>
@@ -510,7 +509,7 @@ const VendorSignup = () => {
   }
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       {(createStripeCustomerLoading ||
         createSubscriptionLoading ||
         isLoading) && <FullScreenLoading />}
