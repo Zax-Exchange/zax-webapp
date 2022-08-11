@@ -33,6 +33,7 @@ import CustomSnackbar from "../../Utils/CustomSnackbar";
 import { validate } from "email-validator";
 import VendorPlanSelection from "./VendorPlanSelection";
 import VendorCompanyReview from "./VendorCompanyReview";
+import { isValidInt } from "../../Utils/inputValidators";
 
 export const VendorSignupPage = {
   EMAIL_PAGE: "EMAIL_PAGE",
@@ -168,23 +169,21 @@ const VendorSignup = () => {
   }, [subscriptionInfo]);
 
   const onChange = (e) => {
-    const intOnlyRegEx = /^[0-9\b]+$/;
     let val = e.target.value;
     let isAllowed = true;
-
     switch (e.target.name) {
       case "phone":
       case "fax":
-        isAllowed = intOnlyRegEx.test(val);
+        isAllowed = isValidInt(val);
         break;
       case "leadTime":
         const month = parseInt(val, 10);
-        isAllowed = intOnlyRegEx.test(val) && month > 0 && month <= 18;
+        isAllowed = isValidInt(val) && month > 0 && month <= 18;
         break;
       default:
         break;
     }
-    if (isAllowed || val === "") {
+    if (isAllowed) {
       if (e.target.name === "leadTime") val = parseInt(val, 10);
       setValues({
         ...values,

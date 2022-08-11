@@ -23,6 +23,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import FullScreenLoading from "../Utils/Loading";
 import contriesJson from "all-countries-and-cities-json";
+import { isValidAlphanumeric, isValidInt } from "../Utils/inputValidators";
 /**
  * name
  * deliveryDate
@@ -83,9 +84,8 @@ const CreateProjectMoal = ({
 
   const materialOnChange = (e) => {
     const val = e.target.value;
-    const stringOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
 
-    if ((stringOnlyRegEx.test(e.target.value) || val === "") && val !== " ") {
+    if (isValidAlphanumeric(val)) {
       setMaterial(val);
     }
   };
@@ -99,9 +99,6 @@ const CreateProjectMoal = ({
     setMaterial("");
   };
 
-  const intOnlyRegEx = /^[0-9\b]+$/;
-  const alphanumericOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
-
   const projectInputHandler = (e) => {
     const val = e.target.value;
     let isAllowed = true;
@@ -109,15 +106,15 @@ const CreateProjectMoal = ({
     switch (e.target.name) {
       case "name":
       case "comments":
-        isAllowed = alphanumericOnlyRegEx.test(val);
+        isAllowed = isValidAlphanumeric(val);
         break;
       case "budget":
-        isAllowed = intOnlyRegEx.test(val);
+        isAllowed = isValidInt(val);
         break;
       default:
         break;
     }
-    if (isAllowed || val === "") {
+    if (isAllowed) {
       setProjectData({
         ...projectData,
         [e.target.name]: val,
@@ -133,7 +130,7 @@ const CreateProjectMoal = ({
       case "name":
       case "dimension":
       case "postProcess":
-        isAllowed = alphanumericOnlyRegEx.text(val);
+        isAllowed = isValidAlphanumeric(val);
         break;
       default:
         break;

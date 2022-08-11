@@ -28,6 +28,7 @@ import { CSSTransition } from "react-transition-group";
 import { useGetAllPlans } from "../../hooks/planHooks";
 import CheckoutSuccess from "../CheckoutSuccess";
 import { validate } from "email-validator";
+import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST
@@ -145,10 +146,24 @@ const CustomerSignup = () => {
   };
 
   const onChange = (e) => {
-    if (e.target.type !== "tel" || e.target.validity.valid) {
+    const val = e.target.value;
+    let isAllowed = true;
+
+    switch (e.target.name) {
+      case "phone":
+      case "fax":
+        isAllowed = isValidInt(val);
+        break;
+      case "name":
+        isAllowed = isValidAlphanumeric(val);
+        break;
+      default:
+        break;
+    }
+    if (isAllowed) {
       setValues({
         ...values,
-        [e.target.name]: e.target.value,
+        [e.target.name]: val,
       });
     }
   };

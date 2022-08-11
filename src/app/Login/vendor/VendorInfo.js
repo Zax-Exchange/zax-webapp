@@ -1,52 +1,7 @@
-import {
-  Autocomplete,
-  Box,
-  Chip,
-  IconButton,
-  Input,
-  InputBase,
-  ListItem,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Autocomplete, Box, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { countries } from "../../constants/countries";
-import AddIcon from "@mui/icons-material/Add";
-import styled from "@emotion/styled";
-
-const BootstrapInput = styled(InputBase)(({ theme }) => ({
-  "label + &": {
-    marginTop: theme.spacing(3),
-  },
-  "& .MuiInputBase-input": {
-    borderRadius: 4,
-    position: "relative",
-    backgroundColor: theme.palette.background.paper,
-    border: "1px solid #ced4da",
-    fontSize: 16,
-    padding: "10px 26px 10px 12px",
-    transition: theme.transitions.create(["border-color", "box-shadow"]),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
-    "&:focus": {
-      borderRadius: 4,
-      borderColor: "#80bdff",
-      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-    },
-  },
-}));
+import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 
 const VendorInfo = ({
   onChange,
@@ -69,12 +24,8 @@ const VendorInfo = ({
   // used for controlling materials input to now allow characters other than alphanumeric and white space chars
   const materialOnChange = (e) => {
     const val = e.target.value;
-    const alphanumericOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
 
-    if (
-      (alphanumericOnlyRegEx.test(e.target.value) || val === "") &&
-      val !== " "
-    ) {
+    if ((isValidAlphanumeric(val) || val === "") && val !== " ") {
       setMaterial(val);
     }
   };
@@ -89,21 +40,21 @@ const VendorInfo = ({
   };
 
   const moqOnChange = (e) => {
-    const intOnlyRegEx = /^[0-9\b]+$/;
+    const val = e.target.value;
     let isAllowed = true;
     switch (e.target.name) {
       case "min":
       case "max":
-        isAllowed = intOnlyRegEx.test(e.target.value);
+        isAllowed = isValidInt(val);
         break;
       default:
         break;
     }
 
-    if (isAllowed || e.target.value === "") {
+    if (isAllowed) {
       setMoqDetail({
         ...moqDetail,
-        [e.target.name]: parseInt(e.target.value, 10),
+        [e.target.name]: parseInt(val, 10),
       });
     }
   };
