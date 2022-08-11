@@ -69,9 +69,12 @@ const VendorInfo = ({
   // used for controlling materials input to now allow characters other than alphanumeric and white space chars
   const materialOnChange = (e) => {
     const val = e.target.value;
-    const stringOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
+    const alphanumericOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
 
-    if ((stringOnlyRegEx.test(e.target.value) || val === "") && val !== " ") {
+    if (
+      (alphanumericOnlyRegEx.test(e.target.value) || val === "") &&
+      val !== " "
+    ) {
       setMaterial(val);
     }
   };

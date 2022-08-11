@@ -6,7 +6,13 @@ const VendorCompanyReview = ({ values, subscriptionInfo, getAllPlansData }) => {
     (plan) => plan.id === values.planId
   );
 
-  console.log({ plan });
+  const renderFrequency = () => {
+    if (subscriptionInfo.billingFrequency === "annual") {
+      return "year";
+    } else {
+      return "month";
+    }
+  };
 
   return (
     <>
@@ -68,12 +74,11 @@ const VendorCompanyReview = ({ values, subscriptionInfo, getAllPlansData }) => {
           <ListItem>
             <Typography variant="subtitle2">Pricing Detail</Typography>
             <Typography variant="caption">
-              ${plan.pricings[subscriptionInfo.billingFrequency].price} /{" "}
-              {subscriptionInfo.billingFrequency}
+              ${plan.pricings.monthly.price} / month
             </Typography>
-            <Typography variant="caption">
-              ${plan.pricings.perUser.price} / user
-            </Typography>
+            {/* <Typography variant="caption">
+              ${plan.pricings.perUser.price} / user each month
+            </Typography> */}
           </ListItem>
         </List>
       </Container>

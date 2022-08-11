@@ -1,4 +1,11 @@
-import { Box, Stack, TextField, Typography, Container, Button } from "@mui/material";
+import {
+  Box,
+  Stack,
+  TextField,
+  Typography,
+  Container,
+  Button,
+} from "@mui/material";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -19,71 +26,88 @@ const CREATE_USER = gql`
       token
     }
   }
-`
+`;
 const UserSignup = () => {
   const { user, login, logout } = useContext(AuthContext);
   const location = useLocation();
-  const [createUser, {error: createUserError, loading: createUserLoading}] = useMutation(CREATE_USER, {
-    onCompleted: (data) => {
-      login(data.createUser)
-    }
-  });
-  
-  const token = location.pathname.split("/")[2];
-  const payload = jwt_decode(token);
+  const [createUser, { error: createUserError, loading: createUserLoading }] =
+    useMutation(CREATE_USER, {
+      onCompleted: (data) => {
+        login(data.createUser);
+      },
+    });
+
+  const companyId = location.pathname.split("/")[2];
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
-    companyId: payload.id
+    companyId,
   });
-
 
   const onChange = (e) => {
     setValues({
       ...values,
-      [e.target.name]: e.target.value
-    })
+      [e.target.name]: e.target.value,
+    });
   };
 
   const createUserHandler = () => {
-
     createUser({
       variables: {
         data: {
           name: values.name,
           email: values.email,
           password: values.password,
-          companyId: values.companyId
-        }
-      }
-    })
+          companyId: values.companyId,
+        },
+      },
+    });
   };
 
   if (user) {
-    navigate("/")
+    navigate("/");
     return;
-  } 
-
-  if (createUserLoading) {
-    return <FullScreenLoading />
   }
 
+  if (createUserLoading) {
+    return <FullScreenLoading />;
+  }
 
-  return <Container maxWidth="sm">
+  return (
+    <Container maxWidth="sm">
       <Typography>Create Account</Typography>
       <Stack spacing={2} textAlign="right">
-        <TextField type="name" placeholder="name" name="name" value={values.name} onChange={onChange}></TextField>
-        <TextField type="email" placeholder="email" name="email" value={values.email} onChange={onChange}></TextField>
-        <TextField type="password" placeholder="password" name="password" value={values.password} onChange={onChange}></TextField>
+        <TextField
+          type="name"
+          placeholder="name"
+          name="name"
+          value={values.name}
+          onChange={onChange}
+        ></TextField>
+        <TextField
+          type="email"
+          placeholder="email"
+          name="email"
+          value={values.email}
+          onChange={onChange}
+        ></TextField>
+        <TextField
+          type="password"
+          placeholder="password"
+          name="password"
+          value={values.password}
+          onChange={onChange}
+        ></TextField>
 
-
-        <Button variant="contained" onClick={createUserHandler}>Create</Button>
+        <Button variant="contained" onClick={createUserHandler}>
+          Create
+        </Button>
       </Stack>
-  </Container>
-}
-
+    </Container>
+  );
+};
 
 export default UserSignup;

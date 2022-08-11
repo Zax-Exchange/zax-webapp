@@ -54,9 +54,6 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
           padding: "14px",
           width: "21em",
           marginLeft: "10px",
-          ":hover": {
-            backgroundColor: "#f6f6f6",
-          },
         }}
       />
       <CardContent>
@@ -69,11 +66,12 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
 
           <PlanListItem>
             <Typography variant="subtitle2">Price</Typography>
-            <Typography variant="overline">
+            <Typography variant="overline">${monthly.price}/month</Typography>
+            {/* <Typography variant="overline">
               ${monthly.price}/month or ${annual.price}/year (10% off) + $
               {perUser.price}
               /user
-            </Typography>
+            </Typography> */}
           </PlanListItem>
         </List>
       </CardContent>
@@ -90,7 +88,7 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
         >
           Monthly Plan
         </Button>
-        <Button
+        {/* <Button
           variant="outlined"
           onClick={() =>
             planOnClick({
@@ -101,7 +99,7 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
           }
         >
           Annual Plan
-        </Button>
+        </Button> */}
       </CardActions>
     </Card>
   );

@@ -75,21 +75,21 @@ const Checkout = ({
         }
 
         if (updateCompanyPlanSuccess && !updateCompanyStatusSuccess) {
-          if (isVendor && createCompanyData && createCompanyData.createVendor) {
+          if (
+            createCompanyData &&
+            (createCompanyData.createVendor || createCompanyData.createCustomer)
+          ) {
+            let companyId;
+            if (isVendor) {
+              companyId = createCompanyData.createVendor;
+            } else {
+              companyId = createCompanyData.createCustomer;
+            }
             await updateCompanyStatus({
               variables: {
-                companyId: createCompanyData.createVendor,
+                companyId,
                 isActive: true,
               },
-            });
-          } else if (
-            !isVendor &&
-            createCompanyData &&
-            createCompanyData.createCustomer
-          ) {
-            await updateCompanyStatus({
-              companyId: createCompanyData.createCustomer,
-              isActive: true,
             });
           }
           setUpdateCompanyStatusSuccess(true);

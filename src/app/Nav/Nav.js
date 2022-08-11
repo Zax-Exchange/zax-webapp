@@ -273,13 +273,14 @@ const Nav = () => {
           sx={{
             backgroundColor: "white",
             boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)",
+            padding: "0 7% 0",
           }}
         >
           {!user && renderLoggedOutNav()}
           {user && user.isVendor && renderVendorNav()}
           {user && !user.isVendor && renderCustomerNav()}
-          <Button onClick={resetData}>RESET</Button>
         </AppBar>
+        <Button onClick={resetData}>RESET</Button>
       </Box>
       {renderSideNav()}
     </>

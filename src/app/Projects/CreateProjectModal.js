@@ -3,22 +3,15 @@ import {
   Button,
   DialogActions,
   Container,
-  List,
   ListItem,
   TextField,
-  Grid,
   Typography,
   Box,
-  Input,
   Autocomplete,
   Stack,
-  Chip,
-  IconButton,
-  CircularProgress,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { countries } from "../constants/countries";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
@@ -29,7 +22,7 @@ import {
 } from "../hooks/projectHooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import FullScreenLoading from "../Utils/Loading";
-
+import contriesJson from "all-countries-and-cities-json";
 /**
  * name
  * deliveryDate
@@ -47,6 +40,7 @@ import FullScreenLoading from "../Utils/Loading";
  * }
  */
 
+const COUNTRIES_LIST = Object.keys(contriesJson);
 const CreateProjectMoal = ({
   setIsCreateProjectOpen,
   setSnackbar,
@@ -77,8 +71,7 @@ const CreateProjectMoal = ({
     new Date().toISOString().split("T")[0]
   );
   const [material, setMaterial] = useState("");
-  const [materialInputBorderColor, setMaterialInputBorderColor] =
-    useState("lightgray");
+
   const [components, setComponents] = useState([]);
 
   const [componentData, setComponentData] = useState({
@@ -106,22 +99,51 @@ const CreateProjectMoal = ({
     setMaterial("");
   };
 
+  const intOnlyRegEx = /^[0-9\b]+$/;
+  const alphanumericOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
+
   const projectInputHandler = (e) => {
-    if (e.target.type !== "tel" || e.target.validity.valid) {
+    const val = e.target.value;
+    let isAllowed = true;
+
+    switch (e.target.name) {
+      case "name":
+      case "comments":
+        isAllowed = alphanumericOnlyRegEx.test(val);
+        break;
+      case "budget":
+        isAllowed = intOnlyRegEx.test(val);
+        break;
+      default:
+        break;
+    }
+    if (isAllowed || val === "") {
       setProjectData({
         ...projectData,
-        [e.target.name]: e.target.value,
+        [e.target.name]: val,
       });
     }
   };
 
   const componentInputHandler = (e) => {
-    const data = componentData;
+    const val = e.target.value;
+    let isAllowed = true;
 
-    setComponentData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
+    switch (e.target.name) {
+      case "name":
+      case "dimension":
+      case "postProcess":
+        isAllowed = alphanumericOnlyRegEx.text(val);
+        break;
+      default:
+        break;
+    }
+    if (isAllowed || val === "") {
+      setComponentData({
+        ...componentData,
+        [e.target.name]: val,
+      });
+    }
   };
 
   const addComponent = () => {
@@ -195,7 +217,15 @@ const CreateProjectMoal = ({
   const countryOnChange = (v) => {
     setProjectData({
       ...projectData,
-      deliveryCountry: v.label,
+      deliveryCountry: v,
+      deliveryCity: "",
+    });
+  };
+
+  const cityOnChange = (v) => {
+    setProjectData({
+      ...projectData,
+      deliveryCity: v,
     });
   };
 
@@ -205,21 +235,21 @@ const CreateProjectMoal = ({
         id="country-select"
         blurOnSelect
         sx={{ width: 300 }}
-        options={countries}
+        options={COUNTRIES_LIST}
         autoHighlight
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={(option) => option}
         onChange={(e, v) => countryOnChange(v)}
-        value={countries.find((c) => c.label === projectData.deliveryCountry)}
+        value={COUNTRIES_LIST.find((c) => c === projectData.deliveryCountry)}
         renderOption={(props, option) => (
           <Box component="li" {...props}>
-            {option.label}
+            {option}
           </Box>
         )}
         renderInput={(params) => (
           <TextField
             required
             {...params}
-            label="Delivery Country"
+            label="Delivery Country/Region"
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password", // disable autocomplete and autofill
@@ -236,6 +266,42 @@ const CreateProjectMoal = ({
     );
   };
 
+  const renderCityDropdown = () => {
+    return (
+      <Autocomplete
+        id="city-select"
+        blurOnSelect
+        sx={{ width: 300 }}
+        options={contriesJson[projectData.deliveryCountry] || []}
+        autoHighlight
+        getOptionLabel={(option) => option}
+        onChange={(e, v) => cityOnChange(v)}
+        value={projectData.deliveryCity}
+        renderOption={(props, option) => (
+          <Box component="li" {...props}>
+            {option}
+          </Box>
+        )}
+        renderInput={(params) => (
+          <TextField
+            required
+            {...params}
+            label="Delivery City"
+            inputProps={{
+              ...params.inputProps,
+              autoComplete: "new-password", // disable autocomplete and autofill
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: 16,
+                top: -7,
+              },
+            }}
+          />
+        )}
+      />
+    );
+  };
   const renderMaterialsDropdown = () => {
     return (
       <Autocomplete
@@ -270,6 +336,7 @@ const CreateProjectMoal = ({
       />
     );
   };
+
   return (
     <>
       {createProjectLoading && <FullScreenLoading />}
@@ -297,17 +364,10 @@ const CreateProjectMoal = ({
             />
           </LocalizationProvider>
           {renderCountryDropdown()}
-          <TextField
-            autoComplete="new-password"
-            label="Delivery City"
-            onChange={projectInputHandler}
-            name="deliveryCity"
-            value={projectData.deliveryCity}
-          />
+          {renderCityDropdown()}
           <TextField
             autoComplete="new-password"
             type="tel"
-            inputProps={{ pattern: "[0-9]*" }}
             label="Budget"
             onChange={projectInputHandler}
             name="budget"

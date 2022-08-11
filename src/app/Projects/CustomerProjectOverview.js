@@ -95,9 +95,9 @@ const CustomerProjectOverview = ({
         sx={{
           position: "relative",
           borderRadius: 2,
-          ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
+          // ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
         }}
-        onClick={viewDetailHandler}
+        // onClick={viewDetailHandler}
       >
         <IconButton
           sx={{ position: "absolute", right: "4px" }}
