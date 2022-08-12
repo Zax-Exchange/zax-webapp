@@ -1,4 +1,13 @@
-import { Box, Stack, TextField, Typography, Container, Button, ThemeProvider, Fade } from "@mui/material";
+import {
+  Box,
+  Stack,
+  TextField,
+  Typography,
+  Container,
+  Button,
+  ThemeProvider,
+  Fade,
+} from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -16,59 +25,75 @@ const USER_LOGIN = gql`
       name
       email
       token
+      notificationToken
     }
   }
 `;
 const Login = () => {
   const { user, login, logout } = useContext(AuthContext);
-  const [userLogin, {error, loading, data}] = useLazyQuery(USER_LOGIN);
+  const [userLogin, { error, loading, data }] = useLazyQuery(USER_LOGIN);
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   useEffect(() => {
     if (user) navigate("/");
-  }, [user])
+  }, [user]);
 
   const onChange = (e) => {
     setValues({
       ...values,
-      [e.target.name]: e.target.value
-    })
+      [e.target.name]: e.target.value,
+    });
   };
 
   const loginHandler = () => {
     userLogin({
       variables: {
-        data: values
-      }
+        data: values,
+      },
     });
-  }
+  };
 
   if (data) {
-    console.log("here")
     login(data.login);
   }
 
   if (loading || user) {
-    return <FullScreenLoading />
+    return <FullScreenLoading />;
   }
 
-
-  return <Fade in={true} timeout={500}>
-  <Container maxWidth="sm">
-      <Typography variant="h6" sx={{mb: 5}}>Log in</Typography>
-      <Stack spacing={2} textAlign="right">
-        <TextField type="email" label="email" name="email" value={values.email} onChange={onChange}></TextField>
-        <TextField type="password" label="password" name="password" value={values.password} onChange={onChange}></TextField>
-        <Button variant="outlined" onClick={loginHandler}>Login</Button>
-      </Stack>
-  </Container>
-  </Fade>
-}
-
+  return (
+    <Fade in={true} timeout={500}>
+      <Container maxWidth="sm">
+        <Typography variant="h6" sx={{ mb: 5 }}>
+          Log in
+        </Typography>
+        <Stack spacing={2} textAlign="right">
+          <TextField
+            type="email"
+            label="email"
+            name="email"
+            value={values.email}
+            onChange={onChange}
+          ></TextField>
+          <TextField
+            type="password"
+            label="password"
+            name="password"
+            value={values.password}
+            onChange={onChange}
+          ></TextField>
+          <Button variant="outlined" onClick={loginHandler}>
+            Login
+          </Button>
+        </Stack>
+      </Container>
+    </Fade>
+  );
+};
 
 export default Login;

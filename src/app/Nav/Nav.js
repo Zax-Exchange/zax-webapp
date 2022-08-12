@@ -25,6 +25,7 @@ import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 import logo from "../../static/logo2.png";
 import { gql, useMutation } from "@apollo/client";
+import CustomerNotification from "../Notification/CustomerNotification";
 
 const query = gql`
   mutation reset($t: Int) {
@@ -183,6 +184,8 @@ const Nav = () => {
               NEW PROJECT
             </Button>
           </Box>
+
+          <CustomerNotification />
         </Toolbar>
         {renderSideNav()}
         <Dialog
