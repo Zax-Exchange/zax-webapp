@@ -20,6 +20,7 @@ import styled from "@emotion/styled";
 import MuiListItem from "@mui/material/ListItem";
 import { useGetCustomerProjects } from "../hooks/projectHooks";
 import { useNavigate } from "react-router-dom";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 
 const streamApiKey = process.env.REACT_APP_STREAM_API_KEY;
 const streamAppId = process.env.REACT_APP_STREAM_APP_ID;
@@ -87,7 +88,7 @@ const CustomerNotification = () => {
           unseen: true,
         };
       });
-      setNotifications((currentNotis) => [...currentNotis, ...notis]);
+      setNotifications((currentNotis) => [...notis, ...currentNotis]);
       setNotiCount((count) => count + 1);
     }
     feed.subscribe(callback).then(successCallback, failCallback);
@@ -237,7 +238,10 @@ const CustomerNotification = () => {
                         className="with-background"
                         onClick={() => navigateToProjectDetail(noti, i)}
                       >
-                        <Typography variant="caption">
+                        <Typography
+                          variant="caption"
+                          sx={{ whiteSpace: "normal" }}
+                        >
                           You have <b>{noti.bidCount}</b> new bid(s) for{" "}
                           <b>{noti.projectName}</b>
                         </Typography>
@@ -264,7 +268,7 @@ const CustomerNotification = () => {
     <Box position="relative">
       <IconButton size="large" color="primary" onClick={notiOnClick}>
         <Badge badgeContent={notiCount} color="error">
-          <NotificationsIcon />
+          <NotificationsNoneIcon />
         </Badge>
       </IconButton>
       {renderNotifications()}

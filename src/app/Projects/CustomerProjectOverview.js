@@ -11,6 +11,7 @@ import {
   MenuItem,
   List,
   MenuList,
+  Chip,
 } from "@mui/material";
 import ProjectPermissionModal from "./ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +20,7 @@ import DeleteProjectModal from "./DeleteProjectModal";
 import MuiListItem from "@mui/material/ListItem";
 import { styled } from "@mui/system";
 
-const ListItem = styled(MuiListItem)(() => ({
+export const ListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
   paddingLeft: 0,
   "& .MuiTypography-root": {
@@ -85,6 +86,19 @@ const CustomerProjectOverview = ({
 
   const canDelete = () => {
     return project.permission !== "VIEWER" && project.status === "OPEN";
+  };
+
+  const renderProjectStatusChip = () => {
+    switch (project.status) {
+      case "OPEN":
+        return <Chip label="Open" color="primary" />;
+      case "IN_PROGRESS":
+        return <Chip label="In Progress" color="warning" />;
+      case "CLOSED":
+        return <Chip label="Closed" color="success" />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -166,7 +180,7 @@ const CustomerProjectOverview = ({
 
             <ListItem>
               <Typography variant="subtitle2">Status</Typography>
-              <Typography variant="caption">{project.status}</Typography>
+              {renderProjectStatusChip()}
             </ListItem>
           </List>
 

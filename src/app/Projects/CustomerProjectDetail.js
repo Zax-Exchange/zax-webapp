@@ -35,8 +35,8 @@ const CustomerProjectDetail = () => {
     <Fade in={true}>
       <Container>
         <Container disableGutters style={{ textAlign: "left" }}>
-          <IconButton onClick={backButtonHandler} sx={{ position: "absolute" }}>
-            <KeyboardBackspaceIcon style={{ color: "rgb(43, 52, 89)" }} />
+          <IconButton onClick={backButtonHandler}>
+            <KeyboardBackspaceIcon />
           </IconButton>
         </Container>
         <Grid container spacing={2}>

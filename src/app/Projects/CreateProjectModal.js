@@ -148,7 +148,7 @@ const CreateProjectMoal = ({
       ...componentData,
       materials: componentData.materials,
     };
-    setMaterial([]);
+    setMaterial("");
     setComponents([...components, comp]);
     setComponentData({
       name: "",
@@ -273,9 +273,9 @@ const CreateProjectMoal = ({
         autoHighlight
         getOptionLabel={(option) => option}
         onChange={(e, v) => cityOnChange(v)}
-        value={projectData.deliveryCity}
+        value={projectData.deliveryCity || null}
         renderOption={(props, option) => (
-          <Box component="li" {...props}>
+          <Box component="li" {...props} key={undefined}>
             {option}
           </Box>
         )}

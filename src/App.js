@@ -44,7 +44,7 @@ const theme = createTheme({
       secondary: "rgba(49,49,49,0.54)",
     },
     warning: {
-      main: "#667123",
+      main: "#e09150",
     },
     error: {
       main: "rgb(223, 27, 65)",
@@ -89,6 +89,15 @@ const theme = createTheme({
     ].join(","),
   },
   components: {
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "auto",
+        },
+      },
+    },
     MuiInputBase: {
       defaultProps: {
         size: "small",
@@ -190,7 +199,7 @@ function App() {
               />
               {/* <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/> */}
               <Route
-                path="/customer-project-detail"
+                path="/customer-project-detail/:projectId"
                 element={
                   <RequireAuth>
                     <CustomerProjectDetail />
@@ -198,7 +207,7 @@ function App() {
                 }
               />
               <Route
-                path="/vendor-project-detail"
+                path="/vendor-project-detail/:projectId"
                 element={
                   <RequireAuth>
                     <VendorProjectDetail />

@@ -1,5 +1,68 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 
+const GET_VENDOR_PROJECT = gql`
+  query getVendorProject($data: GetVendorProjectInput) {
+    getVendorProject(data: $data) {
+      id
+      userId
+      customerName
+      companyId
+      name
+      deliveryDate
+      deliveryCountry
+      budget
+      deliveryCity
+      design
+      status
+      components {
+        id
+        projectId
+        name
+        materials
+        dimension
+        postProcess
+      }
+      createdAt
+
+      bidInfo {
+        id
+        companyId
+        permission
+        components {
+          projectComponentId
+          quantityPrices {
+            quantity
+            price
+          }
+          createdAt
+        }
+      }
+    }
+  }
+`;
+
+export const useGetVendorProject = (userId, projectId) => {
+  const {
+    data: getVendorProjectData,
+    loading: getVendorProjectLoading,
+    error: getVendorProjectError,
+    refetch: getVendorProjectRefetch,
+  } = useQuery(GET_VENDOR_PROJECT, {
+    variables: {
+      data: {
+        userId,
+        projectId,
+      },
+    },
+  });
+
+  return {
+    getVendorProjectData,
+    getVendorProjectError,
+    getVendorProjectLoading,
+    getVendorProjectRefetch,
+  };
+};
 const GET_PROJECT_DETAIL = gql`
   query getProjectDetail($projectId: String) {
     getProjectDetail(projectId: $projectId) {
@@ -143,6 +206,7 @@ export const GET_VENDOR_PROJECTS = gql`
       id
       userId
       companyId
+      customerName
       name
       deliveryDate
       deliveryCountry

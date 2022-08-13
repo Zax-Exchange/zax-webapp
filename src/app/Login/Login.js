@@ -7,6 +7,7 @@ import {
   Button,
   ThemeProvider,
   Fade,
+  Paper,
 } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -69,28 +70,32 @@ const Login = () => {
   return (
     <Fade in={true} timeout={500}>
       <Container maxWidth="sm">
-        <Typography variant="h6" sx={{ mb: 5 }}>
-          Log in
-        </Typography>
-        <Stack spacing={2} textAlign="right">
-          <TextField
-            type="email"
-            label="email"
-            name="email"
-            value={values.email}
-            onChange={onChange}
-          ></TextField>
-          <TextField
-            type="password"
-            label="password"
-            name="password"
-            value={values.password}
-            onChange={onChange}
-          ></TextField>
-          <Button variant="outlined" onClick={loginHandler}>
-            Login
-          </Button>
-        </Stack>
+        <Paper elevation={2} sx={{ padding: 3 }}>
+          <Container>
+            <Typography variant="h6" sx={{ mb: 5 }}>
+              Log in
+            </Typography>
+            <Stack spacing={2} textAlign="right">
+              <TextField
+                type="email"
+                label="email"
+                name="email"
+                value={values.email}
+                onChange={onChange}
+              ></TextField>
+              <TextField
+                type="password"
+                label="password"
+                name="password"
+                value={values.password}
+                onChange={onChange}
+              ></TextField>
+              <Button variant="outlined" onClick={loginHandler}>
+                Login
+              </Button>
+            </Stack>
+          </Container>
+        </Paper>
       </Container>
     </Fade>
   );
