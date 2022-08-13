@@ -28,7 +28,7 @@ const CustomerProjectDetail = () => {
   };
 
   const backButtonHandler = () => {
-    navigate(-1);
+    navigate("/projects");
   };
 
   return (
@@ -54,7 +54,7 @@ const CustomerProjectDetail = () => {
                         projectComponents={projectData.components}
                       />
                     </ListItem>
-                    <ListItem>
+                    {/* <ListItem>
                       <VendorBidOverview
                         bid={bid}
                         projectComponents={projectData.components}
@@ -65,7 +65,7 @@ const CustomerProjectDetail = () => {
                         bid={bid}
                         projectComponents={projectData.components}
                       />
-                    </ListItem>
+                    </ListItem> */}
                   </>
                 );
               })}

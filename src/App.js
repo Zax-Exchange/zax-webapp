@@ -52,6 +52,7 @@ const theme = createTheme({
       dark: "#9a112c",
       contrastText: "#ffffff",
     },
+    divider: "rgb(0 0 0 / 18%)",
   },
   typography: {
     body1: {
