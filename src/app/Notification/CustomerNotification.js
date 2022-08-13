@@ -43,12 +43,6 @@ const ListItem = styled(MuiListItem)(({ theme }) => ({
 const CustomerNotification = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const {
-    getCustomerProjectsData,
-    getCustomerProjectsError,
-    getCustomerProjectsLoading,
-    getCustomerProjectsRefetch,
-  } = useGetCustomerProjects(user.id, false);
 
   const [notifications, setNotifications] = useState([]);
   const [notiCount, setNotiCount] = useState(0);
@@ -56,12 +50,6 @@ const CustomerNotification = () => {
 
   const client = connect(streamApiKey, user.notificationToken, streamAppId);
   const feed = client.feed("notification", user.id);
-
-  useEffect(() => {
-    if (!getCustomerProjectsLoading && getCustomerProjectsError) {
-      getCustomerProjectsRefetch();
-    }
-  }, [getCustomerProjectsError, getCustomerProjectsLoading]);
 
   useEffect(() => {
     function successCallback() {
@@ -145,12 +133,6 @@ const CustomerNotification = () => {
   };
 
   const notiOnClick = async (e) => {
-    if (
-      !getCustomerProjectsData ||
-      !getCustomerProjectsData.getCustomerProjects
-    ) {
-      getCustomerProjectsRefetch();
-    }
     markAllNotisAsSeen();
     clearNotiCount();
     setAnchorEl(e.currentTarget);
@@ -161,22 +143,9 @@ const CustomerNotification = () => {
   };
 
   const navigateToProjectDetail = async (noti, ind) => {
-    if (
-      !getCustomerProjectsData ||
-      !getCustomerProjectsData.getCustomerProjects
-    )
-      return;
-
     notiOnClose();
-    const project = getCustomerProjectsData.getCustomerProjects.find(
-      (proj) => proj.id === noti.projectId
-    );
 
-    navigate("/customer-project-detail", {
-      state: {
-        project,
-      },
-    });
+    navigate(`/customer-project-detail/${noti.projectId}`);
 
     for (let activityId of noti.activityIds) {
       await feed.removeActivity(activityId);
@@ -209,57 +178,47 @@ const CustomerNotification = () => {
           maxHeight={400}
           sx={{ overflow: "scroll" }}
         >
-          {getCustomerProjectsLoading && <CircularProgress />}
-          {getCustomerProjectsError && (
-            <Typography>
-              Could not load notifications at this moment.
-            </Typography>
-          )}
-          {getCustomerProjectsData &&
-            getCustomerProjectsData.getCustomerProjects &&
-            !!notifications.length && (
-              <>
-                <Box display="flex" justifyContent="space-around">
-                  <Button onClick={clearAllNotis} sx={{ fontSize: "0.65em" }}>
-                    clear all
-                  </Button>
-                  <Button
-                    onClick={markAllNotisAsRead}
-                    sx={{ fontSize: "0.65em" }}
-                  >
-                    Mark all as read
-                  </Button>
-                </Box>
-                <List sx={{ padding: 0 }}>
-                  {notifications.map((noti, i) => {
-                    return (
-                      <ListItem
-                        key={i}
-                        className="with-background"
-                        onClick={() => navigateToProjectDetail(noti, i)}
+          {!!notifications.length && (
+            <>
+              <Box display="flex" justifyContent="space-around">
+                <Button onClick={clearAllNotis} sx={{ fontSize: "0.65em" }}>
+                  clear all
+                </Button>
+                <Button
+                  onClick={markAllNotisAsRead}
+                  sx={{ fontSize: "0.65em" }}
+                >
+                  Mark all as read
+                </Button>
+              </Box>
+              <List sx={{ padding: 0 }}>
+                {notifications.map((noti, i) => {
+                  return (
+                    <ListItem
+                      key={i}
+                      className="with-background"
+                      onClick={() => navigateToProjectDetail(noti, i)}
+                    >
+                      <Typography
+                        variant="caption"
+                        sx={{ whiteSpace: "normal" }}
                       >
-                        <Typography
-                          variant="caption"
-                          sx={{ whiteSpace: "normal" }}
-                        >
-                          You have <b>{noti.bidCount}</b> new bid(s) for{" "}
-                          <b>{noti.projectName}</b>
-                        </Typography>
-                      </ListItem>
-                    );
-                  })}
-                </List>
-              </>
-            )}
-          {getCustomerProjectsData &&
-            getCustomerProjectsData.getCustomerProjects &&
-            !notifications.length && (
-              <ListItem>
-                <Typography variant="caption">
-                  No new notifications at this moment!
-                </Typography>
-              </ListItem>
-            )}
+                        You have <b>{noti.bidCount}</b> new bid(s) for{" "}
+                        <b>{noti.projectName}</b>
+                      </Typography>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </>
+          )}
+          {!notifications.length && (
+            <ListItem>
+              <Typography variant="caption">
+                No new notifications at this moment!
+              </Typography>
+            </ListItem>
+          )}
         </Box>
       </Popover>
     );

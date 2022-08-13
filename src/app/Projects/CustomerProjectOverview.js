@@ -50,11 +50,7 @@ const CustomerProjectOverview = ({
   const date = new Date(parseInt(project.createdAt)).toISOString().slice(0, 10);
 
   const viewDetailHandler = () => {
-    navigate("/customer-project-detail", {
-      state: {
-        project,
-      },
-    });
+    navigate(`/customer-project-detail/${project.id}`);
   };
 
   const moreOnClick = (e) => {

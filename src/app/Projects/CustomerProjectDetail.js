@@ -7,17 +7,27 @@ import {
   ListItem,
   IconButton,
   Fade,
+  Button,
 } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import VendorBidOverview from "./VendorBidOverview";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useGetCustomerProject } from "../hooks/projectHooks";
+import FullScreenLoading from "../Utils/Loading";
 
 const CustomerProjectDetail = () => {
-  const { state } = useLocation();
+  const { projectId } = useParams();
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const projectData = state.project;
 
-  const { bids } = projectData;
+  const {
+    getCustomerProjectData,
+    getCustomerProjectError,
+    getCustomerProjectLoading,
+    getCustomerProjectRefetch,
+  } = useGetCustomerProject({ userId: user.id, projectId });
 
   const getComponentName = (componentId, components) => {
     return components.find((comp) => comp.id === componentId).name;
@@ -31,6 +41,20 @@ const CustomerProjectDetail = () => {
     navigate("/projects");
   };
 
+  if (getCustomerProjectLoading) {
+    return <FullScreenLoading />;
+  }
+
+  if (getCustomerProjectError) {
+    return (
+      <Container>
+        <Button onClick={getCustomerProjectRefetch}>retry</Button>
+      </Container>
+    );
+  }
+
+  const projectData = getCustomerProjectData.getCustomerProject;
+  const { bids } = projectData;
   return (
     <Fade in={true}>
       <Container>
