@@ -9,22 +9,29 @@ const INVITE_USER = gql`
 `;
 
 export const useInviteUser = () => {
-  const [inviteUser, { error: inviteUserError, loading: inviteUserLoading, data: inviteUserData }] = useMutation(INVITE_USER);
+  const [
+    inviteUser,
+    {
+      error: inviteUserError,
+      loading: inviteUserLoading,
+      data: inviteUserData,
+    },
+  ] = useMutation(INVITE_USER);
 
   return {
     inviteUser,
     inviteUserData,
     inviteUserError,
-    inviteUserLoading
-  }
-}
+    inviteUserLoading,
+  };
+};
 
-
-const GET_COMPANY_DETAIL= gql`
+const GET_COMPANY_DETAIL = gql`
   query getCompanyDetail($companyId: String) {
     getCompanyDetail(companyId: $companyId) {
       id
       name
+      contactEmail
       logo
       phone
       fax
@@ -45,24 +52,24 @@ const GET_COMPANY_DETAIL= gql`
 export const useGetCompanyDetail = () => {
   const { user } = useContext(AuthContext);
 
-  const { 
-    error: getCompanyDetailError, 
-    loading: getCompanyDetailLoading, 
-    data: getCompanyDetailData, 
-    refetch: getCompanyDetailRefetch 
+  const {
+    error: getCompanyDetailError,
+    loading: getCompanyDetailLoading,
+    data: getCompanyDetailData,
+    refetch: getCompanyDetailRefetch,
   } = useQuery(GET_COMPANY_DETAIL, {
     variables: {
-      companyId: user.companyId
-    }
+      companyId: user.companyId,
+    },
   });
 
   return {
     getCompanyDetailRefetch,
     getCompanyDetailError,
     getCompanyDetailData,
-    getCompanyDetailLoading
-  }
-}
+    getCompanyDetailLoading,
+  };
+};
 
 const UPDATE_VENDOR_DATA = gql`
   mutation updateVendor($data: UpdateVendorInput) {
@@ -71,14 +78,21 @@ const UPDATE_VENDOR_DATA = gql`
 `;
 
 export const useUpdateVendorData = () => {
-  const [updateVendorData, { error: updateVendorDataError, loading: updateVendorDataLoading, data: updateVendorDataData }] = useMutation(UPDATE_VENDOR_DATA);
+  const [
+    updateVendorData,
+    {
+      error: updateVendorDataError,
+      loading: updateVendorDataLoading,
+      data: updateVendorDataData,
+    },
+  ] = useMutation(UPDATE_VENDOR_DATA);
 
   return {
     updateVendorData,
     updateVendorDataError,
     updateVendorDataLoading,
-    updateVendorDataData
-  }
+    updateVendorDataData,
+  };
 };
 
 const UPDATE_CUSTOMER_DATA = gql`
@@ -88,14 +102,21 @@ const UPDATE_CUSTOMER_DATA = gql`
 `;
 
 export const useUpdateCustomerData = () => {
-  const [updateCustomerData, { error: updateCustomerDataError, loading: updateCustomerDataLoading, data: updateCustomerDataData }] = useMutation(UPDATE_CUSTOMER_DATA);
+  const [
+    updateCustomerData,
+    {
+      error: updateCustomerDataError,
+      loading: updateCustomerDataLoading,
+      data: updateCustomerDataData,
+    },
+  ] = useMutation(UPDATE_CUSTOMER_DATA);
 
   return {
     updateCustomerData,
     updateCustomerDataError,
     updateCustomerDataLoading,
-    updateCustomerDataData
-  }
+    updateCustomerDataData,
+  };
 };
 
 const GET_VENDOR_DETAIL = gql`
@@ -119,15 +140,22 @@ const GET_VENDOR_DETAIL = gql`
 `;
 
 export const useGetVendorDetail = () => {
-  const [getVendorDetail, { error:getVendorDetailError, loading: getVendorDetailLoading, data: getVendorDetailData}] = useLazyQuery(GET_VENDOR_DETAIL);
+  const [
+    getVendorDetail,
+    {
+      error: getVendorDetailError,
+      loading: getVendorDetailLoading,
+      data: getVendorDetailData,
+    },
+  ] = useLazyQuery(GET_VENDOR_DETAIL);
 
   return {
     getVendorDetail,
     getVendorDetailData,
     getVendorDetailError,
-    getVendorDetailLoading
-  }
-}
+    getVendorDetailLoading,
+  };
+};
 
 const UPDATE_COMPANY_PLAN_SUBSCRIPTION_INFO = gql`
   mutation updateCompanyPlanSubscriptionInfo($subscriptionId: String) {
@@ -136,19 +164,22 @@ const UPDATE_COMPANY_PLAN_SUBSCRIPTION_INFO = gql`
 `;
 
 export const useUpdateCompanyPlanSubscriptionInfo = () => {
-  const [updateCompanyPlanSubscriptionInfo, {
-    data: updateCompanyPlanSubscriptionInfoData,
-    error: updateCompanyPlanSubscriptionInfoError,
-    loading: updateCompanyPlanSubscriptionInfoLoading
-  }] = useMutation(UPDATE_COMPANY_PLAN_SUBSCRIPTION_INFO);
+  const [
+    updateCompanyPlanSubscriptionInfo,
+    {
+      data: updateCompanyPlanSubscriptionInfoData,
+      error: updateCompanyPlanSubscriptionInfoError,
+      loading: updateCompanyPlanSubscriptionInfoLoading,
+    },
+  ] = useMutation(UPDATE_COMPANY_PLAN_SUBSCRIPTION_INFO);
 
   return {
     updateCompanyPlanSubscriptionInfo,
     updateCompanyPlanSubscriptionInfoData,
     updateCompanyPlanSubscriptionInfoError,
-    updateCompanyPlanSubscriptionInfoLoading
-  }
-}
+    updateCompanyPlanSubscriptionInfoLoading,
+  };
+};
 
 const UPDATE_COMPANY_STATUS = gql`
   mutation updateCompanyStatus($companyId: String, $isActive: Boolean) {
@@ -157,17 +188,19 @@ const UPDATE_COMPANY_STATUS = gql`
 `;
 
 export const useUpdateCompanyStatus = () => {
-  const [updateCompanyStatus, {
-    data: updateCompanyStatusData,
-    loading: updateCompanyStatusLoading,
-    error: updateCompanyStatusError
-  }] = useMutation(UPDATE_COMPANY_STATUS);
+  const [
+    updateCompanyStatus,
+    {
+      data: updateCompanyStatusData,
+      loading: updateCompanyStatusLoading,
+      error: updateCompanyStatusError,
+    },
+  ] = useMutation(UPDATE_COMPANY_STATUS);
 
   return {
     updateCompanyStatus,
     updateCompanyStatusData,
     updateCompanyStatusLoading,
-    updateCompanyStatusError
-  }
-}
-
+    updateCompanyStatusError,
+  };
+};

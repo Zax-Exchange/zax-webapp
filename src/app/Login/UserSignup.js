@@ -7,7 +7,7 @@ import {
   Button,
 } from "@mui/material";
 import { useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
@@ -24,12 +24,13 @@ const CREATE_USER = gql`
       name
       email
       token
+      notificationToken
     }
   }
 `;
 const UserSignup = () => {
   const { user, login, logout } = useContext(AuthContext);
-  const location = useLocation();
+
   const [createUser, { error: createUserError, loading: createUserLoading }] =
     useMutation(CREATE_USER, {
       onCompleted: (data) => {
@@ -37,7 +38,7 @@ const UserSignup = () => {
       },
     });
 
-  const companyId = location.pathname.split("/")[2];
+  const { companyId } = useParams();
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -47,6 +48,11 @@ const UserSignup = () => {
     companyId,
   });
 
+  if (user) {
+    navigate("/");
+    return null;
+  }
+
   const onChange = (e) => {
     setValues({
       ...values,
@@ -54,28 +60,30 @@ const UserSignup = () => {
     });
   };
 
-  const createUserHandler = () => {
-    createUser({
-      variables: {
-        data: {
-          name: values.name,
-          email: values.email,
-          password: values.password,
-          companyId: values.companyId,
+  const createUserHandler = async () => {
+    try {
+      const { data } = await createUser({
+        variables: {
+          data: {
+            name: values.name,
+            email: values.email,
+            password: values.password,
+            companyId: values.companyId,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
-
-  if (user) {
-    navigate("/");
-    return;
-  }
 
   if (createUserLoading) {
     return <FullScreenLoading />;
   }
 
+  if (createUserError) {
+    return <Container>Something went wrong.</Container>;
+  }
   return (
     <Container maxWidth="sm">
       <Typography>Create Account</Typography>

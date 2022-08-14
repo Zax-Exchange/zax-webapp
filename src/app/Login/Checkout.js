@@ -37,7 +37,7 @@ const Checkout = ({
     useState(false);
 
   // this is a flag to trigger useEffect in case user needs to retry
-  const [submitClicked, setSubmitClicked] = useState(false);
+  const [submitClicked, setSubmitClicked] = useState(0);
 
   const {
     createCompany,
@@ -105,6 +105,8 @@ const Checkout = ({
 
       setIsLoading(false);
     };
+    if (submitClicked > 1) {
+    }
     submit();
   }, [
     submitClicked,
@@ -115,6 +117,7 @@ const Checkout = ({
 
   const handleSubmit = async (event) => {
     try {
+      // TODO: review this to make it more robust (should guarantee company and payment are both successful)
       setIsLoading(true);
       if (!createCompanyData) {
         await createCompany({
@@ -125,7 +128,6 @@ const Checkout = ({
           },
         });
       }
-
       if (stripe && elements && !paymentSuccess) {
         const { error } = await stripe.confirmPayment({
           elements,
@@ -149,7 +151,7 @@ const Checkout = ({
       });
       setSnackbarOpen(true);
     }
-    setSubmitClicked(!submitClicked);
+    setSubmitClicked((count) => count + 1);
   };
 
   return (

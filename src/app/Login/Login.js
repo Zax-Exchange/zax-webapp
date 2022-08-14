@@ -56,6 +56,7 @@ const Login = () => {
       variables: {
         data: values,
       },
+      fetchPolicy: "no-cache",
     });
   };
 

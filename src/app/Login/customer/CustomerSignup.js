@@ -80,9 +80,9 @@ const CustomerSignup = () => {
 
   const [previousPlanIds, setPreviousPlanIds] = useState([]);
 
-  // TODO: add shouldRerunMutation check (look at VendorSignup)
   const [values, setValues] = useState({
     name: "",
+    contactEmail: "",
     logo: null,
     phone: "",
     fax: "",
@@ -316,7 +316,8 @@ const CustomerSignup = () => {
               setShouldDisableNext={setShouldDisableNext}
             />
             {renderNavigationButtons(
-              validateInputs(["name", "phone", "country"])
+              validateInputs(["name", "phone", "country"]) &&
+                validate(values.contactEmail)
             )}
           </div>
         </Fade>

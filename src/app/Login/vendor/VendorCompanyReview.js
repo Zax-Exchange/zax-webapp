@@ -30,6 +30,10 @@ const VendorCompanyReview = ({ values, subscriptionInfo, getAllPlansData }) => {
             <Typography variant="caption">{values.name}</Typography>
           </ListItem>
           <ListItem>
+            <Typography variant="subtitle2">Company Contact Email</Typography>
+            <Typography variant="caption">{values.contactEmail}</Typography>
+          </ListItem>
+          <ListItem>
             <Typography variant="subtitle2">Company Phone</Typography>
             <Typography variant="caption">{values.phone}</Typography>
           </ListItem>

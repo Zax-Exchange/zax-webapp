@@ -18,7 +18,6 @@ import {
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import styled from "@emotion/styled";
 import MuiListItem from "@mui/material/ListItem";
-import { useGetCustomerProjects } from "../hooks/projectHooks";
 import { useNavigate } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 

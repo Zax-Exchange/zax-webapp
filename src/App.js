@@ -225,7 +225,7 @@ function App() {
 
               <Route path="/login" element={<Login />} />
               <Route path="/company-signup" element={<CompanySignup />} />
-              <Route path="/user-signup/*" element={<UserSignup />} />
+              <Route path="/user-signup/:companyId" element={<UserSignup />} />
               <Route path="/vendor-signup" element={<VendorSignup />} />
               <Route path="/customer-signup" element={<CustomerSignup />} />
             </Routes>

@@ -123,6 +123,15 @@ const CompanyInfo = ({
         ></TextField>
         <TextField
           required
+          label="Company Contact Email"
+          type="email"
+          name="contactEmail"
+          value={values.contactEmail}
+          onChange={onChange}
+          helperText="This will be visible to others for contacting."
+        ></TextField>
+        <TextField
+          required
           label="Company phone number"
           inputProps={{ pattern: "[0-9]*" }}
           type="tel"

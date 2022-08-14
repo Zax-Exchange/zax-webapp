@@ -300,6 +300,7 @@ const CreateProjectMoal = ({
     );
   };
   const renderMaterialsDropdown = () => {
+    // TODO: bug when input chart and click x
     return (
       <Autocomplete
         id="materials-select"

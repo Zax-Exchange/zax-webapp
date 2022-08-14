@@ -80,6 +80,7 @@ const VendorSignup = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState({
     name: "",
+    contactEmail: "",
     logo: null,
     phone: "",
     fax: "",
@@ -371,7 +372,8 @@ const VendorSignup = () => {
             setShouldDisableNext={setShouldDisableNext}
           />
           {renderNavigationButtons(
-            validateInputs(["name", "phone", "country"])
+            validateInputs(["name", "phone", "country"]) &&
+              validate(values.contactEmail)
           )}
         </>
       );
