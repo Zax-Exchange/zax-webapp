@@ -12,7 +12,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
@@ -20,17 +20,17 @@ import AddIcon from "@mui/icons-material/Add";
 import {
   useCreateProject,
   useGetCustomerProjects,
-} from "../hooks/projectHooks";
+} from "../../hooks/projectHooks";
 import { useLocation, useNavigate } from "react-router-dom";
-import FullScreenLoading from "../Utils/Loading";
+import FullScreenLoading from "../../Utils/Loading";
 import contriesJson from "all-countries-and-cities-json";
-import { isValidAlphanumeric, isValidInt } from "../Utils/inputValidators";
+import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import PlacesAutocomplete, {
   geocodeByAddress,
   geocodeByPlaceId,
   getLatLng,
 } from "react-places-autocomplete";
-import GoogleMapAutocomplete from "../Utils/GoogleMapAutocomplete";
+import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 /**
  * name
  * deliveryDate

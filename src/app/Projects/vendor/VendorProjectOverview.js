@@ -5,9 +5,9 @@ import Button from "@mui/material/Button";
 import { Container, Typography } from "@mui/material";
 import { Dialog, DialogContent } from "@mui/material";
 import { Card, CardActionArea, CardContent, Grid, Paper } from "@mui/material";
-import ProjectPermissionModal from "./ProjectPermissionModal";
+import ProjectPermissionModal from "../ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
-import { ListItem } from "./CustomerProjectOverview";
+import { ListItem } from "../customer/CustomerProjectOverview";
 
 const VendorProjectOverview = ({ project }) => {
   const navigate = useNavigate();

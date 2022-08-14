@@ -14,10 +14,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   useGetProjectDetail,
   useGetVendorProject,
-} from "../hooks/projectHooks";
-import FullScreenLoading from "../Utils/Loading";
+} from "../../hooks/projectHooks";
+import FullScreenLoading from "../../Utils/Loading";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { useContext } from "react";
 
 const VendorProjectDetail = () => {

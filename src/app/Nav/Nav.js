@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { Menu, Home, TextSnippet, Settings, Logout } from "@mui/icons-material";
 import { useContext, useState } from "react";
-import CreateProjectMoal from "../Projects/CreateProjectModal";
+import CreateProjectMoal from "../Projects/customer/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";

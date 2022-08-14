@@ -11,7 +11,7 @@ import {
   CardContent,
   Paper,
 } from "@mui/material";
-import ProjectBidModal from "../Projects/ProjectBidModal";
+import ProjectBidModal from "../Projects/vendor/ProjectBidModal";
 import { useState } from "react";
 import { useGetProjectDetail } from "../hooks/projectHooks";
 import FullScreenLoading from "../Utils/Loading";

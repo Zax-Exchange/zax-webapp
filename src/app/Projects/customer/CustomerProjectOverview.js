@@ -13,7 +13,7 @@ import {
   MenuList,
   Chip,
 } from "@mui/material";
-import ProjectPermissionModal from "./ProjectPermissionModal";
+import ProjectPermissionModal from "../ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import DeleteProjectModal from "./DeleteProjectModal";

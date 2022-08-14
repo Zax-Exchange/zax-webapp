@@ -9,9 +9,12 @@ body,
 #root,
 #root>div {
   height: 100vh;
-  overflow: scroll;
+  overflow: hidden;
 }
 
+html {
+  overflow: scroll;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;

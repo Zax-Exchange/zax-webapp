@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import ProjectBidComponent from "./ProjectBidComponent";
-import "./ProjectBid.scss";
 import { useContext, useState } from "react";
 import {
   Container,
@@ -10,13 +9,13 @@ import {
   ListItem,
   Grid,
 } from "@mui/material";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import {
   useGetVendorProjects,
   useCreateProjectBid,
   useGetProjectDetail,
-} from "../hooks/projectHooks";
-import FullScreenLoading from "../Utils/Loading";
+} from "../../hooks/projectHooks";
+import FullScreenLoading from "../../Utils/Loading";
 
 const ProjectBidModal = ({
   projectId,

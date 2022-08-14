@@ -13,7 +13,7 @@ import CustomerSearchResults from "./app/Search/CustomerSearchResults";
 import SearchProjectDetail from "./app/Search/SearchProjectDetail";
 // import ProjectBid from './app/Projects/ProjectBid';
 import { Container, createTheme } from "@mui/material";
-import CustomerProjectDetail from "./app/Projects/CustomerProjectDetail";
+import CustomerProjectDetail from "./app/Projects/customer/CustomerProjectDetail";
 import RequireAuth from "./app/Auth/RequireAuth";
 import Login from "./app/Login/Login";
 import UserSignup from "./app/Login/UserSignup";
@@ -22,7 +22,7 @@ import CompanySignup from "./app/Login/CompanySignup";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./app/ErrorBoundary/ErrorBoundary";
 import CustomerSignup from "./app/Login/customer/CustomerSignup";
-import VendorProjectDetail from "./app/Projects/VendorProjectDetail";
+import VendorProjectDetail from "./app/Projects/vendor/VendorProjectDetail";
 import { ThemeProvider } from "@mui/system";
 
 const theme = createTheme({
@@ -136,100 +136,100 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <div className="App" style={{ minWidth: "960px" }}>
+      <div className="App" style={{ minWidth: "0" }}>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Nav />
-          <Container maxWidth="xl" sx={{ mb: 12 }}>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <RequireAuth>
-                    <Home />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/projects"
-                element={
-                  <RequireAuth>
-                    <Projects />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="profile"
-                element={
-                  <RequireAuth>
-                    <Profile />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <RequireAuth>
-                    <Settings />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/vendor-search-results"
-                element={
-                  <RequireAuth>
-                    <VendorSearchResults />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/customer-search-results"
-                element={
-                  <RequireAuth>
-                    <CustomerSearchResults />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/project-detail"
-                element={
-                  <RequireAuth>
-                    <SearchProjectDetail />
-                  </RequireAuth>
-                }
-              />
-              {/* <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/> */}
-              <Route
-                path="/customer-project-detail/:projectId"
-                element={
-                  <RequireAuth>
-                    <CustomerProjectDetail />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/vendor-project-detail/:projectId"
-                element={
-                  <RequireAuth>
-                    <VendorProjectDetail />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="*"
-                element={
-                  <RequireAuth>
-                    <Home />
-                  </RequireAuth>
-                }
-              />
+          {/* <Container maxWidth="xl" sx={{ mb: 12 }}> */}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <RequireAuth>
+                  <Home />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/projects"
+              element={
+                <RequireAuth>
+                  <Projects />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="profile"
+              element={
+                <RequireAuth>
+                  <Profile />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <RequireAuth>
+                  <Settings />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/vendor-search-results"
+              element={
+                <RequireAuth>
+                  <VendorSearchResults />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/customer-search-results"
+              element={
+                <RequireAuth>
+                  <CustomerSearchResults />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/project-detail"
+              element={
+                <RequireAuth>
+                  <SearchProjectDetail />
+                </RequireAuth>
+              }
+            />
+            {/* <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/> */}
+            <Route
+              path="/customer-project-detail/:projectId"
+              element={
+                <RequireAuth>
+                  <CustomerProjectDetail />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/vendor-project-detail/:projectId"
+              element={
+                <RequireAuth>
+                  <VendorProjectDetail />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <RequireAuth>
+                  <Home />
+                </RequireAuth>
+              }
+            />
 
-              <Route path="/login" element={<Login />} />
-              <Route path="/company-signup" element={<CompanySignup />} />
-              <Route path="/user-signup/:companyId" element={<UserSignup />} />
-              <Route path="/vendor-signup" element={<VendorSignup />} />
-              <Route path="/customer-signup" element={<CustomerSignup />} />
-            </Routes>
-          </Container>
+            <Route path="/login" element={<Login />} />
+            <Route path="/company-signup" element={<CompanySignup />} />
+            <Route path="/user-signup/:companyId" element={<UserSignup />} />
+            <Route path="/vendor-signup" element={<VendorSignup />} />
+            <Route path="/customer-signup" element={<CustomerSignup />} />
+          </Routes>
+          {/* </Container> */}
         </ErrorBoundary>
       </div>
     </ThemeProvider>

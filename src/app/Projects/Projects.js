@@ -1,4 +1,4 @@
-import VendorProjectOverview from "./VendorProjectOverview";
+import VendorProjectOverview from "./vendor/VendorProjectOverview";
 import {
   Typography,
   Grid,
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import "./Projects.scss";
 import FullScreenLoading from "../Utils/Loading";
-import CustomerProjectOverview from "./CustomerProjectOverview";
+import CustomerProjectOverview from "./customer/CustomerProjectOverview";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import {
