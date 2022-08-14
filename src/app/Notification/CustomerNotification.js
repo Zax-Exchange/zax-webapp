@@ -93,10 +93,10 @@ const CustomerNotification = () => {
     }
     if (feed) {
       feed.subscribe(callback).then(successCallback, failCallback);
+      return () => {
+        feed.unsubscribe();
+      };
     }
-    return () => {
-      feed.unsubscribe();
-    };
   }, [feed]);
 
   const getNotifications = async () => {
