@@ -46,11 +46,24 @@ const CustomerNotification = () => {
   const [notifications, setNotifications] = useState([]);
   const [notiCount, setNotiCount] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [client, setClient] = useState(null);
+  const [feed, setFeed] = useState(null);
 
-  const client = connect(streamApiKey, user.notificationToken, streamAppId);
-  const feed = client.feed("notification", user.id);
+  // const client = connect(streamApiKey, user.notificationToken, streamAppId);
+  // const feed = client.feed("notification", user.id);
 
   useEffect(() => {
+    const streamClient = connect(
+      streamApiKey,
+      user.notificationToken,
+      streamAppId
+    );
+    setClient(streamClient);
+    setFeed(streamClient.feed("notification", user.id));
+  }, []);
+
+  useEffect(() => {
+    // open up connection to receive live notification
     function successCallback() {
       console.log(
         "Now listening to changes in realtime. Add an activity to see how realtime works."
@@ -78,11 +91,13 @@ const CustomerNotification = () => {
       setNotifications((currentNotis) => [...notis, ...currentNotis]);
       setNotiCount((count) => count + 1);
     }
-    feed.subscribe(callback).then(successCallback, failCallback);
+    if (feed) {
+      feed.subscribe(callback).then(successCallback, failCallback);
+    }
     return () => {
       feed.unsubscribe();
     };
-  }, []);
+  }, [feed]);
 
   const getNotifications = async () => {
     const feeds = await feed.get();
@@ -107,8 +122,10 @@ const CustomerNotification = () => {
 
   useEffect(() => {
     // init unseen notifications when app starts
-    getNotifications();
-  }, []);
+    if (feed) {
+      getNotifications();
+    }
+  }, [feed]);
 
   const clearNotiCount = () => {
     setNotiCount(0);
