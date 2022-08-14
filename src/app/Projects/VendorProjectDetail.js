@@ -38,9 +38,8 @@ const VendorProjectDetail = () => {
     const {
       name: projectName,
       deliveryDate,
-      deliveryCountry,
+      deliveryAddress,
       budget,
-      deliveryCity,
       design,
       status,
       components,
@@ -74,14 +73,12 @@ const VendorProjectDetail = () => {
                   <Typography>deliveryDate: {deliveryDate}</Typography>
                 </ListItem>
                 <ListItem>
-                  <Typography>deliveryCountry: {deliveryCountry}</Typography>
+                  <Typography>deliveryAddress: {deliveryAddress}</Typography>
                 </ListItem>
                 <ListItem>
                   <Typography>budget: {budget}</Typography>
                 </ListItem>
-                <ListItem>
-                  <Typography>deliveryCity: {deliveryCity}</Typography>
-                </ListItem>
+
                 <ListItem>
                   <Typography>design: {design}</Typography>
                 </ListItem>

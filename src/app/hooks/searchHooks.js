@@ -8,25 +8,30 @@ const SEARCH_PROJECTS = gql`
       id
       companyId
       deliveryDate
-      deliveryCountry
-      deliveryCity
+      deliveryAddress
       budget
       createdAt
-    },
+    }
   }
 `;
 
 export const useSearchProjects = () => {
-  const [searchProjects, {data: searchProjectsData, error: searchProjectsError, loding: searchProjectsLoading }] = useLazyQuery(SEARCH_PROJECTS);
+  const [
+    searchProjects,
+    {
+      data: searchProjectsData,
+      error: searchProjectsError,
+      loding: searchProjectsLoading,
+    },
+  ] = useLazyQuery(SEARCH_PROJECTS);
 
   return {
     searchProjects,
     searchProjectsData,
     searchProjectsError,
-    searchProjectsLoading
-  }
-}
-
+    searchProjectsLoading,
+  };
+};
 
 const SEARCH_VENDORS = gql`
   query searchVendorCompanies($searchInput: SearchCompanyInput) {
@@ -45,12 +50,19 @@ const SEARCH_VENDORS = gql`
 `;
 
 export const useSearchVendors = () => {
-  const [searchVendors, { data: searchVendorsData, error: searchVendorsError, loading: searchVendorsLoading }] = useLazyQuery(SEARCH_VENDORS);
+  const [
+    searchVendors,
+    {
+      data: searchVendorsData,
+      error: searchVendorsError,
+      loading: searchVendorsLoading,
+    },
+  ] = useLazyQuery(SEARCH_VENDORS);
 
   return {
     searchVendors,
     searchVendorsData,
     searchVendorsError,
-    searchVendorsLoading
-  }
-}
+    searchVendorsLoading,
+  };
+};

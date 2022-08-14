@@ -153,15 +153,10 @@ const CustomerProjectOverview = ({
             </ListItem>
 
             <ListItem>
-              <Typography variant="subtitle2">Delivery country</Typography>
+              <Typography variant="subtitle2">Delivery address</Typography>
               <Typography variant="caption">
-                {project.deliveryCountry}
+                {project.deliveryAddress}
               </Typography>
-            </ListItem>
-
-            <ListItem>
-              <Typography variant="subtitle2">Delivery city</Typography>
-              <Typography variant="caption">{project.deliveryCity}</Typography>
             </ListItem>
 
             <ListItem>

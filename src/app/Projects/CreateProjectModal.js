@@ -9,6 +9,7 @@ import {
   Box,
   Autocomplete,
   Stack,
+  CircularProgress,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -24,11 +25,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import FullScreenLoading from "../Utils/Loading";
 import contriesJson from "all-countries-and-cities-json";
 import { isValidAlphanumeric, isValidInt } from "../Utils/inputValidators";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  geocodeByPlaceId,
+  getLatLng,
+} from "react-places-autocomplete";
+import GoogleMapAutocomplete from "../Utils/GoogleMapAutocomplete";
 /**
  * name
  * deliveryDate
- * deliveryCountry
- * deliveryCity
+ * deliveryAddress
  * budget
  * design
  * userId
@@ -41,6 +47,17 @@ import { isValidAlphanumeric, isValidInt } from "../Utils/inputValidators";
  * }
  */
 
+const loadScript = (src, position, id) => {
+  if (!position) {
+    return;
+  }
+
+  const script = document.createElement("script");
+  script.setAttribute("async", "");
+  script.setAttribute("id", id);
+  script.src = src;
+  position.appendChild(script);
+};
 const COUNTRIES_LIST = Object.keys(contriesJson);
 const CreateProjectMoal = ({
   setIsCreateProjectOpen,
@@ -61,8 +78,7 @@ const CreateProjectMoal = ({
   const [projectData, setProjectData] = useState({
     userId: user.id,
     name: "",
-    deliveryCountry: "",
-    deliveryCity: "",
+    deliveryAddress: "",
     budget: "",
     // design: null,
     comments: "",
@@ -83,7 +99,7 @@ const CreateProjectMoal = ({
   });
 
   const materialOnChange = (e) => {
-    const val = e.target.value;
+    const val = e.target.value || "";
 
     if (isValidAlphanumeric(val)) {
       setMaterial(val);
@@ -211,94 +227,6 @@ const CreateProjectMoal = ({
     }
   };
 
-  const countryOnChange = (v) => {
-    setProjectData({
-      ...projectData,
-      deliveryCountry: v,
-      deliveryCity: "",
-    });
-  };
-
-  const cityOnChange = (v) => {
-    setProjectData({
-      ...projectData,
-      deliveryCity: v,
-    });
-  };
-
-  const renderCountryDropdown = () => {
-    return (
-      <Autocomplete
-        id="country-select"
-        blurOnSelect
-        sx={{ width: 300 }}
-        options={COUNTRIES_LIST}
-        autoHighlight
-        getOptionLabel={(option) => option}
-        onChange={(e, v) => countryOnChange(v)}
-        value={COUNTRIES_LIST.find((c) => c === projectData.deliveryCountry)}
-        renderOption={(props, option) => (
-          <Box component="li" {...props}>
-            {option}
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            required
-            {...params}
-            label="Delivery Country/Region"
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password", // disable autocomplete and autofill
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderCityDropdown = () => {
-    return (
-      <Autocomplete
-        id="city-select"
-        blurOnSelect
-        sx={{ width: 300 }}
-        options={contriesJson[projectData.deliveryCountry] || []}
-        autoHighlight
-        getOptionLabel={(option) => option}
-        onChange={(e, v) => cityOnChange(v)}
-        value={projectData.deliveryCity || null}
-        renderOption={(props, option) => (
-          <Box component="li" {...props} key={undefined}>
-            {option}
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            required
-            {...params}
-            label="Delivery City"
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password", // disable autocomplete and autofill
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
-    );
-  };
   const renderMaterialsDropdown = () => {
     // TODO: bug when input chart and click x
     return (
@@ -335,6 +263,12 @@ const CreateProjectMoal = ({
     );
   };
 
+  const handleAddressOnChange = (address) => {
+    setProjectData({
+      ...projectData,
+      deliveryAddress: address,
+    });
+  };
   return (
     <>
       {createProjectLoading && <FullScreenLoading />}
@@ -352,6 +286,7 @@ const CreateProjectMoal = ({
           />
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker
+              disablePast
               label="Delivery Date"
               inputFormat="YYYY-MM-DD"
               value={deliveryDate}
@@ -361,8 +296,7 @@ const CreateProjectMoal = ({
               )}
             />
           </LocalizationProvider>
-          {renderCountryDropdown()}
-          {renderCityDropdown()}
+          {GoogleMapAutocomplete(handleAddressOnChange)}
           <TextField
             autoComplete="new-password"
             type="tel"

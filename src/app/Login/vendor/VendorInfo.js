@@ -23,9 +23,9 @@ const VendorInfo = ({
 
   // used for controlling materials input to now allow characters other than alphanumeric and white space chars
   const materialOnChange = (e) => {
-    const val = e.target.value;
+    const val = e.target.value || "";
 
-    if ((isValidAlphanumeric(val) || val === "") && val !== " ") {
+    if (isValidAlphanumeric(val)) {
       setMaterial(val);
     }
   };

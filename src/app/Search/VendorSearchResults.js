@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SearchResults.scss";
 import SearchProjectOverview from "./SearchProjectOverview";
-import { Typography, Stack, Grid, Container} from "@mui/material";
+import { Typography, Stack, Grid, Container } from "@mui/material";
 /**
  * 
  * name
@@ -9,31 +9,29 @@ import { Typography, Stack, Grid, Container} from "@mui/material";
       id
       companyId
       deliveryDate
-      deliveryCountry
-      deliveryCity
+      deliveryAddress
       budget
       createdAt
  */
 const VendorSearchResults = () => {
-  const {state} = useLocation();
+  const { state } = useLocation();
 
-  return (<Grid container className="search-results-container">
-    <Grid item xs={2} className="search-results-sortby-container">
-      <Typography>Sort by</Typography>
+  return (
+    <Grid container className="search-results-container">
+      <Grid item xs={2} className="search-results-sortby-container">
+        <Typography>Sort by</Typography>
+      </Grid>
 
+      <Grid item xs={10} className="search-results-inner-container">
+        <Stack direction="column">
+          {state &&
+            state.searchResults.map((result, i) => {
+              return <SearchProjectOverview projectData={result} key={i} />;
+            })}
+        </Stack>
+      </Grid>
     </Grid>
-
-    <Grid item xs={10} className="search-results-inner-container">
-      <Stack direction="column">
-        {
-          state && state.searchResults.map((result, i) => {
-            return <SearchProjectOverview projectData={result} key={i}/>
-          })
-        }
-      </Stack>
-
-    </Grid>
-  </Grid>)
+  );
 };
 
 export default VendorSearchResults;

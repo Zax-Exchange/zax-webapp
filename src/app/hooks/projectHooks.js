@@ -9,9 +9,8 @@ const GET_VENDOR_PROJECT = gql`
       companyId
       name
       deliveryDate
-      deliveryCountry
+      deliveryAddress
       budget
-      deliveryCity
       design
       status
       components {
@@ -72,8 +71,7 @@ const GET_CUSTOMER_PROJECT = gql`
       companyId
       name
       deliveryDate
-      deliveryCountry
-      deliveryCity
+      deliveryAddress
       design
       budget
       status
@@ -140,9 +138,8 @@ const GET_PROJECT_DETAIL = gql`
       companyId
       name
       deliveryDate
-      deliveryCountry
+      deliveryAddress
       budget
-      deliveryCity
       design
       status
       components {
@@ -278,8 +275,7 @@ export const GET_VENDOR_PROJECTS = gql`
       customerName
       name
       deliveryDate
-      deliveryCountry
-      deliveryCity
+      deliveryAddress
       budget
       design
       status
@@ -319,8 +315,7 @@ export const GET_CUSTOMER_PROJECTS = gql`
       companyId
       name
       deliveryDate
-      deliveryCountry
-      deliveryCity
+      deliveryAddress
       design
       budget
       status

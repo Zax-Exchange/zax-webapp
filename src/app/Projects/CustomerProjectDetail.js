@@ -111,14 +111,10 @@ const CustomerProjectDetail = () => {
                 </ListItem>
                 <ListItem>
                   <Typography>
-                    Delivery Country: {projectData.deliveryCountry}
+                    Delivery Address: {projectData.deliveryAddress}
                   </Typography>
                 </ListItem>
-                <ListItem>
-                  <Typography>
-                    Delivery City: {projectData.deliveryCity}
-                  </Typography>
-                </ListItem>
+
                 <ListItem>
                   <Typography>Design: {projectData.design}</Typography>
                 </ListItem>

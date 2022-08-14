@@ -31,7 +31,7 @@ const VendorProjectOverview = ({ project }) => {
             Delivery date: {project.deliveryDate}
           </Typography>
           <Typography align="left">
-            Delivery city: {project.deliveryCity}
+            Delivery address: {project.deliveryAddress}
           </Typography>
           <Typography align="left">Budget: {project.budget}</Typography>
           <Typography align="left">Posted on: {date}</Typography>
