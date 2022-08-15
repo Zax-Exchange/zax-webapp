@@ -175,7 +175,8 @@ const CreateProjectMoal = ({
     // check if create project button should be disabled
 
     for (let key in projectData) {
-      if (key === "comments") continue;
+      if (key === "comments" || key === "designId") continue;
+
       if (projectData[key].length === 0) return true;
     }
 
@@ -195,16 +196,15 @@ const CreateProjectMoal = ({
         },
       });
       setIsCreateProjectOpen(false);
-      setSnackbar({
-        severity: "success",
-        message: "Project created.",
-      });
-
       if (location.pathname.indexOf("/projects")) {
         navigate("/projects");
       } else {
         await getCustomerProjectsRefetch();
       }
+      setSnackbar({
+        severity: "success",
+        message: "Project created.",
+      });
     } catch (e) {
       setSnackbar({
         severity: "error",
