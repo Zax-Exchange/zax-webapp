@@ -6,13 +6,7 @@ import {
   List,
   ListItem,
   IconButton,
-  Fade,
   Button,
-  Drawer,
-  Divider,
-  Box,
-  Dialog,
-  DialogContent,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -21,38 +15,10 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useGetCustomerProject } from "../../hooks/projectHooks";
 import FullScreenLoading from "../../Utils/Loading";
-import Conversation from "../Conversation";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
 
-const drawerWidth = 240;
-
-const ProjectDetailContainer = styled(Box, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  flexGrow: 1,
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginRight: -drawerWidth,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginRight: 0,
-  }),
-}));
-
 const CustomerProjectDetail = () => {
-  const theme = useTheme();
-  console.log(theme);
-  const t = theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  });
-  console.log(t);
   const { projectId } = useParams();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -64,7 +30,6 @@ const CustomerProjectDetail = () => {
     getCustomerProjectRefetch,
   } = useGetCustomerProject({ userId: user.id, projectId });
 
-  const [conversationOpen, setConversationOpen] = useState(false);
   const getComponentName = (componentId, components) => {
     return components.find((comp) => comp.id === componentId).name;
   };
@@ -92,7 +57,7 @@ const CustomerProjectDetail = () => {
   const projectData = getCustomerProjectData.getCustomerProject;
   const { bids } = projectData;
   return (
-    <Container open={conversationOpen}>
+    <Container>
       <Container disableGutters style={{ textAlign: "left" }}>
         <IconButton onClick={backButtonHandler}>
           <KeyboardBackspaceIcon />
@@ -111,7 +76,6 @@ const CustomerProjectDetail = () => {
                     <VendorBidOverview
                       bid={bid}
                       projectComponents={projectData.components}
-                      setConversationOpen={setConversationOpen}
                     />
                   </ListItem>
                 </>
@@ -179,20 +143,6 @@ const CustomerProjectDetail = () => {
           })}
         </Grid>
       </Grid>
-
-      <Dialog
-        open={conversationOpen}
-        onClose={() => setConversationOpen(false)}
-        maxWidth="xl"
-        fullWidth={true}
-      >
-        <DialogContent>
-          <Conversation
-            setConversationOpen={setConversationOpen}
-            conversationOpen={conversationOpen}
-          />
-        </DialogContent>
-      </Dialog>
     </Container>
   );
 };

@@ -25,6 +25,7 @@ const CREATE_USER = gql`
       email
       token
       notificationToken
+      chatToken
     }
   }
 `;

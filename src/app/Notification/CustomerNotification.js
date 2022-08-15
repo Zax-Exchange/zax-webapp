@@ -58,6 +58,7 @@ const CustomerNotification = () => {
       user.notificationToken,
       streamAppId
     );
+
     setClient(streamClient);
     setFeed(streamClient.feed("notification", user.id));
   }, []);
@@ -65,9 +66,7 @@ const CustomerNotification = () => {
   useEffect(() => {
     // open up connection to receive live notification
     function successCallback() {
-      console.log(
-        "Now listening to changes in realtime. Add an activity to see how realtime works."
-      );
+      console.log("subscribing to customer notifications");
     }
 
     function failCallback(data) {

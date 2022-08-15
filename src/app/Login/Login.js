@@ -27,6 +27,7 @@ const USER_LOGIN = gql`
       email
       token
       notificationToken
+      chatToken
     }
   }
 `;

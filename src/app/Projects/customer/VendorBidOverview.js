@@ -15,19 +15,29 @@ import {
 } from "@mui/material";
 import VendorBidModal from "./VendorBidModal";
 import { useEffect, useState } from "react";
-import { useGetVendorDetail } from "../../hooks/companyHooks";
+import {
+  useGetCompanyDetail,
+  useGetVendorDetail,
+} from "../../hooks/companyHooks";
 import FullScreenLoading from "../../Utils/Loading";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
+import CustomerProjectChat from "../ProjectChat";
 
 /**
  * Bid overview card displayed in CustomerProjectDetail
  * @param {*} param0
  * @returns
  */
-const VendorBidOverview = ({ bid, projectComponents, setConversationOpen }) => {
+const VendorBidOverview = ({ bid, projectComponents }) => {
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
   const [vendorData, setVendorData] = useState(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
+  const {
+    getCompanyDetailData,
+    getCompanyDetailError,
+    getCompanyDetailLoading,
+  } = useGetCompanyDetail();
   const {
     getVendorDetail,
     getVendorDetailLoading,
@@ -67,7 +77,7 @@ const VendorBidOverview = ({ bid, projectComponents, setConversationOpen }) => {
   const vendorBidMenuOnClick = (e) => {
     switch (e.target.dataset.type) {
       case "conversation":
-        setConversationOpen(true);
+        setChatOpen(true);
         break;
       default:
         break;
@@ -75,10 +85,13 @@ const VendorBidOverview = ({ bid, projectComponents, setConversationOpen }) => {
     moreOnClose();
   };
 
-  if (getVendorDetailLoading) {
+  if (getVendorDetailLoading || getCompanyDetailLoading) {
     return <FullScreenLoading />;
   }
 
+  if (getVendorDetailError || getCompanyDetailError) {
+    return <Typography>Error</Typography>;
+  }
   return (
     <Card sx={{ width: "100%", position: "relative" }}>
       {getVendorDetailError && <Typography>Something went wrong.</Typography>}
@@ -142,6 +155,22 @@ const VendorBidOverview = ({ bid, projectComponents, setConversationOpen }) => {
                 bid={bid}
                 projectComponents={projectComponents}
                 setIsBidModalOpen={setIsBidModalOpen}
+              />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog
+            open={chatOpen}
+            onClose={() => setChatOpen(false)}
+            maxWidth="xl"
+            fullWidth={true}
+          >
+            <DialogContent>
+              <CustomerProjectChat
+                setChatOpen={setChatOpen}
+                projectBidId={bid.id}
+                customerName={getCompanyDetailData.getCompanyDetail.name}
+                vendorName={vendorData.name}
               />
             </DialogContent>
           </Dialog>

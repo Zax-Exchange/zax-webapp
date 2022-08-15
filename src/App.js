@@ -136,100 +136,100 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <div className="App" style={{ minWidth: "0" }}>
+      <div className="App" style={{ minWidth: "960px" }}>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Nav />
-          {/* <Container maxWidth="xl" sx={{ mb: 12 }}> */}
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <RequireAuth>
-                  <Home />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/projects"
-              element={
-                <RequireAuth>
-                  <Projects />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="profile"
-              element={
-                <RequireAuth>
-                  <Profile />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <RequireAuth>
-                  <Settings />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/vendor-search-results"
-              element={
-                <RequireAuth>
-                  <VendorSearchResults />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/customer-search-results"
-              element={
-                <RequireAuth>
-                  <CustomerSearchResults />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/project-detail"
-              element={
-                <RequireAuth>
-                  <SearchProjectDetail />
-                </RequireAuth>
-              }
-            />
-            {/* <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/> */}
-            <Route
-              path="/customer-project-detail/:projectId"
-              element={
-                <RequireAuth>
-                  <CustomerProjectDetail />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/vendor-project-detail/:projectId"
-              element={
-                <RequireAuth>
-                  <VendorProjectDetail />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="*"
-              element={
-                <RequireAuth>
-                  <Home />
-                </RequireAuth>
-              }
-            />
+          <Container maxWidth="xl" sx={{ mb: 12 }}>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <RequireAuth>
+                    <Home />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/projects"
+                element={
+                  <RequireAuth>
+                    <Projects />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="profile"
+                element={
+                  <RequireAuth>
+                    <Profile />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <RequireAuth>
+                    <Settings />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/vendor-search-results"
+                element={
+                  <RequireAuth>
+                    <VendorSearchResults />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/customer-search-results"
+                element={
+                  <RequireAuth>
+                    <CustomerSearchResults />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/project-detail"
+                element={
+                  <RequireAuth>
+                    <SearchProjectDetail />
+                  </RequireAuth>
+                }
+              />
+              {/* <Route path="/project-bid" element={<RequireAuth><ProjectBid/></RequireAuth>}/> */}
+              <Route
+                path="/customer-project-detail/:projectId"
+                element={
+                  <RequireAuth>
+                    <CustomerProjectDetail />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/vendor-project-detail/:projectId"
+                element={
+                  <RequireAuth>
+                    <VendorProjectDetail />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <RequireAuth>
+                    <Home />
+                  </RequireAuth>
+                }
+              />
 
-            <Route path="/login" element={<Login />} />
-            <Route path="/company-signup" element={<CompanySignup />} />
-            <Route path="/user-signup/:companyId" element={<UserSignup />} />
-            <Route path="/vendor-signup" element={<VendorSignup />} />
-            <Route path="/customer-signup" element={<CustomerSignup />} />
-          </Routes>
-          {/* </Container> */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/company-signup" element={<CompanySignup />} />
+              <Route path="/user-signup/:companyId" element={<UserSignup />} />
+              <Route path="/vendor-signup" element={<VendorSignup />} />
+              <Route path="/customer-signup" element={<CustomerSignup />} />
+            </Routes>
+          </Container>
         </ErrorBoundary>
       </div>
     </ThemeProvider>

@@ -9,6 +9,8 @@ import {
   DialogActions,
   Grid,
   IconButton,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
@@ -18,7 +20,9 @@ import {
 import FullScreenLoading from "../../Utils/Loading";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { AuthContext } from "../../../context/AuthContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import ProjectChat from "../ProjectChat";
+import { useGetCompanyDetail } from "../../hooks/companyHooks";
 
 const VendorProjectDetail = () => {
   const { user } = useContext(AuthContext);
@@ -33,6 +37,14 @@ const VendorProjectDetail = () => {
     getVendorProjectLoading,
     getVendorProjectRefetch,
   } = useGetVendorProject(user.id, projectId);
+
+  const {
+    getCompanyDetailData,
+    getCompanyDetailError,
+    getCompanyDetailLoading,
+  } = useGetCompanyDetail();
+
+  const [chatOpen, setChatOpen] = useState(false);
 
   const renderProjectDetail = () => {
     const {
@@ -54,12 +66,36 @@ const VendorProjectDetail = () => {
       bids[comp.projectComponentId] = comp.quantityPrices;
     });
 
+    if (getVendorProjectLoading || getCompanyDetailLoading) {
+      return <FullScreenLoading />;
+    }
+
+    if (getVendorProjectError || getCompanyDetailError) {
+      return <Typography>Error</Typography>;
+    }
+
     return (
       <>
         <Grid container className="vendor-project-info-container" spacing={2}>
           <Grid item xs={5}>
             <Container>
               <Typography variant="h6">Project Detail</Typography>
+              <Button onClick={() => setChatOpen(true)}>chat</Button>
+              <Dialog
+                open={chatOpen}
+                onClose={() => setChatOpen(false)}
+                maxWidth="xl"
+                fullWidth={true}
+              >
+                <DialogContent>
+                  <ProjectChat
+                    setChatOpen={setChatOpen}
+                    projectBidId={bidInfo.id}
+                    customerName={customerName}
+                    vendorName={getCompanyDetailData.getCompanyDetail.name}
+                  />
+                </DialogContent>
+              </Dialog>
             </Container>
             <Paper>
               <List>
