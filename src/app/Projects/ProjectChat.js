@@ -7,14 +7,17 @@ import {
   ChannelHeader,
   ChannelList,
   LoadingIndicator,
-  MessageInput,
   MessageList,
   Thread,
   useMessageContext,
   Window,
+  useChannelStateContext,
+  MessageInput,
 } from "stream-chat-react";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import Messages from "./Messages";
+import CustomMessageInput from "./MessageInput";
 
 const streamApiKey = process.env.REACT_APP_STREAM_API_KEY;
 const streamAppId = process.env.REACT_APP_STREAM_APP_ID;
@@ -31,16 +34,6 @@ const CustomChannelPreview = (props) => {
     <div onClick={() => setActiveChannel(channel)} style={{ margin: "12px" }}>
       <div>{channel.data.name || "Unnamed Channel"}</div>
       <div style={{ fontSize: "14px" }}>{messagePreview}</div>
-    </div>
-  );
-};
-
-const CustomMessage = () => {
-  const { message } = useMessageContext();
-
-  return (
-    <div>
-      <b style={{ marginRight: "4px" }}>{message.user.name}</b> {message.text}
     </div>
   );
 };
@@ -97,10 +90,10 @@ const ProjectChat = ({
 
   return (
     <Chat client={chatClient} theme="messaging light">
-      <Channel channel={channel}>
+      <Channel channel={channel} Input={CustomMessageInput}>
         <Window>
-          <ChannelHeader />
-          <MessageList />
+          <div>Chat</div>
+          <Messages />
           <MessageInput />
         </Window>
         <Thread />
