@@ -31,6 +31,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
+import UploadDesign from './UploadDesign'
 /**
  * name
  * deliveryDate
@@ -365,6 +366,7 @@ const CreateProjectMoal = ({
       </Container>
 
       <DialogActions>
+        <UploadDesign />
         <Button
           variant="contained"
           disabled={checkProjectInput()}
