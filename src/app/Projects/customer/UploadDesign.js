@@ -1,28 +1,33 @@
-import React from 'react'
-import { Button } from '@mui/material'
-import { gql, useMutation } from '@apollo/client';
+import React from "react";
+import { Button, CircularProgress } from "@mui/material";
+import { gql, useMutation } from "@apollo/client";
 
 const MUTATION = gql`
   mutation ($file: Upload!) {
-    uploadFile(file: $file) {
-      key
-      Bucket
-    }
+    uploadProjectDesign(file: $file)
   }
 `;
 
-export default function UploadDesign() {
-  const [mutate] = useMutation(MUTATION);
+export default function UploadDesign({ setProjectData }) {
+  const [mutate, { error, loading }] = useMutation(MUTATION);
 
-  const onChange = ({ target: { validity, files } }) => {
-    const file = files[0]
-    console.log({ file })
-    if (validity.valid) mutate({ variables: { file } });
-  }
+  const onUpload = async ({ target: { validity, files } }) => {
+    const file = files[0];
+
+    if (validity.valid) {
+      const { data } = await mutate({ variables: { file } });
+
+      setProjectData((projectData) => ({
+        ...projectData,
+        designId: data.uploadProjectDesign,
+      }));
+    }
+  };
   return (
     <Button variant="contained" component="label">
       Upload
-      <input type="file" onChange={onChange} />
+      <input hidden type="file" onChange={onUpload} />
+      {loading && <CircularProgress />}
     </Button>
-  )
+  );
 }

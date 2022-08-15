@@ -31,7 +31,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
-import UploadDesign from './UploadDesign'
+import UploadDesign from "./UploadDesign";
 /**
  * name
  * deliveryDate
@@ -48,18 +48,6 @@ import UploadDesign from './UploadDesign'
  * }
  */
 
-const loadScript = (src, position, id) => {
-  if (!position) {
-    return;
-  }
-
-  const script = document.createElement("script");
-  script.setAttribute("async", "");
-  script.setAttribute("id", id);
-  script.src = src;
-  position.appendChild(script);
-};
-const COUNTRIES_LIST = Object.keys(contriesJson);
 const CreateProjectMoal = ({
   setIsCreateProjectOpen,
   setSnackbar,
@@ -81,7 +69,7 @@ const CreateProjectMoal = ({
     name: "",
     deliveryAddress: "",
     budget: "",
-    // design: null,
+    designId: "",
     comments: "",
   });
 
@@ -202,7 +190,6 @@ const CreateProjectMoal = ({
             ...projectData,
             deliveryDate,
             budget: parseInt(projectData.budget, 10),
-            design: null,
             components,
           },
         },
@@ -298,6 +285,7 @@ const CreateProjectMoal = ({
             />
           </LocalizationProvider>
           {GoogleMapAutocomplete(handleAddressOnChange)}
+          <UploadDesign setProjectData={setProjectData} />
           <TextField
             autoComplete="new-password"
             type="tel"
@@ -366,7 +354,6 @@ const CreateProjectMoal = ({
       </Container>
 
       <DialogActions>
-        <UploadDesign />
         <Button
           variant="contained"
           disabled={checkProjectInput()}
