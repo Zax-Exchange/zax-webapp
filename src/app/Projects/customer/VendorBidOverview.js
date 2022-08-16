@@ -21,7 +21,7 @@ import {
 } from "../../hooks/companyHooks";
 import FullScreenLoading from "../../Utils/Loading";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
-import CustomerProjectChat from "../ProjectChat";
+import CustomerProjectChat from "../chat/ProjectChat";
 
 /**
  * Bid overview card displayed in CustomerProjectDetail

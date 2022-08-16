@@ -22,7 +22,7 @@ import FullScreenLoading from "../../Utils/Loading";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { AuthContext } from "../../../context/AuthContext";
 import { useContext, useState } from "react";
-import ProjectChat from "../ProjectChat";
+import ProjectChat from "../chat/ProjectChat";
 import { useGetCompanyDetail } from "../../hooks/companyHooks";
 
 const VendorProjectDetail = () => {

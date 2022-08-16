@@ -12,10 +12,11 @@ import {
   useMessageContext,
   Window,
   useChannelStateContext,
+  VirtualizedMessageList,
   MessageInput,
 } from "stream-chat-react";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import Messages from "./Messages";
 import CustomMessageInput from "./MessageInput";
 
@@ -89,10 +90,10 @@ const ProjectChat = ({
   }
 
   return (
-    <Chat client={chatClient} theme="messaging light">
+    <Chat client={chatClient} theme="messaging light" >
       <Channel channel={channel} Input={CustomMessageInput}>
+        <div>Chat</div>
         <Window>
-          <div>Chat</div>
           <Messages />
           <MessageInput />
         </Window>

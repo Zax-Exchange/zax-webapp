@@ -6,6 +6,7 @@ import {
 
 const Messages = () => {
   const { messages } = useChannelStateContext();
+  console.log({ messages })
 
   return (
     <List>
@@ -23,7 +24,18 @@ function Message({ message }) {
         <Typography variant='subtitle2' sx={{ marginRight: '8px' }}>{message.user.name}</Typography>
         <Typography variant='caption'>{message.created_at.toLocaleTimeString()}</Typography>
       </Box>
-      <div>{message.text}</div>
+      {message.text.split('\n').map((m, index) => {
+        const pKey = `${message.id}-${index}`
+        if (!m) {
+          return <br />
+        }
+
+        return (
+          <Typography key={pKey} variant="body2">
+            {m}
+          </Typography>
+        )
+      })}
     </ListItem>
   )
 }
