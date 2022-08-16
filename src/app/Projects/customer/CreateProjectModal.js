@@ -284,8 +284,9 @@ const CreateProjectMoal = ({
               )}
             />
           </LocalizationProvider>
+
           {GoogleMapAutocomplete(handleAddressOnChange)}
-          <UploadDesign setProjectData={setProjectData} />
+
           <TextField
             autoComplete="new-password"
             type="tel"
@@ -354,6 +355,11 @@ const CreateProjectMoal = ({
       </Container>
 
       <DialogActions>
+        <UploadDesign
+          setProjectData={setProjectData}
+          setSnackbar={setSnackbar}
+          setSnackbarOpen={setSnackbarOpen}
+        />
         <Button
           variant="contained"
           disabled={checkProjectInput()}

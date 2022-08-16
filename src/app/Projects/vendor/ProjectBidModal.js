@@ -8,6 +8,7 @@ import {
   List,
   ListItem,
   Grid,
+  Link,
 } from "@mui/material";
 import { AuthContext } from "../../../context/AuthContext";
 import {
@@ -111,10 +112,16 @@ const ProjectBidModal = ({
               <ListItem>
                 <Typography>budget: {budget}</Typography>
               </ListItem>
-
-              <ListItem>
-                <Typography>design: {design}</Typography>
-              </ListItem>
+              {design && (
+                <ListItem>
+                  <Typography>
+                    Design:{" "}
+                    <Link href={design.url} target="_blank" rel="noopener">
+                      {design.fileName}
+                    </Link>
+                  </Typography>
+                </ListItem>
+              )}
               <ListItem>
                 <Typography>status: {status}</Typography>
               </ListItem>

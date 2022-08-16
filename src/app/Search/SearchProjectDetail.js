@@ -10,6 +10,7 @@ import {
   CardActionArea,
   CardContent,
   Paper,
+  Link,
 } from "@mui/material";
 import ProjectBidModal from "../Projects/vendor/ProjectBidModal";
 import { useState } from "react";
@@ -79,7 +80,14 @@ const SearchProjectDetail = () => {
               <Typography>deliveryDate: {deliveryDate}</Typography>
               <Typography>deliveryAddress: {deliveryAddress}</Typography>
               <Typography>budget: {budget}</Typography>
-              <Typography>design: {design}</Typography>
+              {design && (
+                <Typography>
+                  Design:{" "}
+                  <Link href={design.url} target="_blank" rel="noopener">
+                    {design.fileName}
+                  </Link>
+                </Typography>
+              )}
               <Typography>status: {status}</Typography>
             </Container>
           </Container>

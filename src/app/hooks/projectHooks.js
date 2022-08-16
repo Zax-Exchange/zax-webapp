@@ -11,7 +11,10 @@ const GET_VENDOR_PROJECT = gql`
       deliveryDate
       deliveryAddress
       budget
-      design
+      design {
+        fileName
+        url
+      }
       status
       components {
         id
@@ -72,7 +75,10 @@ const GET_CUSTOMER_PROJECT = gql`
       name
       deliveryDate
       deliveryAddress
-      design
+      design {
+        fileName
+        url
+      }
       budget
       status
       permission
@@ -140,7 +146,10 @@ const GET_PROJECT_DETAIL = gql`
       deliveryDate
       deliveryAddress
       budget
-      design
+      design {
+        fileName
+        url
+      }
       status
       components {
         id
@@ -277,7 +286,10 @@ export const GET_VENDOR_PROJECTS = gql`
       deliveryDate
       deliveryAddress
       budget
-      design
+      design {
+        fileName
+        url
+      }
       status
       permission
       createdAt
@@ -316,7 +328,10 @@ export const GET_CUSTOMER_PROJECTS = gql`
       name
       deliveryDate
       deliveryAddress
-      design
+      design {
+        fileName
+        url
+      }
       budget
       status
       permission

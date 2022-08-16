@@ -11,6 +11,7 @@ import {
   IconButton,
   Dialog,
   DialogContent,
+  Link,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
@@ -115,9 +116,16 @@ const VendorProjectDetail = () => {
                   <Typography>budget: {budget}</Typography>
                 </ListItem>
 
-                <ListItem>
-                  <Typography>design: {design}</Typography>
-                </ListItem>
+                {design && (
+                  <ListItem>
+                    <Typography>
+                      Design:{" "}
+                      <Link href={design.url} target="_blank" rel="noopener">
+                        {design.fileName}
+                      </Link>
+                    </Typography>
+                  </ListItem>
+                )}
                 <ListItem>
                   <Typography>status: {status}</Typography>
                 </ListItem>
