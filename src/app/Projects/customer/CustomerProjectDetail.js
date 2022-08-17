@@ -16,7 +16,14 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useGetCustomerProject } from "../../hooks/projectHooks";
 import FullScreenLoading from "../../Utils/Loading";
+import { ProjectOverviewListItem } from "./CustomerProjectOverview";
+import styled from "@emotion/styled";
 
+const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
+  "& .MuiTypography-root:first-of-type": {
+    flexBasis: "30%",
+  },
+}));
 const CustomerProjectDetail = () => {
   const { projectId } = useParams();
   const { user } = useContext(AuthContext);
@@ -88,65 +95,70 @@ const CustomerProjectDetail = () => {
           </Container>
           <Paper>
             <List>
-              <ListItem>
-                <Typography>Project Name: {projectData.name}</Typography>
-              </ListItem>
-              <ListItem>
-                <Typography>
-                  Delivery Date: {projectData.deliveryDate}
+              <ProjectOverviewListItem>
+                <Typography variant="subtitle2">Posted By</Typography>
+                <Typography variant="caption">{projectData.userId}</Typography>
+              </ProjectOverviewListItem>
+              <ProjectOverviewListItem>
+                <Typography variant="subtitle2">Project Name</Typography>
+                <Typography variant="caption">{projectData.name}</Typography>
+              </ProjectOverviewListItem>
+              <ProjectOverviewListItem>
+                <Typography variant="subtitle2">Delivery Date</Typography>
+                <Typography variant="caption">
+                  {projectData.deliveryDate}
                 </Typography>
-              </ListItem>
-              <ListItem>
-                <Typography>
-                  Delivery Address: {projectData.deliveryAddress}
+              </ProjectOverviewListItem>
+              <ProjectOverviewListItem>
+                <Typography variant="subtitle2">Delivery Address</Typography>
+                <Typography variant="caption">
+                  {projectData.deliveryAddress}
                 </Typography>
-              </ListItem>
+              </ProjectOverviewListItem>
 
               {projectData.design && (
-                <ListItem>
-                  <Typography>
-                    Design:{" "}
-                    <Link
-                      href={projectData.design.url}
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      {projectData.design.fileName}
-                    </Link>
-                  </Typography>
-                </ListItem>
+                <ProjectOverviewListItem>
+                  <Typography variant="subtitle2">Design</Typography>
+
+                  <Link
+                    href={projectData.design.url}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {projectData.design.fileName}
+                  </Link>
+                </ProjectOverviewListItem>
               )}
-              <ListItem>
-                <Typography>Budget: {projectData.budget}</Typography>
-              </ListItem>
-              <ListItem>
-                <Typography>Status: {projectData.status}</Typography>
-              </ListItem>
-              <ListItem>
-                <Typography>
-                  Posted on: {convertToDate(projectData.createdAt)}
+              <ProjectOverviewListItem>
+                <Typography variant="subtitle2">Budget</Typography>
+                <Typography variant="caption">{projectData.budget}</Typography>
+              </ProjectOverviewListItem>
+              <ProjectOverviewListItem>
+                <Typography variant="subtitle2">Posted on</Typography>
+                <Typography variant="caption">
+                  {convertToDate(projectData.createdAt)}
                 </Typography>
-              </ListItem>
+              </ProjectOverviewListItem>
             </List>
           </Paper>
           {projectData.components.map((comp) => {
             return (
               <Paper style={{ marginTop: "8px" }}>
                 <List>
-                  <ListItem>
+                  <ProjectOverviewListItem>
                     <Typography>Name: {comp.name}</Typography>
-                  </ListItem>
-                  <ListItem>
+                  </ProjectOverviewListItem>
+                  <ProjectOverviewListItem>
                     <Typography>
                       Materials: {comp.materials.join(",")}
                     </Typography>
-                  </ListItem>
-                  <ListItem>
+                  </ProjectOverviewListItem>
+                  <ProjectOverviewListItem>
                     <Typography>Dimension: {comp.dimension}</Typography>
-                  </ListItem>
-                  <ListItem>
+                  </ProjectOverviewListItem>
+                  <ProjectOverviewListItem>
                     <Typography>Post process: {comp.postProcess}</Typography>
-                  </ListItem>
+                  </ProjectOverviewListItem>
                 </List>
               </Paper>
             );

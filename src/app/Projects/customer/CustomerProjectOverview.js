@@ -24,7 +24,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 
-export const ListItem = styled(MuiListItem)(() => ({
+export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
   paddingLeft: 0,
   "& .MuiTypography-root": {
@@ -146,33 +146,35 @@ const CustomerProjectOverview = ({
 
           {/* <Typography align="left">Company: {project.companyId}</Typography> */}
           <List>
-            <ListItem>{renderProjectStatusChip()}</ListItem>
+            <ProjectOverviewListItem>
+              {renderProjectStatusChip()}
+            </ProjectOverviewListItem>
 
-            <ListItem>
+            <ProjectOverviewListItem>
               {/* <Typography variant="subtitle2">Delivery date</Typography> */}
               <LocalShippingOutlinedIcon />
               <Typography variant="caption">{project.deliveryDate}</Typography>
-            </ListItem>
+            </ProjectOverviewListItem>
 
-            <ListItem>
+            <ProjectOverviewListItem>
               {/* <Typography variant="subtitle2">Delivery address</Typography> */}
               <PlaceIcon />
               <Typography variant="caption">
                 {project.deliveryAddress}
               </Typography>
-            </ListItem>
+            </ProjectOverviewListItem>
 
-            <ListItem>
+            <ProjectOverviewListItem>
               {/* <Typography variant="subtitle2">Budget</Typography> */}
               <AttachMoneyIcon />
               <Typography variant="caption">${project.budget}</Typography>
-            </ListItem>
+            </ProjectOverviewListItem>
 
-            <ListItem>
+            <ProjectOverviewListItem>
               {/* <Typography variant="subtitle2">Posted on</Typography> */}
               <CalendarMonthIcon />
               <Typography variant="caption">{date}</Typography>
-            </ListItem>
+            </ProjectOverviewListItem>
           </List>
 
           {/* <Button style={{alignSelf: "center"}} onClick={viewDetailHandler}>View detail</Button> */}
