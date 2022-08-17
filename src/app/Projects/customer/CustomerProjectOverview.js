@@ -19,18 +19,17 @@ import MoreIcon from "@mui/icons-material/MoreHoriz";
 import DeleteProjectModal from "./DeleteProjectModal";
 import MuiListItem from "@mui/material/ListItem";
 import { styled } from "@mui/system";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PlaceIcon from "@mui/icons-material/Place";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 
 export const ListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
   paddingLeft: 0,
   "& .MuiTypography-root": {
     textAlign: "left",
-    "&:nth-of-type(1)": {
-      flexBasis: "50%",
-    },
-    "&:nth-of-type(2)": {
-      flexBasis: "30%",
-    },
+    marginLeft: 4,
   },
 }));
 
@@ -87,11 +86,11 @@ const CustomerProjectOverview = ({
   const renderProjectStatusChip = () => {
     switch (project.status) {
       case "OPEN":
-        return <Chip label="Open" color="primary" />;
+        return <Chip label="Open" color="primary" size="small" />;
       case "IN_PROGRESS":
-        return <Chip label="In Progress" color="warning" />;
+        return <Chip label="In Progress" color="warning" size="small" />;
       case "CLOSED":
-        return <Chip label="Closed" color="success" />;
+        return <Chip label="Closed" color="success" size="small" />;
       default:
         return null;
     }
@@ -147,31 +146,32 @@ const CustomerProjectOverview = ({
 
           {/* <Typography align="left">Company: {project.companyId}</Typography> */}
           <List>
+            <ListItem>{renderProjectStatusChip()}</ListItem>
+
             <ListItem>
-              <Typography variant="subtitle2">Delivery date</Typography>
+              {/* <Typography variant="subtitle2">Delivery date</Typography> */}
+              <LocalShippingOutlinedIcon />
               <Typography variant="caption">{project.deliveryDate}</Typography>
             </ListItem>
 
             <ListItem>
-              <Typography variant="subtitle2">Delivery address</Typography>
+              {/* <Typography variant="subtitle2">Delivery address</Typography> */}
+              <PlaceIcon />
               <Typography variant="caption">
                 {project.deliveryAddress}
               </Typography>
             </ListItem>
 
             <ListItem>
-              <Typography variant="subtitle2">Budget</Typography>
+              {/* <Typography variant="subtitle2">Budget</Typography> */}
+              <AttachMoneyIcon />
               <Typography variant="caption">${project.budget}</Typography>
             </ListItem>
 
             <ListItem>
-              <Typography variant="subtitle2">Posted on</Typography>
+              {/* <Typography variant="subtitle2">Posted on</Typography> */}
+              <CalendarMonthIcon />
               <Typography variant="caption">{date}</Typography>
-            </ListItem>
-
-            <ListItem>
-              <Typography variant="subtitle2">Status</Typography>
-              {renderProjectStatusChip()}
             </ListItem>
           </List>
 
