@@ -95,7 +95,7 @@ const theme = createTheme({
         root: {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          overflow: "auto",
+          overflow: "hidden",
         },
       },
     },

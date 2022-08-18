@@ -29,7 +29,7 @@ export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   paddingLeft: 0,
   "& .MuiTypography-root": {
     textAlign: "left",
-    marginLeft: 4,
+    marginLeft: 16,
   },
 }));
 

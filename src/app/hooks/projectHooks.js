@@ -126,7 +126,7 @@ export const useGetCustomerProject = ({ userId, projectId }) => {
         projectId,
       },
     },
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: "cache-first",
   });
 
   return {

@@ -25,47 +25,94 @@ import { useState } from "react";
  * @param {*} param0
  * @returns
  */
+
+const BidComponentRow = ({ row }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <TableRow key={row.name} sx={{ "& > *": { borderBottom: "unset" } }}>
+        {row.isLast ? (
+          <TableCell sx={{ width: "1em" }}>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </TableCell>
+        ) : (
+          <TableCell sx={{ width: "1em" }} />
+        )}
+        <TableCell component="th" scope="row">
+          {row.name}
+        </TableCell>
+        <TableCell align="right">{row.quantity}</TableCell>
+        <TableCell align="right">{row.price}</TableCell>
+      </TableRow>
+      {row.isLast && (
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Typography variant="subtitle2" gutterBottom>
+                  Detail for {row.projectComponent.name}
+                </Typography>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Materials</TableCell>
+                      <TableCell>Dimension</TableCell>
+                      <TableCell align="right">Post Process</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow key={row.projectComponent.id}>
+                      <TableCell component="th" scope="row">
+                        {row.projectComponent.materials}
+                      </TableCell>
+                      <TableCell>{row.projectComponent.dimension}</TableCell>
+                      <TableCell align="right">
+                        {row.projectComponent.postProcess}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
+    </>
+  );
+};
 const VendorBidModal = ({
   bid,
   projectComponents,
   setIsBidModalOpen,
   vendorData,
 }) => {
-  const [open, setOpen] = useState(false);
-
   const getComponent = (id) => {
     return projectComponents.find((comp) => comp.id === id);
   };
 
-  const getRows = () => {
-    const res = [];
-    for (let comp of bid.components) {
-      const row = {};
-      const projectComponent = getComponent(comp.projectComponentId);
-      for (let qp of comp.quantityPrices) {
-        res.push({
-          name: projectComponent.name,
-          quantity: qp.quantity,
-          price: qp.price,
-        });
-      }
-    }
-  };
   return (
     <TableContainer component={Box}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         {bid.components.map((comp) => {
           const rows = [];
-          const row = {};
           const projectComponent = getComponent(comp.projectComponentId);
-          for (let qp of comp.quantityPrices) {
+          comp.quantityPrices.forEach((qp, i) => {
             rows.push({
               name: projectComponent.name,
               quantity: qp.quantity,
               price: qp.price,
               projectComponent,
+              isLast: i === comp.quantityPrices.length - 1,
             });
-          }
+          });
+
           return (
             <>
               <TableHead>
@@ -78,69 +125,7 @@ const VendorBidModal = ({
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
-                  <>
-                    <TableRow
-                      key={row.name}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell>
-                        <IconButton
-                          aria-label="expand row"
-                          size="small"
-                          onClick={() => setOpen(!open)}
-                        >
-                          {open ? (
-                            <KeyboardArrowUpIcon />
-                          ) : (
-                            <KeyboardArrowDownIcon />
-                          )}
-                        </IconButton>
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">{row.quantity}</TableCell>
-                      <TableCell align="right">{row.price}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell
-                        style={{ paddingBottom: 0, paddingTop: 0 }}
-                        colSpan={6}
-                      >
-                        <Collapse in={open} timeout="auto" unmountOnExit>
-                          <Box sx={{ margin: 1 }}>
-                            <Typography variant="subtitle2" gutterBottom>
-                              Detail for {row.projectComponent.name}
-                            </Typography>
-                            <Table size="small">
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell>Materials</TableCell>
-                                  <TableCell>Dimension</TableCell>
-                                  <TableCell align="right">
-                                    Post Process
-                                  </TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                <TableRow key={row.projectComponent.id}>
-                                  <TableCell component="th" scope="row">
-                                    {row.projectComponent.materials}
-                                  </TableCell>
-                                  <TableCell>
-                                    {row.projectComponent.dimension}
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {row.projectComponent.postProcess}
-                                  </TableCell>
-                                </TableRow>
-                              </TableBody>
-                            </Table>
-                          </Box>
-                        </Collapse>
-                      </TableCell>
-                    </TableRow>
-                  </>
+                  <BidComponentRow row={row} />
                 ))}
               </TableBody>
             </>

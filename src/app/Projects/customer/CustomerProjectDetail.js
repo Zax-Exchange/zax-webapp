@@ -20,9 +20,8 @@ import { ProjectOverviewListItem } from "./CustomerProjectOverview";
 import styled from "@emotion/styled";
 
 const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
-  "& .MuiTypography-root:first-of-type": {
-    flexBasis: "30%",
-  },
+  flexDirection: "column",
+  alignItems: "flex-start",
 }));
 const CustomerProjectDetail = () => {
   const { projectId } = useParams();
@@ -59,7 +58,6 @@ const CustomerProjectDetail = () => {
       </Container>
     );
   }
-
   const projectData = getCustomerProjectData.getCustomerProject;
   const { bids } = projectData;
   return (
@@ -93,31 +91,31 @@ const CustomerProjectDetail = () => {
           <Container>
             <Typography variant="h6">Project Detail</Typography>
           </Container>
-          <Paper>
+          <Paper sx={{ padding: 3 }}>
             <List>
-              <ProjectOverviewListItem>
-                <Typography variant="subtitle2">Posted By</Typography>
-                <Typography variant="caption">{projectData.userId}</Typography>
-              </ProjectOverviewListItem>
-              <ProjectOverviewListItem>
+              <ProjectDetailListItem>
                 <Typography variant="subtitle2">Project Name</Typography>
                 <Typography variant="caption">{projectData.name}</Typography>
-              </ProjectOverviewListItem>
-              <ProjectOverviewListItem>
+              </ProjectDetailListItem>
+              {/* <ProjectDetailListItem>
+                <Typography variant="subtitle2">Posted By</Typography>
+                <Typography variant="caption">{projectData.userId}</Typography>
+              </ProjectDetailListItem> */}
+              <ProjectDetailListItem>
                 <Typography variant="subtitle2">Delivery Date</Typography>
                 <Typography variant="caption">
                   {projectData.deliveryDate}
                 </Typography>
-              </ProjectOverviewListItem>
-              <ProjectOverviewListItem>
+              </ProjectDetailListItem>
+              <ProjectDetailListItem>
                 <Typography variant="subtitle2">Delivery Address</Typography>
                 <Typography variant="caption">
                   {projectData.deliveryAddress}
                 </Typography>
-              </ProjectOverviewListItem>
+              </ProjectDetailListItem>
 
               {projectData.design && (
-                <ProjectOverviewListItem>
+                <ProjectDetailListItem>
                   <Typography variant="subtitle2">Design</Typography>
 
                   <Link
@@ -127,38 +125,47 @@ const CustomerProjectDetail = () => {
                   >
                     {projectData.design.fileName}
                   </Link>
-                </ProjectOverviewListItem>
+                </ProjectDetailListItem>
               )}
-              <ProjectOverviewListItem>
+              <ProjectDetailListItem>
                 <Typography variant="subtitle2">Budget</Typography>
                 <Typography variant="caption">{projectData.budget}</Typography>
-              </ProjectOverviewListItem>
-              <ProjectOverviewListItem>
+              </ProjectDetailListItem>
+              <ProjectDetailListItem>
                 <Typography variant="subtitle2">Posted on</Typography>
                 <Typography variant="caption">
                   {convertToDate(projectData.createdAt)}
                 </Typography>
-              </ProjectOverviewListItem>
+              </ProjectDetailListItem>
             </List>
           </Paper>
           {projectData.components.map((comp) => {
             return (
-              <Paper style={{ marginTop: "8px" }}>
+              <Paper sx={{ marginTop: 1, padding: 3 }}>
                 <List>
-                  <ProjectOverviewListItem>
-                    <Typography>Name: {comp.name}</Typography>
-                  </ProjectOverviewListItem>
-                  <ProjectOverviewListItem>
-                    <Typography>
-                      Materials: {comp.materials.join(",")}
+                  <ProjectDetailListItem>
+                    <Typography variant="subtitle2">Name</Typography>
+                    <Typography variant="caption">{comp.name}</Typography>
+                  </ProjectDetailListItem>
+
+                  <ProjectDetailListItem>
+                    <Typography variant="subtitle2">Materials</Typography>
+                    <Typography variant="caption">
+                      {comp.materials.join(",")}
                     </Typography>
-                  </ProjectOverviewListItem>
-                  <ProjectOverviewListItem>
-                    <Typography>Dimension: {comp.dimension}</Typography>
-                  </ProjectOverviewListItem>
-                  <ProjectOverviewListItem>
-                    <Typography>Post process: {comp.postProcess}</Typography>
-                  </ProjectOverviewListItem>
+                  </ProjectDetailListItem>
+
+                  <ProjectDetailListItem>
+                    <Typography variant="subtitle2">Dimension</Typography>
+                    <Typography variant="caption">{comp.dimension}</Typography>
+                  </ProjectDetailListItem>
+
+                  <ProjectDetailListItem>
+                    <Typography variant="subtitle2">Post process</Typography>
+                    <Typography variant="caption">
+                      {comp.postProcess}
+                    </Typography>
+                  </ProjectDetailListItem>
                 </List>
               </Paper>
             );
