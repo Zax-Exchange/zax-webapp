@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, CircularProgress, IconButton } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { gql, useMutation } from "@apollo/client";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
@@ -59,10 +64,16 @@ export default function UploadDesign({
   };
 
   return (
-    <IconButton variant="contained" component="label">
+    <IconButton
+      variant="contained"
+      component="label"
+      sx={{ borderRadius: 40 }}
+      color="primary"
+    >
       <input hidden type="file" onChange={onUpload} accept=".pdf" />
       {loading && <CircularProgress />}
       {!loading && <CloudUploadIcon />}
+      <Typography>Upload design</Typography>
     </IconButton>
   );
 }

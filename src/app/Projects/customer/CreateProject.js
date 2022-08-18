@@ -10,6 +10,8 @@ import {
   Autocomplete,
   Stack,
   CircularProgress,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
@@ -32,6 +34,7 @@ import PlacesAutocomplete, {
 } from "react-places-autocomplete";
 import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import UploadDesign from "./UploadDesign";
+import CustomSnackbar from "../../Utils/CustomSnackbar";
 /**
  * name
  * deliveryDate
@@ -48,11 +51,7 @@ import UploadDesign from "./UploadDesign";
  * }
  */
 
-const CreateProjectMoal = ({
-  setIsCreateProjectOpen,
-  setSnackbar,
-  setSnackbarOpen,
-}) => {
+const CreateProject = ({}) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,10 +72,19 @@ const CreateProjectMoal = ({
     comments: "",
   });
 
+  const [snackbar, setSnackbar] = useState({
+    message: "",
+    severity: "",
+  });
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const [deliveryDate, setDeliveryDate] = useState(
     new Date().toISOString().split("T")[0]
   );
   const [material, setMaterial] = useState("");
+
+  const [componentModalOpen, setComponentModalOpen] = useState(false);
 
   const [components, setComponents] = useState([]);
 
@@ -87,6 +95,9 @@ const CreateProjectMoal = ({
     postProcess: "",
   });
 
+  const openComponentModal = () => {
+    setComponentModalOpen(true);
+  };
   const materialOnChange = (e) => {
     const val = e.target.value || "";
 
@@ -161,6 +172,7 @@ const CreateProjectMoal = ({
       dimension: "",
       postProcess: "",
     });
+    setComponentModalOpen(false);
   };
 
   const checkComponentInput = () => {
@@ -195,7 +207,6 @@ const CreateProjectMoal = ({
           },
         },
       });
-      setIsCreateProjectOpen(false);
       if (location.pathname.indexOf("/projects")) {
         navigate("/projects");
       } else {
@@ -259,11 +270,33 @@ const CreateProjectMoal = ({
   };
   return (
     <>
+      <CustomSnackbar
+        direction="right"
+        severity={snackbar.severity}
+        message={snackbar.message}
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+      />
       {createProjectLoading && <FullScreenLoading />}
       <Container>
-        <Container>
-          <Typography variant="h6">Create Project</Typography>
-        </Container>
+        <Box display="flex" mb={4}>
+          <Typography variant="h6" textAlign="left" flexGrow={1}>
+            Configure Project Detail
+          </Typography>
+
+          <UploadDesign
+            setProjectData={setProjectData}
+            setSnackbar={setSnackbar}
+            setSnackbarOpen={setSnackbarOpen}
+          />
+          <Button
+            style={{ marginLeft: 16 }}
+            onClick={openComponentModal}
+            variant="outlined"
+          >
+            Add component
+          </Button>
+        </Box>
         <Stack spacing={2} textAlign="left">
           <TextField
             autoComplete="new-password"
@@ -306,38 +339,49 @@ const CreateProjectMoal = ({
         </Stack>
       </Container>
 
-      <Container>
-        <Container>
-          <Typography variant="h6">Create Project Components</Typography>
-        </Container>
-        <Stack spacing={2} textAlign="left">
-          <TextField
-            autoComplete="new-password"
-            label="Name"
-            onChange={componentInputHandler}
-            name="name"
-            value={componentData.name}
-          />
-          {renderMaterialsDropdown()}
-          <TextField
-            autoComplete="new-password"
-            label="Dimension"
-            onChange={componentInputHandler}
-            name="dimension"
-            value={componentData.dimension}
-          />
-          <TextField
-            autoComplete="new-password"
-            label="Post Process"
-            onChange={componentInputHandler}
-            name="postProcess"
-            value={componentData.postProcess}
-          />
+      <Dialog
+        open={componentModalOpen}
+        onClose={() => setComponentModalOpen(false)}
+      >
+        <DialogContent>
+          <Container>
+            <Box>
+              <Typography variant="h6" textAlign="left">
+                Add Project Component
+              </Typography>
+            </Box>
+            <Stack spacing={2} textAlign="left">
+              <TextField
+                autoComplete="new-password"
+                label="Name"
+                onChange={componentInputHandler}
+                name="name"
+                value={componentData.name}
+              />
+              {renderMaterialsDropdown()}
+              <TextField
+                autoComplete="new-password"
+                label="Dimension"
+                onChange={componentInputHandler}
+                name="dimension"
+                value={componentData.dimension}
+              />
+              <TextField
+                autoComplete="new-password"
+                label="Post Process"
+                onChange={componentInputHandler}
+                name="postProcess"
+                value={componentData.postProcess}
+              />
+            </Stack>
+          </Container>
+        </DialogContent>
+        <DialogActions>
           <Button onClick={addComponent} disabled={checkComponentInput()}>
             ADD
           </Button>
-        </Stack>
-      </Container>
+        </DialogActions>
+      </Dialog>
 
       <Container>
         <Stack spacing={2} textAlign="left">
@@ -354,22 +398,15 @@ const CreateProjectMoal = ({
         </Stack>
       </Container>
 
-      <DialogActions>
-        <UploadDesign
-          setProjectData={setProjectData}
-          setSnackbar={setSnackbar}
-          setSnackbarOpen={setSnackbarOpen}
-        />
-        <Button
-          variant="contained"
-          disabled={checkProjectInput()}
-          onClick={createProject}
-        >
-          CREATE
-        </Button>
-      </DialogActions>
+      <Button
+        variant="contained"
+        disabled={checkProjectInput()}
+        onClick={createProject}
+      >
+        CREATE
+      </Button>
     </>
   );
 };
 
-export default CreateProjectMoal;
+export default CreateProject;

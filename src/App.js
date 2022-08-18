@@ -24,6 +24,7 @@ import ErrorFallback from "./app/ErrorBoundary/ErrorBoundary";
 import CustomerSignup from "./app/Login/customer/CustomerSignup";
 import VendorProjectDetail from "./app/Projects/vendor/VendorProjectDetail";
 import { ThemeProvider } from "@mui/system";
+import CreateProject from "./app/Projects/customer/CreateProject";
 
 const theme = createTheme({
   palette: {
@@ -207,6 +208,14 @@ function App() {
                 }
               />
               <Route
+                path="/create-project"
+                element={
+                  <RequireAuth>
+                    <CreateProject />
+                  </RequireAuth>
+                }
+              />
+              <Route
                 path="/vendor-project-detail/:projectId"
                 element={
                   <RequireAuth>
@@ -223,6 +232,7 @@ function App() {
                 }
               />
 
+              {/* logged out routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/company-signup" element={<CompanySignup />} />
               <Route path="/user-signup/:companyId" element={<UserSignup />} />

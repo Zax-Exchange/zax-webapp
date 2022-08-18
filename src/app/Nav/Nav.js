@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import { Menu, Home, TextSnippet, Settings, Logout } from "@mui/icons-material";
 import { useContext, useState } from "react";
-import CreateProjectMoal from "../Projects/customer/CreateProjectModal";
 import { AuthContext } from "../../context/AuthContext";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
@@ -134,6 +133,10 @@ const Nav = () => {
   const handleLoggedOutOnClick = (page) => {
     navigate(`/${page}`);
   };
+
+  const navigateToCreateProject = () => {
+    navigate("/create-project");
+  };
   const renderHamburger = () => {
     return (
       <IconButton
@@ -177,7 +180,7 @@ const Nav = () => {
 
           <Box display="flex" flexGrow={1} justifyContent="flex-end">
             <Button
-              onClick={() => setIsCreateProjectOpen(true)}
+              onClick={navigateToCreateProject}
               variant="contained"
               sx={{ borderRadius: 40 }}
             >
@@ -188,20 +191,6 @@ const Nav = () => {
           <CustomerNotification />
         </Toolbar>
         {renderSideNav()}
-        <Dialog
-          open={isCreateProjectOpen}
-          onClose={() => setIsCreateProjectOpen(false)}
-          maxWidth="xl"
-          fullWidth={true}
-        >
-          <DialogContent>
-            <CreateProjectMoal
-              setIsCreateProjectOpen={setIsCreateProjectOpen}
-              setSnackbar={setSnackbar}
-              setSnackbarOpen={setSnackbarOpen}
-            />
-          </DialogContent>
-        </Dialog>
       </>
     );
   };
