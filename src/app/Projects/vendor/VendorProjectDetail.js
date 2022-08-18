@@ -82,21 +82,13 @@ const VendorProjectDetail = () => {
             <Container>
               <Typography variant="h6">Project Detail</Typography>
               <Button onClick={() => setChatOpen(true)}>chat</Button>
-              <Dialog
-                open={chatOpen}
-                onClose={() => setChatOpen(false)}
-                maxWidth="xl"
-                fullWidth={true}
-              >
-                <DialogContent>
-                  <ProjectChat
-                    setChatOpen={setChatOpen}
-                    projectBidId={bidInfo.id}
-                    customerName={customerName}
-                    vendorName={getCompanyDetailData.getCompanyDetail.name}
-                  />
-                </DialogContent>
-              </Dialog>
+              <ProjectChat
+                setChatOpen={setChatOpen}
+                projectBidId={bidInfo.id}
+                customerName={customerName}
+                vendorName={getCompanyDetailData.getCompanyDetail.name}
+                chatOpen={chatOpen}
+              />
             </Container>
             <Paper>
               <List>

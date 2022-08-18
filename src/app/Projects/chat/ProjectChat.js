@@ -1,4 +1,10 @@
-import { Box, Container, Divider, Drawer, IconButton } from "@mui/material";
+import {
+  Box,
+  Container,
+  DialogTitle,
+  DialogContent,
+  Dialog,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { StreamChat } from "stream-chat";
 import {
@@ -15,7 +21,7 @@ import {
   VirtualizedMessageList,
   MessageInput,
 } from "stream-chat-react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import Messages from "./Messages";
 import CustomMessageInput from "./MessageInput";
@@ -44,6 +50,7 @@ const ProjectChat = ({
   setChatOpen,
   customerName,
   vendorName,
+  chatOpen,
 }) => {
   const { user } = useContext(AuthContext);
   const [chatClient, setChatClient] = useState(null);
@@ -85,21 +92,45 @@ const ProjectChat = ({
     };
   }, [chatClient]);
 
+  const messagesRef = useRef(null);
+
   if (!chatClient) {
     return <LoadingIndicator />;
   }
+  if (!chatOpen) return null;
 
   return (
-    <Chat client={chatClient} theme="messaging light" >
-      <Channel channel={channel} Input={CustomMessageInput}>
-        <div>Chat</div>
-        <Window>
-          <Messages />
-          <MessageInput />
-        </Window>
-        <Thread />
-      </Channel>
-    </Chat>
+    <Dialog
+      open={chatOpen}
+      onClose={() => setChatOpen(false)}
+      maxWidth="xl"
+      fullWidth={true}
+      sx={{
+        height: "calc(100% - 64px)",
+      }}
+    >
+      <DialogTitle>{`Chat with ${
+        user.isVendor ? customerName : vendorName
+      }`}</DialogTitle>
+      <DialogContent
+        ref={messagesRef}
+        sx={{
+          paddingBottom: 0,
+        }}
+      >
+        <Box sx={{ position: "relative", height: "calc(100% - 64px)" }}>
+          <Chat client={chatClient} theme="messaging light">
+            <Channel channel={channel} Input={CustomMessageInput}>
+              <Window>
+                <Messages />
+                <MessageInput />
+              </Window>
+              <Thread />
+            </Channel>
+          </Chat>
+        </Box>
+      </DialogContent>
+    </Dialog>
   );
 };
 
