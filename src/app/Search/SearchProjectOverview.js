@@ -47,7 +47,7 @@ const SearchProjectOverview = ({ projectData }) => {
               <Typography>
                 Materials: {projectData.materials.join(",")}
               </Typography>
-              <Typography>Company: {projectData.companyId}</Typography>
+              <Typography>Company: {projectData.companyName}</Typography>
               <Typography>Delivery date: {projectData.deliveryDate}</Typography>
               <Typography>
                 Delivery address: {projectData.deliveryAddress}

@@ -4,6 +4,7 @@ const SEARCH_PROJECTS = gql`
   query searchProjects($searchInput: SearchProjectInput) {
     searchCustomerProjects(searchInput: $searchInput) {
       name
+      companyName
       materials
       id
       companyId

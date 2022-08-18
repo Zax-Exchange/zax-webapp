@@ -22,6 +22,7 @@ import {
 import FullScreenLoading from "../../Utils/Loading";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import CustomerProjectChat from "../chat/ProjectChat";
+import ProjectChat from "../chat/ProjectChat";
 
 /**
  * Bid overview card displayed in CustomerProjectDetail
@@ -159,21 +160,13 @@ const VendorBidOverview = ({ bid, projectComponents }) => {
             </DialogContent>
           </Dialog>
 
-          <Dialog
-            open={chatOpen}
-            onClose={() => setChatOpen(false)}
-            maxWidth="xl"
-            fullWidth={true}
-          >
-            <DialogContent>
-              <CustomerProjectChat
-                setChatOpen={setChatOpen}
-                projectBidId={bid.id}
-                customerName={getCompanyDetailData.getCompanyDetail.name}
-                vendorName={vendorData.name}
-              />
-            </DialogContent>
-          </Dialog>
+          <ProjectChat
+            chatOpen={chatOpen}
+            setChatOpen={setChatOpen}
+            projectBidId={bid.id}
+            customerName={getCompanyDetailData.getCompanyDetail.name}
+            vendorName={vendorData.name}
+          />
         </>
       )}
     </Card>

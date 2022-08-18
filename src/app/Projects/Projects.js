@@ -134,22 +134,6 @@ const Projects = () => {
             setSnackbarOpen={setSnackbarOpen}
             setIsProjectPageLoading={setIsProjectPageLoading}
           />
-          {/* <CustomerProjectOverview
-            key={i}
-            project={project}
-            getCustomerProjectsRefetch={getCustomerProjectsRefetch}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
-            setIsProjectPageLoading={setIsProjectPageLoading}
-          />
-          <CustomerProjectOverview
-            key={i}
-            project={project}
-            getCustomerProjectsRefetch={getCustomerProjectsRefetch}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
-            setIsProjectPageLoading={setIsProjectPageLoading}
-          /> */}
         </>
       );
     });
