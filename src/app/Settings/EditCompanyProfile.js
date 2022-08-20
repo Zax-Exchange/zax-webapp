@@ -24,6 +24,7 @@ import {
 } from "../hooks/companyHooks";
 import AddIcon from "@mui/icons-material/Add";
 import "../Login/vendor/VendorSignup.scss";
+import { isValidAlphanumeric } from "../Utils/inputValidators";
 
 /**
  * 
@@ -142,7 +143,11 @@ const EditCompanyProfile = ({ setSnackbar, setSnackbarOpen }) => {
   };
 
   const materialOnChange = (e) => {
-    setMaterial(e.target.value);
+    const val = e.target.value || "";
+
+    if (isValidAlphanumeric(val)) {
+      setMaterial(val);
+    }
   };
 
   const locationOnChange = (locations) => {
@@ -153,42 +158,13 @@ const EditCompanyProfile = ({ setSnackbar, setSnackbarOpen }) => {
     });
   };
 
-  const handleMaterialKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      const materials = [...companyData.materials];
-      materials.push(material);
-      setCompanyData({
-        ...companyData,
-        materials,
-      });
-      setMaterial("");
-    }
-  };
-
-  const addMaterial = () => {
-    const materials = [...companyData.materials];
-    materials.push(material);
+  const addMaterial = (material) => {
+    const materials = [...material].map((v) => v.trim());
     setCompanyData({
       ...companyData,
       materials,
     });
     setMaterial("");
-  };
-
-  const materialOnFocus = (e) => {
-    setMaterialInputBorderColor("rgba(0, 0, 0, 0.87)");
-  };
-  const materialonBlur = (e) => {
-    setMaterialInputBorderColor("lightgray");
-  };
-
-  const handleMaterialsDelete = (i) => {
-    const arr = [...companyData.materials];
-    arr.splice(i, 1);
-    setCompanyData({
-      ...companyData,
-      materials: arr,
-    });
   };
 
   const renderCountryDropdown = () => {
@@ -238,10 +214,6 @@ const EditCompanyProfile = ({ setSnackbar, setSnackbarOpen }) => {
     return <></>;
   };
 
-  const focusMaterialInput = () => {
-    materianInputRef.current.focus();
-  };
-
   const shouldDisableUpdateButton = () => {
     // common non-required attributes
     const isRequired = (field) => {
@@ -286,40 +258,39 @@ const EditCompanyProfile = ({ setSnackbar, setSnackbarOpen }) => {
   };
 
   const renderVendorUpdateForm = () => {
-    const renderMaterialsInput = () => {
+    const renderMaterialsDropdown = () => {
       return (
-        <ListItem disableGutters>
-          <Box
-            className="form-control-materials"
-            onClick={focusMaterialInput}
-            sx={{ borderColor: materialInputBorderColor }}
-          >
-            <div className="container">
-              {companyData.materials.map((item, index) => (
-                <Chip
-                  size="small"
-                  onDelete={() => handleMaterialsDelete(index)}
-                  label={item}
-                />
-              ))}
-            </div>
-            <Input
-              inputRef={materianInputRef}
+        <Autocomplete
+          id="materials-select"
+          sx={{ width: 400 }}
+          options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
+          autoHighlight
+          inputValue={material}
+          onInputChange={materialOnChange}
+          onChange={(e, v) => addMaterial(v)}
+          value={companyData.materials}
+          multiple
+          freeSolo
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Manufacturing materials"
               value={material}
               onChange={materialOnChange}
-              onKeyDown={handleMaterialKeyDown}
-              placeholder="Material"
               inputProps={{
-                onFocus: materialOnFocus,
-                onBlur: materialonBlur,
+                ...params.inputProps,
+                autoComplete: "new-password",
               }}
-              disableUnderline
+              helperText="This helps customers to find your company easier."
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
             />
-          </Box>
-          <IconButton onClick={addMaterial} disabled={material.length === 0}>
-            <AddIcon />
-          </IconButton>
-        </ListItem>
+          )}
+        />
       );
     };
 
@@ -390,7 +361,7 @@ const EditCompanyProfile = ({ setSnackbar, setSnackbarOpen }) => {
           onChange={onChange}
           helperText="e.g. 5000-10000, 6000-8000"
         />
-        {renderMaterialsInput()}
+        {renderMaterialsDropdown()}
         {renderFactoryLocationDropdown()}
       </>
     );
@@ -447,11 +418,11 @@ const EditCompanyProfile = ({ setSnackbar, setSnackbarOpen }) => {
     updateCustomerDataLoading ||
     updateVendorDataLoading;
 
-  if (isLoading) return <FullScreenLoading />;
   if (getCompanyDetailError) return null;
 
   return (
     <Container>
+      {isLoading && <FullScreenLoading />}
       <Typography variant="h6">Edit Company Profile</Typography>
 
       {companyData && (

@@ -93,7 +93,7 @@ const VendorProjectDetail = () => {
             <Paper>
               <List>
                 <ListItem>
-                  <Typography>Customer: {companyId}</Typography>
+                  <Typography>Customer: {customerName}</Typography>
                 </ListItem>
                 <ListItem>
                   <Typography>name: {projectName}</Typography>

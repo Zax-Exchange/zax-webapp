@@ -12,6 +12,7 @@ import {
   List,
   MenuList,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import ProjectPermissionModal from "../ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
@@ -152,13 +153,17 @@ const CustomerProjectOverview = ({
 
             <ProjectOverviewListItem>
               {/* <Typography variant="subtitle2">Delivery date</Typography> */}
-              <LocalShippingOutlinedIcon />
+              <Tooltip title="Delivery date" arrow placement="top">
+                <LocalShippingOutlinedIcon />
+              </Tooltip>
               <Typography variant="caption">{project.deliveryDate}</Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
               {/* <Typography variant="subtitle2">Delivery address</Typography> */}
-              <PlaceIcon />
+              <Tooltip title="Delivery address" arrow placement="top">
+                <PlaceIcon />
+              </Tooltip>
               <Typography variant="caption">
                 {project.deliveryAddress}
               </Typography>
@@ -166,13 +171,17 @@ const CustomerProjectOverview = ({
 
             <ProjectOverviewListItem>
               {/* <Typography variant="subtitle2">Budget</Typography> */}
-              <AttachMoneyIcon />
+              <Tooltip title="Budget" arrow placement="top">
+                <AttachMoneyIcon />
+              </Tooltip>
               <Typography variant="caption">${project.budget}</Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
               {/* <Typography variant="subtitle2">Posted on</Typography> */}
-              <CalendarMonthIcon />
+              <Tooltip title="Posted on" arrow placement="top">
+                <CalendarMonthIcon />
+              </Tooltip>
               <Typography variant="caption">{date}</Typography>
             </ProjectOverviewListItem>
           </List>
