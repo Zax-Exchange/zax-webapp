@@ -5,16 +5,15 @@ import {
   Button,
   Paper,
   Fade,
+  ExtendButtonBase,
+  ButtonTypeMap,
 } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
-import {
-  useCreateStripeCustomer,
-  useCreateSubscription,
-} from "../../hooks/signupHooks";
+
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import Checkout from "../Checkout";
@@ -25,13 +24,22 @@ import CompanyInfo from "../CompanyInfo";
 import CustomerCompanyReview from "./CustomerCompanyReview";
 import "./CustomerSignup.scss";
 import { CSSTransition } from "react-transition-group";
-import { useGetAllPlans } from "../../hooks/planHooks";
 import CheckoutSuccess from "../CheckoutSuccess";
 import { validate } from "email-validator";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
+import { CompanySignupData } from "../types/companyTypes";
+import {
+  useCreateStripeCustomer,
+  useCreateSubscription,
+} from "../../hooks/create/planHooks";
+import { GraphQLError } from "graphql";
+import { CreateCustomerSubscriptionData } from "../../hooks/types/plan/createPlanTypes";
+import { useGetAllPlans } from "../../hooks/get/planHooks";
+import React from "react";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 const stripePromise = loadStripe(
-  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
 );
 
 export const CustomerSignupPage = {
@@ -43,6 +51,23 @@ export const CustomerSignupPage = {
   SUCCESS_PAGE: "SUCCESS_PAGE",
 };
 
+export type SubscriptionInfo = {
+  price: string;
+  priceId: string;
+  billingFrequency: string;
+};
+
+export type StripeData = {
+  customerId: string;
+  subscriptionId: string;
+  clientSecret: string;
+};
+
+export type Country = {
+  code: string;
+  label: string;
+  phone: string;
+};
 const CustomerSignup = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -65,20 +90,21 @@ const CustomerSignup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
 
+  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
   const [subscriptionInfo, setSubscriptionInfo] = useState({
     price: "",
     priceId: "",
     billingFrequency: "",
-  });
+  } as SubscriptionInfo);
 
   const [currentPage, setCurrentPage] = useState(CustomerSignupPage.EMAIL_PAGE);
   const [stripeData, setStripeData] = useState({
     customerId: "",
     subscriptionId: "",
     clientSecret: "",
-  });
+  } as StripeData);
 
-  const [previousPlanIds, setPreviousPlanIds] = useState([]);
+  const [previousPlanIds, setPreviousPlanIds] = useState<string[]>([]);
 
   const [values, setValues] = useState({
     name: "",
@@ -93,14 +119,7 @@ const CustomerSignup = () => {
     companyUrl: "",
     planId: "",
     userEmail: "",
-  });
-
-  const [snackbar, setSnackbar] = useState({
-    message: "",
-    severity: "",
-  });
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  } as CompanySignupData);
 
   useEffect(() => {
     if (createStripeCustomerData) {
@@ -119,9 +138,11 @@ const CustomerSignup = () => {
       setStripeData({
         ...stripeData,
         subscriptionId:
-          createSubscriptionData.createCustomerSubscription.subscriptionId,
+          (createSubscriptionData as CreateCustomerSubscriptionData)!
+            .createCustomerSubscription.subscriptionId,
         clientSecret:
-          createSubscriptionData.createCustomerSubscription.clientSecret,
+          (createSubscriptionData as CreateCustomerSubscriptionData)!
+            .createCustomerSubscription.clientSecret!,
       });
       setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
       setPreviousPlanIds([...previousPlanIds, values.planId]);
@@ -134,18 +155,18 @@ const CustomerSignup = () => {
 
   const isValidStripeData = () => {
     for (let key in stripeData) {
-      if (!stripeData[key]) return false;
+      if (!stripeData[key as keyof StripeData]) return false;
     }
     return true;
   };
-  const selectPlan = (planId) => {
+  const selectPlan = (planId: string) => {
     setValues({
       ...values,
       planId,
     });
   };
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     let isAllowed = true;
 
@@ -168,7 +189,7 @@ const CustomerSignup = () => {
     }
   };
 
-  const countryOnChange = (countryObj) => {
+  const countryOnChange = (countryObj: Country) => {
     setValues({
       ...values,
       country: countryObj ? countryObj.label : "",
@@ -196,10 +217,10 @@ const CustomerSignup = () => {
         await createSubscription({
           variables: {
             priceId: subscriptionInfo.priceId,
-            stripeCustomerId: data.createStripeCustomer,
+            stripeCustomerId: data!.createStripeCustomer,
           },
         });
-      } catch (error) {
+      } catch (error: any) {
         setSnackbar({
           severity: "error",
           message: error.message,
@@ -236,9 +257,9 @@ const CustomerSignup = () => {
     }
   };
 
-  const renderNavigationButtons = (isValidInput) => {
+  const renderNavigationButtons = (isValidInput: boolean) => {
     const backButton = (
-      <Button key="back" variant="primary" onClick={previousPage}>
+      <Button key="back" variant="outlined" onClick={previousPage}>
         Back
       </Button>
     );
@@ -253,7 +274,7 @@ const CustomerSignup = () => {
       </Button>
     );
 
-    let buttons = [];
+    let buttons: JSX.Element[] = [];
     if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       buttons = [nextButton];
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
@@ -279,11 +300,11 @@ const CustomerSignup = () => {
     );
   };
 
-  const validateInputs = (fields) => {
+  const validateInputs = (fields: string[]) => {
     for (let field of fields) {
-      if (Array.isArray(values[field]) && values[field].length === 0)
-        return false;
-      if (!values[field]) return false;
+      const value = values[field as keyof CompanySignupData];
+
+      if (!value) return false;
     }
     return true;
   };
@@ -343,7 +364,7 @@ const CustomerSignup = () => {
                   );
                 })}
             </Stack>
-            {renderNavigationButtons()}
+            {renderNavigationButtons(true)}
           </div>
         </Fade>
       );
@@ -400,13 +421,7 @@ const CustomerSignup = () => {
         createSubscriptionLoading ||
         isLoading) && <FullScreenLoading />}
       <Paper sx={{ padding: 8, position: "relative" }}>
-        <CustomSnackbar
-          severity={snackbar.severity}
-          direction="right"
-          message={snackbar.message}
-          open={snackbarOpen}
-          onClose={() => setSnackbarOpen(false)}
-        />
+        {CustomSnackbar}
         {renderCompanySignupFlow()}
       </Paper>
     </Container>

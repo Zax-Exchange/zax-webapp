@@ -14,13 +14,15 @@ import {
 } from "@mui/material";
 import ProjectBidModal from "../Projects/vendor/ProjectBidModal";
 import { useState } from "react";
-import { useGetProjectDetail } from "../hooks/projectHooks";
 import FullScreenLoading from "../Utils/Loading";
 import CustomSnackbar from "../Utils/CustomSnackbar";
+import { useGetProjectDetail } from "../hooks/get/projectHooks";
+import React from "react";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 
 const SearchProjectDetail = () => {
-  const { state } = useLocation();
-
+  const { state }: { state: any } = useLocation();
+  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
   const {
     getProjectDetailData,
     getProjectDetailError,
@@ -28,25 +30,20 @@ const SearchProjectDetail = () => {
   } = useGetProjectDetail(state.projectId);
 
   const navigate = useNavigate();
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    severity: "",
-    message: "",
-  });
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [projectBidModalOpen, setProjectBidModalOpen] = useState(false);
 
   const openModal = () => {
-    setIsOpen(true);
+    setProjectBidModalOpen(true);
   };
 
   const afterOpenModal = () => {};
 
   const closeModal = () => {
-    setIsOpen(false);
+    setProjectBidModalOpen(false);
   };
 
   const bidProjectHandler = () => {
-    setIsOpen(true);
+    setProjectBidModalOpen(true);
     // navigate("/project-bid", {state: {projectId: state.projectId}});
   };
   const backHandler = () => {
@@ -125,27 +122,21 @@ const SearchProjectDetail = () => {
   if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
     return (
       <Container className="project-detail-container">
-        <CustomSnackbar
-          open={snackbarOpen}
-          severity={snackbar.severity}
-          message={snackbar.message}
-          direction="right"
-          onClose={() => setSnackbarOpen(false)}
-        />
+        {CustomSnackbar}
         {renderProjectDetail()}
 
         <Button onClick={bidProjectHandler}>Bid Project</Button>
         <Button onClick={backHandler}>Back</Button>
 
         <Dialog
-          open={modalIsOpen}
+          open={projectBidModalOpen}
           onClose={closeModal}
           fullWidth={true}
           maxWidth="md"
         >
           <ProjectBidModal
+            setProjectBidModalOpen={setProjectBidModalOpen}
             projectId={state.projectId}
-            setIsOpen={setIsOpen}
             setSnackbar={setSnackbar}
             setSnackbarOpen={setSnackbarOpen}
           />

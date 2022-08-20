@@ -12,6 +12,7 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
+  AlertColor,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
@@ -19,22 +20,17 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import AddIcon from "@mui/icons-material/Add";
-import {
-  useCreateProject,
-  useGetCustomerProjects,
-} from "../../hooks/projectHooks";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import FullScreenLoading from "../../Utils/Loading";
-import contriesJson from "all-countries-and-cities-json";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
-import PlacesAutocomplete, {
-  geocodeByAddress,
-  geocodeByPlaceId,
-  getLatLng,
-} from "react-places-autocomplete";
 import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import UploadDesign from "./UploadDesign";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
+import { useCreateProject } from "../../hooks/create/projectHooks";
+import { useGetCustomerProjects } from "../../hooks/get/customerHooks";
+import React from "react";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 /**
  * name
  * deliveryDate
@@ -51,7 +47,22 @@ import CustomSnackbar from "../../Utils/CustomSnackbar";
  * }
  */
 
-const CreateProject = ({}) => {
+export type ProjectData = {
+  userId: string;
+  name: string;
+  deliveryAddress: string;
+  budget: string;
+  designId: string;
+  comments: string;
+};
+
+export type ProjectComponentData = {
+  name: string;
+  materials: string[];
+  dimension: string;
+  postProcess: string;
+};
+const CreateProject = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,22 +73,15 @@ const CreateProject = ({}) => {
     createProjectError,
     createProjectData,
   } = useCreateProject();
-  const { getCustomerProjectsRefetch } = useGetCustomerProjects(user.id, true);
+  const { getCustomerProjectsRefetch } = useGetCustomerProjects(user!.id, true);
   const [projectData, setProjectData] = useState({
-    userId: user.id,
+    userId: user!.id,
     name: "",
     deliveryAddress: "",
     budget: "",
     designId: "",
     comments: "",
-  });
-
-  const [snackbar, setSnackbar] = useState({
-    message: "",
-    severity: "",
-  });
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  } as ProjectData);
 
   const [deliveryDate, setDeliveryDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -86,27 +90,27 @@ const CreateProject = ({}) => {
 
   const [componentModalOpen, setComponentModalOpen] = useState(false);
 
-  const [components, setComponents] = useState([]);
+  const [components, setComponents] = useState([] as ProjectComponentData[]);
 
   const [componentData, setComponentData] = useState({
     name: "",
     materials: [],
     dimension: "",
     postProcess: "",
-  });
+  } as ProjectComponentData);
 
   const openComponentModal = () => {
     setComponentModalOpen(true);
   };
-  const materialOnChange = (e) => {
-    const val = e.target.value || "";
+  const materialOnChange = (val: string) => {
+    // const val = e.target.value || "";
 
     if (isValidAlphanumeric(val)) {
       setMaterial(val);
     }
   };
 
-  const addMaterial = (value) => {
+  const addMaterial = (value: string[]) => {
     const materials = [...value].map((v) => v.trim());
     setComponentData({
       ...componentData,
@@ -115,7 +119,7 @@ const CreateProject = ({}) => {
     setMaterial("");
   };
 
-  const projectInputHandler = (e) => {
+  const projectInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     let isAllowed = true;
 
@@ -138,7 +142,7 @@ const CreateProject = ({}) => {
     }
   };
 
-  const componentInputHandler = (e) => {
+  const componentInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     let isAllowed = true;
 
@@ -178,7 +182,8 @@ const CreateProject = ({}) => {
   const checkComponentInput = () => {
     // check if component add button should be disabled
     for (let key in componentData) {
-      if (componentData[key].length === 0) return true;
+      if (componentData[key as keyof ProjectComponentData].length === 0)
+        return true;
     }
     return false;
   };
@@ -189,7 +194,7 @@ const CreateProject = ({}) => {
     for (let key in projectData) {
       if (key === "comments" || key === "designId") continue;
 
-      if (projectData[key].length === 0) return true;
+      if (projectData[key as keyof ProjectData].length === 0) return true;
     }
 
     return components.length === 0;
@@ -212,17 +217,17 @@ const CreateProject = ({}) => {
       } else {
         await getCustomerProjectsRefetch();
       }
-      setSnackbar({
-        severity: "success",
-        message: "Project created.",
-      });
+      // setSnackbar({
+      //   severity: "success",
+      //   message: "Project created.",
+      // });
     } catch (e) {
-      setSnackbar({
-        severity: "error",
-        message: "Something went wrong. Please try again later.",
-      });
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Something went wrong. Please try again later.",
+      // });
     } finally {
-      setSnackbarOpen(true);
+      // setSnackbarOpen(true);
     }
   };
 
@@ -235,7 +240,9 @@ const CreateProject = ({}) => {
         options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
         autoHighlight
         inputValue={material}
-        onInputChange={materialOnChange}
+        onInputChange={(e, v) => {
+          materialOnChange(v);
+        }}
         onChange={(e, v) => addMaterial(v)}
         value={componentData.materials}
         multiple
@@ -245,7 +252,7 @@ const CreateProject = ({}) => {
             {...params}
             label="Component materials"
             value={material}
-            onChange={materialOnChange}
+            onChange={(e) => materialOnChange(e.target.value)}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password",
@@ -262,7 +269,7 @@ const CreateProject = ({}) => {
     );
   };
 
-  const handleAddressOnChange = (address) => {
+  const handleAddressOnChange = (address: string) => {
     setProjectData({
       ...projectData,
       deliveryAddress: address,
@@ -270,13 +277,6 @@ const CreateProject = ({}) => {
   };
   return (
     <>
-      <CustomSnackbar
-        direction="right"
-        severity={snackbar.severity}
-        message={snackbar.message}
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-      />
       {createProjectLoading && <FullScreenLoading />}
       <Container>
         <Box display="flex" mb={4}>
@@ -286,8 +286,8 @@ const CreateProject = ({}) => {
 
           <UploadDesign
             setProjectData={setProjectData}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
+            // setSnackbar={setSnackbar}
+            // setSnackbarOpen={setSnackbarOpen}
           />
           <Button
             style={{ marginLeft: 16 }}
@@ -311,7 +311,10 @@ const CreateProject = ({}) => {
               label="Delivery Date"
               inputFormat="YYYY-MM-DD"
               value={deliveryDate}
-              onChange={setDeliveryDate}
+              onChange={(v) => {
+                if (!v) return;
+                setDeliveryDate(v);
+              }}
               renderInput={(params) => (
                 <TextField {...params} name="deliveryDate" />
               )}

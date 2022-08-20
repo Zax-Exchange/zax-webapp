@@ -1,6 +1,10 @@
 import styled from "@emotion/styled";
 import { Container, List, Stack, Typography } from "@mui/material";
 import MuiListItem from "@mui/material/ListItem";
+import React from "react";
+import { GetAllPlans, PlanData } from "../../hooks/types/plan/planTypes";
+import { CompanySignupData } from "../types/companyTypes";
+import { SubscriptionInfo } from "./CustomerSignup";
 
 export const ListItem = styled(MuiListItem)(() => ({
   flexDirection: "column",
@@ -15,6 +19,10 @@ const CustomerCompanyReview = ({
   values,
   getAllPlansData,
   subscriptionInfo,
+}: {
+  values: CompanySignupData;
+  getAllPlansData: GetAllPlans;
+  subscriptionInfo: SubscriptionInfo;
 }) => {
   const plan = getAllPlansData.getAllPlans.find(
     (plan) => plan.id === values.planId
@@ -68,7 +76,7 @@ const CustomerCompanyReview = ({
 
           <ListItem>
             <Typography variant="subtitle2">Selected Plan</Typography>
-            <Typography variant="caption">{plan.tier} Plan</Typography>
+            <Typography variant="caption">{plan!.tier} Plan</Typography>
           </ListItem>
 
           <ListItem>

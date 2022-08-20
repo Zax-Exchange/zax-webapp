@@ -6,6 +6,7 @@ import {
   CardContent,
   Container,
 } from "@mui/material";
+import React from "react";
 
 const SearchProjectOverview = ({ projectData }) => {
   const navigate = useNavigate();

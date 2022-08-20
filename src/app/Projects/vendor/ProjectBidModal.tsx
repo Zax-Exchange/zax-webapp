@@ -9,22 +9,34 @@ import {
   ListItem,
   Grid,
   Link,
+  AlertColor,
 } from "@mui/material";
 import { AuthContext } from "../../../context/AuthContext";
-import {
-  useGetVendorProjects,
-  useCreateProjectBid,
-  useGetProjectDetail,
-} from "../../hooks/projectHooks";
+
 import FullScreenLoading from "../../Utils/Loading";
+import { useGetProjectDetail } from "../../hooks/get/projectHooks";
+import { useCreateProjectBid } from "../../hooks/create/projectHooks";
+import { LoggedInUser } from "../../hooks/types/user/userTypes";
+import { useGetVendorProjects } from "../../hooks/get/vendorHooks";
+import React from "react";
 
 const ProjectBidModal = ({
+  setProjectBidModalOpen,
   projectId,
-  setIsOpen,
   setSnackbar,
   setSnackbarOpen,
+}: {
+  setProjectBidModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  projectId: string;
+  setSnackbar: React.Dispatch<
+    React.SetStateAction<{
+      message: string | "";
+      severity: AlertColor | undefined;
+    }>
+  >;
+  setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { user } = useContext(AuthContext);
+  const { user }: { user: LoggedInUser | null } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const {
@@ -36,7 +48,7 @@ const ProjectBidModal = ({
   const { createProjectBid, createProjectBidLoading, createProjectBidError } =
     useCreateProjectBid();
 
-  const { getVendorProjectsRefetch } = useGetVendorProjects(user.id);
+  const { getVendorProjectsRefetch } = useGetVendorProjects(user!.id, true);
 
   const [comments, setComments] = useState("");
   const [componentsQpData, setComponentQpData] = useState({});
@@ -56,7 +68,7 @@ const ProjectBidModal = ({
       await createProjectBid({
         variables: {
           data: {
-            userId: user.id,
+            userId: user!.id,
             projectId,
             comments,
             components,
@@ -75,7 +87,7 @@ const ProjectBidModal = ({
         message: "Something went wrong. Please try again later.",
       });
     } finally {
-      setIsOpen(false);
+      setProjectBidModalOpen(false);
       setSnackbarOpen(true);
     }
   };
@@ -144,7 +156,9 @@ const ProjectBidModal = ({
 
           <Container>
             <Button onClick={submitBid}>Submit</Button>
-            <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+            <Button onClick={() => setProjectBidModalOpen(false)}>
+              Cancel
+            </Button>
           </Container>
         </Grid>
       </Container>

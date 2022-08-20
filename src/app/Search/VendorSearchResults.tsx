@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./SearchResults.scss";
 import SearchProjectOverview from "./SearchProjectOverview";
 import { Typography, Stack, Grid, Container } from "@mui/material";
+import React from "react";
 /**
  * 
  * name

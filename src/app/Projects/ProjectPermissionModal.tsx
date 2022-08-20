@@ -20,24 +20,28 @@ import { useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../../context/AuthContext";
 import {
-  useDeleteProjectBidPermission,
-  useDeleteProjectPermission,
-  useGetAllCompanyUsers,
-  useGetProjectBidUsers,
-  useGetProjectUsers,
   useUpdateProjectBidPermission,
   useUpdateProjectPermission,
-} from "../hooks/permissionHooks";
+} from "../hooks/update/projectHooks";
+import {
+  useDeleteProjectBidPermission,
+  useDeleteProjectPermission,
+} from "../hooks/delete/projectHooks";
+import {
+  useGetProjectBidUsers,
+  useGetProjectUsers,
+} from "../hooks/get/projectHooks";
+import { useGetAllCompanyUsers } from "../hooks/get/companyHooks";
 
 const ProjectPermissionModal = ({
   project,
   setPermissionModalOpen,
-  setSnackbar,
-  setSnackbarOpen,
+  // setSnackbar,
+  // setSnackbarOpen,
 }) => {
   const { user: loggedInUser } = useContext(AuthContext);
 
-  const isVendor = loggedInUser.isVendor;
+  const isVendor = loggedInUser!.isVendor;
   const [email, setEmail] = useState("");
 
   const [allProjectUsers, setAllProjectUsers] = useState([]);

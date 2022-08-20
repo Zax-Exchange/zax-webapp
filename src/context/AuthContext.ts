@@ -1,5 +1,6 @@
 import jwtDecode from "jwt-decode";
 import { createContext, useReducer } from "react";
+import { LoggedInUser } from "../app/hooks/types/user/userTypes";
 /**
  * user {
  *  id
@@ -29,6 +30,10 @@ const AuthContext = createContext({
   user: null,
   login: (data) => {},
   logout: () => {}
+} as {
+  user: LoggedInUser | null;
+  login: (data: LoggedInUser) => void;
+  logout: () => void
 });
 
 const authReducer = (state, action) => {

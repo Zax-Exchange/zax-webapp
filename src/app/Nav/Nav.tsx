@@ -25,6 +25,7 @@ import FullScreenLoading from "../Utils/Loading";
 import logo from "../../static/logo2.png";
 import { gql, useMutation } from "@apollo/client";
 import CustomerNotification from "../Notification/CustomerNotification";
+import React from "react";
 
 const query = gql`
   mutation reset($t: Int) {

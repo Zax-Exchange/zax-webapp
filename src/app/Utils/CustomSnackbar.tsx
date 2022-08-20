@@ -1,39 +1,53 @@
-import { Alert, Slide, Snackbar } from "@mui/material";
+import { Alert, AlertColor, Slide, SlideProps, Snackbar } from "@mui/material";
+import React, { useState } from "react";
 
-const CustomSnackbar = ({
-  direction,
-  message,
-  open,
-  onClose,
-  severity,
-}: {
-  direction: string;
-  message: string;
-  open: boolean;
-  onClose: Function;
-  severity: string;
-}) => {
-  const renderTransition = (props) => {
-    return <Slide {...props} direction={direction} />;
+const useCustomSnackbar = () => {
+  const [snackbar, setSnackbar] = useState({
+    message: "",
+    severity: undefined,
+  } as {
+    message: string | "";
+    severity: AlertColor | undefined;
+  });
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const renderTransition = (props: SlideProps) => {
+    return <Slide {...props} direction="left" />;
   };
 
-  return (
-    <Snackbar
-      open={open}
-      onClose={onClose}
-      TransitionComponent={renderTransition}
-      autoHideDuration={4000}
-    >
-      <Alert
-        onClose={onClose}
-        severity={severity}
-        sx={{ width: "100%" }}
-        elevation={2}
-      >
-        {message}
-      </Alert>
-    </Snackbar>
-  );
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    setSnackbarOpen(false);
+  };
+
+  const CustomSnackbar = snackbarOpen
+    ? ((
+        <Snackbar
+          open={snackbarOpen}
+          onClose={handleClose}
+          TransitionComponent={renderTransition}
+          autoHideDuration={4000}
+        >
+          <Alert
+            onClose={handleClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+            elevation={2}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      ) as JSX.Element)
+    : null;
+
+  return {
+    setSnackbar,
+    setSnackbarOpen,
+    CustomSnackbar,
+  };
 };
 
-export default CustomSnackbar;
+export default useCustomSnackbar;

@@ -1,8 +1,6 @@
-import logo from "./logo.svg";
 import "./App.scss";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { ApolloProvider, useQuery, gql } from "@apollo/client";
 import Nav from "./app/Nav/Nav";
 import Home from "./app/Home/Home";
 import Projects from "./app/Projects/Projects";
@@ -12,7 +10,7 @@ import VendorSearchResults from "./app/Search/VendorSearchResults";
 import CustomerSearchResults from "./app/Search/CustomerSearchResults";
 import SearchProjectDetail from "./app/Search/SearchProjectDetail";
 // import ProjectBid from './app/Projects/ProjectBid';
-import { Container, createTheme } from "@mui/material";
+import { Container, createTheme, PaletteOptions } from "@mui/material";
 import CustomerProjectDetail from "./app/Projects/customer/CustomerProjectDetail";
 import RequireAuth from "./app/Auth/RequireAuth";
 import Login from "./app/Login/Login";
@@ -25,6 +23,7 @@ import CustomerSignup from "./app/Login/customer/CustomerSignup";
 import VendorProjectDetail from "./app/Projects/vendor/VendorProjectDetail";
 import { ThemeProvider } from "@mui/system";
 import CreateProject from "./app/Projects/customer/CreateProject";
+import useCustomSnackbar from "./app/Utils/CustomSnackbar";
 
 const theme = createTheme({
   palette: {
@@ -54,7 +53,7 @@ const theme = createTheme({
       contrastText: "#ffffff",
     },
     divider: "rgb(0 0 0 / 18%)",
-  },
+  } as PaletteOptions,
   typography: {
     body1: {
       fontSize: "1.2rem",
@@ -135,10 +134,12 @@ const theme = createTheme({
 });
 
 function App() {
+  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
   return (
     <ThemeProvider theme={theme}>
       <div className="App" style={{ minWidth: "960px" }}>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
+          {CustomSnackbar}
           <Nav />
           <Container maxWidth="xl" sx={{ mb: 12 }}>
             <Routes>

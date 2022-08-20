@@ -62,7 +62,6 @@ const VendorProjectOverview = ({
     return project.permission !== "VIEWER";
   };
 
-  console.log(project);
   const projectMenuOnClick = (e) => {
     if (e.target.innerText === "View detail") {
       viewDetailHandler();
