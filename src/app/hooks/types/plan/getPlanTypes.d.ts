@@ -1,6 +1,6 @@
 import { PlanData } from "./planTypes";
 
 // for useGetAllPlans hook
-export interface GetAllPlans {
+export interface GetAllPlansData {
   getAllPlans: PlanData[]
 }

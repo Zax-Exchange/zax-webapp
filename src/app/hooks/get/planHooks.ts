@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { GetAllPlans } from "../types/plan/getPlanTypes";
+import { GetAllPlansData } from "../types/plan/getPlanTypes";
 
 const GET_ALL_PLANS = gql`
   query getAllPlans($isVendor: Boolean) {
@@ -37,7 +37,7 @@ export const useGetAllPlans = (isVendor: boolean) => {
     loading: getAllPlansLoading,
     data: getAllPlansData,
     refetch: getAllPlansRefetch,
-  } = useQuery<GetAllPlans>(GET_ALL_PLANS, {
+  } = useQuery<GetAllPlansData, { isVendor: boolean}>(GET_ALL_PLANS, {
     variables: {
       isVendor,
     },

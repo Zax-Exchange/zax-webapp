@@ -1,4 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
+import { GetCustomerProjectData, GetCustomerProjectInput, GetCustomerProjectsData, GetCustomerProjectsInput } from "../types/project/getProjectTypes";
 
 const GET_CUSTOMER_PROJECT = gql`
   query getCustomerProject($data: GetProjectInput) {
@@ -53,7 +54,7 @@ export const useGetCustomerProject = ({ userId, projectId }: { userId: string, p
     loading: getCustomerProjectLoading,
     data: getCustomerProjectData,
     refetch: getCustomerProjectRefetch,
-  } = useQuery(GET_CUSTOMER_PROJECT, {
+  } = useQuery<GetCustomerProjectData, GetCustomerProjectInput>(GET_CUSTOMER_PROJECT, {
     variables: {
       data: {
         userId,
@@ -125,7 +126,7 @@ export const useGetCustomerProjects = (userId: string, skip: boolean) => {
     loading: getCustomerProjectsLoading,
     data: getCustomerProjectsData,
     refetch: getCustomerProjectsRefetch,
-  } = useQuery(GET_CUSTOMER_PROJECTS, {
+  } = useQuery<GetCustomerProjectsData, GetCustomerProjectsInput>(GET_CUSTOMER_PROJECTS, {
     variables: {
       userId,
     },

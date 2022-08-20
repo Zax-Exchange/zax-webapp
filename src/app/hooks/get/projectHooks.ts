@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { GetProjectUsers } from "../types/project/getProjectTypes";
+import { GetProjectUsersData } from "../types/project/getProjectTypes";
 import { PermissionedProjectBid, ProjectUserData } from "../types/project/projectTypes";
 
 const GET_PROJECT_USERS = gql`
@@ -14,7 +14,7 @@ const GET_PROJECT_USERS = gql`
 `;
 
 export const useGetProjectUsers = (onCompleteCallback: React.Dispatch<React.SetStateAction<ProjectUserData[]>>, projectId: string, isVendor: boolean) => {
-    const {error: getProjectUsersError, loading: getProjectUsersLoading, data: getProjectUsersData, refetch: getProjectUsersRefetch} = useQuery<GetProjectUsers>(GET_PROJECT_USERS, {
+    const {error: getProjectUsersError, loading: getProjectUsersLoading, data: getProjectUsersData, refetch: getProjectUsersRefetch} = useQuery<GetProjectUsersData, { projectId: string }>(GET_PROJECT_USERS, {
         variables: {
             projectId: projectId
         },
