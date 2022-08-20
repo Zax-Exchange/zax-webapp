@@ -32,9 +32,15 @@ const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   },
 }));
 
-const VendorProjectOverview = ({ project }) => {
+const VendorProjectOverview = ({
+  project,
+  setSnackbar,
+  setSnackbarOpen,
+  setIsProjectPageLoading,
+  getVendorProjectsRefetch,
+}) => {
   const navigate = useNavigate();
-  const [isPermissionOpen, setIsPermissionOpen] = useState(false);
+  const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [projectMenuAnchor, setProjectMenuAnchor] = useState(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
@@ -48,20 +54,21 @@ const VendorProjectOverview = ({ project }) => {
     setProjectMenuAnchor(null);
   };
 
-  const viewDetailHandler = () => {
+  const viewDetailHandler = (e) => {
     navigate(`/vendor-project-detail/${project.id}`);
   };
 
   const canShare = () => {
-    return true;
+    return project.permission !== "VIEWER";
   };
 
+  console.log(project);
   const projectMenuOnClick = (e) => {
     if (e.target.innerText === "View detail") {
       viewDetailHandler();
     }
     if (e.target.innerText === "Share" && canShare()) {
-      setIsPermissionOpen(true);
+      setPermissionModalOpen(true);
     }
 
     moreOnClose();
@@ -75,9 +82,8 @@ const VendorProjectOverview = ({ project }) => {
         sx={{
           position: "relative",
           borderRadius: 2,
-          // ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
+          ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
         }}
-        // onClick={viewDetailHandler}
       >
         <IconButton
           sx={{ position: "absolute", right: "4px" }}
@@ -85,7 +91,7 @@ const VendorProjectOverview = ({ project }) => {
           onClick={moreOnClick}
           onClose={moreOnClose}
         >
-          <MoreIcon />
+          <MoreIcon id="123" />
         </IconButton>
         <Menu
           id="long-menu"
@@ -107,7 +113,10 @@ const VendorProjectOverview = ({ project }) => {
           </MenuList>
         </Menu>
 
-        <Container sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}>
+        <Container
+          sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}
+          onClick={viewDetailHandler}
+        >
           <Typography variant="h6" align="left">
             {project.name}
           </Typography>
@@ -153,15 +162,17 @@ const VendorProjectOverview = ({ project }) => {
       </Paper>
 
       <Dialog
-        open={isPermissionOpen}
-        onClose={() => setIsPermissionOpen(false)}
+        open={permissionModalOpen}
+        onClose={() => setPermissionModalOpen(false)}
         maxWidth="sm"
         fullWidth={true}
       >
         <DialogContent>
           <ProjectPermissionModal
             project={project}
-            setIsPermissionOpen={setIsPermissionOpen}
+            setPermissionModalOpen={setPermissionModalOpen}
+            setSnackbar={setSnackbar}
+            setSnackbarOpen={setSnackbarOpen}
           />
         </DialogContent>
       </Dialog>

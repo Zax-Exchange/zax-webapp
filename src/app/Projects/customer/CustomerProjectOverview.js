@@ -43,8 +43,8 @@ const CustomerProjectOverview = ({
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
-  const [projectMenuAnchor, setProjectMenuAnchor] = useState(null);
   const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
+  const [projectMenuAnchor, setProjectMenuAnchor] = useState(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
   const date = new Date(parseInt(project.createdAt)).toISOString().slice(0, 10);
@@ -105,9 +105,8 @@ const CustomerProjectOverview = ({
         sx={{
           position: "relative",
           borderRadius: 2,
-          // ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
+          ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
         }}
-        // onClick={viewDetailHandler}
       >
         <IconButton
           sx={{ position: "absolute", right: "4px" }}
@@ -140,7 +139,10 @@ const CustomerProjectOverview = ({
             </MenuItem>
           </MenuList>
         </Menu>
-        <Container sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}>
+        <Container
+          sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}
+          onClick={viewDetailHandler}
+        >
           <Typography variant="h6" align="left">
             {project.name}
           </Typography>
@@ -152,7 +154,6 @@ const CustomerProjectOverview = ({
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              {/* <Typography variant="subtitle2">Delivery date</Typography> */}
               <Tooltip title="Delivery date" arrow placement="top">
                 <LocalShippingOutlinedIcon />
               </Tooltip>
@@ -160,7 +161,6 @@ const CustomerProjectOverview = ({
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              {/* <Typography variant="subtitle2">Delivery address</Typography> */}
               <Tooltip title="Delivery address" arrow placement="top">
                 <PlaceIcon />
               </Tooltip>
@@ -170,7 +170,6 @@ const CustomerProjectOverview = ({
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              {/* <Typography variant="subtitle2">Budget</Typography> */}
               <Tooltip title="Budget" arrow placement="top">
                 <AttachMoneyIcon />
               </Tooltip>
@@ -178,7 +177,6 @@ const CustomerProjectOverview = ({
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              {/* <Typography variant="subtitle2">Posted on</Typography> */}
               <Tooltip title="Posted on" arrow placement="top">
                 <CalendarMonthIcon />
               </Tooltip>
