@@ -15,7 +15,7 @@ export interface GetCompanyDetailData {
 }
 
 // for useGetVendorDetail hook
-export interface GetVendorDtail {
+export interface GetVendorDetailData {
   getVendorDetail: VendorDetail;
 }
 

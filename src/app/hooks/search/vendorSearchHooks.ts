@@ -1,4 +1,5 @@
 import { gql, useLazyQuery } from "@apollo/client";
+import { SearchProjectData, SearchProjectInput } from "../types/customer/getCustomerTypes";
 
 const SEARCH_PROJECTS = gql`
   query searchProjects($searchInput: SearchProjectInput) {
@@ -24,7 +25,7 @@ export const useSearchProjects = () => {
       error: searchProjectsError,
       loading: searchProjectsLoading,
     },
-  ] = useLazyQuery(SEARCH_PROJECTS);
+  ] = useLazyQuery<SearchProjectData, SearchProjectInput>(SEARCH_PROJECTS);
 
   return {
     searchProjects,

@@ -1,3 +1,15 @@
+// for useUserData hook
+export interface GetUserData {
+  getUserWithUserId: UserOverview
+}
+export interface UserOverview {
+  id: string;
+  name: string;
+  email: string;
+  companyId: string;
+  isActive: boolean;
+}
+
 export interface User {
     id: string;
     name: string;

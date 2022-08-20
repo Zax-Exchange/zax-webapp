@@ -1,5 +1,7 @@
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
-import { GetVendorDtail } from "../types/company/getCompanyTypes";
+import { GetVendorDetailData } from "../types/company/getCompanyTypes";
+import { GetVendorProjectData, GetVendorProjectsData } from "../types/project/getProjectTypes";
+import { VendorProject } from "../types/project/projectTypes";
 
 const GET_VENDOR_DETAIL = gql`
   query getVendorDetail($companyId: String) {
@@ -29,7 +31,7 @@ export const useGetVendorDetail = () => {
       loading: getVendorDetailLoading,
       data: getVendorDetailData,
     },
-  ] = useLazyQuery<GetVendorDtail>(GET_VENDOR_DETAIL);
+  ] = useLazyQuery<GetVendorDetailData>(GET_VENDOR_DETAIL);
 
   return {
     getVendorDetail,
@@ -50,11 +52,11 @@ const GET_VENDOR_PROJECT = gql`
       deliveryDate
       deliveryAddress
       budget
+      status
       design {
         fileName
         url
       }
-      status
       components {
         id
         projectId
@@ -63,8 +65,6 @@ const GET_VENDOR_PROJECT = gql`
         dimension
         postProcess
       }
-      createdAt
-
       bidInfo {
         id
         companyId
@@ -75,9 +75,13 @@ const GET_VENDOR_PROJECT = gql`
             quantity
             price
           }
-          createdAt
         }
+        createdAt
+        updatedAt
       }
+      createdAt
+      updatedAt
+      
     }
   }
 `;
@@ -88,7 +92,7 @@ export const useGetVendorProject = (userId: string, projectId: string) => {
     loading: getVendorProjectLoading,
     error: getVendorProjectError,
     refetch: getVendorProjectRefetch,
-  } = useQuery(GET_VENDOR_PROJECT, {
+  } = useQuery<GetVendorProjectData, { data: { userId: string; projectId: string }}>(GET_VENDOR_PROJECT, {
     variables: {
       data: {
         userId,
@@ -118,8 +122,9 @@ export const GET_VENDOR_PROJECTS = gql`
             quantity
             price
           }
-          createdAt
         }
+        createdAt
+        updatedAt
       }
       components {
         id
@@ -143,6 +148,7 @@ export const GET_VENDOR_PROJECTS = gql`
       status
       permission
       createdAt
+      updatedAt
     }
   }
 `;
@@ -153,7 +159,7 @@ export const useGetVendorProjects = (userId: string, skip: boolean) => {
     loading: getVendorProjectsLoading,
     data: getVendorProjectsData,
     refetch: getVendorProjectsRefetch,
-  } = useQuery(GET_VENDOR_PROJECTS, {
+  } = useQuery<GetVendorProjectsData, { userId: string }>(GET_VENDOR_PROJECTS, {
     variables: {
       userId,
     },

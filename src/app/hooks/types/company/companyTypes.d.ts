@@ -1,6 +1,47 @@
 import * as enums from "../common/enums";
 
-/** gql general types for company */
+export interface Company {
+  id: string;
+  name: string;
+  phone: string;
+  country: string;
+  isActive: boolean;
+  isVerified: boolean;
+  isVendor: boolean;
+  planId: string;
+  logo?: string;
+  companyUrl?: string;
+  fax?: string;
+}
+
+export interface Vendor extends Company{
+  leadTime: number;
+  locations: string[];
+  moq: string;
+  materials: string[];
+}
+
+export interface Customer extends Company {
+  
+}
+
+
+// company for public view, for search
+export interface CompanyOverview {
+  id: string;
+  name: string;
+  logo?: string;
+  country: string;
+  isVerified: boolean;
+}
+
+export interface VendorOverview extends CompanyOverview {
+  leadTime: number;
+  locations: string[];
+  materials: string[];
+  moq: string;
+}
+
 export interface CompanyPlanData {
   name: string;
   tier: enums.PlanTier;
@@ -25,12 +66,7 @@ export interface CompanyDetail {
   fax?: string;
 }
 
-export interface VendorDetail extends CompanyDetail {
-  leadTime: number;
-  locations: string[];
-  moq: string;
-  materials: string[];
-}
+
 
 export interface CustomerDetail extends CompanyDetail {
 

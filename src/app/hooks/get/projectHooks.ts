@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { GetProjectUsersData } from "../types/project/getProjectTypes";
+import { GetProjectBidUsersData, GetProjectDetailData, GetProjectUsersData, ProjectBidUser } from "../types/project/getProjectTypes";
 import { PermissionedProjectBid, ProjectUserData } from "../types/project/projectTypes";
 
 const GET_PROJECT_USERS = gql`
@@ -43,8 +43,8 @@ const GET_PROJECT_BID_USERS = gql`
   }
 `;
 
-export const useGetProjectBidUsers = (onCompleteCallback: React.Dispatch<React.SetStateAction<never[]>>, bidInfo: PermissionedProjectBid, isVendor: boolean) => {
-    const {error: getProjectBidUsersError, loading: getProjectBidUsersLoading, data: getProjectBidUsersData, refetch: getProjectBidUsersRefetch} = useQuery(GET_PROJECT_BID_USERS, {
+export const useGetProjectBidUsers = (onCompleteCallback: React.Dispatch<React.SetStateAction<ProjectBidUser[]>>, bidInfo: PermissionedProjectBid, isVendor: boolean) => {
+    const {error: getProjectBidUsersError, loading: getProjectBidUsersLoading, data: getProjectBidUsersData, refetch: getProjectBidUsersRefetch} = useQuery<GetProjectBidUsersData>(GET_PROJECT_BID_USERS, {
         variables: {
           projectBidId: bidInfo ? bidInfo.id : null
         },
@@ -85,6 +85,7 @@ const GET_PROJECT_DETAIL = gql`
         postProcess
       }
       createdAt
+      updatedAt
     }
   }
 `;
@@ -95,7 +96,7 @@ export const useGetProjectDetail = (projectId: string) => {
     loading: getProjectDetailLoading,
     error: getProjectDetailError,
     refetch: getProjectDetailRefetch,
-  } = useQuery(GET_PROJECT_DETAIL, {
+  } = useQuery<GetProjectDetailData, { projectId: string}>(GET_PROJECT_DETAIL, {
     variables: {
       projectId,
     },

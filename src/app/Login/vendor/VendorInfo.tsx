@@ -1,28 +1,38 @@
 import { Autocomplete, Box, Stack, TextField, Typography } from "@mui/material";
+import React from "react";
 import { useState } from "react";
 import { countries } from "../../constants/countries";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
+import { Country } from "../customer/CustomerSignup";
+import { MoqDetail, VendorSignupData } from "./VendorSignup";
 
 const VendorInfo = ({
-  onChange,
   values,
   setValues,
+  onChange,
   setShouldDisableNext,
   setMoqDetail,
   moqDetail,
+}: {
+  values: VendorSignupData;
+  setValues: React.Dispatch<React.SetStateAction<VendorSignupData>>;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
+  setMoqDetail: React.Dispatch<React.SetStateAction<MoqDetail>>;
+moqDetail: MoqDetail;
 }) => {
   const [material, setMaterial] = useState("");
 
-  const locationOnChange = (locations) => {
-    locations = locations.map((l) => l.label);
+  const locationOnChange = (locations: { label: string }[]) => {
+    const locationLabels = locations.map((l) => l.label);
     setValues({
       ...values,
-      locations,
+      locations: locationLabels
     });
   };
 
   // used for controlling materials input to now allow characters other than alphanumeric and white space chars
-  const materialOnChange = (e) => {
+  const materialOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value || "";
 
     if (isValidAlphanumeric(val)) {
@@ -30,7 +40,7 @@ const VendorInfo = ({
     }
   };
 
-  const addMaterial = (value) => {
+  const addMaterial = (value: string[]) => {
     const materials = [...value].map((v) => v.trim());
     setValues({
       ...values,
@@ -39,7 +49,7 @@ const VendorInfo = ({
     setMaterial("");
   };
 
-  const moqOnChange = (e) => {
+  const moqOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     let isAllowed = true;
     switch (e.target.name) {

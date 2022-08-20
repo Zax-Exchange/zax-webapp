@@ -9,9 +9,18 @@ export interface CreateStripeCustomerData {
 }
 
 // for useCreateSubscription hook
-export interface CreateSubscriptionInput {
+export interface CreateCustomerSubscriptionInput {
   priceId: string;
   stripeCustomerId: string;
+}
+
+// for useCreateSubscription hook
+export interface CreateVendorSubscriptionInput {
+  data: {
+    subscriptionPriceId: string;
+    perUserPriceId: string;
+    stripeCustomerId: string;
+  }
 }
 
 // data returned from server

@@ -34,16 +34,13 @@ export interface Project extends ProjectOverview {
   updatedAt: Date;
 }
 
-export interface PermissionedProject extends Project {
-  permission: enums.ProjectPermission;
-}
-
-export interface VendorProject extends PermissionedProject {
+export interface VendorProject extends Project {
   customerName: string;
   bidInfo: PermissionedProjectBid;
 }
 
-export interface CustomerProject extends PermissionedProject {
+export interface CustomerProject extends Project {
+  permission: enums.ProjectPermission;
   bids: ProjectBid[] | [];
 }
 
@@ -54,8 +51,6 @@ export interface ProjectComponent {
   materials: string[];
   dimension: string;
   postProcess: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface ProjectBid {
@@ -77,12 +72,4 @@ export interface ProjectBidComponent {
 export interface PermissionedProjectBid extends ProjectBid{
   permission: enums.ProjectPermission;
 
-}
-
-export interface SearchProjectInput {
-  userInput: string; // should contain material names
-  deliveryCountries?: string[];
-  deliveryCities?: string[];
-  budget?: number; // <= 10000, <= 30000, <= 50000, <= 100000
-  leadTime?: number; // 3, 6, 9, 12
 }

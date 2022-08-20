@@ -10,9 +10,10 @@ import {
   ListItem,
   Typography,
 } from "@mui/material";
-import singlePlan from "../../../static/singlePlan.svg";
-import groupPlan from "../../../static/groupPlan.svg";
-import businessPlan from "../../../static/businessPlan.svg";
+import React from "react";
+import { PlanData } from "../../hooks/types/plan/planTypes";
+import { SubscriptionInfo } from "./CustomerSignup";
+
 
 const PlanListItem = styled(ListItem)(() => ({
   flexDirection: "column",
@@ -31,12 +32,17 @@ const CustomerPlanSelection = ({
   selectPlan,
   setSubscriptionInfo,
   nextPage,
+}: {
+  planData: PlanData;
+  selectPlan: (planId: string) => void;
+  setSubscriptionInfo: React.Dispatch<React.SetStateAction<SubscriptionInfo>>;
+  nextPage: () => Promise<void>;
 }) => {
   const { id, tier, pricings } = planData;
 
   const { perUser } = pricings;
 
-  const planOnClick = (priceId, price, billingFrequency) => {
+  const planOnClick = (priceId: string, price: string, billingFrequency: string) => {
     setSubscriptionInfo({
       price,
       priceId,
@@ -48,8 +54,8 @@ const CustomerPlanSelection = ({
 
   let svg;
 
-  if (tier === "PREMIUM") svg = groupPlan;
-  if (tier === "BUSINESS") svg = businessPlan;
+  // if (tier === "PREMIUM") svg = groupPlan;
+  // if (tier === "BUSINESS") svg = businessPlan;
 
   return (
     <Card

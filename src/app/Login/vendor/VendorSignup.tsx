@@ -11,17 +11,13 @@ import {
   CardActionArea,
   CardContent,
 } from "@mui/material";
-import { useContext, useEffect } from "react";
+import { MouseEventHandler, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
 import "./VendorSignup.scss";
 import FullScreenLoading from "../../Utils/Loading";
-import {
-  useCreateStripeCustomer,
-  useCreateSubscription,
-} from "../../hooks/signupHooks";
-import { useGetAllPlans } from "../../hooks/planHooks";
+
 import EmailPage from "../EmailPage";
 import CompanyInfo from "../CompanyInfo";
 import { loadStripe } from "@stripe/stripe-js";
@@ -34,6 +30,42 @@ import { validate } from "email-validator";
 import VendorPlanSelection from "./VendorPlanSelection";
 import VendorCompanyReview from "./VendorCompanyReview";
 import { isValidInt } from "../../Utils/inputValidators";
+import { useCreateStripeCustomer, useCreateSubscription } from "../../hooks/create/planHooks";
+import { useGetAllPlans } from "../../hooks/get/planHooks";
+import { CreateVendorSubscriptionData } from "../../hooks/types/plan/createPlanTypes";
+import { Country, StripeData, SubscriptionInfo } from "../customer/CustomerSignup";
+import React from "react";
+
+
+export type VendorSignupData = {
+  name: string;
+    contactEmail: string;
+    logo: string | null;
+    phone: string;
+    fax: string;
+    country: string;
+    isActive: boolean;
+    isVendor: boolean;
+    isVerified: boolean;
+    leadTime: string | number;
+    locations: string[];
+    moq: string;
+    materials: string[];
+    companyUrl: string;
+    planId: string;
+    userEmail: string;
+}
+
+export type VendorSubscriptionInfo = {
+  subscriptionPriceId: string;
+  perUserPriceId: string;
+  billingFrequency: string;
+}
+
+export type MoqDetail = {
+  min: string | number;
+  max: string | number;
+}
 
 export const VendorSignupPage = {
   EMAIL_PAGE: "EMAIL_PAGE",
@@ -47,8 +79,9 @@ export const VendorSignupPage = {
 };
 
 const stripePromise = loadStripe(
-  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
 );
+
 
 const VendorSignup = () => {
   const { user } = useContext(AuthContext);
@@ -75,7 +108,7 @@ const VendorSignup = () => {
   const [companySize, setCompanySize] = useState("");
 
   // determines whether createSubscription should run
-  const [previousPlanIds, setPreviousPlanIds] = useState([]);
+  const [previousPlanIds, setPreviousPlanIds] = useState([] as string[]);
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -95,11 +128,12 @@ const VendorSignup = () => {
     companyUrl: "",
     planId: "",
     userEmail: "",
-  });
+  } as VendorSignupData);
+
   const [moqDetail, setMoqDetail] = useState({
     min: "",
     max: "",
-  });
+  } as MoqDetail);
 
   const [snackbar, setSnackbar] = useState({
     message: "",
@@ -112,13 +146,13 @@ const VendorSignup = () => {
     subscriptionPriceId: "",
     perUserPriceId: "",
     billingFrequency: "",
-  });
+  } as VendorSubscriptionInfo);
 
   const [stripeData, setStripeData] = useState({
     customerId: "",
     subscriptionId: "",
     clientSecret: "",
-  });
+  } as StripeData);
 
   // set stripeData.customerId once createStripeCustomer succeeds
   useEffect(() => {
@@ -140,9 +174,9 @@ const VendorSignup = () => {
       setStripeData({
         ...stripeData,
         subscriptionId:
-          createSubscriptionData.createVendorSubscription.subscriptionId,
+          (createSubscriptionData as CreateVendorSubscriptionData).createVendorSubscription.subscriptionId,
         clientSecret:
-          createSubscriptionData.createVendorSubscription.clientSecret,
+          (createSubscriptionData as CreateVendorSubscriptionData).createVendorSubscription.clientSecret!,
       });
       setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
       setPreviousPlanIds([...previousPlanIds, values.planId]);
@@ -154,7 +188,7 @@ const VendorSignup = () => {
   };
   const isValidStripeData = () => {
     for (let key in stripeData) {
-      if (!stripeData[key]) return false;
+      if (!stripeData[key as keyof StripeData]) return false;
     }
     return true;
   };
@@ -169,8 +203,8 @@ const VendorSignup = () => {
     }
   }, [subscriptionInfo]);
 
-  const onChange = (e) => {
-    let val = e.target.value;
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val: string = e.target.value;
     let isAllowed = true;
     switch (e.target.name) {
       case "phone":
@@ -185,27 +219,31 @@ const VendorSignup = () => {
         break;
     }
     if (isAllowed) {
-      if (e.target.name === "leadTime") val = parseInt(val, 10);
-      setValues({
-        ...values,
-        [e.target.name]: val,
-      });
+      if (e.target.name === "leadTime") {
+        setValues({
+          ...values,
+          [e.target.name]: parseInt(val, 10),
+        });
+      }
+      
     }
   };
 
-  const countryOnChange = (countryObj) => {
+  const countryOnChange = (countryObj: Country) => {
     setValues({
       ...values,
       country: countryObj ? countryObj.label : "",
     });
   };
 
-  const companySizeOnClick = (e) => {
-    setCompanySize(e.currentTarget.dataset.name);
-    nextPage();
+  const companySizeOnClick:  MouseEventHandler<HTMLAnchorElement> = (e) => {
+    if (e.currentTarget.dataset.name) {
+      setCompanySize(e.currentTarget.dataset.name);
+      nextPage();
+    }
   };
 
-  const selectPlan = (planId) => {
+  const selectPlan = (planId: string) => {
     setValues({
       ...values,
       planId,
@@ -213,7 +251,7 @@ const VendorSignup = () => {
   };
 
   // used for determining if we should disable next button
-  const validateInputs = (fields) => {
+  const validateInputs = (fields: string[]) => {
     for (let field of fields) {
       if (field === "moq") {
         if (moqDetail.min === "" || moqDetail.max === "") return false;
@@ -222,9 +260,9 @@ const VendorSignup = () => {
           return false;
         continue;
       }
-      if (Array.isArray(values[field]) && values[field].length === 0)
-        return false;
-      if (!values[field]) return false;
+      const val = values[field as keyof VendorSignupData];
+      if (Array.isArray(val) && val.length === 0) return false;
+      if (!val) return false;
     }
     return true;
   };
@@ -260,18 +298,18 @@ const VendorSignup = () => {
         await createSubscription({
           variables: {
             data: {
-              stripeCustomerId: data.createStripeCustomer,
+              stripeCustomerId: data!.createStripeCustomer,
               subscriptionPriceId: subscriptionInfo.subscriptionPriceId,
               perUserPriceId: subscriptionInfo.perUserPriceId,
             },
           },
         });
       } catch (error) {
-        setSnackbar({
-          severity: "error",
-          message: error.message,
-        });
-        setSnackbarOpen(true);
+        // setSnackbar({
+        //   severity: "error",
+        //   message: error.message,
+        // });
+        // setSnackbarOpen(true);
       }
     }
   };
@@ -304,9 +342,9 @@ const VendorSignup = () => {
     }
   };
 
-  const renderNavigationButtons = (isValidInput) => {
+  const renderNavigationButtons = (isValidInput: boolean) => {
     const backButton = (
-      <Button variant="primary" onClick={previousPage}>
+      <Button variant="outlined" onClick={previousPage}>
         Back
       </Button>
     );
@@ -400,7 +438,7 @@ const VendorSignup = () => {
 
           <Stack direction="row" spacing={2} justifyContent="space-around">
             <Card>
-              <CardActionArea data-name="XS" onClick={companySizeOnClick}>
+              <CardActionArea data-name="XS" onClick={companySizeOnClick} href="">
                 <CardContent>
                   <Typography variant="subtitle2">XS</Typography>
                   <Typography variant="caption">1 - 25 FTE</Typography>
@@ -409,7 +447,7 @@ const VendorSignup = () => {
             </Card>
 
             <Card>
-              <CardActionArea data-name="S" onClick={companySizeOnClick}>
+              <CardActionArea data-name="S" onClick={companySizeOnClick} href="">
                 <CardContent>
                   <Typography variant="subtitle2">Small</Typography>
                   <Typography variant="caption">26 - 99 FTE</Typography>
@@ -418,7 +456,7 @@ const VendorSignup = () => {
             </Card>
 
             <Card>
-              <CardActionArea data-name="M" onClick={companySizeOnClick}>
+              <CardActionArea data-name="M" onClick={companySizeOnClick} href="">
                 <CardContent>
                   <Typography variant="subtitle2">Medium</Typography>
                   <Typography variant="caption">100 - 999 FTE</Typography>
@@ -427,7 +465,7 @@ const VendorSignup = () => {
             </Card>
 
             <Card>
-              <CardActionArea data-name="L" onClick={companySizeOnClick}>
+              <CardActionArea data-name="L" onClick={companySizeOnClick} href="">
                 <CardContent>
                   <Typography variant="subtitle2">Large</Typography>
                   <Typography variant="caption">1000+ FTE</Typography>
@@ -466,11 +504,11 @@ const VendorSignup = () => {
     } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
       return (
         <>
-          <VendorCompanyReview
+          {getAllPlansData && <VendorCompanyReview
             values={values}
             getAllPlansData={getAllPlansData}
             subscriptionInfo={subscriptionInfo}
-          />
+          />}
           {renderNavigationButtons(true)}
         </>
       );
@@ -515,13 +553,13 @@ const VendorSignup = () => {
         createSubscriptionLoading ||
         isLoading) && <FullScreenLoading />}
       <Paper sx={{ padding: 8, position: "relative" }}>
-        <CustomSnackbar
+        {/* <CustomSnackbar
           severity={snackbar.severity}
           direction="right"
           message={snackbar.message}
           open={snackbarOpen}
           onClose={() => setSnackbarOpen(false)}
-        />
+        /> */}
         {renderCompanySignupFlow()}
       </Paper>
     </Container>

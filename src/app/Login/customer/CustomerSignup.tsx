@@ -5,8 +5,6 @@ import {
   Button,
   Paper,
   Fade,
-  ExtendButtonBase,
-  ButtonTypeMap,
 } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -23,16 +21,13 @@ import EmailPage from "../EmailPage";
 import CompanyInfo from "../CompanyInfo";
 import CustomerCompanyReview from "./CustomerCompanyReview";
 import "./CustomerSignup.scss";
-import { CSSTransition } from "react-transition-group";
 import CheckoutSuccess from "../CheckoutSuccess";
 import { validate } from "email-validator";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
-import { CompanySignupData } from "../types/companyTypes";
 import {
   useCreateStripeCustomer,
   useCreateSubscription,
 } from "../../hooks/create/planHooks";
-import { GraphQLError } from "graphql";
 import { CreateCustomerSubscriptionData } from "../../hooks/types/plan/createPlanTypes";
 import { useGetAllPlans } from "../../hooks/get/planHooks";
 import React from "react";
@@ -41,6 +36,21 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
 );
+
+export interface CompanySignupData {
+  name: string;
+  contactEmail: string;
+  logo: string | null;
+  phone: string;
+  fax: string;
+  country: string;
+  isActive: boolean;
+  isVendor: boolean;
+  isVerified: boolean;
+  companyUrl: string;
+  planId: string;
+  userEmail: string;
+}
 
 export const CustomerSignupPage = {
   EMAIL_PAGE: "EMAIL_PAGE",
@@ -372,11 +382,11 @@ const CustomerSignup = () => {
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
       return (
         <>
-          <CustomerCompanyReview
+          {getAllPlansData && <CustomerCompanyReview
             values={values}
             getAllPlansData={getAllPlansData}
             subscriptionInfo={subscriptionInfo}
-          />
+          />}
           {renderNavigationButtons(true)}
         </>
       );

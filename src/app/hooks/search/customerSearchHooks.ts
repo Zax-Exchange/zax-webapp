@@ -1,4 +1,5 @@
 import { gql, useLazyQuery } from "@apollo/client";
+import { SearchVendorInput, SearchVendorsData } from "../types/vendor/getVendorTypes";
 
 const SEARCH_VENDORS = gql`
   query searchVendorCompanies($searchInput: SearchCompanyInput) {
@@ -24,7 +25,7 @@ export const useSearchVendors = () => {
       error: searchVendorsError,
       loading: searchVendorsLoading,
     },
-  ] = useLazyQuery(SEARCH_VENDORS);
+  ] = useLazyQuery<SearchVendorsData, SearchVendorInput>(SEARCH_VENDORS);
 
   return {
     searchVendors,
