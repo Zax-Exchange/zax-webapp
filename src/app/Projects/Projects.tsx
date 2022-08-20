@@ -1,4 +1,4 @@
-import VendorProjectOverview from "./vendor/VendorProjectOverview";
+import VendorProjectOverview from "./vendor/VendorProjectOverview.tsx";
 import {
   Typography,
   Grid,
