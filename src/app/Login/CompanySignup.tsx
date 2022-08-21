@@ -4,8 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import vendor from "../../static/vendor.svg";
-import customer from "../../static/customer.svg";
+// import vendor from "../../static/vendor.svg";
+// import customer from "../../static/customer.svg";
+import React from "react";
 
 
 const CompanySignup = () => {
@@ -14,7 +15,7 @@ const CompanySignup = () => {
 
   const navigate = useNavigate();
 
-  const signupHandler = (path) => {
+  const signupHandler = (path: string) => {
     navigate(`/${path}`);
   }
 
@@ -32,7 +33,7 @@ const CompanySignup = () => {
                   component="img"
                   height="250"
                   width="150"
-                  src={vendor}
+                  src={""}
                 />
                 <CardContent>
                   <Typography variant="overline" fontSize="1.3em" fontWeight={500}>Sign up as vendor</Typography>
@@ -48,7 +49,7 @@ const CompanySignup = () => {
                 <CardMedia
                   component="img"
                   height="250"
-                  src={customer}
+                  src={""}
                 />
                 <CardContent>
                   <Typography variant="overline" fontSize="1.3em" fontWeight={500}>Sign up as customer</Typography>

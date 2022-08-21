@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { PlanData } from "../../hooks/types/plan/planTypes";
+import { Plan } from "../../../generated/graphql";
 import { SubscriptionInfo } from "./CustomerSignup";
 
 
@@ -33,16 +33,16 @@ const CustomerPlanSelection = ({
   setSubscriptionInfo,
   nextPage,
 }: {
-  planData: PlanData;
+  planData: Plan | null;
   selectPlan: (planId: string) => void;
   setSubscriptionInfo: React.Dispatch<React.SetStateAction<SubscriptionInfo>>;
   nextPage: () => Promise<void>;
 }) => {
-  const { id, tier, pricings } = planData;
+  const { id, tier, pricings } = planData!;
 
   const { perUser } = pricings;
 
-  const planOnClick = (priceId: string, price: string, billingFrequency: string) => {
+  const planOnClick = (priceId: string, price: number, billingFrequency: string) => {
     setSubscriptionInfo({
       price,
       priceId,

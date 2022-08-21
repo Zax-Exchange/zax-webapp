@@ -15,6 +15,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import FullScreenLoading from "../Utils/Loading";
+import React from "react";
 
 const USER_LOGIN = gql`
   query login($data: UserLoginInput) {
@@ -45,7 +46,7 @@ const Login = () => {
     if (user) navigate("/");
   }, [user]);
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
       ...values,
       [e.target.name]: e.target.value,

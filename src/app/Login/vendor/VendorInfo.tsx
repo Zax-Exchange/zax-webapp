@@ -32,7 +32,7 @@ moqDetail: MoqDetail;
   };
 
   // used for controlling materials input to now allow characters other than alphanumeric and white space chars
-  const materialOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const materialOnChange = (e: any) => {
     const val = e.target.value || "";
 
     if (isValidAlphanumeric(val)) {
@@ -81,7 +81,7 @@ moqDetail: MoqDetail;
         onChange={(e, v) => locationOnChange(v)}
         value={values.locations.map((location) => ({ label: location }))}
         multiple
-        renderOption={(props, option) => (
+        renderOption={(props, option: any) => (
           <Box
             component="li"
             sx={{ "& > img": { mr: 2, flexShrink: 0 } }}

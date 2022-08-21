@@ -44,7 +44,8 @@
     "build": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "prestart": "npm codegen"
   },
   "eslintConfig": {
     "extends": [

@@ -23,18 +23,16 @@ import CompanyInfo from "../CompanyInfo";
 import { loadStripe } from "@stripe/stripe-js";
 import VendorInfo from "./VendorInfo";
 import { Elements } from "@stripe/react-stripe-js";
-import Checkout from "../Checkout";
 import CheckoutSuccess from "../CheckoutSuccess";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
 import { validate } from "email-validator";
 import VendorPlanSelection from "./VendorPlanSelection";
 import VendorCompanyReview from "./VendorCompanyReview";
 import { isValidInt } from "../../Utils/inputValidators";
-import { useCreateStripeCustomer, useCreateSubscription } from "../../hooks/create/planHooks";
-import { useGetAllPlans } from "../../hooks/get/planHooks";
-import { CreateVendorSubscriptionData } from "../../hooks/types/plan/createPlanTypes";
-import { Country, StripeData, SubscriptionInfo } from "../customer/CustomerSignup";
+import { Country, StripeData } from "../customer/CustomerSignup";
 import React from "react";
+import { useCreateStripeCustomerMutation, useCreateVendorSubscriptionMutation, useGetAllPlansQuery } from "../../../generated/graphql";
+import VendorCheckout from "./VendorCheckout";
 
 
 export type VendorSignupData = {
@@ -86,21 +84,15 @@ const stripePromise = loadStripe(
 const VendorSignup = () => {
   const { user } = useContext(AuthContext);
 
-  const {
-    createStripeCustomer,
-    createStripeCustomerData,
-    createStripeCustomerLoading,
-    createStripeCustomerError,
-  } = useCreateStripeCustomer();
+  const [createStripeCustomerMutation, { data: createStripeCustomerData, loading: createStripeCustomerLoading, error: createStripeCustomerError }] = useCreateStripeCustomerMutation();
 
-  const {
-    createSubscription,
-    createSubscriptionLoading,
-    createSubscriptionError,
-    createSubscriptionData,
-  } = useCreateSubscription(true);
+  const [createVendorSubscriptionMutation, { data: createSubscriptionData, loading: createSubscriptionLoading, error: createSubscriptionError }] = useCreateVendorSubscriptionMutation();
 
-  const { getAllPlansData } = useGetAllPlans(true);
+  const { data: getAllPlansData } = useGetAllPlansQuery({
+    variables: {
+      isVendor: true
+    }
+  });
 
   const [currentPage, setCurrentPage] = useState(VendorSignupPage.EMAIL_PAGE);
   const [isLoading, setIsLoading] = useState(false);
@@ -174,9 +166,9 @@ const VendorSignup = () => {
       setStripeData({
         ...stripeData,
         subscriptionId:
-          (createSubscriptionData as CreateVendorSubscriptionData).createVendorSubscription.subscriptionId,
+          createSubscriptionData.createVendorSubscription.subscriptionId,
         clientSecret:
-          (createSubscriptionData as CreateVendorSubscriptionData).createVendorSubscription.clientSecret!,
+          createSubscriptionData.createVendorSubscription.clientSecret,
       });
       setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
       setPreviousPlanIds([...previousPlanIds, values.planId]);
@@ -229,7 +221,7 @@ const VendorSignup = () => {
     }
   };
 
-  const countryOnChange = (countryObj: Country) => {
+  const countryOnChange = (countryObj: Country | null) => {
     setValues({
       ...values,
       country: countryObj ? countryObj.label : "",
@@ -256,7 +248,7 @@ const VendorSignup = () => {
       if (field === "moq") {
         if (moqDetail.min === "" || moqDetail.max === "") return false;
 
-        if (parseInt(moqDetail.min, 10) > parseInt(moqDetail.max, 10))
+        if (parseInt(moqDetail.min as string, 10) > parseInt(moqDetail.max as string, 10))
           return false;
         continue;
       }
@@ -289,13 +281,13 @@ const VendorSignup = () => {
         return;
       }
       try {
-        const { data } = await createStripeCustomer({
+        const { data } = await createStripeCustomerMutation({
           variables: {
             email: values.userEmail,
           },
         });
 
-        await createSubscription({
+        await createVendorSubscriptionMutation({
           variables: {
             data: {
               stripeCustomerId: data!.createStripeCustomer,
@@ -393,8 +385,8 @@ const VendorSignup = () => {
           <EmailPage
             onChange={onChange}
             userEmail={values.userEmail}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
+            // setSnackbar={setSnackbar}
+            // setSnackbarOpen={setSnackbarOpen}
             setShouldDisableNext={setShouldDisableNext}
           />
           {renderNavigationButtons(validate(values.userEmail))}
@@ -479,7 +471,7 @@ const VendorSignup = () => {
     } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
       if (getAllPlansData && getAllPlansData.getAllPlans) {
         const plans = getAllPlansData.getAllPlans.filter(
-          (p) => p.companySize === companySize
+          (p) => p!.companySize === companySize
         );
         return (
           <>
@@ -526,13 +518,12 @@ const VendorSignup = () => {
           >
             Complete Payment Information
           </Typography>
-          <Checkout
+          <VendorCheckout
             setCurrentPage={setCurrentPage}
             companyData={values}
             subscriptionId={stripeData.subscriptionId}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
-            isVendor={true}
+            // setSnackbar={setSnackbar}
+            // setSnackbarOpen={setSnackbarOpen}
             setIsLoading={setIsLoading}
           />
         </Elements>

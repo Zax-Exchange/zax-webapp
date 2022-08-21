@@ -2,14 +2,14 @@ import { Box, Button, Container, TextField, IconButton } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import React from "react";
 import { useMessageInputContext } from "stream-chat-react";
-import { useTheme } from "@emotion/react";
+import { Theme, useTheme } from "@emotion/react";
 
 export default function MessageInput() {
-  const theme = useTheme();
+  const theme: any = useTheme();
   const { handleSubmit, text, handleChange, setText } =
     useMessageInputContext();
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     if (e.keyCode === 13 && (e.shiftKey || e.metaKey)) {
       setText(`${text}\n`);
       e.preventDefault();
@@ -18,7 +18,6 @@ export default function MessageInput() {
       e.preventDefault();
     }
   };
-  console.log({ theme });
 
   const submitDisabled = !Boolean(text);
   return (

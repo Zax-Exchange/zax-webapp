@@ -2,8 +2,8 @@ import styled from "@emotion/styled";
 import { Container, List, Stack, Typography } from "@mui/material";
 import MuiListItem from "@mui/material/ListItem";
 import React from "react";
-import { GetAllPlansData } from "../../hooks/types/plan/getPlanTypes";
-import { CompanySignupData, SubscriptionInfo } from "./CustomerSignup";
+import { GetAllPlansQuery } from "../../../generated/graphql";
+import { CustomerSignupData, SubscriptionInfo } from "./CustomerSignup";
 
 export const ListItem = styled(MuiListItem)(() => ({
   flexDirection: "column",
@@ -19,12 +19,12 @@ const CustomerCompanyReview = ({
   getAllPlansData,
   subscriptionInfo,
 }: {
-  values: CompanySignupData;
-  getAllPlansData: GetAllPlansData;
+  values: CustomerSignupData;
+  getAllPlansData: GetAllPlansQuery;
   subscriptionInfo: SubscriptionInfo;
 }) => {
-  const plan = getAllPlansData.getAllPlans.find(
-    (plan) => plan.id === values.planId
+  const plan = getAllPlansData!.getAllPlans!.find(
+    (plan) => plan!.id === values.planId
   );
 
   return (

@@ -13,6 +13,7 @@ import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import jwt_decode from "jwt-decode";
 import FullScreenLoading from "../Utils/Loading";
+import React from "react";
 
 const CREATE_USER = gql`
   mutation createUser($data: CreateUserInput) {
@@ -54,7 +55,7 @@ const UserSignup = () => {
     return null;
   }
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
       ...values,
       [e.target.name]: e.target.value,

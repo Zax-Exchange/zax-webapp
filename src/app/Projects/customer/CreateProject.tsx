@@ -27,10 +27,8 @@ import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import UploadDesign from "./UploadDesign";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
-import { useCreateProject } from "../../hooks/create/projectHooks";
-import { useGetCustomerProjects } from "../../hooks/get/customerHooks";
 import React from "react";
-import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useCreateProjectMutation, useGetCustomerProjectsLazyQuery } from "../../../generated/graphql";
 /**
  * name
  * deliveryDate
@@ -67,13 +65,10 @@ const CreateProject = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {
-    createProjectMutation,
-    createProjectLoading,
-    createProjectError,
-    createProjectData,
-  } = useCreateProject();
-  const { getCustomerProjectsRefetch } = useGetCustomerProjects(user!.id, true);
+  const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation();
+
+  const [getCustomerProjects] = useGetCustomerProjectsLazyQuery();
+
   const [projectData, setProjectData] = useState({
     userId: user!.id,
     name: "",
@@ -215,7 +210,7 @@ const CreateProject = () => {
       if (location.pathname.indexOf("/projects")) {
         navigate("/projects");
       } else {
-        await getCustomerProjectsRefetch();
+        await getCustomerProjects();
       }
       // setSnackbar({
       //   severity: "success",
@@ -277,7 +272,7 @@ const CreateProject = () => {
   };
   return (
     <>
-      {createProjectLoading && <FullScreenLoading />}
+      {loading && <FullScreenLoading />}
       <Container>
         <Box display="flex" mb={4}>
           <Typography variant="h6" textAlign="left" flexGrow={1}>

@@ -6,44 +6,47 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import React from "react";
 import { useEffect, useState } from "react";
+import { useCheckCompanyNameLazyQuery } from "../../generated/graphql";
 import { countries } from "../constants/countries";
-import { useCheckCompanyName } from "../hooks/signupHooks";
+import { Country, CustomerSignupData } from "./customer/CustomerSignup";
+import { VendorSignupData } from "./vendor/VendorSignup";
 
 const CompanyInfo = ({
   values,
   onChange,
   countryOnChange,
-  setShouldDisableNext,
+  setShouldDisableNext
+}: {
+  values: VendorSignupData | CustomerSignupData;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  countryOnChange: (countryObj: Country | null) => void
+  setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  const {
-    checkCompanyName,
-    checkCompanyNameLoading,
-    checkCompanyNameData,
-    checkCompanyNameError,
-  } = useCheckCompanyName();
+  const [checkCompanyNameQuery, {data, loading, error}] = useCheckCompanyNameLazyQuery();
 
   useEffect(() => {
-    if (checkCompanyNameData && checkCompanyNameData.checkCompanyName) {
+    if (data && data.checkCompanyName) {
       setShouldDisableNext(true);
     } else {
       setShouldDisableNext(false);
     }
-  }, [checkCompanyNameData, setShouldDisableNext]);
+  }, [data, setShouldDisableNext]);
   const renderCompanyNameHelperText = () => {
     if (
-      (checkCompanyNameData && !checkCompanyNameData.checkCompanyName) ||
-      !checkCompanyNameData
+      (data && !data.checkCompanyName) ||
+      !data
     ) {
       return "";
     }
     return "Company name taken.";
   };
 
-  const companyNameOnChange = async (e) => {
+  const companyNameOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e);
 
-    await checkCompanyName({
+    await checkCompanyNameQuery({
       variables: {
         name: e.target.value,
       },
@@ -51,6 +54,12 @@ const CompanyInfo = ({
     });
   };
 
+  const shouldCompanyNameInputError = () => {
+    if (data) {
+      return data.checkCompanyName!
+    }
+    return false
+  }
   const renderCountryDropdown = () => {
     return (
       <Autocomplete
@@ -113,10 +122,10 @@ const CompanyInfo = ({
           name="name"
           value={values.name}
           onChange={companyNameOnChange}
-          error={checkCompanyNameData && checkCompanyNameData.checkCompanyName}
+          error={shouldCompanyNameInputError()}
           helperText={renderCompanyNameHelperText()}
           InputProps={{
-            endAdornment: checkCompanyNameLoading && (
+            endAdornment: loading && (
               <CircularProgress size={20} />
             ),
           }}

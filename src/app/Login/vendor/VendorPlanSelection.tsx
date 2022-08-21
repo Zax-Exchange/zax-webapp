@@ -10,9 +10,12 @@ import {
   ListItem,
   Typography,
 } from "@mui/material";
-import singlePlan from "../../../static/singlePlan.svg";
-import groupPlan from "../../../static/groupPlan.svg";
-import businessPlan from "../../../static/businessPlan.svg";
+import React from "react";
+// import singlePlan from "../../../static/singlePlan.svg";
+// import groupPlan from "../../../static/groupPlan.svg";
+// import businessPlan from "../../../static/businessPlan.svg";
+import { Plan } from "../../../generated/graphql";
+import { VendorSubscriptionInfo } from "./VendorSignup";
 
 const PlanListItem = styled(ListItem)(() => ({
   flexDirection: "column",
@@ -26,12 +29,16 @@ const PlanListItem = styled(ListItem)(() => ({
   },
 }));
 
-const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
-  const { id, tier, pricings } = planData;
+const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }: 
+  { planData: Plan | null;
+  selectPlan: (planId: string) => void;
+  setSubscriptionInfo: React.Dispatch<React.SetStateAction<VendorSubscriptionInfo>>;
+}) => {
+  const { id, tier, pricings } = planData!;
 
   const { monthly, annual, perUser } = pricings;
 
-  const planOnClick = (data) => {
+  const planOnClick = (data: VendorSubscriptionInfo) => {
     setSubscriptionInfo({
       ...data,
     });
@@ -40,8 +47,8 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
 
   let svg;
 
-  if (tier === "PREMIUM") svg = groupPlan;
-  if (tier === "BUSINESS") svg = businessPlan;
+  // if (tier === "PREMIUM") svg = groupPlan;
+  // if (tier === "BUSINESS") svg = businessPlan;
 
   return (
     <Card elevation={3}>
@@ -66,7 +73,7 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
 
           <PlanListItem>
             <Typography variant="subtitle2">Price</Typography>
-            <Typography variant="overline">${monthly.price}/month</Typography>
+            {monthly && <Typography variant="overline">${monthly.price}/month</Typography>}
             {/* <Typography variant="overline">
               ${monthly.price}/month or ${annual.price}/year (10% off) + $
               {perUser.price}
@@ -80,7 +87,7 @@ const VendorPlanSelection = ({ planData, selectPlan, setSubscriptionInfo }) => {
           variant="outlined"
           onClick={() =>
             planOnClick({
-              subscriptionPriceId: monthly.priceId,
+              subscriptionPriceId: monthly!.priceId,
               perUserPriceId: perUser.priceId,
               billingFrequency: "monthly",
             })

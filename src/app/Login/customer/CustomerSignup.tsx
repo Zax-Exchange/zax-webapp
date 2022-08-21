@@ -14,7 +14,6 @@ import FullScreenLoading from "../../Utils/Loading";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import Checkout from "../Checkout";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
 import CustomerPlanSelection from "./CustomerPlanSelection";
 import EmailPage from "../EmailPage";
@@ -24,20 +23,17 @@ import "./CustomerSignup.scss";
 import CheckoutSuccess from "../CheckoutSuccess";
 import { validate } from "email-validator";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
-import {
-  useCreateStripeCustomer,
-  useCreateSubscription,
-} from "../../hooks/create/planHooks";
-import { CreateCustomerSubscriptionData } from "../../hooks/types/plan/createPlanTypes";
-import { useGetAllPlans } from "../../hooks/get/planHooks";
+
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { Plan, useCreateCustomerSubscriptionMutation, useCreateStripeCustomerMutation, useGetAllPlansQuery } from "../../../generated/graphql";
+import CustomerCheckout from "./CustomerCheckout";
 
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
 );
 
-export interface CompanySignupData {
+export interface CustomerSignupData {
   name: string;
   contactEmail: string;
   logo: string | null;
@@ -62,7 +58,7 @@ export const CustomerSignupPage = {
 };
 
 export type SubscriptionInfo = {
-  price: string;
+  price: string | number;
   priceId: string;
   billingFrequency: string;
 };
@@ -77,26 +73,21 @@ export type Country = {
   code: string;
   label: string;
   phone: string;
+  suggested?: boolean;
 };
 const CustomerSignup = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const {
-    createStripeCustomer,
-    createStripeCustomerData,
-    createStripeCustomerLoading,
-    createStripeCustomerError,
-  } = useCreateStripeCustomer();
+  const [createStripeCustomerMutation, { data: createStripeCustomerData, loading: createStripeCustomerLoading, error: createStripeCustomerError }] = useCreateStripeCustomerMutation();
 
-  const {
-    createSubscription,
-    createSubscriptionLoading,
-    createSubscriptionError,
-    createSubscriptionData,
-  } = useCreateSubscription(false);
+  const [createCustomerSubscriptionMutation, { data: createSubscriptionData, loading: createSubscriptionLoading, error: createSubscriptionError }] = useCreateCustomerSubscriptionMutation();
 
-  const { getAllPlansData } = useGetAllPlans(false);
+  const { data: getAllPlansData } = useGetAllPlansQuery({
+    variables: {
+       isVendor: false
+    },
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
 
@@ -129,7 +120,7 @@ const CustomerSignup = () => {
     companyUrl: "",
     planId: "",
     userEmail: "",
-  } as CompanySignupData);
+  } as CustomerSignupData);
 
   useEffect(() => {
     if (createStripeCustomerData) {
@@ -148,11 +139,11 @@ const CustomerSignup = () => {
       setStripeData({
         ...stripeData,
         subscriptionId:
-          (createSubscriptionData as CreateCustomerSubscriptionData)!
+        createSubscriptionData
             .createCustomerSubscription.subscriptionId,
         clientSecret:
-          (createSubscriptionData as CreateCustomerSubscriptionData)!
-            .createCustomerSubscription.clientSecret!,
+        createSubscriptionData
+            .createCustomerSubscription.clientSecret,
       });
       setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
       setPreviousPlanIds([...previousPlanIds, values.planId]);
@@ -199,7 +190,7 @@ const CustomerSignup = () => {
     }
   };
 
-  const countryOnChange = (countryObj: Country) => {
+  const countryOnChange = (countryObj: Country | null) => {
     setValues({
       ...values,
       country: countryObj ? countryObj.label : "",
@@ -219,12 +210,12 @@ const CustomerSignup = () => {
         return;
       }
       try {
-        const { data } = await createStripeCustomer({
+        const { data } = await createStripeCustomerMutation({
           variables: {
             email: values.userEmail,
           },
         });
-        await createSubscription({
+        await createCustomerSubscriptionMutation({
           variables: {
             priceId: subscriptionInfo.priceId,
             stripeCustomerId: data!.createStripeCustomer,
@@ -312,7 +303,7 @@ const CustomerSignup = () => {
 
   const validateInputs = (fields: string[]) => {
     for (let field of fields) {
-      const value = values[field as keyof CompanySignupData];
+      const value = values[field as keyof CustomerSignupData];
 
       if (!value) return false;
     }
@@ -328,8 +319,8 @@ const CustomerSignup = () => {
             <EmailPage
               onChange={onChange}
               userEmail={values.userEmail}
-              setSnackbar={setSnackbar}
-              setSnackbarOpen={setSnackbarOpen}
+              // setSnackbar={setSnackbar}
+              // setSnackbarOpen={setSnackbarOpen}
               setShouldDisableNext={setShouldDisableNext}
             />
             {renderNavigationButtons(validate(values.userEmail))}
@@ -363,7 +354,7 @@ const CustomerSignup = () => {
             <Stack direction="row" justifyContent="space-around">
               {getAllPlansData &&
                 getAllPlansData.getAllPlans &&
-                getAllPlansData.getAllPlans.map((planData) => {
+                getAllPlansData!.getAllPlans!.map((planData) => {
                   return (
                     <CustomerPlanSelection
                       planData={planData}
@@ -404,13 +395,12 @@ const CustomerSignup = () => {
           >
             Complete Payment Information
           </Typography>
-          <Checkout
+          <CustomerCheckout
             setCurrentPage={setCurrentPage}
             companyData={values}
             subscriptionId={stripeData.subscriptionId}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
-            isVendor={false}
+            // setSnackbar={setSnackbar}
+            // setSnackbarOpen={setSnackbarOpen}
             setIsLoading={setIsLoading}
           />
         </Elements>

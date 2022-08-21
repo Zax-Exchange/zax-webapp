@@ -24,6 +24,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { useContext, useState } from "react";
 import ProjectChat from "../chat/ProjectChat";
 import { useGetCompanyDetail } from "../../hooks/companyHooks";
+import React from "react";
 
 const VendorProjectDetail = () => {
   const { user } = useContext(AuthContext);

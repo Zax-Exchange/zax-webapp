@@ -1,6 +1,7 @@
 import { Box, List, ListItem, Typography } from "@mui/material";
 import React from "react";
-import { useChannelStateContext } from "stream-chat-react";
+import { StreamMessage, useChannelStateContext } from "stream-chat-react";
+import { DefaultStreamChatGenerics } from "stream-chat-react/dist/types/types";
 
 const Messages = () => {
   const { messages } = useChannelStateContext();
@@ -8,25 +9,25 @@ const Messages = () => {
 
   return (
     <List>
-      {messages.map((m) => {
+      {messages && messages.map((m) => {
         return <Message message={m} key={m.id} />;
       })}
     </List>
   );
 };
 
-function Message({ message }) {
+function Message({ message }: { message: StreamMessage<DefaultStreamChatGenerics>}) {
   return (
     <ListItem disableGutters sx={{ display: "block" }}>
-      <Box display="flex" sx={{ alignItems: "center" }}>
+      {message && <Box display="flex" sx={{ alignItems: "center" }}>
         <Typography variant="subtitle2" sx={{ marginRight: "8px" }}>
-          {message.user.name}
+          {message!.user!.name}
         </Typography>
         <Typography variant="caption">
-          {message.created_at.toLocaleTimeString()}
+          {(message!.created_at! as Date).toLocaleTimeString()}
         </Typography>
-      </Box>
-      {message.text.split("\n").map((m, index) => {
+      </Box>}
+      {message && message.text && message.text.split("\n").map((m, index) => {
         const pKey = `${message.id}-${index}`;
         if (!m) {
           return <br key={pKey} />;

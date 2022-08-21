@@ -5,27 +5,27 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import React from "react";
 import { useEffect } from "react";
-import { useCheckUserEmail } from "../hooks/signupHooks";
+import { useCheckUserEmailLazyQuery } from "../../generated/graphql";
 
 const EmailPage = ({
   onChange,
   userEmail,
-  setSnackbar,
-  setSnackbarOpen,
+  // setSnackbar,
+  // setSnackbarOpen,
   setShouldDisableNext,
+}: {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  userEmail: string;
+  setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const {
-    checkUserEmail,
-    checkUserEmailData,
-    checkUserEmailError,
-    checkUserEmailLoading,
-  } = useCheckUserEmail();
+  const [checkUserEmailQuery, {data, loading, error}] = useCheckUserEmailLazyQuery();
 
   const renderEmailHelperText = () => {
     if (
-      (checkUserEmailData && !checkUserEmailData.checkUserEmail) ||
-      !checkUserEmailData
+      (data && !data.checkUserEmail) ||
+      !data
     ) {
       return "This should be an email that we can send billing information to.";
     }
@@ -33,31 +33,38 @@ const EmailPage = ({
   };
 
   useEffect(() => {
-    if (checkUserEmailData && checkUserEmailData.checkUserEmail) {
+    if (data && data.checkUserEmail) {
       // is duplicate
       setShouldDisableNext(true);
     } else {
       setShouldDisableNext(false);
     }
-  }, [checkUserEmailData]);
-  const emailOnChange = async (e) => {
+  }, [data]);
+
+  const emailOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e);
     try {
-      await checkUserEmail({
+      await checkUserEmailQuery({
         variables: {
           email: e.target.value,
         },
         fetchPolicy: "no-cache",
       });
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: "Something went wrong. Please try again.",
-      });
-      setSnackbarOpen(true);
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Something went wrong. Please try again.",
+      // });
+      // setSnackbarOpen(true);
     }
   };
 
+  const shouldError = () => {
+    if (data) {
+      return data.checkUserEmail!;
+    }
+    return false;
+  }
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
@@ -72,9 +79,9 @@ const EmailPage = ({
             value={userEmail}
             onChange={emailOnChange}
             helperText={renderEmailHelperText()}
-            error={checkUserEmailData && checkUserEmailData.checkUserEmail}
+            error={shouldError()}
             InputProps={{
-              endAdornment: checkUserEmailLoading && (
+              endAdornment: loading && (
                 <CircularProgress size={20} />
               ),
             }}

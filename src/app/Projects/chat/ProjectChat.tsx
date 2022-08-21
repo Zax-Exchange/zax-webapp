@@ -25,13 +25,14 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import Messages from "./Messages";
 import CustomMessageInput from "./MessageInput";
+import React from "react";
 
-const streamApiKey = process.env.REACT_APP_STREAM_API_KEY;
-const streamAppId = process.env.REACT_APP_STREAM_APP_ID;
+const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
+const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
 const filters = { type: "messaging", members: { $in: ["ancient-mountain-4"] } };
 const sort = { last_message_at: -1 };
 
-const CustomChannelPreview = (props) => {
+const CustomChannelPreview = (props: any) => {
   const { channel, setActiveChannel } = props;
 
   const { messages } = channel.state;
@@ -51,10 +52,16 @@ const ProjectChat = ({
   customerName,
   vendorName,
   chatOpen,
+}: {
+  projectBidId: string;
+  setChatOpen: React.Dispatch<React.SetStateAction<boolean>>
+  customerName: string;
+  vendorName: string;
+  chatOpen: boolean
 }) => {
   const { user } = useContext(AuthContext);
-  const [chatClient, setChatClient] = useState(null);
-  const [channel, setChannel] = useState(null);
+  const [chatClient, setChatClient] = useState(null as any);
+  const [channel, setChannel] = useState(null as any);
 
   useEffect(() => {
     const initChat = async () => {
@@ -62,19 +69,19 @@ const ProjectChat = ({
 
       await client.connectUser(
         {
-          id: user.companyId,
-          name: user.isVendor ? vendorName : customerName,
+          id: user!.companyId,
+          name: user!.isVendor ? vendorName : customerName,
           // image:
           //   "https://getstream.io/random_png/?id=ancient-mountain-4&name=ancient-mountain-4",
         },
-        user.chatToken
+        user!.chatToken
       );
       const channel = client.channel("messaging", projectBidId, {
         name: `Channel for ${customerName} & ${vendorName}`,
       });
 
       // Here, 'travel' will be the channel ID
-      channel.addMembers([user.companyId]);
+      channel.addMembers([user!.companyId]);
       const data = await channel.watch();
       console.log(data, channel);
       setChatClient(client);
@@ -110,7 +117,7 @@ const ProjectChat = ({
       }}
     >
       <DialogTitle>{`Chat with ${
-        user.isVendor ? customerName : vendorName
+        user!.isVendor ? customerName : vendorName
       }`}</DialogTitle>
       <DialogContent
         ref={messagesRef}

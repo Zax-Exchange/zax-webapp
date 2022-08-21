@@ -24,6 +24,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import { CustomerProject, Exact, GetCustomerProjectsQuery, InputMaybe, useGetCustomerProjectsQuery } from "../../../generated/graphql";
+import { ApolloQueryResult } from "@apollo/client";
 
 export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -37,9 +39,15 @@ export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 const CustomerProjectOverview = ({
   project,
   getCustomerProjectsRefetch,
-  setSnackbar,
-  setSnackbarOpen,
+  // setSnackbar,
+  // setSnackbarOpen,
   setIsProjectPageLoading,
+}: {
+  project: CustomerProject;
+  getCustomerProjectsRefetch: (variables?: Partial<Exact<{
+    userId?: InputMaybe<string> | undefined;
+}>> | undefined) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>
+  setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);

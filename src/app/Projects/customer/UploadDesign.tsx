@@ -8,12 +8,9 @@ import {
 import { gql, useMutation } from "@apollo/client";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { ProjectData } from "./CreateProject";
+import { useUploadProjectDesignMutation } from "../../../generated/graphql";
 
-const MUTATION = gql`
-  mutation ($file: Upload!) {
-    uploadProjectDesign(file: $file)
-  }
-`;
+
 
 export type File = {
   uri: string;
@@ -32,7 +29,7 @@ export default function UploadDesign({
 {
   setProjectData: React.Dispatch<React.SetStateAction<ProjectData>>;
 }) {
-  const [mutate, { error, loading, data }] = useMutation(MUTATION);
+  const [mutate, { error, loading, data }] = useUploadProjectDesignMutation()
 
   useEffect(() => {
     // server error

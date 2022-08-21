@@ -1,5 +1,6 @@
 import { useQuery, gql } from '@apollo/client';
 import { Grid, Typography, Container } from '@mui/material';
+import React from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -26,7 +27,7 @@ const Profile = () => {
   const { user } = useContext(AuthContext);
   const {loading: userLoading, error: userError, data: userData} = useQuery(GET_USER, {
     variables: {
-      userId: user.id
+      userId: user!.id
     }
   });
   const companyId = userData?.getUserWithUserId.companyId;

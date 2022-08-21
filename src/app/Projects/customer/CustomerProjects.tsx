@@ -1,4 +1,3 @@
-import VendorProjectOverview from "./vendor/VendorProjectOverview";
 import {
   Typography,
   Grid,
@@ -11,31 +10,20 @@ import {
   Box,
 } from "@mui/material";
 import "./Projects.scss";
-import FullScreenLoading from "../Utils/Loading";
-import CustomerProjectOverview from "./customer/CustomerProjectOverview";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import React, { useContext, useEffect, useState } from "react";
 
-import CustomSnackbar from "../Utils/CustomSnackbar";
+// import CustomSnackbar from "../Utils/CustomSnackbar";
 import SortIcon from "@mui/icons-material/Sort";
-import { CustomerProject, useGetCustomerProjectsQuery, useGetVendorProjectsQuery, VendorProject } from "../../generated/graphql";
+import { AuthContext } from "../../../context/AuthContext";
+import { CustomerProject, useGetCustomerProjectsQuery } from "../../../generated/graphql";
+import CustomerProjectOverview from "./CustomerProjectOverview";
+import FullScreenLoading from "../../Utils/Loading";
 
-const Projects = () => {
+const CustomerProjects = () => {
   const { user } = useContext(AuthContext);
   const isVendor = user!.isVendor;
 
   const userId = user!.id;
-  const {
-    data: getVendorProjectsData,
-    error: getVendorProjectsError,
-    loading: getVendorProjectsLoading,
-    refetch: getVendorProjectsRefetch,
-  } = useGetVendorProjectsQuery({
-    variables: {
-      userId
-    },
-    skip: !isVendor
-  });
 
   const {
     data: getCustomerProjectsData,
@@ -45,8 +33,7 @@ const Projects = () => {
   } = useGetCustomerProjectsQuery({
     variables: {
       userId
-    },
-    skip: isVendor
+    }
   });
 
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
@@ -57,25 +44,23 @@ const Projects = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const [sortMenuAnchor, setSortMenuAnchor] = useState(null);
+  const [sortMenuAnchor, setSortMenuAnchor] = useState<HTMLButtonElement | null>(null);
   const sortMenuOpen = !!sortMenuAnchor;
-  const [projects, setProjects] = useState<CustomerProject[] | VendorProject[]>([]);
+  const [projects, setProjects] = useState<CustomerProject[]>([]);
 
   useEffect(() => {
-    if (getVendorProjectsData && getVendorProjectsData.getVendorProjects) {
-      setProjects(getVendorProjectsData.getVendorProjects as VendorProject[]);
-    } else if (
+    if (
       getCustomerProjectsData &&
       getCustomerProjectsData.getCustomerProjects
     ) {
       setProjects(getCustomerProjectsData.getCustomerProjects as CustomerProject[]);
     }
-  }, [getVendorProjectsData, getCustomerProjectsData]);
+  }, [getCustomerProjectsData]);
 
   const sortByDeliveryDate = () => {
     let proj = [...projects];
     proj = proj.sort(
-      (a, b) => new Date(a.deliveryDate) - new Date(b.deliveryDate)
+      (a, b) => (a.deliveryDate as any) - (b.deliveryDate as any)
     );
     setProjects([...proj]);
   };
@@ -88,11 +73,11 @@ const Projects = () => {
 
   const sortByName = () => {
     let proj = [...projects];
-    proj = proj.sort((a, b) => a.name - b.name);
+    proj = proj.sort((a, b) => (a.name as any) - (b.name as any));
     setProjects([...proj]);
   };
 
-  const sortOnClick = (e) => {
+  const sortOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setSortMenuAnchor(e.currentTarget);
   };
 
@@ -100,8 +85,8 @@ const Projects = () => {
     setSortMenuAnchor(null);
   };
 
-  const sortMenuOnClick = (e) => {
-    switch (e.target.dataset.type) {
+  const sortMenuOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    switch (e.currentTarget.dataset.type) {
       case "name":
         sortByName();
         break;
@@ -117,39 +102,7 @@ const Projects = () => {
     sortOnClose();
   };
 
-  let projectOverview = null;
-
-  if (isVendor) {
-    projectOverview = projects.map((project, i) => {
-      return (
-        <VendorProjectOverview
-          key={i}
-          project={project}
-          getVendorProjectsRefetch={getVendorProjectsRefetch}
-          setSnackbar={setSnackbar}
-          setSnackbarOpen={setSnackbarOpen}
-          setIsProjectPageLoading={setIsProjectPageLoading}
-        />
-      );
-    });
-  } else {
-    projectOverview = projects.map((project, i) => {
-      return (
-        <>
-          <CustomerProjectOverview
-            key={i}
-            project={project}
-            getCustomerProjectsRefetch={getCustomerProjectsRefetch}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
-            setIsProjectPageLoading={setIsProjectPageLoading}
-          />
-        </>
-      );
-    });
-  }
-
-  if (getVendorProjectsLoading || getCustomerProjectsLoading) {
+  if (getCustomerProjectsLoading) {
     return (
       <Container className="user-projects-container">
         <FullScreenLoading />
@@ -157,12 +110,28 @@ const Projects = () => {
     );
   }
 
-  if (getVendorProjectsError || getCustomerProjectsError) {
+  if (getCustomerProjectsError) {
     return (
       <Container className="user-projects-container">
         Something went wrong!
       </Container>
     );
+  }
+
+  const projectOverview = projects.map((project, i) => {
+      return (
+        <>
+          <CustomerProjectOverview
+            key={i}
+            project={project}
+            getCustomerProjectsRefetch={getCustomerProjectsRefetch}
+            // setSnackbar={setSnackbar}
+            // setSnackbarOpen={setSnackbarOpen}
+            setIsProjectPageLoading={setIsProjectPageLoading}
+          />
+        </>
+      );
+    });
   }
 
   return (
@@ -171,13 +140,13 @@ const Projects = () => {
       sx={{ position: "relative" }}
     >
       {isProjectPageLoading && <FullScreenLoading />}
-      <CustomSnackbar
+      {/* <CustomSnackbar
         severity={snackbar.severity}
         direction="right"
         message={snackbar.message}
         open={snackbarOpen}
         onClose={() => setSnackbarOpen(false)}
-      />
+      /> */}
       <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
         <Typography variant="subtitle2">Your projects</Typography>
         <IconButton onClick={sortOnClick}>
@@ -213,11 +182,13 @@ const Projects = () => {
 
       <Fade in={true}>
         <Grid container spacing={3} className="user-projects-inner-container">
-          {projectOverview}
+          {
+            getCustomerProjectsData
+          }
         </Grid>
       </Fade>
     </Container>
   );
 };
 
-export default Projects;
+export default CustomerProjects;

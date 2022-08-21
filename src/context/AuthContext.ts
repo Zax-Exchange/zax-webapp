@@ -1,6 +1,6 @@
 import jwtDecode from "jwt-decode";
-import { createContext, useReducer } from "react";
-import { LoggedInUser } from "../app/hooks/types/user/userTypes";
+import React, { createContext, useReducer } from "react";
+import { LoggedInUser } from "../generated/graphql";
 /**
  * user {
  *  id
@@ -16,8 +16,9 @@ const initialState = {
   user: null
 }
 
+// TODO: fix all typings in this file
 if (sessionStorage.getItem("token")) {
-  const decoded = jwtDecode(sessionStorage.getItem("token"));
+  const decoded = jwtDecode(sessionStorage.getItem("token")!) as any;
 
   if (decoded.exp * 1000 < Date.now()) {
     sessionStorage.removeItem("token");
@@ -36,7 +37,7 @@ const AuthContext = createContext({
   logout: () => void
 });
 
-const authReducer = (state, action) => {
+const authReducer = (state: any, action: any) => {
   switch(action.type) {
     case "LOGIN":
       return {
@@ -53,10 +54,10 @@ const authReducer = (state, action) => {
   }
 }
 
-const AuthProvider = (props) => {
+const AuthProvider = (props: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const login = userData => {
+  const login = (userData: any) => {
     sessionStorage.setItem("token", userData.token);
     dispatch({
       type: "LOGIN",
