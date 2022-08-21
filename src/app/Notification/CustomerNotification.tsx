@@ -20,11 +20,12 @@ import styled from "@emotion/styled";
 import MuiListItem from "@mui/material/ListItem";
 import { useNavigate } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import React from "react";
 
-const streamApiKey = process.env.REACT_APP_STREAM_API_KEY;
-const streamAppId = process.env.REACT_APP_STREAM_APP_ID;
+const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
+const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
 
-const ListItem = styled(MuiListItem)(({ theme }) => ({
+const ListItem = styled(MuiListItem)(({ theme }: any) => ({
   display: "flex",
   justifyContent: "center",
   borderBottom: `0.5px solid ${theme.palette.divider}`,
@@ -43,11 +44,11 @@ const CustomerNotification = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState([] as any[]);
   const [notiCount, setNotiCount] = useState(0);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [client, setClient] = useState(null);
-  const [feed, setFeed] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null as any);
+  const [client, setClient] = useState(null as any);
+  const [feed, setFeed] = useState(null as any);
 
   // const client = connect(streamApiKey, user.notificationToken, streamAppId);
   // const feed = client.feed("notification", user.id);
@@ -55,12 +56,12 @@ const CustomerNotification = () => {
   useEffect(() => {
     const streamClient = connect(
       streamApiKey,
-      user.notificationToken,
+      user!.notificationToken!,
       streamAppId
     );
 
     setClient(streamClient);
-    setFeed(streamClient.feed("notification", user.id));
+    setFeed(streamClient.feed("notification", user!.id));
   }, []);
 
   useEffect(() => {
@@ -69,14 +70,14 @@ const CustomerNotification = () => {
       console.log("subscribing to customer notifications");
     }
 
-    function failCallback(data) {
+    function failCallback(data: any) {
       console.log(data);
     }
-    function callback(data) {
+    function callback(data: any) {
       console.log("new notification: ", data);
       let notis = data.new;
       if (!data.new.length) return;
-      notis = notis.map((noti) => {
+      notis = notis.map((noti: any) => {
         const notiObject = JSON.parse(noti.object);
         return {
           activityIds: [noti.id],
@@ -87,7 +88,7 @@ const CustomerNotification = () => {
           unseen: true,
         };
       });
-      setNotifications((currentNotis) => [...notis, ...currentNotis]);
+      setNotifications((currentNotis: any) => [...notis, ...currentNotis]);
       setNotiCount((count) => count + 1);
     }
     if (feed) {
@@ -106,7 +107,7 @@ const CustomerNotification = () => {
       const notiObject = JSON.parse(notiMeta.object);
 
       notis.push({
-        activityIds: res.activities.map((act) => act.id),
+        activityIds: res.activities.map((act: any) => act.id),
         projectId: notiObject.projectId,
         projectName: notiObject.projectName,
         bidCount: res.activity_count,
@@ -147,7 +148,7 @@ const CustomerNotification = () => {
     feed.get({ mark_seen: true });
   };
 
-  const notiOnClick = async (e) => {
+  const notiOnClick = async (e: any) => {
     markAllNotisAsSeen();
     clearNotiCount();
     setAnchorEl(e.currentTarget);
@@ -157,7 +158,7 @@ const CustomerNotification = () => {
     setAnchorEl(null);
   };
 
-  const navigateToProjectDetail = async (noti, ind) => {
+  const navigateToProjectDetail = async (noti: any, ind: number) => {
     notiOnClose();
 
     navigate(`/customer-project-detail/${noti.projectId}`);

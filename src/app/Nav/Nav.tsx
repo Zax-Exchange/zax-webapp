@@ -22,7 +22,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
-import logo from "../../static/logo2.png";
+// import logo from "../../static/logo2.png";
 import { gql, useMutation } from "@apollo/client";
 import CustomerNotification from "../Notification/CustomerNotification";
 import React from "react";
@@ -47,7 +47,7 @@ const Nav = () => {
     message: "",
   });
 
-  const handleSideNavOnClick = (page) => {
+  const handleSideNavOnClick = (page: string) => {
     if (page === "home") {
       navigate("/");
     } else {
@@ -131,7 +131,7 @@ const Nav = () => {
     );
   };
 
-  const handleLoggedOutOnClick = (page) => {
+  const handleLoggedOutOnClick = (page: string) => {
     navigate(`/${page}`);
   };
 
@@ -155,7 +155,7 @@ const Nav = () => {
   const renderLogo = () => {
     return (
       <img
-        src={logo}
+        // src={logo}
         height={44}
         style={{ marginBottom: 2, cursor: "pointer" }}
         onClick={() => navigate("/")}
@@ -205,7 +205,7 @@ const Nav = () => {
           <Box display="flex" flexGrow={1} justifyContent="flex-end">
             <Button
               sx={{ color: "#4c5678", mr: 2 }}
-              variant="primary"
+              variant="outlined"
               onClick={() => handleLoggedOutOnClick("login")}
             >
               Log In
@@ -242,23 +242,23 @@ const Nav = () => {
         },
       });
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: error.message,
-      });
-      setSnackbarOpen(true);
+      // setSnackbar({
+      //   severity: "error",
+      //   message: error.message,
+      // });
+      // setSnackbarOpen(true);
     }
   };
 
   return (
     <>
-      <CustomSnackbar
+      {/* <CustomSnackbar
         severity={snackbar.severity}
         direction="right"
         message={snackbar.message}
         open={snackbarOpen}
         onClose={() => setSnackbarOpen(false)}
-      />
+      /> */}
       {resetLoading && <FullScreenLoading />}
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar

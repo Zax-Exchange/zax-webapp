@@ -1,3 +1,5 @@
+import { gql, useLazyQuery } from "@apollo/client";
+
 const CHECK_COMPANY_NAME = gql`
   query checkCompanyName($name: String) {
     checkCompanyName(name: $name)
@@ -12,7 +14,7 @@ export const useCheckCompanyName = () => {
       loading: checkCompanyNameLoading,
       error: checkCompanyNameError,
     },
-  ] = useLazyQuery(CHECK_COMPANY_NAME);
+  ] = useLazyQuery<{checkCompanyName: boolean}>(CHECK_COMPANY_NAME);
 
   return {
     checkCompanyName,

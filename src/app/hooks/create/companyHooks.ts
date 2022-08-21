@@ -1,9 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+
 import { CreateCustomerData, CreateCustomerInput, CreateVendorData, CreateVendorInput, InviteUserData, InviteUserInput } from "../types/company/createCompanyTypes";
-import { GetCompanyDetail } from "../types/company/getCompanyTypes";
-import { LoggedInUser } from "../types/user/userTypes";
+
 
 const INVITE_USER = gql`
   mutation inviteUser($email: String, $userId: String) {

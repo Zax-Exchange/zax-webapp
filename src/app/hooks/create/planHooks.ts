@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { CreateCustomerSubscriptionData, CreateStripeCustomerData, CreateStripeCustomerInput, CreateSubscriptionInput, CreateVendorSubscriptionData } from "../types/plan/createPlanTypes";
+import { CreateCustomerSubscriptionData, CreateCustomerSubscriptionInput, CreateStripeCustomerData, CreateStripeCustomerInput, CreateVendorSubscriptionData, CreateVendorSubscriptionInput } from "../types/plan/createPlanTypes";
 
 const CREATE_STRIPE_CUSTOMER = gql`
   mutation createStripeCustomer($email: String) {
@@ -57,7 +57,7 @@ export const useCreateSubscription = (isVendor: boolean) => {
       loading: createSubscriptionLoading,
       error: createSubscriptionError,
     },
-  ] = useMutation<CreateCustomerSubscriptionData | CreateVendorSubscriptionData, CreateSubscriptionInput>(
+  ] = useMutation<CreateCustomerSubscriptionData | CreateVendorSubscriptionData, CreateCustomerSubscriptionInput | CreateVendorSubscriptionInput>(
     isVendor ? CREATE_VENDOR_SUBSCRIPTION : CREATE_CUSTOMER_SUBSCRIPTION
   );
 

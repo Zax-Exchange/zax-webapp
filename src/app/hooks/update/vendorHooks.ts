@@ -1,5 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
-import { UpdateVendorInput } from "../types/company/updateCompanyTypes";
+import { UpdateVendorInput } from "../types/vendor/updateVendorTypes";
+
 
 const UPDATE_VENDOR_DATA = gql`
   mutation updateVendor($data: UpdateVendorInput) {
