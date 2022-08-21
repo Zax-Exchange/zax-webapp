@@ -18,7 +18,7 @@ const SearchProjectOverview = ({ projectData }: {
     navigate(`/project-detail/${projectId}`);
   };
 
-  const date = new Date(projectData.createdAt).toISOString().slice(0, 10);
+  const date = new Date(parseInt(projectData.createdAt, 10)).toISOString().slice(0, 10);
 
   // const renderMaterialsString = (materials: string[]) => {
   //   let res = "";

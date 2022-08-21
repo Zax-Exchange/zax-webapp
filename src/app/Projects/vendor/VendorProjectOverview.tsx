@@ -53,7 +53,7 @@ const VendorProjectOverview = ({
   const [projectMenuAnchor, setProjectMenuAnchor] = useState<HTMLButtonElement | null>(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
-  const date = new Date(project.createdAt).toISOString().slice(0, 10);
+  const date = new Date(parseInt(project.createdAt, 10)).toISOString().slice(0, 10);
 
   const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setProjectMenuAnchor(e.currentTarget);

@@ -38,7 +38,8 @@ const VendorProjectDetail = () => {
     variables: {
       "data": {
         "projectId": projectId!,
-        userId: user!.id
+        userId: user!.id,
+        
       }
     }
   });
@@ -47,7 +48,11 @@ const VendorProjectDetail = () => {
     data: getCompanyDetailData,
     error: getCompanyDetailError,
     loading: getCompanyDetailLoading,
-  } = useGetCompanyDetailQuery();
+  } = useGetCompanyDetailQuery({
+    variables: {
+      companyId: user!.companyId
+    }
+  });
 
   const [chatOpen, setChatOpen] = useState(false);
 
