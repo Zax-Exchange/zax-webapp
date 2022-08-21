@@ -22,6 +22,9 @@ import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import BusinessIcon from "@mui/icons-material/Business";
+import { Exact, GetVendorProjectsQuery, InputMaybe, VendorProject } from "../../../generated/graphql";
+import { ApolloQueryResult } from "@apollo/client";
+import React from "react";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -34,19 +37,25 @@ const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 
 const VendorProjectOverview = ({
   project,
-  setSnackbar,
-  setSnackbarOpen,
+  // setSnackbar,
+  // setSnackbarOpen,
   setIsProjectPageLoading,
   getVendorProjectsRefetch,
+}: {
+  project: VendorProject;
+  setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  getVendorProjectsRefetch: (variables?: Partial<Exact<{
+    userId?: InputMaybe<string> | undefined;
+}>> | undefined) => Promise<ApolloQueryResult<GetVendorProjectsQuery>>
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
-  const [projectMenuAnchor, setProjectMenuAnchor] = useState(null);
+  const [projectMenuAnchor, setProjectMenuAnchor] = useState<HTMLButtonElement | null>(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
-  const date = new Date(Date(project.createdAt)).toISOString().slice(0, 10);
+  const date = new Date(project.createdAt).toISOString().slice(0, 10);
 
-  const moreOnClick = (e) => {
+  const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setProjectMenuAnchor(e.currentTarget);
   };
 
@@ -54,7 +63,7 @@ const VendorProjectOverview = ({
     setProjectMenuAnchor(null);
   };
 
-  const viewDetailHandler = (e) => {
+  const viewDetailHandler = () => {
     navigate(`/vendor-project-detail/${project.id}`);
   };
 
@@ -62,11 +71,11 @@ const VendorProjectOverview = ({
     return project.permission !== "VIEWER";
   };
 
-  const projectMenuOnClick = (e) => {
-    if (e.target.innerText === "View detail") {
+  const projectMenuOnClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    if (e.currentTarget.innerText === "View detail") {
       viewDetailHandler();
     }
-    if (e.target.innerText === "Share" && canShare()) {
+    if (e.currentTarget.innerText === "Share" && canShare()) {
       setPermissionModalOpen(true);
     }
 
@@ -88,7 +97,6 @@ const VendorProjectOverview = ({
           sx={{ position: "absolute", right: "4px" }}
           id="long-button"
           onClick={moreOnClick}
-          onClose={moreOnClose}
         >
           <MoreIcon id="123" />
         </IconButton>
@@ -170,8 +178,8 @@ const VendorProjectOverview = ({
           <ProjectPermissionModal
             project={project}
             setPermissionModalOpen={setPermissionModalOpen}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
+            // setSnackbar={setSnackbar}
+            // setSnackbarOpen={setSnackbarOpen}
           />
         </DialogContent>
       </Dialog>

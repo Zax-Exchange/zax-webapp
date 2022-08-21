@@ -21,6 +21,7 @@ const CompanySignup = () => {
 
   if (user) {
     navigate("/")
+    return null;
   } else {
     return <Container maxWidth="md">
         <Typography variant="h6" sx={{ marginBottom: 4 }}>Select Your Company Type</Typography>

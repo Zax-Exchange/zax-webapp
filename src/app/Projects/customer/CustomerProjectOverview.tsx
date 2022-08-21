@@ -26,6 +26,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import { CustomerProject, Exact, GetCustomerProjectsQuery, InputMaybe, useGetCustomerProjectsQuery } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
+import React from "react";
 
 export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -52,7 +53,7 @@ const CustomerProjectOverview = ({
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
-  const [projectMenuAnchor, setProjectMenuAnchor] = useState(null);
+  const [projectMenuAnchor, setProjectMenuAnchor] = useState<HTMLButtonElement | null>(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
   const date = new Date(parseInt(project.createdAt)).toISOString().slice(0, 10);
@@ -61,7 +62,7 @@ const CustomerProjectOverview = ({
     navigate(`/customer-project-detail/${project.id}`);
   };
 
-  const moreOnClick = (e) => {
+  const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setProjectMenuAnchor(e.currentTarget);
   };
 
@@ -69,15 +70,15 @@ const CustomerProjectOverview = ({
     setProjectMenuAnchor(null);
   };
 
-  const projectMenuOnClick = (e) => {
-    if (e.target.innerText === "View detail") {
+  const projectMenuOnClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    if (e.currentTarget.innerText === "View detail") {
       viewDetailHandler();
     }
-    if (e.target.innerText === "Share" && canShare()) {
+    if (e.currentTarget.innerText === "Share" && canShare()) {
       setPermissionModalOpen(true);
     }
 
-    if (e.target.innerText === "Delete" && canDelete()) {
+    if (e.currentTarget.innerText === "Delete" && canDelete()) {
       setDeleteProjectModalOpen(true);
     }
 
@@ -120,7 +121,6 @@ const CustomerProjectOverview = ({
           sx={{ position: "absolute", right: "4px" }}
           id="long-button"
           onClick={moreOnClick}
-          onClose={moreOnClose}
         >
           <MoreIcon />
         </IconButton>
@@ -203,8 +203,8 @@ const CustomerProjectOverview = ({
         getCustomerProjectsRefetch={getCustomerProjectsRefetch}
         setIsProjectPageLoading={setIsProjectPageLoading}
         projectId={project.id}
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
+        // setSnackbar={setSnackbar}
+        // setSnackbarOpen={setSnackbarOpen}
       />
 
       <Dialog
@@ -217,8 +217,8 @@ const CustomerProjectOverview = ({
           <ProjectPermissionModal
             project={project}
             setPermissionModalOpen={setPermissionModalOpen}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
+            // setSnackbar={setSnackbar}
+            // setSnackbarOpen={setSnackbarOpen}
           />
         </DialogContent>
       </Dialog>

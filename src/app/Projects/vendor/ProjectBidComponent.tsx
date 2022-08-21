@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { Container, Typography, Button, Input, Stack, TextField, List, ListItem} from "@mui/material";
-const ProjectBidComponent = ({component, setComponentQpData, componentsQpData}) => {
+import React from "react";
+import { ProjectComponent } from "../../../generated/graphql";
+const ProjectBidComponent = ({component, setComponentQpData, componentsQpData} : {
+  component: ProjectComponent;
+  setComponentQpData: React.Dispatch<React.SetStateAction<Record<string, any[]>>>;
+  componentsQpData: Record<string, any[]>
+}) => {
     const {
       id,
       name,
@@ -12,7 +18,7 @@ const ProjectBidComponent = ({component, setComponentQpData, componentsQpData}) 
     const [price, setPrice] = useState("");
     const [qpList, setQpList] = useState([]);
 
-    const handleQpInput = (e) => {
+    const handleQpInput = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.name === "quantity") {
         setQuantity(e.target.value);
       } else {
@@ -36,7 +42,7 @@ const ProjectBidComponent = ({component, setComponentQpData, componentsQpData}) 
       });
     }
 
-    const deleteQp = (i) => {
+    const deleteQp = (i: number) => {
       const list = [...componentsQpData[id]];
       list.splice(i, 1);
       setComponentQpData({

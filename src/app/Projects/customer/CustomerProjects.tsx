@@ -85,7 +85,7 @@ const CustomerProjects = () => {
     setSortMenuAnchor(null);
   };
 
-  const sortMenuOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const sortMenuOnClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     switch (e.currentTarget.dataset.type) {
       case "name":
         sortByName();
@@ -117,22 +117,7 @@ const CustomerProjects = () => {
       </Container>
     );
   }
-
-  const projectOverview = projects.map((project, i) => {
-      return (
-        <>
-          <CustomerProjectOverview
-            key={i}
-            project={project}
-            getCustomerProjectsRefetch={getCustomerProjectsRefetch}
-            // setSnackbar={setSnackbar}
-            // setSnackbarOpen={setSnackbarOpen}
-            setIsProjectPageLoading={setIsProjectPageLoading}
-          />
-        </>
-      );
-    });
-  }
+  
 
   return (
     <Container
@@ -182,9 +167,21 @@ const CustomerProjects = () => {
 
       <Fade in={true}>
         <Grid container spacing={3} className="user-projects-inner-container">
-          {
-            getCustomerProjectsData
-          }
+          {projects.map((project, i) => {
+            return (
+              <>
+                <CustomerProjectOverview
+                  key={i}
+                  project={project}
+                  getCustomerProjectsRefetch={getCustomerProjectsRefetch}
+                  // setSnackbar={setSnackbar}
+                  // setSnackbarOpen={setSnackbarOpen}
+                  setIsProjectPageLoading={setIsProjectPageLoading}
+                />
+              </>
+            );
+          })
+        }
         </Grid>
       </Fade>
     </Container>

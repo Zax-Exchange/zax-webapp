@@ -2,9 +2,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./SearchResults.scss";
 import SearchCompanyOverview from "./SearchCompanyOverview";
 import { Typography, Stack, Grid, Container} from "@mui/material";
+import React from "react";
+import { VendorOverview } from "../../generated/graphql";
 
 const CustomerSearchResults = () => {
-  const {state} = useLocation();
+  const {state}: {state: any} = useLocation();
 
   return (<Grid container className="search-results-container">
     <Grid item xs={2} className="search-results-sortby-container">
@@ -15,7 +17,7 @@ const CustomerSearchResults = () => {
     <Grid item xs={10} className="search-results-inner-container">
       <Stack direction="column">
           {
-            state && state.searchResults.map((res, i) => {
+            state && state.searchResults.map((res: VendorOverview, i: number) => {
               return <SearchCompanyOverview key={i} companyData={res}/>
             })
           }

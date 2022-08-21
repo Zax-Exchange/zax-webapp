@@ -17,7 +17,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
 import { ProjectOverviewListItem } from "./CustomerProjectOverview";
 import styled from "@emotion/styled";
-import { ProjectComponent, useGetCustomerProjectQuery } from "../../../generated/graphql";
+import { ProjectBid, ProjectComponent, useGetCustomerProjectQuery } from "../../../generated/graphql";
 import React from "react";
 
 const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
@@ -83,8 +83,8 @@ const CustomerProjectDetail = () => {
                   <>
                     <ListItem>
                       <VendorBidOverview
-                        bid={bid}
-                        projectComponents={projectData.components}
+                        bid={bid as ProjectBid}
+                        projectComponents={projectData.components as ProjectComponent[]}
                       />
                     </ListItem>
                   </>
@@ -180,6 +180,7 @@ const CustomerProjectDetail = () => {
       </Container>
 
   }
+  return null
 };
 
 export default CustomerProjectDetail;

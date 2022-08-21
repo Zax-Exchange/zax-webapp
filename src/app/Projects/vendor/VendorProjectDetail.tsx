@@ -14,17 +14,13 @@ import {
   Link,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-  useGetProjectDetail,
-  useGetVendorProject,
-} from "../../hooks/projectHooks";
 import FullScreenLoading from "../../Utils/Loading";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { AuthContext } from "../../../context/AuthContext";
 import { useContext, useState } from "react";
 import ProjectChat from "../chat/ProjectChat";
-import { useGetCompanyDetail } from "../../hooks/companyHooks";
 import React from "react";
+import { ProjectBidComponent, QuantityPrice, useGetCompanyDetailQuery, useGetVendorProjectQuery } from "../../../generated/graphql";
 
 const VendorProjectDetail = () => {
   const { user } = useContext(AuthContext);
@@ -34,21 +30,30 @@ const VendorProjectDetail = () => {
   const navigate = useNavigate();
 
   const {
-    getVendorProjectData,
-    getVendorProjectError,
-    getVendorProjectLoading,
-    getVendorProjectRefetch,
-  } = useGetVendorProject(user.id, projectId);
+    data: getVendorProjectData,
+    error: getVendorProjectError,
+    loading: getVendorProjectLoading,
+    refetch: getVendorProjectRefetch,
+  } = useGetVendorProjectQuery({
+    variables: {
+      "data": {
+        "projectId": projectId!,
+        userId: user!.id
+      }
+    }
+  });
 
   const {
-    getCompanyDetailData,
-    getCompanyDetailError,
-    getCompanyDetailLoading,
-  } = useGetCompanyDetail();
+    data: getCompanyDetailData,
+    error: getCompanyDetailError,
+    loading: getCompanyDetailLoading,
+  } = useGetCompanyDetailQuery();
 
   const [chatOpen, setChatOpen] = useState(false);
 
   const renderProjectDetail = () => {
+    if (!getVendorProjectData || !getVendorProjectData.getVendorProject) return null
+
     const {
       name: projectName,
       deliveryDate,
@@ -62,7 +67,7 @@ const VendorProjectDetail = () => {
       bidInfo,
     } = getVendorProjectData.getVendorProject;
 
-    const bids = {};
+    const bids: Record<string, QuantityPrice[]> = {};
 
     bidInfo.components.forEach((comp) => {
       bids[comp.projectComponentId] = comp.quantityPrices;
@@ -87,7 +92,7 @@ const VendorProjectDetail = () => {
                 setChatOpen={setChatOpen}
                 projectBidId={bidInfo.id}
                 customerName={customerName}
-                vendorName={getCompanyDetailData.getCompanyDetail.name}
+                vendorName={getCompanyDetailData!.getCompanyDetail!.name}
                 chatOpen={chatOpen}
               />
             </Container>
@@ -189,7 +194,7 @@ const VendorProjectDetail = () => {
   if (getVendorProjectError) {
     return (
       <Container>
-        <Button onClick={getVendorProjectRefetch}>try again</Button>
+        <Button onClick={() => getVendorProjectRefetch()}>try again</Button>
       </Container>
     );
   }

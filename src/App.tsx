@@ -3,7 +3,6 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Nav from "./app/Nav/Nav";
 import Home from "./app/Home/Home";
-import Projects from "./app/Projects/Projects";
 import Settings from "./app/Settings/Settings";
 import Profile from "./app/Profile/Profile";
 import VendorSearchResults from "./app/Search/VendorSearchResults";
@@ -24,6 +23,8 @@ import VendorProjectDetail from "./app/Projects/vendor/VendorProjectDetail";
 import { ThemeProvider } from "@mui/system";
 import CreateProject from "./app/Projects/customer/CreateProject";
 import useCustomSnackbar from "./app/Utils/CustomSnackbar";
+import CustomerProjects from "./app/Projects/customer/CustomerProjects";
+import VendorProjects from "./app/Projects/vendor/VendorProjects";
 
 const theme = createTheme({
   palette: {
@@ -152,10 +153,18 @@ function App() {
                 }
               />
               <Route
-                path="/projects"
+                path="/customer-projects"
                 element={
                   <RequireAuth>
-                    <Projects />
+                    <CustomerProjects />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/vendor-projects"
+                element={
+                  <RequireAuth>
+                    <VendorProjects />
                   </RequireAuth>
                 }
               />

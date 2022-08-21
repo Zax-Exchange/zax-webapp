@@ -8,7 +8,9 @@ import {
   Dialog,
   DialogContent 
 } from "@mui/material";
+import React from "react";
 import { useState } from "react";
+import { VendorOverview } from "../../generated/graphql";
 
 
 /**
@@ -23,7 +25,9 @@ import { useState } from "react";
   name: "Vendor 1"
  */
 
-const SearchCompanyOverview = ({ companyData }) => {
+const SearchCompanyOverview = ({ companyData }: {
+  companyData: VendorOverview
+}) => {
   const [isCompanyDetailOpen, setIsCompanyDetail] = useState(false);
 
   return <Container style={{marginBottom: "10px"}}>

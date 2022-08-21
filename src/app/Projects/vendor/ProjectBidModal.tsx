@@ -14,44 +14,50 @@ import {
 import { AuthContext } from "../../../context/AuthContext";
 
 import FullScreenLoading from "../../Utils/Loading";
-import { useGetProjectDetail } from "../../hooks/get/projectHooks";
-import { useCreateProjectBid } from "../../hooks/create/projectHooks";
-import { LoggedInUser } from "../../hooks/types/user/userTypes";
-import { useGetVendorProjects } from "../../hooks/get/vendorHooks";
 import React from "react";
+import { LoggedInUser, ProjectComponent, useCreateProjectBidMutation, useGetProjectDetailQuery, useGetVendorProjectsQuery } from "../../../generated/graphql";
 
 const ProjectBidModal = ({
   setProjectBidModalOpen,
   projectId,
-  setSnackbar,
-  setSnackbarOpen,
+  // setSnackbar,
+  // setSnackbarOpen,
 }: {
   setProjectBidModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   projectId: string;
-  setSnackbar: React.Dispatch<
-    React.SetStateAction<{
-      message: string | "";
-      severity: AlertColor | undefined;
-    }>
-  >;
-  setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  // setSnackbar: React.Dispatch<
+  //   React.SetStateAction<{
+  //     message: string | "";
+  //     severity: AlertColor | undefined;
+  //   }>
+  // >;
+  // setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { user }: { user: LoggedInUser | null } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const {
-    getProjectDetailData,
-    getProjectDetailError,
-    getProjectDetailLoading,
-  } = useGetProjectDetail(projectId);
+    data: getProjectDetailData,
+    error: getProjectDetailError,
+    loading: getProjectDetailLoading,
+  } = useGetProjectDetailQuery({
+    variables: {
+      projectId
+    }
+  });
 
-  const { createProjectBid, createProjectBidLoading, createProjectBidError } =
-    useCreateProjectBid();
+  const [ createProjectBid, {loading: createProjectBidLoading, error: createProjectBidError} ] =
+    useCreateProjectBidMutation();
 
-  const { getVendorProjectsRefetch } = useGetVendorProjects(user!.id, true);
+  const { refetch: getVendorProjectsRefetch } = useGetVendorProjectsQuery({
+    variables: {
+      userId: user!.id
+    },
+    skip: true
+  });
 
   const [comments, setComments] = useState("");
-  const [componentsQpData, setComponentQpData] = useState({});
+  const [componentsQpData, setComponentQpData] = useState<Record<string, any[]>>({});
 
   if (getProjectDetailLoading) return <FullScreenLoading />;
 
@@ -75,20 +81,20 @@ const ProjectBidModal = ({
           },
         },
       });
-      setSnackbar({
-        severity: "success",
-        message: "Bid created.",
-      });
-      setSnackbarOpen(true);
-      navigate("/projects");
+      // setSnackbar({
+      //   severity: "success",
+      //   message: "Bid created.",
+      // });
+      // setSnackbarOpen(true);
+      navigate("/vendor-projects");
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: "Something went wrong. Please try again later.",
-      });
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Something went wrong. Please try again later.",
+      // });
     } finally {
       setProjectBidModalOpen(false);
-      setSnackbarOpen(true);
+      // setSnackbarOpen(true);
     }
   };
 
@@ -146,7 +152,7 @@ const ProjectBidModal = ({
             {components.map((comp) => {
               return (
                 <ProjectBidComponent
-                  component={comp}
+                  component={comp as ProjectComponent}
                   setComponentQpData={setComponentQpData}
                   componentsQpData={componentsQpData}
                 />

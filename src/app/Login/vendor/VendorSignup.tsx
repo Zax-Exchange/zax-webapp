@@ -535,7 +535,7 @@ const VendorSignup = () => {
 
   if (user) {
     navigate("/");
-    return;
+    return null;
   }
 
   return (

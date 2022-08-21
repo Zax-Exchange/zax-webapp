@@ -56,15 +56,16 @@ export default function UploadDesign({
     const file = target.files[0];
 
     if (file.type === "application/pdf") {
-      const { data } = await mutate({
+      mutate({
         variables: { file },
         fetchPolicy: "no-cache",
-      });
+      }).then(data => {
+        setProjectData((projectData) => ({
+          ...projectData,
+          designId: data.data!.uploadProjectDesign!
+        }));
+      })
 
-      setProjectData((projectData) => ({
-        ...projectData,
-        designId: data.uploadProjectDesign,
-      }));
     } else {
       // invalid file type
       // setSnackbar({

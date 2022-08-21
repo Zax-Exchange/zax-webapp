@@ -412,7 +412,7 @@ const CustomerSignup = () => {
 
   if (user) {
     navigate("/");
-    return;
+    return null;
   }
 
   return (

@@ -15,40 +15,36 @@ import {
   TextField,
   DialogActions,
   Stack,
+  SelectChangeEvent,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../../context/AuthContext";
-import {
-  useUpdateProjectBidPermission,
-  useUpdateProjectPermission,
-} from "../hooks/update/projectHooks";
-import {
-  useDeleteProjectBidPermission,
-  useDeleteProjectPermission,
-} from "../hooks/delete/projectHooks";
-import {
-  useGetProjectBidUsers,
-  useGetProjectUsers,
-} from "../hooks/get/projectHooks";
-import { useGetAllCompanyUsers } from "../hooks/get/companyHooks";
+import { CustomerProject, useDeleteProjectBidPermissionsMutation, useDeleteProjectPermissionsMutation, useGetAllUsersWithinCompanyQuery, useGetProjectBidUsersQuery, useGetProjectUsersQuery, UserPermission, useUpdateProjectBidPermissionsMutation, useUpdateProjectPermissionsMutation, VendorProject } from "../../generated/graphql";
 
 const ProjectPermissionModal = ({
   project,
   setPermissionModalOpen,
   // setSnackbar,
   // setSnackbarOpen,
+}: {
+  setPermissionModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  project: VendorProject | CustomerProject;
 }) => {
   const { user: loggedInUser } = useContext(AuthContext);
 
   const isVendor = loggedInUser!.isVendor;
   const [email, setEmail] = useState("");
 
-  const [allProjectUsers, setAllProjectUsers] = useState([]);
+  const [allProjectUsers, setAllProjectUsers] = useState<UserPermission[]>([]);
 
-  const [emailsList, setEmailsList] = useState([]);
+  const [emailsList, setEmailsList] = useState<string[]>([]);
 
-  const [toUpdate, setToUpdate] = useState({
+  const [toUpdate, setToUpdate] = useState<{
+    viewers: string[];
+    editors: string[];
+    toDelete: string[]
+  }>({
     viewers: [],
     editors: [],
     toDelete: [],
@@ -56,86 +52,98 @@ const ProjectPermissionModal = ({
 
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(true);
 
-  const {
+  const [
     updateProjectPermission,
-    updateProjectPermissionError,
-    updateProjectPermissionData,
-    updateProjectPermissionLoading,
-  } = useUpdateProjectPermission();
+    {
+     error: updateProjectPermissionError,
+    data: updateProjectPermissionData,
+   loading: updateProjectPermissionLoading,
+  }
+] = useUpdateProjectPermissionsMutation();
 
-  const {
+  const [
     updateProjectBidPermission,
-    updateProjectBidPermissionData,
-    updateProjectBidPermissionError,
-    updateProjectBidPermissionLoading,
-  } = useUpdateProjectBidPermission();
+    {
+      data: updateProjectBidPermissionData,
+    error: updateProjectBidPermissionError,
+    loading: updateProjectBidPermissionLoading,}
+   ] = useUpdateProjectBidPermissionsMutation();
 
-  const {
+  const [
     deleteProjectPermission,
-    deleteProjectPermissionData,
-    deleteProjectPermissionError,
-    deleteProjectPermissionLoading,
-  } = useDeleteProjectPermission();
+    {
+      data: deleteProjectPermissionData,
+    error: deleteProjectPermissionError,
+    loading: deleteProjectPermissionLoading,}
+   ] = useDeleteProjectPermissionsMutation();
 
-  const {
+  const [
     deleteProjectBidPermission,
-    deleteProjectBidPermissionData,
-    deleteProjectBidPermissionError,
-    deleteProjectBidPermissionLoading,
-  } = useDeleteProjectBidPermission();
+    {
+      data: deleteProjectBidPermissionData,
+    error: deleteProjectBidPermissionError,
+    loading: deleteProjectBidPermissionLoading,}
+   ] = useDeleteProjectBidPermissionsMutation();
 
-  const { getProjectBidUsersData, getProjectBidUsersRefetch } =
-    useGetProjectBidUsers(setAllProjectUsers, project.bidInfo, isVendor);
+  const { data: getProjectBidUsersData, refetch: getProjectBidUsersRefetch } =
+    useGetProjectBidUsersQuery({
+      variables: {
+        projectBidId: (project as VendorProject).bidInfo.id
+      },
+      skip: !isVendor,
+      onCompleted(data) {
+        setAllProjectUsers(data.getProjectBidUsers as UserPermission[])
+      },
+    });
 
-  const { getProjectUsersData, getProjectUsersRefetch } = useGetProjectUsers(
-    setAllProjectUsers,
-    project.id,
-    isVendor
-  );
-  const { getAllCompanyUsersData } = useGetAllCompanyUsers(
-    loggedInUser.companyId
-  );
+  const { data: getProjectUsersData, refetch: getProjectUsersRefetch } = useGetProjectUsersQuery({
+    variables: {
+      projectId: (project as CustomerProject).id 
+    },
+    skip: isVendor,
+    onCompleted(data) {
+      setAllProjectUsers(data.getProjectUsers as UserPermission[])
+    },
+  });
+  const { data: getAllCompanyUsersData } = useGetAllUsersWithinCompanyQuery({
+    variables: {
+      companyId: loggedInUser!.companyId
+    }
+  });
 
   useEffect(() => {
     const isDisabled =
       getAllCompanyUsersData &&
-      !getAllCompanyUsersData.getAllUsersWithinCompany.find(
-        (user) => user.email === email
+      !getAllCompanyUsersData!.getAllUsersWithinCompany!.find(
+        (user) => user!.email === email
       );
-    setIsAddButtonDisabled(isDisabled);
+    setIsAddButtonDisabled(isDisabled!);
   }, [email]);
 
   // this sets the email list for input dropdown
   useEffect(() => {
-    const userEmails = [];
+    const userEmails: string[] = [];
     if (allProjectUsers && getAllCompanyUsersData) {
-      if (isVendor) {
-        getAllCompanyUsersData.getAllUsersWithinCompany.forEach((data) => {
-          if (!allProjectUsers.find((user) => user.email === data.email)) {
-            userEmails.push(data.email);
-          }
-        });
-      } else {
-        getAllCompanyUsersData.getAllUsersWithinCompany.forEach((data) => {
-          if (!allProjectUsers.find((user) => user.email === data.email)) {
-            userEmails.push(data.email);
-          }
-        });
-      }
+      getAllCompanyUsersData!.getAllUsersWithinCompany!.forEach((data) => {
+        if (!allProjectUsers.find((user) => user.email === data!.email)) {
+          userEmails.push(data!.email);
+        }
+      });
+    
       setEmailsList(userEmails);
     }
   }, [allProjectUsers, getAllCompanyUsersData]);
 
-  const shareHandler = (e) => {
+  const shareHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const selectHandler = (e) => {
-    setEmail(e.target.innerHTML);
+  const selectHandler = (email: string) => {
+    setEmail(email);
   };
-  const getUser = (email) => {
-    return getAllCompanyUsersData.getAllUsersWithinCompany.find(
-      (user) => user.email === email
+  const getUser = (email: string) => {
+    return getAllCompanyUsersData!.getAllUsersWithinCompany!.find(
+      (user) => user!.email === email
     );
   };
 
@@ -143,15 +151,15 @@ const ProjectPermissionModal = ({
     const user = getUser(email);
 
     // update data that'll be sent to server
-    updateViewersEditorsList(user.id, "VIEWER");
+    updateViewersEditorsList(user!.id, "VIEWER");
 
     // update data for display purpose
     setAllProjectUsers([
       ...allProjectUsers,
       {
-        name: user.name,
-        email: user.email,
-        userId: user.id,
+        name: user!.name,
+        email: user!.email,
+        userId: user!.id,
         permission: "VIEWER",
       },
     ]);
@@ -159,7 +167,7 @@ const ProjectPermissionModal = ({
     setEmail("");
   };
 
-  const updateViewersEditorsList = (userId, permission) => {
+  const updateViewersEditorsList = (userId: string, permission: string) => {
     let viewers = [...toUpdate.viewers];
     let editors = [...toUpdate.editors];
     let toDelete = [...toUpdate.toDelete];
@@ -186,22 +194,22 @@ const ProjectPermissionModal = ({
     });
   };
 
-  const isUserWithinPermission = (userId) => {
-    if (isVendor) {
+  const isUserWithinPermission = (userId: string) => {
+    if (isVendor && getProjectBidUsersData) {
       return (
-        getProjectBidUsersData.getProjectBidUsers.findIndex(
-          (user) => user.userId === userId
+        getProjectBidUsersData!.getProjectBidUsers!.findIndex(
+          (user) => user!.userId === userId
         ) >= 0
       );
-    } else {
+    } else if (getProjectUsersData){
       return (
-        getProjectUsersData.getProjectUsers.findIndex(
-          (user) => user.userId === userId
+        getProjectUsersData!.getProjectUsers!.findIndex(
+          (user) => user!.userId === userId
         ) >= 0
       );
     }
   };
-  const deleteViewersEditorsList = (userId, permission) => {
+  const deleteViewersEditorsList = (userId: string, permission: string) => {
     let viewers = [...toUpdate.viewers];
     let editors = [...toUpdate.editors];
     let toDelete = [...toUpdate.toDelete];
@@ -227,7 +235,7 @@ const ProjectPermissionModal = ({
     });
   };
   // TODO: need to setToUpdate state
-  const selectPermissionHandler = (e, userId) => {
+  const selectPermissionHandler = (e: SelectChangeEvent<string>, userId: string) => {
     let projectUsers = [...allProjectUsers];
     const permission = e.target.value;
     projectUsers = projectUsers.map((user) => {
@@ -244,7 +252,7 @@ const ProjectPermissionModal = ({
     updateViewersEditorsList(userId, permission);
   };
 
-  const removePermissionHandler = (userId, previousPermission) => {
+  const removePermissionHandler = (userId: string, previousPermission: string) => {
     const projectUsers = [...allProjectUsers];
     const userIndex = projectUsers.findIndex((user) => user.userId === userId);
 
@@ -262,13 +270,13 @@ const ProjectPermissionModal = ({
               viewers: {
                 userIds: toUpdate.viewers,
                 projectId: project.id,
-                projectBidId: project.bidInfo.id,
+                projectBidId: (project as VendorProject).bidInfo.id,
                 permission: "VIEWER",
               },
               editors: {
                 userIds: toUpdate.editors,
                 projectId: project.id,
-                projectBidId: project.bidInfo.id,
+                projectBidId: (project as VendorProject).bidInfo.id,
                 permission: "EDITOR",
               },
             },
@@ -278,7 +286,7 @@ const ProjectPermissionModal = ({
           variables: {
             data: {
               userIds: toUpdate.toDelete,
-              projectBidId: project.bidInfo.id,
+              projectBidId: (project as VendorProject).bidInfo.id,
             },
           },
         });
@@ -311,11 +319,11 @@ const ProjectPermissionModal = ({
         getProjectUsersRefetch();
       }
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: "Could not perform action. Please try again later.",
-      });
-      setSnackbarOpen(true);
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Could not perform action. Please try again later.",
+      // });
+      // setSnackbarOpen(true);
     } finally {
       setPermissionModalOpen(false);
     }
@@ -324,7 +332,7 @@ const ProjectPermissionModal = ({
   const isUserOwner = () => {
     // not used for now
     if (isVendor) {
-      return project.bidInfo.permission === "OWNER";
+      return (project as VendorProject).bidInfo.permission === "OWNER";
     }
     return project.permission === "OWNER";
   };
@@ -334,7 +342,7 @@ const ProjectPermissionModal = ({
       <Stack>
         {allProjectUsers &&
           allProjectUsers.map((data) => {
-            if (data.userId === loggedInUser.id) return null;
+            if (data.userId === loggedInUser!.id) return null;
             return (
               <List style={{ display: "flex", flexDirection: "row" }}>
                 <ListItem>
@@ -392,7 +400,7 @@ const ProjectPermissionModal = ({
               freeSolo
               disableClearable
               options={emailsList}
-              onChange={selectHandler}
+              onChange={(e, v) => selectHandler(v)}
               value={email}
               renderInput={(params) => (
                 <TextField
@@ -426,7 +434,7 @@ const ProjectPermissionModal = ({
             </Button>
             <Button
               onClick={() => setPermissionModalOpen(false)}
-              variant="primary"
+              variant="outlined"
             >
               Cancel
             </Button>

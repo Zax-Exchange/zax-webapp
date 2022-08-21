@@ -33,6 +33,8 @@ const query = gql`
   }
 `;
 
+
+// TODO: add route protections to prevent customer/vendors from accessing vendors/customers pages
 const Nav = () => {
   const [reset, { loading: resetLoading }] = useMutation(query);
   const navigate = useNavigate();
@@ -50,7 +52,14 @@ const Nav = () => {
   const handleSideNavOnClick = (page: string) => {
     if (page === "home") {
       navigate("/");
-    } else {
+    } else if (page === "projects") {
+      if (user!.isVendor) {
+        navigate("/customer-projects")
+      } else {
+        navigate("/vendor-projects")
+      }
+    }
+    else {
       navigate(`/${page}`);
     }
   };

@@ -14,60 +14,61 @@ import {
   MenuItem,
 } from "@mui/material";
 import VendorBidModal from "./VendorBidModal";
-import { useEffect, useState } from "react";
-import {
-  useGetCompanyDetail,
-  useGetVendorDetail,
-} from "../../hooks/companyHooks";
+import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
-import CustomerProjectChat from "../chat/ProjectChat";
 import ProjectChat from "../chat/ProjectChat";
+import { ProjectBid, ProjectComponent, useGetCompanyDetailQuery, useGetVendorDetailQuery, VendorDetail } from "../../../generated/graphql";
+import { AuthContext } from "../../../context/AuthContext";
+import React from "react";
 
 /**
  * Bid overview card displayed in CustomerProjectDetail
  * @param {*} param0
  * @returns
  */
-const VendorBidOverview = ({ bid, projectComponents }) => {
+const VendorBidOverview = ({ bid, projectComponents } : {
+  bid: ProjectBid
+  projectComponents: ProjectComponent[]
+}) => {
+  const { user } = useContext(AuthContext);
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
-  const [vendorData, setVendorData] = useState(null);
+  const [vendorData, setVendorData] = useState<VendorDetail | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
 
   const {
-    getCompanyDetailData,
-    getCompanyDetailError,
-    getCompanyDetailLoading,
-  } = useGetCompanyDetail();
+    data: getCompanyDetailData,
+    error: getCompanyDetailError,
+    loading: getCompanyDetailLoading,
+  } = useGetCompanyDetailQuery({
+    variables: {
+      companyId: user!.companyId
+    }
+  });
   const {
-    getVendorDetail,
-    getVendorDetailLoading,
-    getVendorDetailError,
-    getVendorDetailData,
-  } = useGetVendorDetail();
+    loading: getVendorDetailLoading,
+    error: getVendorDetailError,
+    data: getVendorDetailData,
+  } = useGetVendorDetailQuery({
+    variables: {
+      companyId: user!.companyId
+    }
+  });
 
-  const [vendorBidMenuAnchor, setVendorBidMenuAnchor] = useState(null);
+  const [vendorBidMenuAnchor, setVendorBidMenuAnchor] = useState<HTMLButtonElement | null>(null);
   const vendorBidMenuOpen = !!vendorBidMenuAnchor;
 
   useEffect(() => {
-    getVendorDetail({
-      variables: {
-        companyId: bid.companyId,
-      },
-    });
-  }, []);
-
-  useEffect(() => {
     if (getVendorDetailData && getVendorDetailData.getVendorDetail) {
-      setVendorData(getVendorDetailData.getVendorDetail);
+      setVendorData(getVendorDetailData.getVendorDetail as VendorDetail);
     }
   }, [getVendorDetailData]);
 
-  const convertToDate = (timestamp) => {
-    return new Date(Date(timestamp)).toISOString().slice(0, 10);
+  const convertToDate = (timestamp: string) => {
+    return new Date(timestamp).toISOString().slice(0, 10);
   };
 
-  const moreOnClick = (e) => {
+  const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setVendorBidMenuAnchor(e.currentTarget);
   };
 
@@ -75,8 +76,8 @@ const VendorBidOverview = ({ bid, projectComponents }) => {
     setVendorBidMenuAnchor(null);
   };
 
-  const vendorBidMenuOnClick = (e) => {
-    switch (e.target.dataset.type) {
+  const vendorBidMenuOnClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    switch (e.currentTarget.dataset.type) {
       case "conversation":
         setChatOpen(true);
         break;
@@ -95,8 +96,6 @@ const VendorBidOverview = ({ bid, projectComponents }) => {
   }
   return (
     <Card sx={{ width: "100%", position: "relative" }}>
-      {getVendorDetailError && <Typography>Something went wrong.</Typography>}
-
       {vendorData && (
         <>
           <CardActionArea onClick={() => setIsBidModalOpen(true)}>
@@ -117,7 +116,6 @@ const VendorBidOverview = ({ bid, projectComponents }) => {
             sx={{ position: "absolute", right: "4px", top: 0 }}
             id="vendor-bid-button"
             onClick={moreOnClick}
-            onClose={moreOnClose}
           >
             <MoreIcon />
           </IconButton>
@@ -164,7 +162,7 @@ const VendorBidOverview = ({ bid, projectComponents }) => {
             chatOpen={chatOpen}
             setChatOpen={setChatOpen}
             projectBidId={bid.id}
-            customerName={getCompanyDetailData.getCompanyDetail.name}
+            customerName={getCompanyDetailData!.getCompanyDetail!.name}
             vendorName={vendorData.name}
           />
         </>
