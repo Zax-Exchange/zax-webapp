@@ -1,44 +1,49 @@
 import {
+  Button,
   Container,
   Stack,
   TextField,
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { buttonTheme, PrimaryButton } from "../themedComponents/Buttons";
+import React, { useContext, useEffect, useState } from "react";
 import { validate } from "email-validator";
 
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
-import { useInviteUser } from "../hooks/create/companyHooks";
-import { LoggedInUser } from "../hooks/types/user/userTypes";
+import { LoggedInUser, useInviteUserMutation } from "../../generated/graphql";
 
-const InviteUsers = ({ setSnackbar, setSnackbarOpen }) => {
+const InviteUsers = ({ 
+  // setSnackbar, 
+  // setSnackbarOpen 
+}) => {
   const { user }: { user: LoggedInUser | null } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
-  const { inviteUser, inviteUserLoading, inviteUserData, inviteUserError } =
-    useInviteUser();
+  const [inviteUser, {loading: inviteUserLoading, data: inviteUserData, error: inviteUserError} ] =
+    useInviteUserMutation();
 
   useEffect(() => {
     if (inviteUserError) {
-      setSnackbar({
-        severity: "error",
-        message: "Something went wrong. Please try again later.",
-      });
-      setSnackbarOpen(true);
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Something went wrong. Please try again later.",
+      // });
+      // setSnackbarOpen(true);
     }
     if (inviteUserData) {
-      setSnackbar({
-        severity: "success",
-        message: "Invitation sent!",
-      });
-      setSnackbarOpen(true);
+      // setSnackbar({
+      //   severity: "success",
+      //   message: "Invitation sent!",
+      // });
+      // setSnackbarOpen(true);
     }
-  }, [inviteUserError, inviteUserData, setSnackbar, setSnackbarOpen]);
+  }, [inviteUserError, inviteUserData, 
+    // setSnackbar, 
+    // setSnackbarOpen
+  ]);
 
-  const emailOnChange = (e) => {
+  const emailOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
@@ -70,15 +75,13 @@ const InviteUsers = ({ setSnackbar, setSnackbarOpen }) => {
           sx={{ display: "flex", justifyContent: "flex-end" }}
           disableGutters
         >
-          <ThemeProvider theme={buttonTheme}>
-            <PrimaryButton
+            <Button
               variant="contained"
               disabled={!validate(email)}
               onClick={sendInvitation}
             >
               Send invitation
-            </PrimaryButton>
-          </ThemeProvider>
+            </Button>
         </Container>
       </Stack>
     </Container>

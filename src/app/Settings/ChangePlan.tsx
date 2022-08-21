@@ -1,30 +1,35 @@
 import { Container, Typography } from "@mui/material";
+import React from "react";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useGetAllPlans } from "../hooks/planHooks";
+import { useGetAllPlansQuery } from "../../generated/graphql";
 import FullScreenLoading from "../Utils/Loading";
 
 
 const ChangePlan = ({
-  setSnackbar,
-  setSnackbarOpen
+  // setSnackbar,
+  // setSnackbarOpen
 }) => {
   const { user } = useContext(AuthContext);
 
   const {
-    getAllPlansData,
-    getAllPlansError,
-    getAllPlansLoading,
-    getAllPlansRefetch
-  } = useGetAllPlans(user.isVendor);
+    data: getAllPlansData,
+    error: getAllPlansError,
+    loading: getAllPlansLoading,
+    refetch: getAllPlansRefetch
+  } = useGetAllPlansQuery({
+    variables: {
+      isVendor: user!.isVendor
+    }
+  });
   
   useEffect(() => {
     if (getAllPlansError) {
-    setSnackbar({
-      severity: "error",
-      message: "Something went wrong. Please try again later."
-    })
-    setSnackbarOpen(true);
+    // setSnackbar({
+    //   severity: "error",
+    //   message: "Something went wrong. Please try again later."
+    // })
+    // setSnackbarOpen(true);
   }
   }, [getAllPlansError]);
 
@@ -41,7 +46,7 @@ const ChangePlan = ({
       getAllPlansData &&
       getAllPlansData.getAllPlans &&
       getAllPlansData.getAllPlans.map((plan) => {
-        return <Typography>{plan.name}</Typography>
+        return <Typography>{plan?.tier}</Typography>
       })
     }
   </Container>

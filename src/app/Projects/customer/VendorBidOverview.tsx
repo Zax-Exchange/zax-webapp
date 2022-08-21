@@ -51,7 +51,7 @@ const VendorBidOverview = ({ bid, projectComponents } : {
     data: getVendorDetailData,
   } = useGetVendorDetailQuery({
     variables: {
-      companyId: user!.companyId
+      companyId: bid.companyId
     }
   });
 
@@ -65,7 +65,7 @@ const VendorBidOverview = ({ bid, projectComponents } : {
   }, [getVendorDetailData]);
 
   const convertToDate = (timestamp: string) => {
-    return new Date(timestamp).toISOString().slice(0, 10);
+    return new Date(parseInt(timestamp, 10)).toISOString().slice(0, 10);
   };
 
   const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {

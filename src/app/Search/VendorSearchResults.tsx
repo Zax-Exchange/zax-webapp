@@ -1,8 +1,9 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavigateOptions, useLocation, useNavigate } from "react-router-dom";
 import "./SearchResults.scss";
 import SearchProjectOverview from "./SearchProjectOverview";
 import { Typography, Stack, Grid, Container } from "@mui/material";
 import React from "react";
+import { ProjectOverview, VendorOverview } from "../../generated/graphql";
 /**
  * 
  * name
@@ -15,7 +16,7 @@ import React from "react";
       createdAt
  */
 const VendorSearchResults = () => {
-  const { state } = useLocation();
+  const { state }: any = useLocation();
 
   return (
     <Grid container className="search-results-container">
@@ -26,7 +27,7 @@ const VendorSearchResults = () => {
       <Grid item xs={10} className="search-results-inner-container">
         <Stack direction="column">
           {state &&
-            state.searchResults.map((result, i) => {
+            state.searchResults.map((result: ProjectOverview, i: number) => {
               return <SearchProjectOverview projectData={result} key={i} />;
             })}
         </Stack>

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { InputBase } from "@mui/material";
 
-export const BootstrapInput = styled(InputBase)(({ theme }) => ({
+export const BootstrapInput = styled(InputBase)(({ theme }: { theme: any}) => ({
   "label + &": {
     marginTop: theme.spacing(3),
   },

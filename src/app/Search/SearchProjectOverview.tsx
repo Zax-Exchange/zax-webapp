@@ -7,31 +7,34 @@ import {
   Container,
 } from "@mui/material";
 import React from "react";
+import { ProjectOverview } from "../../generated/graphql";
 
-const SearchProjectOverview = ({ projectData }) => {
+const SearchProjectOverview = ({ projectData }: {
+  projectData: ProjectOverview
+}) => {
   const navigate = useNavigate();
 
-  const handleProjectOnClick = (projectId) => {
-    navigate("/project-detail", { state: { projectId } });
+  const handleProjectOnClick = (projectId: string) => {
+    navigate(`/project-detail/${projectId}`);
   };
 
-  const date = new Date(Date(projectData.createdAt)).toISOString().slice(0, 10);
+  const date = new Date(projectData.createdAt).toISOString().slice(0, 10);
 
-  const renderMaterialsString = (materials) => {
-    let res = "";
-    const searchStrings = document
-      .getElementById("search-bar")
-      .value.split(" ");
-    for (let mat of materials) {
-      if (searchStrings.includes(mat)) {
-        res += `<b>${mat}</b>`;
-      } else {
-        res += mat;
-      }
-      res += " ";
-    }
-    return res;
-  };
+  // const renderMaterialsString = (materials: string[]) => {
+  //   let res = "";
+  //   const searchStrings = document!
+  //     .getElementById("search-bar")!
+  //     .value.split(" ");
+  //   for (let mat of materials) {
+  //     if (searchStrings.includes(mat)) {
+  //       res += `<b>${mat}</b>`;
+  //     } else {
+  //       res += mat;
+  //     }
+  //     res += " ";
+  //   }
+  //   return res;
+  // };
 
   return (
     <Container style={{ marginBottom: "10px" }}>

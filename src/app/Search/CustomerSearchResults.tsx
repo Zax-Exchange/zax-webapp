@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavigateOptions, useLocation, useNavigate } from "react-router-dom";
 import "./SearchResults.scss";
 import SearchCompanyOverview from "./SearchCompanyOverview";
 import { Typography, Stack, Grid, Container} from "@mui/material";
@@ -6,7 +6,7 @@ import React from "react";
 import { VendorOverview } from "../../generated/graphql";
 
 const CustomerSearchResults = () => {
-  const {state}: {state: any} = useLocation();
+  const {state}: {state: NavigateOptions["state"]} = useLocation();
 
   return (<Grid container className="search-results-container">
     <Grid item xs={2} className="search-results-sortby-container">

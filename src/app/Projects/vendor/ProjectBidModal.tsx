@@ -15,16 +15,18 @@ import { AuthContext } from "../../../context/AuthContext";
 
 import FullScreenLoading from "../../Utils/Loading";
 import React from "react";
-import { LoggedInUser, ProjectComponent, useCreateProjectBidMutation, useGetProjectDetailQuery, useGetVendorProjectsQuery } from "../../../generated/graphql";
+import { LoggedInUser, Project, ProjectComponent, useCreateProjectBidMutation, useGetProjectDetailQuery, useGetVendorProjectsQuery } from "../../../generated/graphql";
 
 const ProjectBidModal = ({
   setProjectBidModalOpen,
   projectId,
+  projectData
   // setSnackbar,
   // setSnackbarOpen,
 }: {
   setProjectBidModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  projectId: string;
+  projectId?: string;
+  projectData: Project
   // setSnackbar: React.Dispatch<
   //   React.SetStateAction<{
   //     message: string | "";
@@ -35,16 +37,6 @@ const ProjectBidModal = ({
 }) => {
   const { user }: { user: LoggedInUser | null } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const {
-    data: getProjectDetailData,
-    error: getProjectDetailError,
-    loading: getProjectDetailLoading,
-  } = useGetProjectDetailQuery({
-    variables: {
-      projectId
-    }
-  });
 
   const [ createProjectBid, {loading: createProjectBidLoading, error: createProjectBidError} ] =
     useCreateProjectBidMutation();
@@ -59,7 +51,6 @@ const ProjectBidModal = ({
   const [comments, setComments] = useState("");
   const [componentsQpData, setComponentQpData] = useState<Record<string, any[]>>({});
 
-  if (getProjectDetailLoading) return <FullScreenLoading />;
 
   const submitBid = async () => {
     const components = [];
@@ -75,7 +66,7 @@ const ProjectBidModal = ({
         variables: {
           data: {
             userId: user!.id,
-            projectId,
+            projectId: projectId!,
             comments,
             components,
           },
@@ -98,7 +89,11 @@ const ProjectBidModal = ({
     }
   };
 
-  if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
+  if (!projectId) {
+    navigate(-1);
+    return null;
+  }
+
     const {
       name: projectName,
       deliveryDate,
@@ -107,13 +102,11 @@ const ProjectBidModal = ({
       design,
       status,
       components,
-    } = getProjectDetailData.getProjectDetail;
+    } = projectData
 
-    {
-      createProjectBidLoading && <FullScreenLoading />;
-    }
     return (
       <Container className="project-bid-container">
+        {createProjectBidLoading && <FullScreenLoading />}
         <Grid container>
           <Grid item xs={6}>
             <Typography>Project Detail</Typography>
@@ -169,7 +162,7 @@ const ProjectBidModal = ({
         </Grid>
       </Container>
     );
-  }
+  
 };
 
 export default ProjectBidModal;

@@ -3,16 +3,17 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
 import { validate } from "email-validator";
+import React from "react";
 
 const UpdateBillingEmail = ({
-  setSnackbar,
-  setSnackbarOpen
+  // setSnackbar,
+  // setSnackbarOpen
 }) => {
   const { user } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
 
-  const emailOnChange = (e) => {
+  const emailOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   }
 

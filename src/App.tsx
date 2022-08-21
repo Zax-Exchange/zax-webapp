@@ -201,7 +201,7 @@ function App() {
                 }
               />
               <Route
-                path="/project-detail"
+                path="/project-detail/:projectId"
                 element={
                   <RequireAuth>
                     <SearchProjectDetail />

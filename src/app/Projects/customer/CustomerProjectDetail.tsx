@@ -44,7 +44,8 @@ const CustomerProjectDetail = () => {
   };
 
   const convertToDate = (timestamp: string) => {
-    return new Date(new Date(timestamp)).toISOString().slice(0, 10);
+    
+    return new Date(parseInt(timestamp, 10)).toISOString().slice(0, 10);
   };
 
   const backButtonHandler = () => {

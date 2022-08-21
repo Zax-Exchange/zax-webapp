@@ -54,9 +54,9 @@ const Nav = () => {
       navigate("/");
     } else if (page === "projects") {
       if (user!.isVendor) {
-        navigate("/customer-projects")
-      } else {
         navigate("/vendor-projects")
+      } else {
+        navigate("/customer-projects")
       }
     }
     else {
@@ -175,7 +175,10 @@ const Nav = () => {
 
   const renderSearchBar = () => {
     return (
-      <SearchBar setSnackbar={setSnackbar} setSnackbarOpen={setSnackbarOpen} />
+      <SearchBar 
+      // setSnackbar={setSnackbar}
+      //  setSnackbarOpen={setSnackbarOpen} 
+       />
     );
   };
   const renderCustomerNav = () => {

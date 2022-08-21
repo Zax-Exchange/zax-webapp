@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./SearchProjectDetail.scss";
 import {
   Dialog,
@@ -16,18 +16,22 @@ import ProjectBidModal from "../Projects/vendor/ProjectBidModal";
 import { useState } from "react";
 import FullScreenLoading from "../Utils/Loading";
 import CustomSnackbar from "../Utils/CustomSnackbar";
-import { useGetProjectDetail } from "../hooks/get/projectHooks";
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
+import { Project, useGetProjectDetailQuery } from "../../generated/graphql";
 
 const SearchProjectDetail = () => {
-  const { state }: { state: any } = useLocation();
+  const { projectId } = useParams()
   const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
   const {
-    getProjectDetailData,
-    getProjectDetailError,
-    getProjectDetailLoading,
-  } = useGetProjectDetail(state.projectId);
+    data: getProjectDetailData,
+    error: getProjectDetailError,
+    loading: getProjectDetailLoading,
+  } = useGetProjectDetailQuery({
+    variables: {
+      projectId
+    }
+  });
 
   const navigate = useNavigate();
   const [projectBidModalOpen, setProjectBidModalOpen] = useState(false);
@@ -51,6 +55,8 @@ const SearchProjectDetail = () => {
   };
 
   const renderProjectDetail = () => {
+    if (!getProjectDetailData || !getProjectDetailData.getProjectDetail) return null;
+
     const {
       name: projectName,
       deliveryDate,
@@ -136,9 +142,10 @@ const SearchProjectDetail = () => {
         >
           <ProjectBidModal
             setProjectBidModalOpen={setProjectBidModalOpen}
-            projectId={state.projectId}
-            setSnackbar={setSnackbar}
-            setSnackbarOpen={setSnackbarOpen}
+            projectId={projectId}
+            projectData={getProjectDetailData.getProjectDetail as Project}
+            // setSnackbar={setSnackbar}
+            // setSnackbarOpen={setSnackbarOpen}
           />
         </Dialog>
       </Container>

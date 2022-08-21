@@ -12,10 +12,11 @@ import {
   Box,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { AuthContext } from "../../context/AuthContext";
-import { useSearchProjects, useSearchVendors } from "../hooks/searchHooks";
 import FullScreenLoading from "../Utils/Loading";
+import { useSearchProjectsLazyQuery, useSearchVendorCompaniesLazyQuery } from "../../generated/graphql";
+import React from "react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -63,28 +64,33 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const SearchBar = ({ setSnackbar, setSnackbarOpen }) => {
+const SearchBar = ({ 
+  // setSnackbar, 
+  // setSnackbarOpen 
+}) => {
   const { user } = useContext(AuthContext);
-  const isVendor = user.isVendor;
+  const isVendor = user!.isVendor;
   const navigate = useNavigate();
 
-  const {
+  const [
     searchProjects,
-    searchProjectsData,
-    searchProjectsError,
-    searchProjectsLoading,
-  } = useSearchProjects();
+    {
+      data:searchProjectsData,
+    error: searchProjectsError,
+    loading: searchProjectsLoading,}
+] = useSearchProjectsLazyQuery();
 
-  const {
+  const [
     searchVendors,
-    searchVendorsData,
-    searchVendorsError,
-    searchVendorsLoading,
-  } = useSearchVendors();
+    {
+      data:searchVendorsData,
+    error: searchVendorsError,
+    loading: searchVendorsLoading,}
+   ] = useSearchVendorCompaniesLazyQuery();
 
   const [input, setInput] = useState("");
 
-  const handleSearchInput = (e) => {
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
 
@@ -105,7 +111,7 @@ const SearchBar = ({ setSnackbar, setSnackbarOpen }) => {
         });
         navigate("/vendor-search-results", {
           state: {
-            searchResults: data.searchCustomerProjects,
+            searchResults: data!.searchCustomerProjects,
           },
         });
       } else {
@@ -122,20 +128,20 @@ const SearchBar = ({ setSnackbar, setSnackbarOpen }) => {
         });
         navigate("/customer-search-results", {
           state: {
-            searchResults: data.searchVendorCompanies,
+            searchResults: data!.searchVendorCompanies,
           },
         });
       }
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: "Something went wrong. Please try again later.",
-      });
-      setSnackbarOpen(true);
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Something went wrong. Please try again later.",
+      // });
+      // setSnackbarOpen(true);
     }
   };
 
-  const handleEnterPress = (e) => {
+  const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
       handleSearchOnClick();
     }

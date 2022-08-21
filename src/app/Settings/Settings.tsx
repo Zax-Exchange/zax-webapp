@@ -1,5 +1,5 @@
 import { ExpandMore } from "@mui/icons-material";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Divider, Fade, Grid, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, Stack, styled, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionProps, AccordionSummary, AccordionSummaryProps, Box, Button, Container, Divider, Fade, Grid, ListItem, ListItemButton, ListItemIcon, ListItemProps, ListItemText, ListItemTextProps, Paper, Stack, styled, TextField, Typography, TypographyProps } from "@mui/material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import CustomSnackbar from "../Utils/CustomSnackbar";
@@ -10,8 +10,9 @@ import DeactivateUsers from "./DeactivateUsers";
 import ChangePassword from "./ChangePassword";
 import ChangePlan from "./ChangePlan";
 import CurrentPlan from "./CurrentPlan";
+import React from "react";
 
-const NoWrapListItemText = styled((props) => {
+const NoWrapListItemText = styled((props: ListItemTextProps & { text: string }) => {
   return <ListItemText {...props} primary={<Typography variant="subtitle2" color="#545454" fontSize="0.9em">{props.text}</Typography>}/>
 })(({ theme }) => ({
   whiteSpace: "nowrap",
@@ -21,7 +22,7 @@ const NoWrapListItemText = styled((props) => {
   }
 }))
 
-const SettingsAccordion = styled((props) => (
+const SettingsAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
   '&:before': {
@@ -29,7 +30,7 @@ const SettingsAccordion = styled((props) => (
   },
 }));
 
-const SettingsAccordionSummary = styled((props) => {
+const SettingsAccordionSummary = styled((props: AccordionSummaryProps) => {
   return <AccordionSummary {...props} expandIcon={<ExpandMore />}/>
 })(({ theme }) => ({
   '&:hover': {
@@ -37,7 +38,7 @@ const SettingsAccordionSummary = styled((props) => {
   }
 }));
 
-const SettingsTitleTypography = styled((props) => {
+const SettingsTitleTypography = styled((props: TypographyProps) => {
   return <Typography variant="h6" {...props}/>
 })(() => ({
   fontSize: 16
@@ -45,8 +46,8 @@ const SettingsTitleTypography = styled((props) => {
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
-  const isAdmin = user.isAdmin;
-  const [view, setView] = useState(null);
+  const isAdmin = user!.isAdmin;
+  const [view, setView] = useState<string | null>(null);
   const [snackbar, setSnackbar] = useState({
     message: "",
     severity: "",
@@ -54,9 +55,9 @@ const Settings = () => {
   
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const [expanded, setExpanded] = useState("");
+  const [expanded, setExpanded] = useState<string | boolean>("");
 
-  const handleChange = (panel) => (event, newExpanded) => {
+  const handleChange = (panel: string) => (event: React.SyntheticEvent<Element, Event>, newExpanded: boolean) => {
     setExpanded(newExpanded ? panel : false);
   };
   
@@ -66,54 +67,54 @@ const Settings = () => {
 
     if (view === "change-password") {
       return <ChangePassword 
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
+        // setSnackbar={setSnackbar}
+        // setSnackbarOpen={setSnackbarOpen}
       />
     }
 
     if (view === "edit-company-profile") {
       return <EditCompanyProfile 
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
+        // setSnackbar={setSnackbar}
+        // setSnackbarOpen={setSnackbarOpen}
       />
     }
     if (view === "invite-users") {
       return <InviteUsers 
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
+        // setSnackbar={setSnackbar}
+        // setSnackbarOpen={setSnackbarOpen}
       />
     }
-
+    
     if (view === "deactivate-users") {
       return <DeactivateUsers 
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
+        // setSnackbar={setSnackbar}
+        // setSnackbarOpen={setSnackbarOpen}
       />
     }
     if (view === "update-billing-email") {
       return <UpdateBillingEmail 
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
+        // setSnackbar={setSnackbar}
+        // setSnackbarOpen={setSnackbarOpen}
       />
     }
     if (view === "change-plan") {
       return <ChangePlan 
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
+        // setSnackbar={setSnackbar}
+        // setSnackbarOpen={setSnackbarOpen}
       />
     }
 
     if (view === "view-current-plan") {
       return <CurrentPlan 
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
+        // setSnackbar={setSnackbar}
+        // setSnackbarOpen={setSnackbarOpen}
       />
     }
   }
 
   return ( <Fade in={true} timeout={500}>
     <Container maxWidth="lg">
-      <CustomSnackbar direction="right" severity={snackbar.severity} message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
+      {/* <CustomSnackbar direction="right" severity={snackbar.severity} message={snackbar.message} open={snackbarOpen} onClose={() => setSnackbarOpen(false)} /> */}
       <Grid container spacing={2.5}>
         <Grid item xs={3.5}>
           <Paper sx={{borderRadius: 1}}>

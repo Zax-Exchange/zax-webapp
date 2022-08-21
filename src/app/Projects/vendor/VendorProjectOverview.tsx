@@ -45,7 +45,7 @@ const VendorProjectOverview = ({
   project: VendorProject;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
   getVendorProjectsRefetch: (variables?: Partial<Exact<{
-    userId?: InputMaybe<string> | undefined;
+    userId?: string;
 }>> | undefined) => Promise<ApolloQueryResult<GetVendorProjectsQuery>>
 }) => {
   const navigate = useNavigate();

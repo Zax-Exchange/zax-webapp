@@ -9,7 +9,6 @@ import {
   MenuItem,
   Box,
 } from "@mui/material";
-import "./Projects.scss";
 import React, { useContext, useEffect, useState } from "react";
 
 // import CustomSnackbar from "../Utils/CustomSnackbar";

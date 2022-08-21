@@ -315,8 +315,7 @@ const CreateProject = () => {
               )}
             />
           </LocalizationProvider>
-
-          {GoogleMapAutocomplete(handleAddressOnChange)}
+          <GoogleMapAutocomplete parentSetDataHandler={handleAddressOnChange}/>
 
           <TextField
             autoComplete="new-password"

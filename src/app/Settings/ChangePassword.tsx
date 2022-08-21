@@ -1,31 +1,33 @@
 import { Button, Container, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
+import React from "react";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useUpdateUserPasswordMutation } from "../../generated/graphql";
 import FullScreenLoading from "../Utils/Loading";
-import { useUpdateUserPassword } from "../hooks/userHooks";
 
 
 const ChangePassword = ({
-  setSnackbar,
-  setSnackbarOpen
+  // setSnackbar,
+  // setSnackbarOpen
 }) => {
   const { user } = useContext(AuthContext);
 
-  const {
+  const [
     updateUserPassword,
-    updateUserPasswordData,
-    updateUserPasswordError,
-    updateUserPasswordLoading
-  } = useUpdateUserPassword();
+    {
+      data:updateUserPasswordData,
+    error: updateUserPasswordError,
+    loading: updateUserPasswordLoading}
+     ] = useUpdateUserPasswordMutation();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  const currentPasswordOnChange = (e) => {
+  const currentPasswordOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentPassword(e.target.value);
   }
 
-  const newPasswordOnChange = (e) => {
+  const newPasswordOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewPassword(e.target.value);
   }
 
@@ -34,25 +36,25 @@ const ChangePassword = ({
       await updateUserPassword({
         variables: {
           data: {
-            id: user.id,
+            id: user!.id,
             currentPassword,
             newPassword
           }
         }
       })
-      setSnackbar({
-        severity: "success",
-        message: "Password updated."
-      })
+      // setSnackbar({
+      //   severity: "success",
+      //   message: "Password updated."
+      // })
       setCurrentPassword("");
       setNewPassword("");
     } catch (e) {
-      setSnackbar({
-        severity: "error",
-        message: "Incorrect passwords."
-      })
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Incorrect passwords."
+      // })
     } finally {
-      setSnackbarOpen(true);
+      // setSnackbarOpen(true);
     }
   }
 

@@ -10,25 +10,33 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
+import { validate } from "graphql";
+import React from "react";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useGetAllCompanyUsers } from "../hooks/permissionHooks";
+import { useDeactivateUserMutation, useGetAllUsersWithinCompanyQuery, User } from "../../generated/graphql";
 import FullScreenLoading from "../Utils/Loading";
-import { useDeactivateUser } from "../hooks/userHooks";
 
-const DeactivateUsers = ({ setSnackbar, setSnackbarOpen }) => {
+const DeactivateUsers = ({ 
+  // setSnackbar, 
+  // setSnackbarOpen 
+}) => {
   const { user } = useContext(AuthContext);
 
   const {
-    getAllCompanyUsersData,
-    getAllCompanyUsersLoading,
-    getAllCompanyUsersError,
-  } = useGetAllCompanyUsers(user.companyId);
+    data: getAllCompanyUsersData,
+    loading: getAllCompanyUsersLoading,
+    error: getAllCompanyUsersError,
+  } = useGetAllUsersWithinCompanyQuery({
+    variables: {
+      companyId: user!.companyId
+    }
+  });
 
-  const { deactivateUser, deactivateUserLoading, deactivateUserError } =
-    useDeactivateUser();
+  const [ deactivateUser, {loading: deactivateUserLoading, error: deactivateUserError} ] =
+    useDeactivateUserMutation();
 
-  const [emailsList, setEmailsList] = useState([]);
+  const [emailsList, setEmailsList] = useState<string[]>([]);
   const [email, setEmail] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -39,28 +47,31 @@ const DeactivateUsers = ({ setSnackbar, setSnackbarOpen }) => {
     ) {
       const res = [];
       for (let u of getAllCompanyUsersData.getAllUsersWithinCompany) {
-        if (u.email !== user.email) res.push(u.email);
+        if (u!.email !== user!.email) res.push(u!.email);
       }
       setEmailsList(res);
     }
-  }, [getAllCompanyUsersData, user.email]);
+  }, [getAllCompanyUsersData]);
 
   useEffect(() => {
     if (getAllCompanyUsersError) {
-      setSnackbar({
-        severity: "error",
-        message: "Something went wrong. Please try again later.",
-      });
-      setSnackbarOpen(true);
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Something went wrong. Please try again later.",
+      // });
+      // setSnackbarOpen(true);
     }
-  }, [getAllCompanyUsersError, setSnackbar, setSnackbarOpen]);
+  }, [getAllCompanyUsersError, 
+    // setSnackbar, 
+    // setSnackbarOpen
+  ]);
 
-  const emailOnChange = (e) => {
+  const emailOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const selectHandler = (e) => {
-    setEmail(e.target.innerHTML);
+  const selectHandler = (v: string) => {
+    setEmail(v);
   };
 
   const deactivateOnClick = async () => {
@@ -70,17 +81,17 @@ const DeactivateUsers = ({ setSnackbar, setSnackbarOpen }) => {
           email,
         },
       });
-      setSnackbar({
-        severity: "success",
-        message: "User deactivated.",
-      });
+      // setSnackbar({
+      //   severity: "success",
+      //   message: "User deactivated.",
+      // });
     } catch (e) {
-      setSnackbar({
-        severity: "error",
-        message: "Something went wrong. Please try again later.",
-      });
+      // setSnackbar({
+      //   severity: "error",
+      //   message: "Something went wrong. Please try again later.",
+      // });
     } finally {
-      setSnackbarOpen(true);
+      // setSnackbarOpen(true);
     }
   };
 
@@ -101,7 +112,7 @@ const DeactivateUsers = ({ setSnackbar, setSnackbarOpen }) => {
           freeSolo
           disableClearable
           options={emailsList}
-          onChange={selectHandler}
+          onChange={(e, v) => selectHandler(v)}
           value={email}
           renderInput={(params) => (
             <TextField
