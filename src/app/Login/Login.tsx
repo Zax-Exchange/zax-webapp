@@ -13,28 +13,13 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
-import { gql, useLazyQuery } from "@apollo/client";
 import FullScreenLoading from "../Utils/Loading";
 import React from "react";
+import { LoggedInUser, useLoginLazyQuery } from "../../generated/graphql";
 
-const USER_LOGIN = gql`
-  query login($data: UserLoginInput) {
-    login(data: $data) {
-      id
-      companyId
-      isVendor
-      isAdmin
-      name
-      email
-      token
-      notificationToken
-      chatToken
-    }
-  }
-`;
 const Login = () => {
   const { user, login, logout } = useContext(AuthContext);
-  const [userLogin, { error, loading, data }] = useLazyQuery(USER_LOGIN);
+  const [userLogin, { error, loading, data }] = useLoginLazyQuery();
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -63,7 +48,8 @@ const Login = () => {
   };
 
   if (data) {
-    login(data.login);
+    login(data.login as LoggedInUser);
+    return null;
   }
 
   if (loading || user) {

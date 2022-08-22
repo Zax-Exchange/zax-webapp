@@ -24,7 +24,13 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
-import { CustomerProject, Exact, GetCustomerProjectsQuery, InputMaybe, useGetCustomerProjectsQuery } from "../../../generated/graphql";
+import {
+  CustomerProject,
+  Exact,
+  GetCustomerProjectsQuery,
+  InputMaybe,
+  useGetCustomerProjectsQuery,
+} from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 
@@ -45,15 +51,22 @@ const CustomerProjectOverview = ({
   setIsProjectPageLoading,
 }: {
   project: CustomerProject;
-  getCustomerProjectsRefetch: (variables?: Partial<Exact<{
-    userId?: InputMaybe<string> | undefined;
-}>> | undefined) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>
-  setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>
+  getCustomerProjectsRefetch: (
+    variables?:
+      | Partial<
+          Exact<{
+            userId: string;
+          }>
+        >
+      | undefined
+  ) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>;
+  setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
-  const [projectMenuAnchor, setProjectMenuAnchor] = useState<HTMLButtonElement | null>(null);
+  const [projectMenuAnchor, setProjectMenuAnchor] =
+    useState<HTMLButtonElement | null>(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
   const date = new Date(parseInt(project.createdAt)).toISOString().slice(0, 10);
@@ -70,7 +83,9 @@ const CustomerProjectOverview = ({
     setProjectMenuAnchor(null);
   };
 
-  const projectMenuOnClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+  const projectMenuOnClick = (
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>
+  ) => {
     if (e.currentTarget.innerText === "View detail") {
       viewDetailHandler();
     }

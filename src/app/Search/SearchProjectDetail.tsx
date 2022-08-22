@@ -21,7 +21,7 @@ import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { Project, useGetProjectDetailQuery } from "../../generated/graphql";
 
 const SearchProjectDetail = () => {
-  const { projectId } = useParams()
+  const { projectId } = useParams();
   const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
   const {
     data: getProjectDetailData,
@@ -29,8 +29,8 @@ const SearchProjectDetail = () => {
     loading: getProjectDetailLoading,
   } = useGetProjectDetailQuery({
     variables: {
-      projectId
-    }
+      projectId: projectId || "",
+    },
   });
 
   const navigate = useNavigate();
@@ -55,7 +55,8 @@ const SearchProjectDetail = () => {
   };
 
   const renderProjectDetail = () => {
-    if (!getProjectDetailData || !getProjectDetailData.getProjectDetail) return null;
+    if (!getProjectDetailData || !getProjectDetailData.getProjectDetail)
+      return null;
 
     const {
       name: projectName,

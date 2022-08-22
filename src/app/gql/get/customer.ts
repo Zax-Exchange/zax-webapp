@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 const GET_CUSTOMER_PROJECT = gql`
-  query getCustomerProject($data: GetProjectInput) {
+  query getCustomerProject($data: GetProjectInput!) {
     getCustomerProject(data: $data) {
       id
       userId
@@ -48,7 +48,7 @@ const GET_CUSTOMER_PROJECT = gql`
 `;
 
 const GET_CUSTOMER_PROJECTS = gql`
-  query GetCustomerProjects($userId: String) {
+  query GetCustomerProjects($userId: String!) {
     getCustomerProjects(userId: $userId) {
       id
       userId

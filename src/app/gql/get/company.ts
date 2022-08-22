@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 const GET_ALL_COMPANY_USERS = gql`
-  query getAllUsersWithinCompany($companyId: String) {
+  query getAllUsersWithinCompany($companyId: String!) {
     getAllUsersWithinCompany(companyId: $companyId) {
       id
       email
@@ -12,7 +12,7 @@ const GET_ALL_COMPANY_USERS = gql`
 
 
 const GET_COMPANY_PLAN = gql`
-  query getCompanyPlanWithCompanyId($companyId: String) {
+  query getCompanyPlanWithCompanyId($companyId: String!) {
     getCompanyPlanWithCompanyId(companyId: $companyId) {
       tier
       price
@@ -27,7 +27,7 @@ const GET_COMPANY_PLAN = gql`
 `;
 
 const GET_COMPANY_DETAIL = gql`
-  query getCompanyDetail($companyId: String) {
+  query getCompanyDetail($companyId: String!) {
     getCompanyDetail(companyId: $companyId) {
       id
       name
@@ -51,7 +51,7 @@ const GET_COMPANY_DETAIL = gql`
 
 
 const GET_ALL_PLANS = gql`
-  query getAllPlans($isVendor: Boolean) {
+  query getAllPlans($isVendor: Boolean!) {
     getAllPlans(isVendor: $isVendor) {
       id
       isVendor

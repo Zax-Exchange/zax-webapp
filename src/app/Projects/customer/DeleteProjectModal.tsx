@@ -9,7 +9,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import React from "react";
-import { Exact, GetCustomerProjectsQuery, InputMaybe, useDeleteProjectMutation } from "../../../generated/graphql";
+import {
+  Exact,
+  GetCustomerProjectsQuery,
+  InputMaybe,
+  useDeleteProjectMutation,
+} from "../../../generated/graphql";
 
 const DeleteProjectModal = ({
   deleteProjectModalOpen,
@@ -20,24 +25,30 @@ const DeleteProjectModal = ({
   // setSnackbarOpen,
   setIsProjectPageLoading,
 }: {
-  deleteProjectModalOpen: boolean
-  setDeleteProjectModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  projectId: string
-  getCustomerProjectsRefetch: (variables?: Partial<Exact<{
-    userId?: InputMaybe<string> | undefined;
-}>> | undefined) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>
+  deleteProjectModalOpen: boolean;
+  setDeleteProjectModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  projectId: string;
+  getCustomerProjectsRefetch: (
+    variables?:
+      | Partial<
+          Exact<{
+            userId: string;
+          }>
+        >
+      | undefined
+  ) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>;
   // setSnackbar,
   // setSnackbarOpen,
-  setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [
     deleteProjectMutation,
     {
-     data: deleteProjectData,
+      data: deleteProjectData,
       error: deleteProjectError,
-      loading: deleteProjectLoading, 
-    }
-   ] = useDeleteProjectMutation();
+      loading: deleteProjectLoading,
+    },
+  ] = useDeleteProjectMutation();
 
   const deleteProjectOnClick = async () => {
     setDeleteProjectModalOpen(false);

@@ -16,6 +16,12 @@ export type Scalars = {
   Upload: any;
 };
 
+export enum BidStatus {
+  Accepted = 'ACCEPTED',
+  Open = 'OPEN',
+  Rejected = 'REJECTED'
+}
+
 export type CompanyDetail = {
   __typename?: 'CompanyDetail';
   companyUrl?: Maybe<Scalars['String']>;
@@ -37,6 +43,11 @@ export type CompanyDetail = {
   updatedAt: Scalars['String'];
 };
 
+export enum CompanyPermission {
+  Admin = 'ADMIN',
+  User = 'USER'
+}
+
 export type CompanyPlan = {
   __typename?: 'CompanyPlan';
   companyId: Scalars['String'];
@@ -51,10 +62,17 @@ export type CompanyPlanDetail = {
   price: Scalars['Int'];
   subscriptionEndDate: Scalars['String'];
   subscriptionStartDate: Scalars['String'];
-  tier?: Maybe<Scalars['String']>;
+  tier: PlanTier;
   trialEndDate?: Maybe<Scalars['String']>;
   trialStartDate?: Maybe<Scalars['String']>;
 };
+
+export enum CompanySize {
+  L = 'L',
+  M = 'M',
+  S = 'S',
+  Xs = 'XS'
+}
 
 export type CreateCustomerInput = {
   companyUrl?: InputMaybe<Scalars['String']>;
@@ -224,7 +242,7 @@ export type GetProjectInput = {
 
 export type LoggedInUser = {
   __typename?: 'LoggedInUser';
-  chatToken?: Maybe<Scalars['String']>;
+  chatToken: Scalars['String'];
   companyId: Scalars['String'];
   email: Scalars['String'];
   id: Scalars['String'];
@@ -232,7 +250,7 @@ export type LoggedInUser = {
   isAdmin: Scalars['Boolean'];
   isVendor: Scalars['Boolean'];
   name: Scalars['String'];
-  notificationToken?: Maybe<Scalars['String']>;
+  notificationToken: Scalars['String'];
   token: Scalars['String'];
 };
 
@@ -251,7 +269,7 @@ export type Mutation = {
   deleteProjectBidPermissions: Scalars['Boolean'];
   deleteProjectPermissions: Scalars['Boolean'];
   inviteUser: Scalars['Boolean'];
-  reset?: Maybe<Scalars['Boolean']>;
+  reset: Scalars['Boolean'];
   updateCompanyPlan: Scalars['Boolean'];
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
@@ -268,23 +286,23 @@ export type Mutation = {
 
 
 export type MutationCreateCustomerArgs = {
-  data?: InputMaybe<CreateCustomerInput>;
+  data: CreateCustomerInput;
 };
 
 
 export type MutationCreateCustomerSubscriptionArgs = {
-  priceId?: InputMaybe<Scalars['String']>;
-  stripeCustomerId?: InputMaybe<Scalars['String']>;
+  priceId: Scalars['String'];
+  stripeCustomerId: Scalars['String'];
 };
 
 
 export type MutationCreateProjectArgs = {
-  data?: InputMaybe<CreateProjectInput>;
+  data: CreateProjectInput;
 };
 
 
 export type MutationCreateProjectBidArgs = {
-  data?: InputMaybe<CreateProjectBidInput>;
+  data: CreateProjectBidInput;
 };
 
 
@@ -294,43 +312,43 @@ export type MutationCreateStripeCustomerArgs = {
 
 
 export type MutationCreateUserArgs = {
-  data?: InputMaybe<CreateUserInput>;
+  data: CreateUserInput;
 };
 
 
 export type MutationCreateVendorArgs = {
-  data?: InputMaybe<CreateVendorInput>;
+  data: CreateVendorInput;
 };
 
 
 export type MutationCreateVendorSubscriptionArgs = {
-  data?: InputMaybe<CreateVendorSubscriptionInput>;
+  data: CreateVendorSubscriptionInput;
 };
 
 
 export type MutationDeactivateUserArgs = {
-  email?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
 };
 
 
 export type MutationDeleteProjectArgs = {
-  projectId?: InputMaybe<Scalars['String']>;
+  projectId: Scalars['String'];
 };
 
 
 export type MutationDeleteProjectBidPermissionsArgs = {
-  data?: InputMaybe<DeleteProjectBidPermissionsInput>;
+  data: DeleteProjectBidPermissionsInput;
 };
 
 
 export type MutationDeleteProjectPermissionsArgs = {
-  data?: InputMaybe<DeleteProjectPermissionsInput>;
+  data: DeleteProjectPermissionsInput;
 };
 
 
 export type MutationInviteUserArgs = {
-  email?: InputMaybe<Scalars['String']>;
-  userId?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 
@@ -340,58 +358,58 @@ export type MutationResetArgs = {
 
 
 export type MutationUpdateCompanyPlanArgs = {
-  data?: InputMaybe<UpdateCompanyPlanInput>;
+  data: UpdateCompanyPlanInput;
 };
 
 
 export type MutationUpdateCompanyPlanSubscriptionInfoArgs = {
-  subscriptionId?: InputMaybe<Scalars['String']>;
+  subscriptionId: Scalars['String'];
 };
 
 
 export type MutationUpdateCompanyStatusArgs = {
-  companyId?: InputMaybe<Scalars['String']>;
-  isActive?: InputMaybe<Scalars['Boolean']>;
+  companyId: Scalars['String'];
+  isActive: Scalars['Boolean'];
 };
 
 
 export type MutationUpdateCustomerArgs = {
-  data?: InputMaybe<UpdateCustomerInput>;
+  data: UpdateCustomerInput;
 };
 
 
 export type MutationUpdateProjectBidPermissionsArgs = {
-  data?: InputMaybe<UpdateProjectBidPermissionsInput>;
+  data: UpdateProjectBidPermissionsInput;
 };
 
 
 export type MutationUpdateProjectPermissionsArgs = {
-  data?: InputMaybe<UpdateProjectPermissionsInput>;
+  data: UpdateProjectPermissionsInput;
 };
 
 
 export type MutationUpdateSubscriptionArgs = {
-  subscriptionId?: InputMaybe<Scalars['String']>;
+  subscriptionId: Scalars['String'];
 };
 
 
 export type MutationUpdateUserArgs = {
-  data?: InputMaybe<UpdateUserInput>;
+  data: UpdateUserInput;
 };
 
 
 export type MutationUpdateUserPasswordArgs = {
-  data?: InputMaybe<UpdateUserPasswordInput>;
+  data: UpdateUserPasswordInput;
 };
 
 
 export type MutationUpdateUserPowerArgs = {
-  data?: InputMaybe<UpdateUserPowerInput>;
+  data: UpdateUserPowerInput;
 };
 
 
 export type MutationUpdateVendorArgs = {
-  data?: InputMaybe<UpdateVendorInput>;
+  data: UpdateVendorInput;
 };
 
 
@@ -436,12 +454,17 @@ export type PermissionedProjectBid = {
 
 export type Plan = {
   __typename?: 'Plan';
-  companySize?: Maybe<Scalars['String']>;
+  companySize?: Maybe<CompanySize>;
   id: Scalars['String'];
   isVendor: Scalars['Boolean'];
   pricings: Pricings;
-  tier?: Maybe<Scalars['String']>;
+  tier: PlanTier;
 };
+
+export enum PlanTier {
+  Business = 'BUSINESS',
+  Premium = 'PREMIUM'
+}
 
 export type PricingDetail = {
   __typename?: 'PricingDetail';
@@ -527,6 +550,18 @@ export type ProjectOverview = {
   name: Scalars['String'];
 };
 
+export enum ProjectPermission {
+  Editor = 'EDITOR',
+  Owner = 'OWNER',
+  Viewer = 'VIEWER'
+}
+
+export enum ProjectStatus {
+  Closed = 'CLOSED',
+  InProgress = 'IN_PROGRESS',
+  Open = 'OPEN'
+}
+
 export type QuantityPrice = {
   __typename?: 'QuantityPrice';
   price: Scalars['Int'];
@@ -540,42 +575,42 @@ export type QuantityPriceInput = {
 
 export type Query = {
   __typename?: 'Query';
-  checkCompanyName?: Maybe<Scalars['Boolean']>;
-  checkUserEmail?: Maybe<Scalars['Boolean']>;
-  getAllPlans?: Maybe<Array<Maybe<Plan>>>;
-  getAllUsersWithinCompany?: Maybe<Array<Maybe<User>>>;
+  checkCompanyName: Scalars['Boolean'];
+  checkUserEmail: Scalars['Boolean'];
+  getAllPlans: Array<Plan>;
+  getAllUsersWithinCompany: Array<User>;
   getCompanyDetail?: Maybe<CompanyDetail>;
-  getCompanyPlanDetail?: Maybe<Scalars['Boolean']>;
-  getCompanyPlanWithCompanyId?: Maybe<CompanyPlanDetail>;
-  getCustomerDetail?: Maybe<CustomerDetail>;
-  getCustomerProject?: Maybe<CustomerProject>;
-  getCustomerProjects?: Maybe<Array<Maybe<CustomerProject>>>;
-  getPlanWithPlanId?: Maybe<Plan>;
-  getProjectBidUsers?: Maybe<Array<Maybe<UserPermission>>>;
-  getProjectDetail?: Maybe<Project>;
-  getProjectUsers?: Maybe<Array<Maybe<UserPermission>>>;
-  getUserWithUserId?: Maybe<User>;
-  getVendorDetail?: Maybe<VendorDetail>;
-  getVendorProject?: Maybe<VendorProject>;
-  getVendorProjects?: Maybe<Array<Maybe<VendorProject>>>;
-  login?: Maybe<LoggedInUser>;
-  searchCustomerProjects?: Maybe<Array<Maybe<ProjectOverview>>>;
+  getCompanyPlanDetail: CompanyPlanDetail;
+  getCompanyPlanWithCompanyId: CompanyPlanDetail;
+  getCustomerDetail: CustomerDetail;
+  getCustomerProject: CustomerProject;
+  getCustomerProjects: Array<CustomerProject>;
+  getPlanWithPlanId: Plan;
+  getProjectBidUsers: Array<UserPermission>;
+  getProjectDetail: Project;
+  getProjectUsers: Array<UserPermission>;
+  getUserWithUserId: User;
+  getVendorDetail: VendorDetail;
+  getVendorProject: VendorProject;
+  getVendorProjects: Array<Maybe<VendorProject>>;
+  login: LoggedInUser;
+  searchCustomerProjects: Array<ProjectOverview>;
   searchVendorCompanies?: Maybe<Array<Maybe<VendorOverview>>>;
 };
 
 
 export type QueryCheckCompanyNameArgs = {
-  name?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 
 export type QueryCheckUserEmailArgs = {
-  email?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
 };
 
 
 export type QueryGetAllPlansArgs = {
-  isVendor?: InputMaybe<Scalars['Boolean']>;
+  isVendor: Scalars['Boolean'];
 };
 
 
@@ -600,73 +635,73 @@ export type QueryGetCompanyPlanWithCompanyIdArgs = {
 
 
 export type QueryGetCustomerDetailArgs = {
-  companyId?: InputMaybe<Scalars['String']>;
+  companyId: Scalars['String'];
 };
 
 
 export type QueryGetCustomerProjectArgs = {
-  data?: InputMaybe<GetProjectInput>;
+  data: GetProjectInput;
 };
 
 
 export type QueryGetCustomerProjectsArgs = {
-  userId?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
 };
 
 
 export type QueryGetPlanWithPlanIdArgs = {
-  id?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
 };
 
 
 export type QueryGetProjectBidUsersArgs = {
-  projectBidId?: InputMaybe<Scalars['String']>;
+  projectBidId: Scalars['String'];
 };
 
 
 export type QueryGetProjectDetailArgs = {
-  projectId?: InputMaybe<Scalars['String']>;
+  projectId: Scalars['String'];
 };
 
 
 export type QueryGetProjectUsersArgs = {
-  projectId?: InputMaybe<Scalars['String']>;
+  projectId: Scalars['String'];
 };
 
 
 export type QueryGetUserWithUserIdArgs = {
   paranoid?: InputMaybe<Scalars['Boolean']>;
-  userId?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
 };
 
 
 export type QueryGetVendorDetailArgs = {
-  companyId?: InputMaybe<Scalars['String']>;
+  companyId: Scalars['String'];
 };
 
 
 export type QueryGetVendorProjectArgs = {
-  data?: InputMaybe<GetProjectInput>;
+  data: GetProjectInput;
 };
 
 
 export type QueryGetVendorProjectsArgs = {
-  userId?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
 };
 
 
 export type QueryLoginArgs = {
-  data?: InputMaybe<UserLoginInput>;
+  data: UserLoginInput;
 };
 
 
 export type QuerySearchCustomerProjectsArgs = {
-  searchInput?: InputMaybe<SearchProjectInput>;
+  searchInput: SearchProjectInput;
 };
 
 
 export type QuerySearchVendorCompaniesArgs = {
-  searchInput?: InputMaybe<SearchCompanyInput>;
+  searchInput: SearchCompanyInput;
 };
 
 export type SearchCompanyInput = {
@@ -872,36 +907,36 @@ export type VendorProject = {
 };
 
 export type CreateStripeCustomerMutationVariables = Exact<{
-  email?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
 }>;
 
 
 export type CreateStripeCustomerMutation = { __typename?: 'Mutation', createStripeCustomer: string };
 
 export type CreateCustomerMutationVariables = Exact<{
-  data?: InputMaybe<CreateCustomerInput>;
+  data: CreateCustomerInput;
 }>;
 
 
 export type CreateCustomerMutation = { __typename?: 'Mutation', createCustomer: string };
 
 export type CreateCustomerSubscriptionMutationVariables = Exact<{
-  priceId?: InputMaybe<Scalars['String']>;
-  stripeCustomerId?: InputMaybe<Scalars['String']>;
+  priceId: Scalars['String'];
+  stripeCustomerId: Scalars['String'];
 }>;
 
 
 export type CreateCustomerSubscriptionMutation = { __typename?: 'Mutation', createCustomerSubscription: { __typename?: 'StripeSubscription', clientSecret: string, subscriptionId: string } };
 
 export type CreateProjectBidMutationVariables = Exact<{
-  data?: InputMaybe<CreateProjectBidInput>;
+  data: CreateProjectBidInput;
 }>;
 
 
 export type CreateProjectBidMutation = { __typename?: 'Mutation', createProjectBid: boolean };
 
 export type CreateProjectMutationVariables = Exact<{
-  data?: InputMaybe<CreateProjectInput>;
+  data: CreateProjectInput;
 }>;
 
 
@@ -915,153 +950,153 @@ export type UploadProjectDesignMutationVariables = Exact<{
 export type UploadProjectDesignMutation = { __typename?: 'Mutation', uploadProjectDesign: string };
 
 export type InviteUserMutationVariables = Exact<{
-  email?: InputMaybe<Scalars['String']>;
-  userId?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
+  userId: Scalars['String'];
 }>;
 
 
 export type InviteUserMutation = { __typename?: 'Mutation', inviteUser: boolean };
 
 export type CreateVendorMutationVariables = Exact<{
-  data?: InputMaybe<CreateVendorInput>;
+  data: CreateVendorInput;
 }>;
 
 
 export type CreateVendorMutation = { __typename?: 'Mutation', createVendor: string };
 
 export type CreateVendorSubscriptionMutationVariables = Exact<{
-  data?: InputMaybe<CreateVendorSubscriptionInput>;
+  data: CreateVendorSubscriptionInput;
 }>;
 
 
 export type CreateVendorSubscriptionMutation = { __typename?: 'Mutation', createVendorSubscription: { __typename?: 'StripeSubscription', clientSecret: string, subscriptionId: string } };
 
 export type DeleteProjectBidPermissionsMutationVariables = Exact<{
-  data?: InputMaybe<DeleteProjectBidPermissionsInput>;
+  data: DeleteProjectBidPermissionsInput;
 }>;
 
 
 export type DeleteProjectBidPermissionsMutation = { __typename?: 'Mutation', deleteProjectBidPermissions: boolean };
 
 export type DeleteProjectPermissionsMutationVariables = Exact<{
-  data?: InputMaybe<DeleteProjectPermissionsInput>;
+  data: DeleteProjectPermissionsInput;
 }>;
 
 
 export type DeleteProjectPermissionsMutation = { __typename?: 'Mutation', deleteProjectPermissions: boolean };
 
 export type DeleteProjectMutationVariables = Exact<{
-  projectId?: InputMaybe<Scalars['String']>;
+  projectId: Scalars['String'];
 }>;
 
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: boolean };
 
 export type DeactivateUserMutationVariables = Exact<{
-  email?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
 }>;
 
 
 export type DeactivateUserMutation = { __typename?: 'Mutation', deactivateUser: boolean };
 
 export type GetProjectBidUsersQueryVariables = Exact<{
-  projectBidId?: InputMaybe<Scalars['String']>;
+  projectBidId: Scalars['String'];
 }>;
 
 
-export type GetProjectBidUsersQuery = { __typename?: 'Query', getProjectBidUsers?: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: string } | null> | null };
+export type GetProjectBidUsersQuery = { __typename?: 'Query', getProjectBidUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: string }> };
 
 export type GetAllUsersWithinCompanyQueryVariables = Exact<{
-  companyId?: InputMaybe<Scalars['String']>;
+  companyId: Scalars['String'];
 }>;
 
 
-export type GetAllUsersWithinCompanyQuery = { __typename?: 'Query', getAllUsersWithinCompany?: Array<{ __typename?: 'User', id: string, email: string, name: string } | null> | null };
+export type GetAllUsersWithinCompanyQuery = { __typename?: 'Query', getAllUsersWithinCompany: Array<{ __typename?: 'User', id: string, email: string, name: string }> };
 
 export type GetCompanyPlanWithCompanyIdQueryVariables = Exact<{
-  companyId?: InputMaybe<Scalars['String']>;
+  companyId: Scalars['String'];
 }>;
 
 
-export type GetCompanyPlanWithCompanyIdQuery = { __typename?: 'Query', getCompanyPlanWithCompanyId?: { __typename?: 'CompanyPlanDetail', tier?: string | null, price: number, billingFrequency: string, memberSince: string, subscriptionStartDate: string, subscriptionEndDate: string, trialStartDate?: string | null, trialEndDate?: string | null } | null };
+export type GetCompanyPlanWithCompanyIdQuery = { __typename?: 'Query', getCompanyPlanWithCompanyId: { __typename?: 'CompanyPlanDetail', tier: PlanTier, price: number, billingFrequency: string, memberSince: string, subscriptionStartDate: string, subscriptionEndDate: string, trialStartDate?: string | null, trialEndDate?: string | null } };
 
 export type GetCompanyDetailQueryVariables = Exact<{
-  companyId?: InputMaybe<Scalars['String']>;
+  companyId: Scalars['String'];
 }>;
 
 
 export type GetCompanyDetailQuery = { __typename?: 'Query', getCompanyDetail?: { __typename?: 'CompanyDetail', id: string, name: string, contactEmail: string, logo?: string | null, phone: string, fax?: string | null, country: string, isActive: boolean, isVendor: boolean, isVerified: boolean, companyUrl?: string | null, locations?: Array<string | null> | null, materials?: Array<string | null> | null, moq?: string | null, leadTime?: number | null } | null };
 
 export type GetAllPlansQueryVariables = Exact<{
-  isVendor?: InputMaybe<Scalars['Boolean']>;
+  isVendor: Scalars['Boolean'];
 }>;
 
 
-export type GetAllPlansQuery = { __typename?: 'Query', getAllPlans?: Array<{ __typename?: 'Plan', id: string, isVendor: boolean, companySize?: string | null, tier?: string | null, pricings: { __typename?: 'Pricings', monthly?: { __typename?: 'PricingDetail', price: number, priceId: string } | null, annual?: { __typename?: 'PricingDetail', price: number, priceId: string } | null, perUser: { __typename?: 'PricingDetail', price: number, priceId: string } } } | null> | null };
+export type GetAllPlansQuery = { __typename?: 'Query', getAllPlans: Array<{ __typename?: 'Plan', id: string, isVendor: boolean, companySize?: CompanySize | null, tier: PlanTier, pricings: { __typename?: 'Pricings', monthly?: { __typename?: 'PricingDetail', price: number, priceId: string } | null, annual?: { __typename?: 'PricingDetail', price: number, priceId: string } | null, perUser: { __typename?: 'PricingDetail', price: number, priceId: string } } }> };
 
 export type GetCustomerProjectQueryVariables = Exact<{
-  data?: InputMaybe<GetProjectInput>;
+  data: GetProjectInput;
 }>;
 
 
-export type GetCustomerProjectQuery = { __typename?: 'Query', getCustomerProject?: { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null } | null };
+export type GetCustomerProjectQuery = { __typename?: 'Query', getCustomerProject: { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null } };
 
 export type GetCustomerProjectsQueryVariables = Exact<{
-  userId?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
 }>;
 
 
-export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects?: Array<{ __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null } | null> | null };
+export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects: Array<{ __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null }> };
 
 export type GetProjectUsersQueryVariables = Exact<{
-  projectId?: InputMaybe<Scalars['String']>;
+  projectId: Scalars['String'];
 }>;
 
 
-export type GetProjectUsersQuery = { __typename?: 'Query', getProjectUsers?: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: string } | null> | null };
+export type GetProjectUsersQuery = { __typename?: 'Query', getProjectUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: string }> };
 
 export type GetProjectDetailQueryVariables = Exact<{
-  projectId?: InputMaybe<Scalars['String']>;
+  projectId: Scalars['String'];
 }>;
 
 
-export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }> } | null };
+export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail: { __typename?: 'Project', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }> } };
 
 export type SearchProjectsQueryVariables = Exact<{
-  searchInput?: InputMaybe<SearchProjectInput>;
+  searchInput: SearchProjectInput;
 }>;
 
 
-export type SearchProjectsQuery = { __typename?: 'Query', searchCustomerProjects?: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, materials: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, budget: number, createdAt: string } | null> | null };
+export type SearchProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, materials: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, budget: number, createdAt: string }> };
 
 export type GetUserWithUserIdQueryVariables = Exact<{
-  userId?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
   paranoid?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
-export type GetUserWithUserIdQuery = { __typename?: 'Query', getUserWithUserId?: { __typename?: 'User', id: string, name: string, email: string, companyId: string, isActive: boolean } | null };
+export type GetUserWithUserIdQuery = { __typename?: 'Query', getUserWithUserId: { __typename?: 'User', id: string, name: string, email: string, companyId: string, isActive: boolean } };
 
 export type GetVendorDetailQueryVariables = Exact<{
   companyId: Scalars['String'];
 }>;
 
 
-export type GetVendorDetailQuery = { __typename?: 'Query', getVendorDetail?: { __typename?: 'VendorDetail', id: string, name: string, phone: string, logo?: string | null, country: string, isActive: boolean, companyUrl?: string | null, fax?: string | null, isVerified: boolean, locations: Array<string | null>, materials: Array<string | null>, moq: string, leadTime: number } | null };
+export type GetVendorDetailQuery = { __typename?: 'Query', getVendorDetail: { __typename?: 'VendorDetail', id: string, name: string, phone: string, logo?: string | null, country: string, isActive: boolean, companyUrl?: string | null, fax?: string | null, isVerified: boolean, locations: Array<string | null>, materials: Array<string | null>, moq: string, leadTime: number } };
 
 export type GetVendorProjectQueryVariables = Exact<{
   data: GetProjectInput;
 }>;
 
 
-export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, customerName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } | null };
+export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject: { __typename?: 'VendorProject', id: string, userId: string, customerName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } };
 
 export type GetVendorProjectsQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects?: Array<{ __typename?: 'VendorProject', id: string, userId: string, companyId: string, customerName: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }, components: Array<{ __typename?: 'ProjectComponent', id: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null } | null> | null };
+export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProject', id: string, userId: string, companyId: string, customerName: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }, components: Array<{ __typename?: 'ProjectComponent', id: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null } | null> };
 
 export type SearchVendorCompaniesQueryVariables = Exact<{
   searchInput: SearchCompanyInput;
@@ -1071,72 +1106,79 @@ export type SearchVendorCompaniesQueryVariables = Exact<{
 export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies?: Array<{ __typename?: 'VendorOverview', id: string, name: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string | null>, materials: Array<string | null>, moq: string, leadTime: number } | null> | null };
 
 export type UpdateProjectBidPermissionsMutationVariables = Exact<{
-  data?: InputMaybe<UpdateProjectBidPermissionsInput>;
+  data: UpdateProjectBidPermissionsInput;
 }>;
 
 
 export type UpdateProjectBidPermissionsMutation = { __typename?: 'Mutation', updateProjectBidPermissions: boolean };
 
 export type UpdateCompanyPlanSubscriptionInfoMutationVariables = Exact<{
-  subscriptionId?: InputMaybe<Scalars['String']>;
+  subscriptionId: Scalars['String'];
 }>;
 
 
 export type UpdateCompanyPlanSubscriptionInfoMutation = { __typename?: 'Mutation', updateCompanyPlanSubscriptionInfo: boolean };
 
 export type UpdateCompanyStatusMutationVariables = Exact<{
-  companyId?: InputMaybe<Scalars['String']>;
-  isActive?: InputMaybe<Scalars['Boolean']>;
+  companyId: Scalars['String'];
+  isActive: Scalars['Boolean'];
 }>;
 
 
 export type UpdateCompanyStatusMutation = { __typename?: 'Mutation', updateCompanyStatus: boolean };
 
 export type UpdateCustomerMutationVariables = Exact<{
-  data?: InputMaybe<UpdateCustomerInput>;
+  data: UpdateCustomerInput;
 }>;
 
 
 export type UpdateCustomerMutation = { __typename?: 'Mutation', updateCustomer: boolean };
 
 export type UpdateProjectPermissionsMutationVariables = Exact<{
-  data?: InputMaybe<UpdateProjectPermissionsInput>;
+  data: UpdateProjectPermissionsInput;
 }>;
 
 
 export type UpdateProjectPermissionsMutation = { __typename?: 'Mutation', updateProjectPermissions: boolean };
 
 export type UpdateUserPasswordMutationVariables = Exact<{
-  data?: InputMaybe<UpdateUserPasswordInput>;
+  data: UpdateUserPasswordInput;
 }>;
 
 
 export type UpdateUserPasswordMutation = { __typename?: 'Mutation', updateUserPassword: boolean };
 
 export type UpdateVendorMutationVariables = Exact<{
-  data?: InputMaybe<UpdateVendorInput>;
+  data: UpdateVendorInput;
 }>;
 
 
 export type UpdateVendorMutation = { __typename?: 'Mutation', updateVendor: boolean };
 
 export type CheckCompanyNameQueryVariables = Exact<{
-  name?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
 }>;
 
 
-export type CheckCompanyNameQuery = { __typename?: 'Query', checkCompanyName?: boolean | null };
+export type CheckCompanyNameQuery = { __typename?: 'Query', checkCompanyName: boolean };
 
 export type CheckUserEmailQueryVariables = Exact<{
-  email?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
 }>;
 
 
-export type CheckUserEmailQuery = { __typename?: 'Query', checkUserEmail?: boolean | null };
+export type CheckUserEmailQuery = { __typename?: 'Query', checkUserEmail: boolean };
+
+export type LoginQueryVariables = Exact<{
+  data: UserLoginInput;
+}>;
+
+
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, isAdmin: boolean, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
 
 
 export const CreateStripeCustomerDocument = gql`
-    mutation createStripeCustomer($email: String) {
+    mutation createStripeCustomer($email: String!) {
   createStripeCustomer(email: $email)
 }
     `;
@@ -1167,7 +1209,7 @@ export type CreateStripeCustomerMutationHookResult = ReturnType<typeof useCreate
 export type CreateStripeCustomerMutationResult = Apollo.MutationResult<CreateStripeCustomerMutation>;
 export type CreateStripeCustomerMutationOptions = Apollo.BaseMutationOptions<CreateStripeCustomerMutation, CreateStripeCustomerMutationVariables>;
 export const CreateCustomerDocument = gql`
-    mutation createCustomer($data: CreateCustomerInput) {
+    mutation createCustomer($data: CreateCustomerInput!) {
   createCustomer(data: $data)
 }
     `;
@@ -1198,7 +1240,7 @@ export type CreateCustomerMutationHookResult = ReturnType<typeof useCreateCustom
 export type CreateCustomerMutationResult = Apollo.MutationResult<CreateCustomerMutation>;
 export type CreateCustomerMutationOptions = Apollo.BaseMutationOptions<CreateCustomerMutation, CreateCustomerMutationVariables>;
 export const CreateCustomerSubscriptionDocument = gql`
-    mutation createCustomerSubscription($priceId: String, $stripeCustomerId: String) {
+    mutation createCustomerSubscription($priceId: String!, $stripeCustomerId: String!) {
   createCustomerSubscription(
     priceId: $priceId
     stripeCustomerId: $stripeCustomerId
@@ -1236,7 +1278,7 @@ export type CreateCustomerSubscriptionMutationHookResult = ReturnType<typeof use
 export type CreateCustomerSubscriptionMutationResult = Apollo.MutationResult<CreateCustomerSubscriptionMutation>;
 export type CreateCustomerSubscriptionMutationOptions = Apollo.BaseMutationOptions<CreateCustomerSubscriptionMutation, CreateCustomerSubscriptionMutationVariables>;
 export const CreateProjectBidDocument = gql`
-    mutation CreateProjectBid($data: CreateProjectBidInput) {
+    mutation CreateProjectBid($data: CreateProjectBidInput!) {
   createProjectBid(data: $data)
 }
     `;
@@ -1267,7 +1309,7 @@ export type CreateProjectBidMutationHookResult = ReturnType<typeof useCreateProj
 export type CreateProjectBidMutationResult = Apollo.MutationResult<CreateProjectBidMutation>;
 export type CreateProjectBidMutationOptions = Apollo.BaseMutationOptions<CreateProjectBidMutation, CreateProjectBidMutationVariables>;
 export const CreateProjectDocument = gql`
-    mutation createProject($data: CreateProjectInput) {
+    mutation createProject($data: CreateProjectInput!) {
   createProject(data: $data)
 }
     `;
@@ -1329,7 +1371,7 @@ export type UploadProjectDesignMutationHookResult = ReturnType<typeof useUploadP
 export type UploadProjectDesignMutationResult = Apollo.MutationResult<UploadProjectDesignMutation>;
 export type UploadProjectDesignMutationOptions = Apollo.BaseMutationOptions<UploadProjectDesignMutation, UploadProjectDesignMutationVariables>;
 export const InviteUserDocument = gql`
-    mutation inviteUser($email: String, $userId: String) {
+    mutation inviteUser($email: String!, $userId: String!) {
   inviteUser(email: $email, userId: $userId)
 }
     `;
@@ -1361,7 +1403,7 @@ export type InviteUserMutationHookResult = ReturnType<typeof useInviteUserMutati
 export type InviteUserMutationResult = Apollo.MutationResult<InviteUserMutation>;
 export type InviteUserMutationOptions = Apollo.BaseMutationOptions<InviteUserMutation, InviteUserMutationVariables>;
 export const CreateVendorDocument = gql`
-    mutation createVendor($data: CreateVendorInput) {
+    mutation createVendor($data: CreateVendorInput!) {
   createVendor(data: $data)
 }
     `;
@@ -1392,7 +1434,7 @@ export type CreateVendorMutationHookResult = ReturnType<typeof useCreateVendorMu
 export type CreateVendorMutationResult = Apollo.MutationResult<CreateVendorMutation>;
 export type CreateVendorMutationOptions = Apollo.BaseMutationOptions<CreateVendorMutation, CreateVendorMutationVariables>;
 export const CreateVendorSubscriptionDocument = gql`
-    mutation createVendorSubscription($data: CreateVendorSubscriptionInput) {
+    mutation createVendorSubscription($data: CreateVendorSubscriptionInput!) {
   createVendorSubscription(data: $data) {
     clientSecret
     subscriptionId
@@ -1426,7 +1468,7 @@ export type CreateVendorSubscriptionMutationHookResult = ReturnType<typeof useCr
 export type CreateVendorSubscriptionMutationResult = Apollo.MutationResult<CreateVendorSubscriptionMutation>;
 export type CreateVendorSubscriptionMutationOptions = Apollo.BaseMutationOptions<CreateVendorSubscriptionMutation, CreateVendorSubscriptionMutationVariables>;
 export const DeleteProjectBidPermissionsDocument = gql`
-    mutation deleteProjectBidPermissions($data: DeleteProjectBidPermissionsInput) {
+    mutation deleteProjectBidPermissions($data: DeleteProjectBidPermissionsInput!) {
   deleteProjectBidPermissions(data: $data)
 }
     `;
@@ -1457,7 +1499,7 @@ export type DeleteProjectBidPermissionsMutationHookResult = ReturnType<typeof us
 export type DeleteProjectBidPermissionsMutationResult = Apollo.MutationResult<DeleteProjectBidPermissionsMutation>;
 export type DeleteProjectBidPermissionsMutationOptions = Apollo.BaseMutationOptions<DeleteProjectBidPermissionsMutation, DeleteProjectBidPermissionsMutationVariables>;
 export const DeleteProjectPermissionsDocument = gql`
-    mutation deleteProjectPermissions($data: DeleteProjectPermissionsInput) {
+    mutation deleteProjectPermissions($data: DeleteProjectPermissionsInput!) {
   deleteProjectPermissions(data: $data)
 }
     `;
@@ -1488,7 +1530,7 @@ export type DeleteProjectPermissionsMutationHookResult = ReturnType<typeof useDe
 export type DeleteProjectPermissionsMutationResult = Apollo.MutationResult<DeleteProjectPermissionsMutation>;
 export type DeleteProjectPermissionsMutationOptions = Apollo.BaseMutationOptions<DeleteProjectPermissionsMutation, DeleteProjectPermissionsMutationVariables>;
 export const DeleteProjectDocument = gql`
-    mutation deleteProject($projectId: String) {
+    mutation deleteProject($projectId: String!) {
   deleteProject(projectId: $projectId)
 }
     `;
@@ -1519,7 +1561,7 @@ export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProject
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const DeactivateUserDocument = gql`
-    mutation deactivateUser($email: String) {
+    mutation deactivateUser($email: String!) {
   deactivateUser(email: $email)
 }
     `;
@@ -1550,7 +1592,7 @@ export type DeactivateUserMutationHookResult = ReturnType<typeof useDeactivateUs
 export type DeactivateUserMutationResult = Apollo.MutationResult<DeactivateUserMutation>;
 export type DeactivateUserMutationOptions = Apollo.BaseMutationOptions<DeactivateUserMutation, DeactivateUserMutationVariables>;
 export const GetProjectBidUsersDocument = gql`
-    query getProjectBidUsers($projectBidId: String) {
+    query getProjectBidUsers($projectBidId: String!) {
   getProjectBidUsers(projectBidId: $projectBidId) {
     userId
     name
@@ -1576,7 +1618,7 @@ export const GetProjectBidUsersDocument = gql`
  *   },
  * });
  */
-export function useGetProjectBidUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectBidUsersQuery, GetProjectBidUsersQueryVariables>) {
+export function useGetProjectBidUsersQuery(baseOptions: Apollo.QueryHookOptions<GetProjectBidUsersQuery, GetProjectBidUsersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetProjectBidUsersQuery, GetProjectBidUsersQueryVariables>(GetProjectBidUsersDocument, options);
       }
@@ -1588,7 +1630,7 @@ export type GetProjectBidUsersQueryHookResult = ReturnType<typeof useGetProjectB
 export type GetProjectBidUsersLazyQueryHookResult = ReturnType<typeof useGetProjectBidUsersLazyQuery>;
 export type GetProjectBidUsersQueryResult = Apollo.QueryResult<GetProjectBidUsersQuery, GetProjectBidUsersQueryVariables>;
 export const GetAllUsersWithinCompanyDocument = gql`
-    query getAllUsersWithinCompany($companyId: String) {
+    query getAllUsersWithinCompany($companyId: String!) {
   getAllUsersWithinCompany(companyId: $companyId) {
     id
     email
@@ -1613,7 +1655,7 @@ export const GetAllUsersWithinCompanyDocument = gql`
  *   },
  * });
  */
-export function useGetAllUsersWithinCompanyQuery(baseOptions?: Apollo.QueryHookOptions<GetAllUsersWithinCompanyQuery, GetAllUsersWithinCompanyQueryVariables>) {
+export function useGetAllUsersWithinCompanyQuery(baseOptions: Apollo.QueryHookOptions<GetAllUsersWithinCompanyQuery, GetAllUsersWithinCompanyQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllUsersWithinCompanyQuery, GetAllUsersWithinCompanyQueryVariables>(GetAllUsersWithinCompanyDocument, options);
       }
@@ -1625,7 +1667,7 @@ export type GetAllUsersWithinCompanyQueryHookResult = ReturnType<typeof useGetAl
 export type GetAllUsersWithinCompanyLazyQueryHookResult = ReturnType<typeof useGetAllUsersWithinCompanyLazyQuery>;
 export type GetAllUsersWithinCompanyQueryResult = Apollo.QueryResult<GetAllUsersWithinCompanyQuery, GetAllUsersWithinCompanyQueryVariables>;
 export const GetCompanyPlanWithCompanyIdDocument = gql`
-    query getCompanyPlanWithCompanyId($companyId: String) {
+    query getCompanyPlanWithCompanyId($companyId: String!) {
   getCompanyPlanWithCompanyId(companyId: $companyId) {
     tier
     price
@@ -1655,7 +1697,7 @@ export const GetCompanyPlanWithCompanyIdDocument = gql`
  *   },
  * });
  */
-export function useGetCompanyPlanWithCompanyIdQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>) {
+export function useGetCompanyPlanWithCompanyIdQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>(GetCompanyPlanWithCompanyIdDocument, options);
       }
@@ -1667,7 +1709,7 @@ export type GetCompanyPlanWithCompanyIdQueryHookResult = ReturnType<typeof useGe
 export type GetCompanyPlanWithCompanyIdLazyQueryHookResult = ReturnType<typeof useGetCompanyPlanWithCompanyIdLazyQuery>;
 export type GetCompanyPlanWithCompanyIdQueryResult = Apollo.QueryResult<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>;
 export const GetCompanyDetailDocument = gql`
-    query getCompanyDetail($companyId: String) {
+    query getCompanyDetail($companyId: String!) {
   getCompanyDetail(companyId: $companyId) {
     id
     name
@@ -1704,7 +1746,7 @@ export const GetCompanyDetailDocument = gql`
  *   },
  * });
  */
-export function useGetCompanyDetailQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>) {
+export function useGetCompanyDetailQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>(GetCompanyDetailDocument, options);
       }
@@ -1716,7 +1758,7 @@ export type GetCompanyDetailQueryHookResult = ReturnType<typeof useGetCompanyDet
 export type GetCompanyDetailLazyQueryHookResult = ReturnType<typeof useGetCompanyDetailLazyQuery>;
 export type GetCompanyDetailQueryResult = Apollo.QueryResult<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>;
 export const GetAllPlansDocument = gql`
-    query getAllPlans($isVendor: Boolean) {
+    query getAllPlans($isVendor: Boolean!) {
   getAllPlans(isVendor: $isVendor) {
     id
     isVendor
@@ -1756,7 +1798,7 @@ export const GetAllPlansDocument = gql`
  *   },
  * });
  */
-export function useGetAllPlansQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPlansQuery, GetAllPlansQueryVariables>) {
+export function useGetAllPlansQuery(baseOptions: Apollo.QueryHookOptions<GetAllPlansQuery, GetAllPlansQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllPlansQuery, GetAllPlansQueryVariables>(GetAllPlansDocument, options);
       }
@@ -1768,7 +1810,7 @@ export type GetAllPlansQueryHookResult = ReturnType<typeof useGetAllPlansQuery>;
 export type GetAllPlansLazyQueryHookResult = ReturnType<typeof useGetAllPlansLazyQuery>;
 export type GetAllPlansQueryResult = Apollo.QueryResult<GetAllPlansQuery, GetAllPlansQueryVariables>;
 export const GetCustomerProjectDocument = gql`
-    query getCustomerProject($data: GetProjectInput) {
+    query getCustomerProject($data: GetProjectInput!) {
   getCustomerProject(data: $data) {
     id
     userId
@@ -1829,7 +1871,7 @@ export const GetCustomerProjectDocument = gql`
  *   },
  * });
  */
-export function useGetCustomerProjectQuery(baseOptions?: Apollo.QueryHookOptions<GetCustomerProjectQuery, GetCustomerProjectQueryVariables>) {
+export function useGetCustomerProjectQuery(baseOptions: Apollo.QueryHookOptions<GetCustomerProjectQuery, GetCustomerProjectQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCustomerProjectQuery, GetCustomerProjectQueryVariables>(GetCustomerProjectDocument, options);
       }
@@ -1841,7 +1883,7 @@ export type GetCustomerProjectQueryHookResult = ReturnType<typeof useGetCustomer
 export type GetCustomerProjectLazyQueryHookResult = ReturnType<typeof useGetCustomerProjectLazyQuery>;
 export type GetCustomerProjectQueryResult = Apollo.QueryResult<GetCustomerProjectQuery, GetCustomerProjectQueryVariables>;
 export const GetCustomerProjectsDocument = gql`
-    query GetCustomerProjects($userId: String) {
+    query GetCustomerProjects($userId: String!) {
   getCustomerProjects(userId: $userId) {
     id
     userId
@@ -1902,7 +1944,7 @@ export const GetCustomerProjectsDocument = gql`
  *   },
  * });
  */
-export function useGetCustomerProjectsQuery(baseOptions?: Apollo.QueryHookOptions<GetCustomerProjectsQuery, GetCustomerProjectsQueryVariables>) {
+export function useGetCustomerProjectsQuery(baseOptions: Apollo.QueryHookOptions<GetCustomerProjectsQuery, GetCustomerProjectsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCustomerProjectsQuery, GetCustomerProjectsQueryVariables>(GetCustomerProjectsDocument, options);
       }
@@ -1914,7 +1956,7 @@ export type GetCustomerProjectsQueryHookResult = ReturnType<typeof useGetCustome
 export type GetCustomerProjectsLazyQueryHookResult = ReturnType<typeof useGetCustomerProjectsLazyQuery>;
 export type GetCustomerProjectsQueryResult = Apollo.QueryResult<GetCustomerProjectsQuery, GetCustomerProjectsQueryVariables>;
 export const GetProjectUsersDocument = gql`
-    query getProjectUsers($projectId: String) {
+    query getProjectUsers($projectId: String!) {
   getProjectUsers(projectId: $projectId) {
     userId
     name
@@ -1940,7 +1982,7 @@ export const GetProjectUsersDocument = gql`
  *   },
  * });
  */
-export function useGetProjectUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectUsersQuery, GetProjectUsersQueryVariables>) {
+export function useGetProjectUsersQuery(baseOptions: Apollo.QueryHookOptions<GetProjectUsersQuery, GetProjectUsersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetProjectUsersQuery, GetProjectUsersQueryVariables>(GetProjectUsersDocument, options);
       }
@@ -1952,7 +1994,7 @@ export type GetProjectUsersQueryHookResult = ReturnType<typeof useGetProjectUser
 export type GetProjectUsersLazyQueryHookResult = ReturnType<typeof useGetProjectUsersLazyQuery>;
 export type GetProjectUsersQueryResult = Apollo.QueryResult<GetProjectUsersQuery, GetProjectUsersQueryVariables>;
 export const GetProjectDetailDocument = gql`
-    query getProjectDetail($projectId: String) {
+    query getProjectDetail($projectId: String!) {
   getProjectDetail(projectId: $projectId) {
     id
     userId
@@ -1996,7 +2038,7 @@ export const GetProjectDetailDocument = gql`
  *   },
  * });
  */
-export function useGetProjectDetailQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectDetailQuery, GetProjectDetailQueryVariables>) {
+export function useGetProjectDetailQuery(baseOptions: Apollo.QueryHookOptions<GetProjectDetailQuery, GetProjectDetailQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetProjectDetailQuery, GetProjectDetailQueryVariables>(GetProjectDetailDocument, options);
       }
@@ -2008,7 +2050,7 @@ export type GetProjectDetailQueryHookResult = ReturnType<typeof useGetProjectDet
 export type GetProjectDetailLazyQueryHookResult = ReturnType<typeof useGetProjectDetailLazyQuery>;
 export type GetProjectDetailQueryResult = Apollo.QueryResult<GetProjectDetailQuery, GetProjectDetailQueryVariables>;
 export const SearchProjectsDocument = gql`
-    query searchProjects($searchInput: SearchProjectInput) {
+    query searchProjects($searchInput: SearchProjectInput!) {
   searchCustomerProjects(searchInput: $searchInput) {
     name
     companyName
@@ -2039,7 +2081,7 @@ export const SearchProjectsDocument = gql`
  *   },
  * });
  */
-export function useSearchProjectsQuery(baseOptions?: Apollo.QueryHookOptions<SearchProjectsQuery, SearchProjectsQueryVariables>) {
+export function useSearchProjectsQuery(baseOptions: Apollo.QueryHookOptions<SearchProjectsQuery, SearchProjectsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<SearchProjectsQuery, SearchProjectsQueryVariables>(SearchProjectsDocument, options);
       }
@@ -2051,7 +2093,7 @@ export type SearchProjectsQueryHookResult = ReturnType<typeof useSearchProjectsQ
 export type SearchProjectsLazyQueryHookResult = ReturnType<typeof useSearchProjectsLazyQuery>;
 export type SearchProjectsQueryResult = Apollo.QueryResult<SearchProjectsQuery, SearchProjectsQueryVariables>;
 export const GetUserWithUserIdDocument = gql`
-    query getUserWithUserId($userId: String, $paranoid: Boolean) {
+    query getUserWithUserId($userId: String!, $paranoid: Boolean) {
   getUserWithUserId(userId: $userId) {
     id
     name
@@ -2079,7 +2121,7 @@ export const GetUserWithUserIdDocument = gql`
  *   },
  * });
  */
-export function useGetUserWithUserIdQuery(baseOptions?: Apollo.QueryHookOptions<GetUserWithUserIdQuery, GetUserWithUserIdQueryVariables>) {
+export function useGetUserWithUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetUserWithUserIdQuery, GetUserWithUserIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserWithUserIdQuery, GetUserWithUserIdQueryVariables>(GetUserWithUserIdDocument, options);
       }
@@ -2323,7 +2365,7 @@ export type SearchVendorCompaniesQueryHookResult = ReturnType<typeof useSearchVe
 export type SearchVendorCompaniesLazyQueryHookResult = ReturnType<typeof useSearchVendorCompaniesLazyQuery>;
 export type SearchVendorCompaniesQueryResult = Apollo.QueryResult<SearchVendorCompaniesQuery, SearchVendorCompaniesQueryVariables>;
 export const UpdateProjectBidPermissionsDocument = gql`
-    mutation updateProjectBidPermissions($data: UpdateProjectBidPermissionsInput) {
+    mutation updateProjectBidPermissions($data: UpdateProjectBidPermissionsInput!) {
   updateProjectBidPermissions(data: $data)
 }
     `;
@@ -2354,7 +2396,7 @@ export type UpdateProjectBidPermissionsMutationHookResult = ReturnType<typeof us
 export type UpdateProjectBidPermissionsMutationResult = Apollo.MutationResult<UpdateProjectBidPermissionsMutation>;
 export type UpdateProjectBidPermissionsMutationOptions = Apollo.BaseMutationOptions<UpdateProjectBidPermissionsMutation, UpdateProjectBidPermissionsMutationVariables>;
 export const UpdateCompanyPlanSubscriptionInfoDocument = gql`
-    mutation updateCompanyPlanSubscriptionInfo($subscriptionId: String) {
+    mutation updateCompanyPlanSubscriptionInfo($subscriptionId: String!) {
   updateCompanyPlanSubscriptionInfo(subscriptionId: $subscriptionId)
 }
     `;
@@ -2385,7 +2427,7 @@ export type UpdateCompanyPlanSubscriptionInfoMutationHookResult = ReturnType<typ
 export type UpdateCompanyPlanSubscriptionInfoMutationResult = Apollo.MutationResult<UpdateCompanyPlanSubscriptionInfoMutation>;
 export type UpdateCompanyPlanSubscriptionInfoMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyPlanSubscriptionInfoMutation, UpdateCompanyPlanSubscriptionInfoMutationVariables>;
 export const UpdateCompanyStatusDocument = gql`
-    mutation updateCompanyStatus($companyId: String, $isActive: Boolean) {
+    mutation updateCompanyStatus($companyId: String!, $isActive: Boolean!) {
   updateCompanyStatus(companyId: $companyId, isActive: $isActive)
 }
     `;
@@ -2417,7 +2459,7 @@ export type UpdateCompanyStatusMutationHookResult = ReturnType<typeof useUpdateC
 export type UpdateCompanyStatusMutationResult = Apollo.MutationResult<UpdateCompanyStatusMutation>;
 export type UpdateCompanyStatusMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyStatusMutation, UpdateCompanyStatusMutationVariables>;
 export const UpdateCustomerDocument = gql`
-    mutation updateCustomer($data: UpdateCustomerInput) {
+    mutation updateCustomer($data: UpdateCustomerInput!) {
   updateCustomer(data: $data)
 }
     `;
@@ -2448,7 +2490,7 @@ export type UpdateCustomerMutationHookResult = ReturnType<typeof useUpdateCustom
 export type UpdateCustomerMutationResult = Apollo.MutationResult<UpdateCustomerMutation>;
 export type UpdateCustomerMutationOptions = Apollo.BaseMutationOptions<UpdateCustomerMutation, UpdateCustomerMutationVariables>;
 export const UpdateProjectPermissionsDocument = gql`
-    mutation updateProjectPermissions($data: UpdateProjectPermissionsInput) {
+    mutation updateProjectPermissions($data: UpdateProjectPermissionsInput!) {
   updateProjectPermissions(data: $data)
 }
     `;
@@ -2479,7 +2521,7 @@ export type UpdateProjectPermissionsMutationHookResult = ReturnType<typeof useUp
 export type UpdateProjectPermissionsMutationResult = Apollo.MutationResult<UpdateProjectPermissionsMutation>;
 export type UpdateProjectPermissionsMutationOptions = Apollo.BaseMutationOptions<UpdateProjectPermissionsMutation, UpdateProjectPermissionsMutationVariables>;
 export const UpdateUserPasswordDocument = gql`
-    mutation updateUserPassword($data: UpdateUserPasswordInput) {
+    mutation updateUserPassword($data: UpdateUserPasswordInput!) {
   updateUserPassword(data: $data)
 }
     `;
@@ -2510,7 +2552,7 @@ export type UpdateUserPasswordMutationHookResult = ReturnType<typeof useUpdateUs
 export type UpdateUserPasswordMutationResult = Apollo.MutationResult<UpdateUserPasswordMutation>;
 export type UpdateUserPasswordMutationOptions = Apollo.BaseMutationOptions<UpdateUserPasswordMutation, UpdateUserPasswordMutationVariables>;
 export const UpdateVendorDocument = gql`
-    mutation updateVendor($data: UpdateVendorInput) {
+    mutation updateVendor($data: UpdateVendorInput!) {
   updateVendor(data: $data)
 }
     `;
@@ -2541,7 +2583,7 @@ export type UpdateVendorMutationHookResult = ReturnType<typeof useUpdateVendorMu
 export type UpdateVendorMutationResult = Apollo.MutationResult<UpdateVendorMutation>;
 export type UpdateVendorMutationOptions = Apollo.BaseMutationOptions<UpdateVendorMutation, UpdateVendorMutationVariables>;
 export const CheckCompanyNameDocument = gql`
-    query checkCompanyName($name: String) {
+    query checkCompanyName($name: String!) {
   checkCompanyName(name: $name)
 }
     `;
@@ -2562,7 +2604,7 @@ export const CheckCompanyNameDocument = gql`
  *   },
  * });
  */
-export function useCheckCompanyNameQuery(baseOptions?: Apollo.QueryHookOptions<CheckCompanyNameQuery, CheckCompanyNameQueryVariables>) {
+export function useCheckCompanyNameQuery(baseOptions: Apollo.QueryHookOptions<CheckCompanyNameQuery, CheckCompanyNameQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CheckCompanyNameQuery, CheckCompanyNameQueryVariables>(CheckCompanyNameDocument, options);
       }
@@ -2574,7 +2616,7 @@ export type CheckCompanyNameQueryHookResult = ReturnType<typeof useCheckCompanyN
 export type CheckCompanyNameLazyQueryHookResult = ReturnType<typeof useCheckCompanyNameLazyQuery>;
 export type CheckCompanyNameQueryResult = Apollo.QueryResult<CheckCompanyNameQuery, CheckCompanyNameQueryVariables>;
 export const CheckUserEmailDocument = gql`
-    query checkUserEmail($email: String) {
+    query checkUserEmail($email: String!) {
   checkUserEmail(email: $email)
 }
     `;
@@ -2595,7 +2637,7 @@ export const CheckUserEmailDocument = gql`
  *   },
  * });
  */
-export function useCheckUserEmailQuery(baseOptions?: Apollo.QueryHookOptions<CheckUserEmailQuery, CheckUserEmailQueryVariables>) {
+export function useCheckUserEmailQuery(baseOptions: Apollo.QueryHookOptions<CheckUserEmailQuery, CheckUserEmailQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CheckUserEmailQuery, CheckUserEmailQueryVariables>(CheckUserEmailDocument, options);
       }
@@ -2606,3 +2648,46 @@ export function useCheckUserEmailLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type CheckUserEmailQueryHookResult = ReturnType<typeof useCheckUserEmailQuery>;
 export type CheckUserEmailLazyQueryHookResult = ReturnType<typeof useCheckUserEmailLazyQuery>;
 export type CheckUserEmailQueryResult = Apollo.QueryResult<CheckUserEmailQuery, CheckUserEmailQueryVariables>;
+export const LoginDocument = gql`
+    query login($data: UserLoginInput!) {
+  login(data: $data) {
+    id
+    companyId
+    isVendor
+    isAdmin
+    name
+    email
+    token
+    notificationToken
+    chatToken
+  }
+}
+    `;
+
+/**
+ * __useLoginQuery__
+ *
+ * To run a query within a React component, call `useLoginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoginQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoginQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useLoginQuery(baseOptions: Apollo.QueryHookOptions<LoginQuery, LoginQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+      }
+export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginQuery, LoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+        }
+export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
+export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
+export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
