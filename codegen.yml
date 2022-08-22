@@ -1,0 +1,11 @@
+# This file is intended for generating graphql TS types
+
+overwrite: true
+schema: http://localhost:4000/graphql
+documents: ./src/app/gql/**/*.ts
+generates:
+  ./src/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
