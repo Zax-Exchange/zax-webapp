@@ -20,14 +20,28 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../../context/AuthContext";
-import { CustomerProject, useDeleteProjectBidPermissionsMutation, useDeleteProjectPermissionsMutation, useGetAllUsersWithinCompanyQuery, useGetProjectBidUsersQuery, useGetProjectUsersQuery, UserPermission, useUpdateProjectBidPermissionsMutation, useUpdateProjectPermissionsMutation, VendorProject } from "../../generated/graphql";
+import {
+  CustomerProject,
+  ProjectPermission,
+  useDeleteProjectBidPermissionsMutation,
+  useDeleteProjectPermissionsMutation,
+  useGetAllUsersWithinCompanyQuery,
+  useGetProjectBidUsersLazyQuery,
+  useGetProjectBidUsersQuery,
+  useGetProjectUsersLazyQuery,
+  useGetProjectUsersQuery,
+  UserPermission,
+  useUpdateProjectBidPermissionsMutation,
+  useUpdateProjectPermissionsMutation,
+  VendorProject,
+} from "../../generated/graphql";
 
 const ProjectPermissionModal = ({
   project,
   setPermissionModalOpen,
-  // setSnackbar,
-  // setSnackbarOpen,
-}: {
+}: // setSnackbar,
+// setSnackbarOpen,
+{
   setPermissionModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   project: VendorProject | CustomerProject;
 }) => {
@@ -43,7 +57,7 @@ const ProjectPermissionModal = ({
   const [toUpdate, setToUpdate] = useState<{
     viewers: string[];
     editors: string[];
-    toDelete: string[]
+    toDelete: string[];
   }>({
     viewers: [],
     editors: [],
@@ -55,60 +69,88 @@ const ProjectPermissionModal = ({
   const [
     updateProjectPermission,
     {
-     error: updateProjectPermissionError,
-    data: updateProjectPermissionData,
-   loading: updateProjectPermissionLoading,
-  }
-] = useUpdateProjectPermissionsMutation();
+      error: updateProjectPermissionError,
+      data: updateProjectPermissionData,
+      loading: updateProjectPermissionLoading,
+    },
+  ] = useUpdateProjectPermissionsMutation();
 
   const [
     updateProjectBidPermission,
     {
       data: updateProjectBidPermissionData,
-    error: updateProjectBidPermissionError,
-    loading: updateProjectBidPermissionLoading,}
-   ] = useUpdateProjectBidPermissionsMutation();
+      error: updateProjectBidPermissionError,
+      loading: updateProjectBidPermissionLoading,
+    },
+  ] = useUpdateProjectBidPermissionsMutation();
 
   const [
     deleteProjectPermission,
     {
       data: deleteProjectPermissionData,
-    error: deleteProjectPermissionError,
-    loading: deleteProjectPermissionLoading,}
-   ] = useDeleteProjectPermissionsMutation();
+      error: deleteProjectPermissionError,
+      loading: deleteProjectPermissionLoading,
+    },
+  ] = useDeleteProjectPermissionsMutation();
 
   const [
     deleteProjectBidPermission,
     {
       data: deleteProjectBidPermissionData,
-    error: deleteProjectBidPermissionError,
-    loading: deleteProjectBidPermissionLoading,}
-   ] = useDeleteProjectBidPermissionsMutation();
-
-  const { data: getProjectBidUsersData, refetch: getProjectBidUsersRefetch } =
-    useGetProjectBidUsersQuery({
-      variables: {
-        projectBidId: (project as VendorProject).bidInfo.id
-      },
-      skip: !isVendor,
-      onCompleted(data) {
-        setAllProjectUsers(data.getProjectBidUsers as UserPermission[])
-      },
-    });
-
-  const { data: getProjectUsersData, refetch: getProjectUsersRefetch } = useGetProjectUsersQuery({
-    variables: {
-      projectId: (project as CustomerProject).id 
+      error: deleteProjectBidPermissionError,
+      loading: deleteProjectBidPermissionLoading,
     },
-    skip: isVendor,
-    onCompleted(data) {
-      setAllProjectUsers(data.getProjectUsers as UserPermission[])
-    },
-  });
+  ] = useDeleteProjectBidPermissionsMutation();
+
+  const [
+    getProjectBidUsers,
+    { data: getProjectBidUsersData, refetch: getProjectBidUsersRefetch },
+  ] = useGetProjectBidUsersLazyQuery();
+
+  const [
+    getProjectUsers,
+    { data: getProjectUsersData, refetch: getProjectUsersRefetch },
+  ] = useGetProjectUsersLazyQuery();
+
+  useEffect(() => {
+    // init allProjectUsers list
+    console.log("fetching all project users");
+    if (isVendor) {
+      getProjectBidUsers({
+        variables: {
+          projectBidId: (project as VendorProject).bidInfo.id,
+        },
+        fetchPolicy: "no-cache",
+        onCompleted: ({
+          getProjectBidUsers,
+        }: {
+          getProjectBidUsers: UserPermission[];
+        }) => {
+          setAllProjectUsers(getProjectBidUsers);
+        },
+      });
+    } else {
+      getProjectUsers({
+        variables: {
+          projectId: (project as CustomerProject).id,
+        },
+        fetchPolicy: "no-cache",
+        onCompleted: ({
+          getProjectUsers,
+        }: {
+          getProjectUsers: UserPermission[];
+        }) => {
+          console.log("customer project users fetched");
+          setAllProjectUsers(getProjectUsers);
+        },
+      });
+    }
+  }, []);
+
   const { data: getAllCompanyUsersData } = useGetAllUsersWithinCompanyQuery({
     variables: {
-      companyId: loggedInUser!.companyId
-    }
+      companyId: loggedInUser!.companyId,
+    },
   });
 
   useEffect(() => {
@@ -129,7 +171,7 @@ const ProjectPermissionModal = ({
           userEmails.push(data!.email);
         }
       });
-    
+      console.log(userEmails, allProjectUsers);
       setEmailsList(userEmails);
     }
   }, [allProjectUsers, getAllCompanyUsersData]);
@@ -151,7 +193,7 @@ const ProjectPermissionModal = ({
     const user = getUser(email);
 
     // update data that'll be sent to server
-    updateViewersEditorsList(user!.id, "VIEWER");
+    updateViewersEditorsList(user!.id, ProjectPermission.Viewer);
 
     // update data for display purpose
     setAllProjectUsers([
@@ -160,19 +202,22 @@ const ProjectPermissionModal = ({
         name: user!.name,
         email: user!.email,
         userId: user!.id,
-        permission: "VIEWER",
+        permission: ProjectPermission.Viewer,
       },
     ]);
 
     setEmail("");
   };
 
-  const updateViewersEditorsList = (userId: string, permission: string) => {
+  const updateViewersEditorsList = (
+    userId: string,
+    permission: ProjectPermission
+  ) => {
     let viewers = [...toUpdate.viewers];
     let editors = [...toUpdate.editors];
     let toDelete = [...toUpdate.toDelete];
 
-    if (permission === "VIEWER") {
+    if (permission === ProjectPermission.Viewer) {
       // user is previously editor
       const ind = editors.indexOf(userId);
       editors.splice(ind, 1);
@@ -201,7 +246,7 @@ const ProjectPermissionModal = ({
           (user) => user!.userId === userId
         ) >= 0
       );
-    } else if (getProjectUsersData){
+    } else if (getProjectUsersData) {
       return (
         getProjectUsersData!.getProjectUsers!.findIndex(
           (user) => user!.userId === userId
@@ -209,12 +254,16 @@ const ProjectPermissionModal = ({
       );
     }
   };
-  const deleteViewersEditorsList = (userId: string, permission: string) => {
+
+  const deleteViewersEditorsList = (
+    userId: string,
+    permission: ProjectPermission
+  ) => {
     let viewers = [...toUpdate.viewers];
     let editors = [...toUpdate.editors];
     let toDelete = [...toUpdate.toDelete];
 
-    if (permission === "EDITOR") {
+    if (permission === ProjectPermission.Editor) {
       // user is previously editor
       const ind = editors.indexOf(userId);
       editors.splice(ind, 1);
@@ -235,9 +284,12 @@ const ProjectPermissionModal = ({
     });
   };
   // TODO: need to setToUpdate state
-  const selectPermissionHandler = (e: SelectChangeEvent<string>, userId: string) => {
+  const selectPermissionHandler = (
+    e: SelectChangeEvent<string>,
+    userId: string
+  ) => {
     let projectUsers = [...allProjectUsers];
-    const permission = e.target.value;
+    const permission = e.target.value as ProjectPermission;
     projectUsers = projectUsers.map((user) => {
       if (user.userId === userId) {
         return {
@@ -252,7 +304,10 @@ const ProjectPermissionModal = ({
     updateViewersEditorsList(userId, permission);
   };
 
-  const removePermissionHandler = (userId: string, previousPermission: string) => {
+  const removePermissionHandler = (
+    userId: string,
+    previousPermission: ProjectPermission
+  ) => {
     const projectUsers = [...allProjectUsers];
     const userIndex = projectUsers.findIndex((user) => user.userId === userId);
 
@@ -271,13 +326,13 @@ const ProjectPermissionModal = ({
                 userIds: toUpdate.viewers,
                 projectId: project.id,
                 projectBidId: (project as VendorProject).bidInfo.id,
-                permission: "VIEWER",
+                permission: ProjectPermission.Viewer,
               },
               editors: {
                 userIds: toUpdate.editors,
                 projectId: project.id,
                 projectBidId: (project as VendorProject).bidInfo.id,
-                permission: "EDITOR",
+                permission: ProjectPermission.Editor,
               },
             },
           },
@@ -298,12 +353,12 @@ const ProjectPermissionModal = ({
               viewers: {
                 userIds: toUpdate.viewers,
                 projectId: project.id,
-                permission: "VIEWER",
+                permission: ProjectPermission.Viewer,
               },
               editors: {
                 userIds: toUpdate.editors,
                 projectId: project.id,
-                permission: "EDITOR",
+                permission: ProjectPermission.Editor,
               },
             },
           },
@@ -332,9 +387,12 @@ const ProjectPermissionModal = ({
   const isUserOwner = () => {
     // not used for now
     if (isVendor) {
-      return (project as VendorProject).bidInfo.permission === "OWNER";
+      return (
+        (project as VendorProject).bidInfo.permission ===
+        ProjectPermission.Owner
+      );
     }
-    return project.permission === "OWNER";
+    return project.permission === ProjectPermission.Owner;
   };
 
   const renderPermissionedUsers = () => {
@@ -351,24 +409,31 @@ const ProjectPermissionModal = ({
                 <ListItem>
                   <Typography variant="caption">({data.email})</Typography>
                 </ListItem>
-                {data.permission === "OWNER" && (
+                {data.permission === ProjectPermission.Owner && (
                   <ListItem>
                     <Typography>OWNER</Typography>
                   </ListItem>
                 )}
-                {data.permission !== "OWNER" && (
+                {data.permission !== ProjectPermission.Owner && (
                   <ListItem>
                     <Select
                       autoWidth
                       onChange={(e) => selectPermissionHandler(e, data.userId)}
                       value={data.permission}
                     >
-                      <MenuItem value="EDITOR">EDITOR</MenuItem>
-                      <MenuItem value="VIEWER">VIEWER</MenuItem>
+                      <MenuItem value={ProjectPermission.Editor}>
+                        EDITOR
+                      </MenuItem>
+                      <MenuItem value={ProjectPermission.Viewer}>
+                        VIEWER
+                      </MenuItem>
                     </Select>
                     <Button
                       onClick={() =>
-                        removePermissionHandler(data.userId, data.permission)
+                        removePermissionHandler(
+                          data.userId,
+                          data.permission as ProjectPermission
+                        )
                       }
                     >
                       Remove

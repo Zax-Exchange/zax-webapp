@@ -9,16 +9,20 @@ import {
 import React from "react";
 import { ProjectOverview } from "../../generated/graphql";
 
-const SearchProjectOverview = ({ projectData }: {
-  projectData: ProjectOverview
+const SearchProjectOverview = ({
+  projectData,
+}: {
+  projectData: ProjectOverview;
 }) => {
   const navigate = useNavigate();
 
   const handleProjectOnClick = (projectId: string) => {
-    navigate(`/project-detail/${projectId}`);
+    navigate(`/search-project-detail/${projectId}`);
   };
 
-  const date = new Date(parseInt(projectData.createdAt, 10)).toISOString().slice(0, 10);
+  const date = new Date(parseInt(projectData.createdAt, 10))
+    .toISOString()
+    .slice(0, 10);
 
   // const renderMaterialsString = (materials: string[]) => {
   //   let res = "";

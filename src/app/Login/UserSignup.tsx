@@ -14,46 +14,27 @@ import { gql, useMutation } from "@apollo/client";
 import jwt_decode from "jwt-decode";
 import FullScreenLoading from "../Utils/Loading";
 import React from "react";
+import { LoggedInUser, useCreateUserMutation } from "../../generated/graphql";
 
-const CREATE_USER = gql`
-  mutation createUser($data: CreateUserInput) {
-    createUser(data: $data) {
-      id
-      companyId
-      isVendor
-      isAdmin
-      name
-      email
-      token
-      notificationToken
-      chatToken
-    }
-  }
-`;
 const UserSignup = () => {
-  const { user, login, logout } = useContext(AuthContext);
-
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [createUser, { error: createUserError, loading: createUserLoading }] =
-    useMutation(CREATE_USER, {
-      onCompleted: (data) => {
-        login(data.createUser);
+    useCreateUserMutation({
+      onCompleted: ({ createUser }: { createUser: LoggedInUser }) => {
+        login(createUser);
+        navigate("/");
       },
     });
 
   const { companyId } = useParams();
 
-  const navigate = useNavigate();
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
     companyId,
   });
-
-  if (user) {
-    navigate("/");
-    return null;
-  }
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
@@ -64,13 +45,16 @@ const UserSignup = () => {
 
   const createUserHandler = async () => {
     try {
+      if (!companyId) {
+        throw new Error("Invalid Company Id.");
+      }
       const { data } = await createUser({
         variables: {
           data: {
             name: values.name,
             email: values.email,
             password: values.password,
-            companyId: values.companyId,
+            companyId: values.companyId!,
           },
         },
       });

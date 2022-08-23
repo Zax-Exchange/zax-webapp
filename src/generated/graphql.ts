@@ -187,7 +187,7 @@ export type CustomerProject = {
   design?: Maybe<ProjectDesign>;
   id: Scalars['String'];
   name: Scalars['String'];
-  permission: Scalars['String'];
+  permission: ProjectPermission;
   status: Scalars['String'];
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
@@ -446,7 +446,7 @@ export type PermissionedProjectBid = {
   components: Array<ProjectBidComponent>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
-  permission: Scalars['String'];
+  permission: ProjectPermission;
   projectId: Scalars['String'];
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
@@ -762,7 +762,7 @@ export type UpdateProjectBidPermissionsInput = {
 };
 
 export type UpdateProjectBidPermissionsInputData = {
-  permission: Scalars['String'];
+  permission: ProjectPermission;
   projectBidId: Scalars['String'];
   projectId: Scalars['String'];
   userIds: Array<InputMaybe<Scalars['String']>>;
@@ -791,7 +791,7 @@ export type UpdateProjectPermissionsInput = {
 };
 
 export type UpdateProjectPermissionsInputData = {
-  permission: Scalars['String'];
+  permission: ProjectPermission;
   projectId: Scalars['String'];
   userIds: Array<InputMaybe<Scalars['String']>>;
 };
@@ -851,7 +851,7 @@ export type UserPermission = {
   __typename?: 'UserPermission';
   email: Scalars['String'];
   name: Scalars['String'];
-  permission: Scalars['String'];
+  permission: ProjectPermission;
   userId: Scalars['String'];
 };
 
@@ -900,7 +900,7 @@ export type VendorProject = {
   design?: Maybe<ProjectDesign>;
   id: Scalars['String'];
   name: Scalars['String'];
-  permission: Scalars['String'];
+  permission: ProjectPermission;
   status: Scalars['String'];
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
@@ -949,13 +949,12 @@ export type UploadProjectDesignMutationVariables = Exact<{
 
 export type UploadProjectDesignMutation = { __typename?: 'Mutation', uploadProjectDesign: string };
 
-export type InviteUserMutationVariables = Exact<{
-  email: Scalars['String'];
-  userId: Scalars['String'];
+export type CreateUserMutationVariables = Exact<{
+  data: CreateUserInput;
 }>;
 
 
-export type InviteUserMutation = { __typename?: 'Mutation', inviteUser: boolean };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, isAdmin: boolean, isActive: boolean, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
 
 export type CreateVendorMutationVariables = Exact<{
   data: CreateVendorInput;
@@ -1004,7 +1003,7 @@ export type GetProjectBidUsersQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectBidUsersQuery = { __typename?: 'Query', getProjectBidUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: string }> };
+export type GetProjectBidUsersQuery = { __typename?: 'Query', getProjectBidUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: ProjectPermission }> };
 
 export type GetAllUsersWithinCompanyQueryVariables = Exact<{
   companyId: Scalars['String'];
@@ -1039,21 +1038,21 @@ export type GetCustomerProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetCustomerProjectQuery = { __typename?: 'Query', getCustomerProject: { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null } };
+export type GetCustomerProjectQuery = { __typename?: 'Query', getCustomerProject: { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: ProjectPermission, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null } };
 
 export type GetCustomerProjectsQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects: Array<{ __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null }> };
+export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects: Array<{ __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: ProjectPermission, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null }> };
 
 export type GetProjectUsersQueryVariables = Exact<{
   projectId: Scalars['String'];
 }>;
 
 
-export type GetProjectUsersQuery = { __typename?: 'Query', getProjectUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: string }> };
+export type GetProjectUsersQuery = { __typename?: 'Query', getProjectUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: ProjectPermission }> };
 
 export type GetProjectDetailQueryVariables = Exact<{
   projectId: Scalars['String'];
@@ -1089,14 +1088,14 @@ export type GetVendorProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject: { __typename?: 'VendorProject', id: string, userId: string, customerName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } };
+export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject: { __typename?: 'VendorProject', id: string, userId: string, customerName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } };
 
 export type GetVendorProjectsQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProject', id: string, userId: string, companyId: string, customerName: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: string, createdAt: string, updatedAt: string, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }, components: Array<{ __typename?: 'ProjectComponent', id: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null } | null> };
+export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProject', id: string, userId: string, companyId: string, customerName: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: ProjectPermission, createdAt: string, updatedAt: string, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }, components: Array<{ __typename?: 'ProjectComponent', id: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null } | null> };
 
 export type SearchVendorCompaniesQueryVariables = Exact<{
   searchInput: SearchCompanyInput;
@@ -1175,6 +1174,14 @@ export type LoginQueryVariables = Exact<{
 
 
 export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, isAdmin: boolean, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
+
+export type InviteUserMutationVariables = Exact<{
+  email: Scalars['String'];
+  userId: Scalars['String'];
+}>;
+
+
+export type InviteUserMutation = { __typename?: 'Mutation', inviteUser: boolean };
 
 
 export const CreateStripeCustomerDocument = gql`
@@ -1370,38 +1377,48 @@ export function useUploadProjectDesignMutation(baseOptions?: Apollo.MutationHook
 export type UploadProjectDesignMutationHookResult = ReturnType<typeof useUploadProjectDesignMutation>;
 export type UploadProjectDesignMutationResult = Apollo.MutationResult<UploadProjectDesignMutation>;
 export type UploadProjectDesignMutationOptions = Apollo.BaseMutationOptions<UploadProjectDesignMutation, UploadProjectDesignMutationVariables>;
-export const InviteUserDocument = gql`
-    mutation inviteUser($email: String!, $userId: String!) {
-  inviteUser(email: $email, userId: $userId)
+export const CreateUserDocument = gql`
+    mutation createUser($data: CreateUserInput!) {
+  createUser(data: $data) {
+    id
+    companyId
+    isVendor
+    isAdmin
+    isActive
+    name
+    email
+    token
+    notificationToken
+    chatToken
+  }
 }
     `;
-export type InviteUserMutationFn = Apollo.MutationFunction<InviteUserMutation, InviteUserMutationVariables>;
+export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
 
 /**
- * __useInviteUserMutation__
+ * __useCreateUserMutation__
  *
- * To run a mutation, you first call `useInviteUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [inviteUserMutation, { data, loading, error }] = useInviteUserMutation({
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
  *   variables: {
- *      email: // value for 'email'
- *      userId: // value for 'userId'
+ *      data: // value for 'data'
  *   },
  * });
  */
-export function useInviteUserMutation(baseOptions?: Apollo.MutationHookOptions<InviteUserMutation, InviteUserMutationVariables>) {
+export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<InviteUserMutation, InviteUserMutationVariables>(InviteUserDocument, options);
+        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
       }
-export type InviteUserMutationHookResult = ReturnType<typeof useInviteUserMutation>;
-export type InviteUserMutationResult = Apollo.MutationResult<InviteUserMutation>;
-export type InviteUserMutationOptions = Apollo.BaseMutationOptions<InviteUserMutation, InviteUserMutationVariables>;
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
+export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const CreateVendorDocument = gql`
     mutation createVendor($data: CreateVendorInput!) {
   createVendor(data: $data)
@@ -2691,3 +2708,35 @@ export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Logi
 export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
 export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
 export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
+export const InviteUserDocument = gql`
+    mutation inviteUser($email: String!, $userId: String!) {
+  inviteUser(email: $email, userId: $userId)
+}
+    `;
+export type InviteUserMutationFn = Apollo.MutationFunction<InviteUserMutation, InviteUserMutationVariables>;
+
+/**
+ * __useInviteUserMutation__
+ *
+ * To run a mutation, you first call `useInviteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [inviteUserMutation, { data, loading, error }] = useInviteUserMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useInviteUserMutation(baseOptions?: Apollo.MutationHookOptions<InviteUserMutation, InviteUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InviteUserMutation, InviteUserMutationVariables>(InviteUserDocument, options);
+      }
+export type InviteUserMutationHookResult = ReturnType<typeof useInviteUserMutation>;
+export type InviteUserMutationResult = Apollo.MutationResult<InviteUserMutation>;
+export type InviteUserMutationOptions = Apollo.BaseMutationOptions<InviteUserMutation, InviteUserMutationVariables>;

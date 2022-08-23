@@ -1,8 +1,18 @@
 import { gql } from "@apollo/client";
 
-const INVITE_USER = gql`
-  mutation inviteUser($email: String!, $userId: String!) {
-    inviteUser(email: $email, userId: $userId)
+const CREATE_USER = gql`
+  mutation createUser($data: CreateUserInput!) {
+    createUser(data: $data) {
+      id
+      companyId
+      isVendor
+      isAdmin
+      isActive
+      name
+      email
+      token
+      notificationToken
+      chatToken
+    }
   }
 `;
-

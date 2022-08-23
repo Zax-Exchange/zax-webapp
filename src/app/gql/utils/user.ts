@@ -21,3 +21,9 @@ const USER_LOGIN = gql`
     }
   }
 `;
+
+const INVITE_USER = gql`
+  mutation inviteUser($email: String!, $userId: String!) {
+    inviteUser(email: $email, userId: $userId)
+  }
+`;
