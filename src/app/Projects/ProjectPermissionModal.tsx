@@ -39,9 +39,7 @@ import {
 const ProjectPermissionModal = ({
   project,
   setPermissionModalOpen,
-}: // setSnackbar,
-// setSnackbarOpen,
-{
+}: {
   setPermissionModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   project: VendorProject | CustomerProject;
 }) => {

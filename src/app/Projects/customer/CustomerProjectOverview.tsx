@@ -13,6 +13,7 @@ import {
   MenuList,
   Chip,
   Tooltip,
+  AlertColor,
 } from "@mui/material";
 import ProjectPermissionModal from "../ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
@@ -46,8 +47,8 @@ export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 const CustomerProjectOverview = ({
   project,
   getCustomerProjectsRefetch,
-  // setSnackbar,
-  // setSnackbarOpen,
+  setSnackbar,
+  setSnackbarOpen,
   setIsProjectPageLoading,
 }: {
   project: CustomerProject;
@@ -61,6 +62,13 @@ const CustomerProjectOverview = ({
       | undefined
   ) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setSnackbar: React.Dispatch<
+    React.SetStateAction<{
+      message: string;
+      severity: AlertColor | undefined;
+    }>
+  >;
+  setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
@@ -218,6 +226,8 @@ const CustomerProjectOverview = ({
         getCustomerProjectsRefetch={getCustomerProjectsRefetch}
         setIsProjectPageLoading={setIsProjectPageLoading}
         projectId={project.id}
+        setSnackbar={setSnackbar}
+        setSnackbarOpen={setSnackbarOpen}
         // setSnackbar={setSnackbar}
         // setSnackbarOpen={setSnackbarOpen}
       />
@@ -232,8 +242,6 @@ const CustomerProjectOverview = ({
           <ProjectPermissionModal
             project={project}
             setPermissionModalOpen={setPermissionModalOpen}
-            // setSnackbar={setSnackbar}
-            // setSnackbarOpen={setSnackbarOpen}
           />
         </DialogContent>
       </Dialog>

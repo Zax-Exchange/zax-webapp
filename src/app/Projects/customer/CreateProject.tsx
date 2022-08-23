@@ -28,7 +28,11 @@ import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import UploadDesign from "./UploadDesign";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
 import React from "react";
-import { useCreateProjectMutation, useGetCustomerProjectsLazyQuery } from "../../../generated/graphql";
+import {
+  useCreateProjectMutation,
+  useGetCustomerProjectsLazyQuery,
+} from "../../../generated/graphql";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 /**
  * name
  * deliveryDate
@@ -64,8 +68,9 @@ const CreateProject = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation();
+  const { CustomSnackbar, setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const [createProjectMutation, { data, loading, error }] =
+    useCreateProjectMutation();
 
   const [getCustomerProjects] = useGetCustomerProjectsLazyQuery();
 
@@ -207,22 +212,26 @@ const CreateProject = () => {
           },
         },
       });
-      if (location.pathname.indexOf("/projects")) {
-        navigate("/projects");
+      setSnackbar({
+        severity: "success",
+        message: "Project created.",
+      });
+      setSnackbarOpen(true);
+      if (location.pathname.indexOf("/customer-projects")) {
+        navigate("/customer-projects");
       } else {
-        await getCustomerProjects();
+        await getCustomerProjects({
+          variables: {
+            userId: user!.id,
+          },
+        });
       }
-      // setSnackbar({
-      //   severity: "success",
-      //   message: "Project created.",
-      // });
     } catch (e) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "Something went wrong. Please try again later.",
-      // });
-    } finally {
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later.",
+      });
+      setSnackbarOpen(true);
     }
   };
 
@@ -315,7 +324,7 @@ const CreateProject = () => {
               )}
             />
           </LocalizationProvider>
-          <GoogleMapAutocomplete parentSetDataHandler={handleAddressOnChange}/>
+          <GoogleMapAutocomplete parentSetDataHandler={handleAddressOnChange} />
 
           <TextField
             autoComplete="new-password"

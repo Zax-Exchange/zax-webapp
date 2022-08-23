@@ -26,13 +26,13 @@ import FullScreenLoading from "../Utils/Loading";
 import { gql, useMutation } from "@apollo/client";
 import CustomerNotification from "../Notification/CustomerNotification";
 import React from "react";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 
 const query = gql`
   mutation reset($t: Int) {
     reset(t: $t)
   }
 `;
-
 
 // TODO: add route protections to prevent customer/vendors from accessing vendors/customers pages
 const Nav = () => {
@@ -42,24 +42,18 @@ const Nav = () => {
   const isVendor = user?.isVendor;
 
   const [sideNavOpen, setSideNavOpen] = useState(false);
-  const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    severity: "",
-    message: "",
-  });
+  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
 
   const handleSideNavOnClick = (page: string) => {
     if (page === "home") {
       navigate("/");
     } else if (page === "projects") {
       if (user!.isVendor) {
-        navigate("/vendor-projects")
+        navigate("/vendor-projects");
       } else {
-        navigate("/customer-projects")
+        navigate("/customer-projects");
       }
-    }
-    else {
+    } else {
       navigate(`/${page}`);
     }
   };
@@ -175,16 +169,17 @@ const Nav = () => {
 
   const renderSearchBar = () => {
     return (
-      <SearchBar 
+      <SearchBar
       // setSnackbar={setSnackbar}
-      //  setSnackbarOpen={setSnackbarOpen} 
-       />
+      //  setSnackbarOpen={setSnackbarOpen}
+      />
     );
   };
   const renderCustomerNav = () => {
     return (
       <>
         <Toolbar>
+          {CustomSnackbar}
           {renderHamburger()}
 
           {renderLogo()}
@@ -264,13 +259,7 @@ const Nav = () => {
 
   return (
     <>
-      {/* <CustomSnackbar
-        severity={snackbar.severity}
-        direction="right"
-        message={snackbar.message}
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-      /> */}
+      {CustomSnackbar}
       {resetLoading && <FullScreenLoading />}
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar

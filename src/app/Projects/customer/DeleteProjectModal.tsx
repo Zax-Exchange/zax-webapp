@@ -7,6 +7,8 @@ import {
   DialogContent,
   Typography,
   CircularProgress,
+  AlertColor,
+  IconButton,
 } from "@mui/material";
 import React from "react";
 import {
@@ -15,15 +17,16 @@ import {
   InputMaybe,
   useDeleteProjectMutation,
 } from "../../../generated/graphql";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 const DeleteProjectModal = ({
   deleteProjectModalOpen,
   setDeleteProjectModalOpen,
   projectId,
   getCustomerProjectsRefetch,
-  // setSnackbar,
-  // setSnackbarOpen,
   setIsProjectPageLoading,
+  setSnackbar,
+  setSnackbarOpen,
 }: {
   deleteProjectModalOpen: boolean;
   setDeleteProjectModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,9 +40,14 @@ const DeleteProjectModal = ({
         >
       | undefined
   ) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>;
-  // setSnackbar,
-  // setSnackbarOpen,
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setSnackbar: React.Dispatch<
+    React.SetStateAction<{
+      message: string;
+      severity: AlertColor | undefined;
+    }>
+  >;
+  setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [
     deleteProjectMutation,
@@ -53,7 +61,6 @@ const DeleteProjectModal = ({
   const deleteProjectOnClick = async () => {
     setDeleteProjectModalOpen(false);
     setIsProjectPageLoading(true);
-
     try {
       await deleteProjectMutation({
         variables: {
@@ -61,18 +68,18 @@ const DeleteProjectModal = ({
         },
       });
       await getCustomerProjectsRefetch();
-      // setSnackbar({
-      //   message: "Project deleted.",
-      //   severity: "success",
-      // });
+      setSnackbar({
+        message: "Project deleted.",
+        severity: "success",
+      });
     } catch (e) {
-      // setSnackbar({
-      //   message: "Something went wrong. Please try again later.",
-      //   severity: "error",
-      // });
+      setSnackbar({
+        message: "Something went wrong. Please try again later.",
+        severity: "error",
+      });
     } finally {
+      setSnackbarOpen(true);
       setIsProjectPageLoading(false);
-      // setSnackbarOpen(true);
     }
   };
 
@@ -81,7 +88,9 @@ const DeleteProjectModal = ({
       <>
         <Typography>Do you want to delete the project?</Typography>
         <DialogActions>
-          <Button onClick={deleteProjectOnClick}>Confirm</Button>
+          <Button onClick={deleteProjectOnClick} color="error">
+            Confirm
+          </Button>
           <Button onClick={() => setDeleteProjectModalOpen(false)}>
             Cancel
           </Button>
@@ -98,7 +107,6 @@ const DeleteProjectModal = ({
     >
       <DialogContent>
         <Container>
-          {/* {deleteProjectLoading && <CircularProgress />} */}
           {!deleteProjectLoading &&
             !deleteProjectError &&
             renderDeleteProjectConfirmation()}

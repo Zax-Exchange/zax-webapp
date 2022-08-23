@@ -14,9 +14,13 @@ import React, { useContext, useEffect, useState } from "react";
 // import CustomSnackbar from "../Utils/CustomSnackbar";
 import SortIcon from "@mui/icons-material/Sort";
 import { AuthContext } from "../../../context/AuthContext";
-import { CustomerProject, useGetCustomerProjectsQuery } from "../../../generated/graphql";
+import {
+  CustomerProject,
+  useGetCustomerProjectsQuery,
+} from "../../../generated/graphql";
 import CustomerProjectOverview from "./CustomerProjectOverview";
 import FullScreenLoading from "../../Utils/Loading";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 const CustomerProjects = () => {
   const { user } = useContext(AuthContext);
@@ -31,19 +35,16 @@ const CustomerProjects = () => {
     refetch: getCustomerProjectsRefetch,
   } = useGetCustomerProjectsQuery({
     variables: {
-      userId
-    }
+      userId,
+    },
+    fetchPolicy: "no-cache",
   });
 
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    message: "",
-    severity: "",
-  });
+  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const [sortMenuAnchor, setSortMenuAnchor] = useState<HTMLButtonElement | null>(null);
+  const [sortMenuAnchor, setSortMenuAnchor] =
+    useState<HTMLButtonElement | null>(null);
   const sortMenuOpen = !!sortMenuAnchor;
   const [projects, setProjects] = useState<CustomerProject[]>([]);
 
@@ -52,7 +53,9 @@ const CustomerProjects = () => {
       getCustomerProjectsData &&
       getCustomerProjectsData.getCustomerProjects
     ) {
-      setProjects(getCustomerProjectsData.getCustomerProjects as CustomerProject[]);
+      setProjects(
+        getCustomerProjectsData.getCustomerProjects as CustomerProject[]
+      );
     }
   }, [getCustomerProjectsData]);
 
@@ -116,7 +119,6 @@ const CustomerProjects = () => {
       </Container>
     );
   }
-  
 
   return (
     <Container
@@ -124,13 +126,7 @@ const CustomerProjects = () => {
       sx={{ position: "relative" }}
     >
       {isProjectPageLoading && <FullScreenLoading />}
-      {/* <CustomSnackbar
-        severity={snackbar.severity}
-        direction="right"
-        message={snackbar.message}
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-      /> */}
+      {CustomSnackbar}
       <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
         <Typography variant="subtitle2">Your projects</Typography>
         <IconButton onClick={sortOnClick}>
@@ -173,14 +169,13 @@ const CustomerProjects = () => {
                   key={i}
                   project={project}
                   getCustomerProjectsRefetch={getCustomerProjectsRefetch}
-                  // setSnackbar={setSnackbar}
-                  // setSnackbarOpen={setSnackbarOpen}
+                  setSnackbar={setSnackbar}
+                  setSnackbarOpen={setSnackbarOpen}
                   setIsProjectPageLoading={setIsProjectPageLoading}
                 />
               </>
             );
-          })
-        }
+          })}
         </Grid>
       </Fade>
     </Container>

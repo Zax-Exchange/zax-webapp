@@ -17,7 +17,11 @@ import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
 import { ProjectOverviewListItem } from "./CustomerProjectOverview";
 import styled from "@emotion/styled";
-import { ProjectBid, ProjectComponent, useGetCustomerProjectQuery } from "../../../generated/graphql";
+import {
+  ProjectBid,
+  ProjectComponent,
+  useGetCustomerProjectQuery,
+} from "../../../generated/graphql";
 import React from "react";
 
 const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
@@ -30,26 +34,28 @@ const CustomerProjectDetail = () => {
   const navigate = useNavigate();
 
   const { data, loading, error, refetch } = useGetCustomerProjectQuery({
-    variables: { 
+    variables: {
       data: {
         projectId: projectId || "",
-        userId: user!.id
-      }
-     }
+        userId: user!.id,
+      },
+    },
   });
 
-  const getComponentName = (componentId: string, components: ProjectComponent[]) => {
+  const getComponentName = (
+    componentId: string,
+    components: ProjectComponent[]
+  ) => {
     const comp = components.find((comp) => comp.id === componentId);
     if (comp) return comp.name;
   };
 
   const convertToDate = (timestamp: string) => {
-    
     return new Date(parseInt(timestamp, 10)).toISOString().slice(0, 10);
   };
 
   const backButtonHandler = () => {
-    navigate("/projects");
+    navigate("/customer-projects");
   };
 
   if (loading) {
@@ -67,7 +73,8 @@ const CustomerProjectDetail = () => {
   const bids = projectData?.bids;
 
   if (projectData) {
-    return <Container>
+    return (
+      <Container>
         <Container disableGutters style={{ textAlign: "left" }}>
           <IconButton onClick={backButtonHandler}>
             <KeyboardBackspaceIcon />
@@ -79,18 +86,21 @@ const CustomerProjectDetail = () => {
               <Typography variant="h6">Vendor Bids</Typography>
             </Container>
             <List sx={{ maxHeight: 500 }}>
-              {bids && bids.map((bid) => {
-                return (
-                  <>
-                    <ListItem>
-                      <VendorBidOverview
-                        bid={bid as ProjectBid}
-                        projectComponents={projectData.components as ProjectComponent[]}
-                      />
-                    </ListItem>
-                  </>
-                );
-              })}
+              {bids &&
+                bids.map((bid) => {
+                  return (
+                    <>
+                      <ListItem>
+                        <VendorBidOverview
+                          bid={bid as ProjectBid}
+                          projectComponents={
+                            projectData.components as ProjectComponent[]
+                          }
+                        />
+                      </ListItem>
+                    </>
+                  );
+                })}
             </List>
           </Grid>
           <Grid item xs={8}>
@@ -135,7 +145,9 @@ const CustomerProjectDetail = () => {
                 )}
                 <ProjectDetailListItem>
                   <Typography variant="subtitle2">Budget</Typography>
-                  <Typography variant="caption">{projectData.budget}</Typography>
+                  <Typography variant="caption">
+                    {projectData.budget}
+                  </Typography>
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
                   <Typography variant="subtitle2">Posted on</Typography>
@@ -163,7 +175,9 @@ const CustomerProjectDetail = () => {
 
                     <ProjectDetailListItem>
                       <Typography variant="subtitle2">Dimension</Typography>
-                      <Typography variant="caption">{comp.dimension}</Typography>
+                      <Typography variant="caption">
+                        {comp.dimension}
+                      </Typography>
                     </ProjectDetailListItem>
 
                     <ProjectDetailListItem>
@@ -179,9 +193,9 @@ const CustomerProjectDetail = () => {
           </Grid>
         </Grid>
       </Container>
-
+    );
   }
-  return null
+  return null;
 };
 
 export default CustomerProjectDetail;
