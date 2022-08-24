@@ -1,7 +1,6 @@
 import { Button, Container, Stack, TextField, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import FullScreenLoading from "../Utils/Loading";
 import { validate } from "email-validator";
 import React from "react";
 

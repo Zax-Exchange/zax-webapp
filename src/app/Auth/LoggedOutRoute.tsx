@@ -8,7 +8,7 @@ const LoggedOutRoute = ({ children }: { children: ReactElement }) => {
   const location = useLocation();
 
   if (user) {
-    return <Navigate to="/" replace state={{ path: location.pathname }} />;
+    return <Navigate to="/" replace={true} />;
   }
 
   return children;
