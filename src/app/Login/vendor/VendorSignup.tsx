@@ -31,39 +31,43 @@ import VendorCompanyReview from "./VendorCompanyReview";
 import { isValidInt } from "../../Utils/inputValidators";
 import { Country, StripeData } from "../customer/CustomerSignup";
 import React from "react";
-import { useCreateStripeCustomerMutation, useCreateVendorSubscriptionMutation, useGetAllPlansQuery } from "../../../generated/graphql";
+import {
+  useCreateStripeCustomerMutation,
+  useCreateVendorSubscriptionMutation,
+  useGetAllPlansQuery,
+} from "../../../generated/graphql";
 import VendorCheckout from "./VendorCheckout";
-
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 export type VendorSignupData = {
   name: string;
-    contactEmail: string;
-    logo: string | null;
-    phone: string;
-    fax: string;
-    country: string;
-    isActive: boolean;
-    isVendor: boolean;
-    isVerified: boolean;
-    leadTime: string | number;
-    locations: string[];
-    moq: string;
-    materials: string[];
-    companyUrl: string;
-    planId: string;
-    userEmail: string;
-}
+  contactEmail: string;
+  logo: string | null;
+  phone: string;
+  fax: string;
+  country: string;
+  isActive: boolean;
+  isVendor: boolean;
+  isVerified: boolean;
+  leadTime: string | number;
+  locations: string[];
+  moq: string;
+  materials: string[];
+  companyUrl: string;
+  planId: string;
+  userEmail: string;
+};
 
 export type VendorSubscriptionInfo = {
   subscriptionPriceId: string;
   perUserPriceId: string;
   billingFrequency: string;
-}
+};
 
 export type MoqDetail = {
   min: string | number;
   max: string | number;
-}
+};
 
 export const VendorSignupPage = {
   EMAIL_PAGE: "EMAIL_PAGE",
@@ -80,18 +84,31 @@ const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
 );
 
-
 const VendorSignup = () => {
   const { user } = useContext(AuthContext);
 
-  const [createStripeCustomerMutation, { data: createStripeCustomerData, loading: createStripeCustomerLoading, error: createStripeCustomerError }] = useCreateStripeCustomerMutation();
+  const [
+    createStripeCustomerMutation,
+    {
+      data: createStripeCustomerData,
+      loading: createStripeCustomerLoading,
+      error: createStripeCustomerError,
+    },
+  ] = useCreateStripeCustomerMutation();
 
-  const [createVendorSubscriptionMutation, { data: createSubscriptionData, loading: createSubscriptionLoading, error: createSubscriptionError }] = useCreateVendorSubscriptionMutation();
+  const [
+    createVendorSubscriptionMutation,
+    {
+      data: createSubscriptionData,
+      loading: createSubscriptionLoading,
+      error: createSubscriptionError,
+    },
+  ] = useCreateVendorSubscriptionMutation();
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
     variables: {
-      isVendor: true
-    }
+      isVendor: true,
+    },
   });
 
   const [currentPage, setCurrentPage] = useState(VendorSignupPage.EMAIL_PAGE);
@@ -127,12 +144,7 @@ const VendorSignup = () => {
     max: "",
   } as MoqDetail);
 
-  const [snackbar, setSnackbar] = useState({
-    message: "",
-    severity: "",
-  });
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const [subscriptionInfo, setSubscriptionInfo] = useState({
     subscriptionPriceId: "",
@@ -217,7 +229,6 @@ const VendorSignup = () => {
           [e.target.name]: parseInt(val, 10),
         });
       }
-      
     }
   };
 
@@ -228,7 +239,7 @@ const VendorSignup = () => {
     });
   };
 
-  const companySizeOnClick:  MouseEventHandler<HTMLAnchorElement> = (e) => {
+  const companySizeOnClick: MouseEventHandler<HTMLAnchorElement> = (e) => {
     if (e.currentTarget.dataset.name) {
       setCompanySize(e.currentTarget.dataset.name);
       nextPage();
@@ -248,7 +259,10 @@ const VendorSignup = () => {
       if (field === "moq") {
         if (moqDetail.min === "" || moqDetail.max === "") return false;
 
-        if (parseInt(moqDetail.min as string, 10) > parseInt(moqDetail.max as string, 10))
+        if (
+          parseInt(moqDetail.min as string, 10) >
+          parseInt(moqDetail.max as string, 10)
+        )
           return false;
         continue;
       }
@@ -296,12 +310,12 @@ const VendorSignup = () => {
             },
           },
         });
-      } catch (error) {
-        // setSnackbar({
-        //   severity: "error",
-        //   message: error.message,
-        // });
-        // setSnackbarOpen(true);
+      } catch (error: any) {
+        setSnackbar({
+          severity: "error",
+          message: error.message,
+        });
+        setSnackbarOpen(true);
       }
     }
   };
@@ -385,8 +399,6 @@ const VendorSignup = () => {
           <EmailPage
             onChange={onChange}
             userEmail={values.userEmail}
-            // setSnackbar={setSnackbar}
-            // setSnackbarOpen={setSnackbarOpen}
             setShouldDisableNext={setShouldDisableNext}
           />
           {renderNavigationButtons(validate(values.userEmail))}
@@ -430,7 +442,11 @@ const VendorSignup = () => {
 
           <Stack direction="row" spacing={2} justifyContent="space-around">
             <Card>
-              <CardActionArea data-name="XS" onClick={companySizeOnClick} href="">
+              <CardActionArea
+                data-name="XS"
+                onClick={companySizeOnClick}
+                href=""
+              >
                 <CardContent>
                   <Typography variant="subtitle2">XS</Typography>
                   <Typography variant="caption">1 - 25 FTE</Typography>
@@ -439,7 +455,11 @@ const VendorSignup = () => {
             </Card>
 
             <Card>
-              <CardActionArea data-name="S" onClick={companySizeOnClick} href="">
+              <CardActionArea
+                data-name="S"
+                onClick={companySizeOnClick}
+                href=""
+              >
                 <CardContent>
                   <Typography variant="subtitle2">Small</Typography>
                   <Typography variant="caption">26 - 99 FTE</Typography>
@@ -448,7 +468,11 @@ const VendorSignup = () => {
             </Card>
 
             <Card>
-              <CardActionArea data-name="M" onClick={companySizeOnClick} href="">
+              <CardActionArea
+                data-name="M"
+                onClick={companySizeOnClick}
+                href=""
+              >
                 <CardContent>
                   <Typography variant="subtitle2">Medium</Typography>
                   <Typography variant="caption">100 - 999 FTE</Typography>
@@ -457,7 +481,11 @@ const VendorSignup = () => {
             </Card>
 
             <Card>
-              <CardActionArea data-name="L" onClick={companySizeOnClick} href="">
+              <CardActionArea
+                data-name="L"
+                onClick={companySizeOnClick}
+                href=""
+              >
                 <CardContent>
                   <Typography variant="subtitle2">Large</Typography>
                   <Typography variant="caption">1000+ FTE</Typography>
@@ -496,11 +524,13 @@ const VendorSignup = () => {
     } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
       return (
         <>
-          {getAllPlansData && <VendorCompanyReview
-            values={values}
-            getAllPlansData={getAllPlansData}
-            subscriptionInfo={subscriptionInfo}
-          />}
+          {getAllPlansData && (
+            <VendorCompanyReview
+              values={values}
+              getAllPlansData={getAllPlansData}
+              subscriptionInfo={subscriptionInfo}
+            />
+          )}
           {renderNavigationButtons(true)}
         </>
       );
@@ -522,8 +552,6 @@ const VendorSignup = () => {
             setCurrentPage={setCurrentPage}
             companyData={values}
             subscriptionId={stripeData.subscriptionId}
-            // setSnackbar={setSnackbar}
-            // setSnackbarOpen={setSnackbarOpen}
             setIsLoading={setIsLoading}
           />
         </Elements>

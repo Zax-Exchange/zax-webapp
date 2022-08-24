@@ -25,8 +25,6 @@ const DeleteProjectModal = ({
   projectId,
   getCustomerProjectsRefetch,
   setIsProjectPageLoading,
-  setSnackbar,
-  setSnackbarOpen,
 }: {
   deleteProjectModalOpen: boolean;
   setDeleteProjectModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,14 +39,8 @@ const DeleteProjectModal = ({
       | undefined
   ) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setSnackbar: React.Dispatch<
-    React.SetStateAction<{
-      message: string;
-      severity: AlertColor | undefined;
-    }>
-  >;
-  setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [
     deleteProjectMutation,
     {

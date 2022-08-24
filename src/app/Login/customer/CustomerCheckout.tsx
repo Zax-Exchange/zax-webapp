@@ -9,30 +9,30 @@ import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCreateCustomerMutation, useUpdateCompanyPlanSubscriptionInfoMutation, useUpdateCompanyStatusMutation } from "../../../generated/graphql";
+import {
+  useCreateCustomerMutation,
+  useUpdateCompanyPlanSubscriptionInfoMutation,
+  useUpdateCompanyStatusMutation,
+} from "../../../generated/graphql";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../Utils/Loading";
 import { CustomerSignupData, CustomerSignupPage } from "./CustomerSignup";
-
 
 const CustomerCheckout = ({
   setCurrentPage,
   companyData,
   subscriptionId,
-  // setSnackbar,
-  // setSnackbarOpen,
   setIsLoading,
 }: {
   setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
-  companyData: CustomerSignupData
-  subscriptionId: string
-  // setSnackbar,
-  // setSnackbarOpen,
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  companyData: CustomerSignupData;
+  subscriptionId: string;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [updateCompanyPlanSuccess, setUpdateCompanyPlanSuccess] =
     useState(false);
@@ -42,7 +42,14 @@ const CustomerCheckout = ({
   // this is a flag to trigger useEffect in case user needs to retry
   const [submitClicked, setSubmitClicked] = useState(0);
 
-  const [createCustomerMutation, { data: createCustomerData, loading: createCustomerLoading, error: createCustomerError }] = useCreateCustomerMutation();
+  const [
+    createCustomerMutation,
+    {
+      data: createCustomerData,
+      loading: createCustomerLoading,
+      error: createCustomerError,
+    },
+  ] = useCreateCustomerMutation();
 
   const [updateCompanyPlanSubscriptionInfoMutation] =
     useUpdateCompanyPlanSubscriptionInfoMutation();
@@ -73,12 +80,9 @@ const CustomerCheckout = ({
         }
 
         if (updateCompanyPlanSuccess && !updateCompanyStatusSuccess) {
-          if (
-            createCustomerData &&
-            createCustomerData.createCustomer
-          ) {
+          if (createCustomerData && createCustomerData.createCustomer) {
             const companyId = createCustomerData.createCustomer;
-            
+
             await updateCompanyStatusMutation({
               variables: {
                 companyId,
@@ -90,11 +94,11 @@ const CustomerCheckout = ({
           setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
         }
       } catch (error) {
-        // setSnackbar({
-        //   severity: "error",
-        //   message: "Something went wrong. Please try again later.",
-        // });
-        // setSnackbarOpen(true);
+        setSnackbar({
+          severity: "error",
+          message: "Something went wrong. Please try again later.",
+        });
+        setSnackbarOpen(true);
       }
 
       setIsLoading(false);
@@ -134,16 +138,16 @@ const CustomerCheckout = ({
           setPaymentSuccess(true);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       let message = "Something went wrong. Please try again later.";
-    //   if (error.type === "card_error") {
-    //     message = error.message;
-    //   }
-    //   setSnackbar({
-    //     severity: "error",
-    //     message,
-    //   });
-    //   setSnackbarOpen(true);
+      if (error.type === "card_error") {
+        message = error.message;
+      }
+      setSnackbar({
+        severity: "error",
+        message,
+      });
+      setSnackbarOpen(true);
     }
     setSubmitClicked((count) => count + 1);
   };

@@ -8,25 +8,24 @@ import {
 import React from "react";
 import { useEffect } from "react";
 import { useCheckUserEmailLazyQuery } from "../../generated/graphql";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 
 const EmailPage = ({
   onChange,
   userEmail,
-  // setSnackbar,
-  // setSnackbarOpen,
   setShouldDisableNext,
 }: {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   userEmail: string;
   setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [checkUserEmailQuery, {data, loading, error}] = useCheckUserEmailLazyQuery();
+  const [checkUserEmailQuery, { data, loading, error }] =
+    useCheckUserEmailLazyQuery();
+
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const renderEmailHelperText = () => {
-    if (
-      (data && !data.checkUserEmail) ||
-      !data
-    ) {
+    if ((data && !data.checkUserEmail) || !data) {
       return "This should be an email that we can send billing information to.";
     }
     return "Email taken.";
@@ -51,11 +50,11 @@ const EmailPage = ({
         fetchPolicy: "no-cache",
       });
     } catch (error) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "Something went wrong. Please try again.",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again.",
+      });
+      setSnackbarOpen(true);
     }
   };
 
@@ -64,7 +63,7 @@ const EmailPage = ({
       return data.checkUserEmail!;
     }
     return false;
-  }
+  };
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
@@ -81,9 +80,7 @@ const EmailPage = ({
             helperText={renderEmailHelperText()}
             error={shouldError()}
             InputProps={{
-              endAdornment: loading && (
-                <CircularProgress size={20} />
-              ),
+              endAdornment: loading && <CircularProgress size={20} />,
             }}
           ></TextField>
         </Fade>

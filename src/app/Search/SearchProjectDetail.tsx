@@ -22,7 +22,6 @@ import { Project, useGetProjectDetailQuery } from "../../generated/graphql";
 
 const SearchProjectDetail = () => {
   const { projectId } = useParams();
-  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
   const {
     data: getProjectDetailData,
     error: getProjectDetailError,
@@ -129,7 +128,6 @@ const SearchProjectDetail = () => {
   if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
     return (
       <Container className="project-detail-container">
-        {CustomSnackbar}
         {renderProjectDetail()}
 
         <Button onClick={bidProjectHandler}>Bid Project</Button>
@@ -145,8 +143,6 @@ const SearchProjectDetail = () => {
             setProjectBidModalOpen={setProjectBidModalOpen}
             projectId={projectId}
             projectData={getProjectDetailData.getProjectDetail as Project}
-            // setSnackbar={setSnackbar}
-            // setSnackbarOpen={setSnackbarOpen}
           />
         </Dialog>
       </Container>

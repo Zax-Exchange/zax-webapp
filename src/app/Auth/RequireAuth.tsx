@@ -19,7 +19,7 @@ const RequireAuth = ({
 
   // if logged out user trying to access logged in routes
   if (!user) {
-    <Navigate to="/login" replace={true} />;
+    return <Navigate to="/login" replace={true} />;
   }
 
   return children;

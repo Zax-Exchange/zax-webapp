@@ -35,6 +35,7 @@ import {
   useUpdateProjectPermissionsMutation,
   VendorProject,
 } from "../../generated/graphql";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 
 const ProjectPermissionModal = ({
   project,
@@ -44,7 +45,7 @@ const ProjectPermissionModal = ({
   project: VendorProject | CustomerProject;
 }) => {
   const { user: loggedInUser } = useContext(AuthContext);
-
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isVendor = loggedInUser!.isVendor;
   const [email, setEmail] = useState("");
 
@@ -372,11 +373,11 @@ const ProjectPermissionModal = ({
         getProjectUsersRefetch();
       }
     } catch (error) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "Could not perform action. Please try again later.",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Could not perform action. Please try again later.",
+      });
+      setSnackbarOpen(true);
     } finally {
       setPermissionModalOpen(false);
     }

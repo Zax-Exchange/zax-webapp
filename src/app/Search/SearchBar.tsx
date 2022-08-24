@@ -15,8 +15,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
-import { useSearchProjectsLazyQuery, useSearchVendorCompaniesLazyQuery } from "../../generated/graphql";
+import {
+  useSearchProjectsLazyQuery,
+  useSearchVendorCompaniesLazyQuery,
+} from "../../generated/graphql";
 import React from "react";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -64,29 +68,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const SearchBar = ({ 
-  // setSnackbar, 
-  // setSnackbarOpen 
-}) => {
+const SearchBar = () => {
   const { user } = useContext(AuthContext);
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isVendor = user!.isVendor;
   const navigate = useNavigate();
 
   const [
     searchProjects,
     {
-      data:searchProjectsData,
-    error: searchProjectsError,
-    loading: searchProjectsLoading,}
-] = useSearchProjectsLazyQuery();
+      data: searchProjectsData,
+      error: searchProjectsError,
+      loading: searchProjectsLoading,
+    },
+  ] = useSearchProjectsLazyQuery();
 
   const [
     searchVendors,
     {
-      data:searchVendorsData,
-    error: searchVendorsError,
-    loading: searchVendorsLoading,}
-   ] = useSearchVendorCompaniesLazyQuery();
+      data: searchVendorsData,
+      error: searchVendorsError,
+      loading: searchVendorsLoading,
+    },
+  ] = useSearchVendorCompaniesLazyQuery();
 
   const [input, setInput] = useState("");
 
@@ -133,11 +137,11 @@ const SearchBar = ({
         });
       }
     } catch (error) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "Something went wrong. Please try again later.",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later.",
+      });
+      setSnackbarOpen(true);
     }
   };
 

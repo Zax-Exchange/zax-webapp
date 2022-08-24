@@ -8,30 +8,30 @@ import {
 import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCreateVendorMutation, useUpdateCompanyPlanSubscriptionInfoMutation, useUpdateCompanyStatusMutation } from "../../../generated/graphql";
+import {
+  useCreateVendorMutation,
+  useUpdateCompanyPlanSubscriptionInfoMutation,
+  useUpdateCompanyStatusMutation,
+} from "../../../generated/graphql";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../Utils/Loading";
 import { VendorSignupData, VendorSignupPage } from "./VendorSignup";
-
-
 
 const VendorCheckout = ({
   setCurrentPage,
   companyData,
   subscriptionId,
-  // setSnackbar,
-  // setSnackbarOpen,
   setIsLoading,
 }: {
   setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
-  companyData: VendorSignupData
-  subscriptionId: string
-  // setSnackbar,
-  // setSnackbarOpen,
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  companyData: VendorSignupData;
+  subscriptionId: string;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [updateCompanyPlanSuccess, setUpdateCompanyPlanSuccess] =
@@ -42,7 +42,14 @@ const VendorCheckout = ({
   // this is a flag to trigger useEffect in case user needs to retry
   const [submitClicked, setSubmitClicked] = useState(0);
 
-  const [createVendorMutation, { data: createVendorData, loading: createVendorLoading, error: createVendorError }] = useCreateVendorMutation();
+  const [
+    createVendorMutation,
+    {
+      data: createVendorData,
+      loading: createVendorLoading,
+      error: createVendorError,
+    },
+  ] = useCreateVendorMutation();
 
   const [updateCompanyPlanSubscriptionInfoMutation] =
     useUpdateCompanyPlanSubscriptionInfoMutation();
@@ -73,12 +80,9 @@ const VendorCheckout = ({
         }
 
         if (updateCompanyPlanSuccess && !updateCompanyStatusSuccess) {
-          if (
-            createVendorData &&
-            createVendorData.createVendor
-          ) {
+          if (createVendorData && createVendorData.createVendor) {
             const companyId = createVendorData.createVendor;
-            
+
             await updateCompanyStatusMutation({
               variables: {
                 companyId,
@@ -90,11 +94,11 @@ const VendorCheckout = ({
           setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
         }
       } catch (error) {
-        // setSnackbar({
-        //   severity: "error",
-        //   message: "Something went wrong. Please try again later.",
-        // });
-        // setSnackbarOpen(true);
+        setSnackbar({
+          severity: "error",
+          message: "Something went wrong. Please try again later.",
+        });
+        setSnackbarOpen(true);
       }
 
       setIsLoading(false);
@@ -118,7 +122,7 @@ const VendorCheckout = ({
           variables: {
             data: {
               ...companyData,
-              leadTime: companyData.leadTime as number
+              leadTime: companyData.leadTime as number,
             },
           },
         });
@@ -135,16 +139,16 @@ const VendorCheckout = ({
           setPaymentSuccess(true);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       let message = "Something went wrong. Please try again later.";
-    //   if (error.type === "card_error") {
-    //     message = error.message;
-    //   }
-    //   setSnackbar({
-    //     severity: "error",
-    //     message,
-    //   });
-    //   setSnackbarOpen(true);
+      if (error.type === "card_error") {
+        message = error.message;
+      }
+      setSnackbar({
+        severity: "error",
+        message,
+      });
+      setSnackbarOpen(true);
     }
     setSubmitClicked((count) => count + 1);
   };

@@ -22,9 +22,15 @@ import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import BusinessIcon from "@mui/icons-material/Business";
-import { Exact, GetVendorProjectsQuery, InputMaybe, VendorProject } from "../../../generated/graphql";
+import {
+  Exact,
+  GetVendorProjectsQuery,
+  InputMaybe,
+  VendorProject,
+} from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -37,23 +43,30 @@ const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 
 const VendorProjectOverview = ({
   project,
-  // setSnackbar,
-  // setSnackbarOpen,
   setIsProjectPageLoading,
   getVendorProjectsRefetch,
 }: {
   project: VendorProject;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  getVendorProjectsRefetch: (variables?: Partial<Exact<{
-    userId?: string;
-}>> | undefined) => Promise<ApolloQueryResult<GetVendorProjectsQuery>>
+  getVendorProjectsRefetch: (
+    variables?:
+      | Partial<
+          Exact<{
+            userId?: string;
+          }>
+        >
+      | undefined
+  ) => Promise<ApolloQueryResult<GetVendorProjectsQuery>>;
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
-  const [projectMenuAnchor, setProjectMenuAnchor] = useState<HTMLButtonElement | null>(null);
+  const [projectMenuAnchor, setProjectMenuAnchor] =
+    useState<HTMLButtonElement | null>(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
-  const date = new Date(parseInt(project.createdAt, 10)).toISOString().slice(0, 10);
+  const date = new Date(parseInt(project.createdAt, 10))
+    .toISOString()
+    .slice(0, 10);
 
   const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setProjectMenuAnchor(e.currentTarget);
@@ -71,7 +84,9 @@ const VendorProjectOverview = ({
     return project.permission !== "VIEWER";
   };
 
-  const projectMenuOnClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+  const projectMenuOnClick = (
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>
+  ) => {
     if (e.currentTarget.innerText === "View detail") {
       viewDetailHandler();
     }
@@ -178,8 +193,6 @@ const VendorProjectOverview = ({
           <ProjectPermissionModal
             project={project}
             setPermissionModalOpen={setPermissionModalOpen}
-            // setSnackbar={setSnackbar}
-            // setSnackbarOpen={setSnackbarOpen}
           />
         </DialogContent>
       </Dialog>

@@ -26,7 +26,12 @@ import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { Plan, useCreateCustomerSubscriptionMutation, useCreateStripeCustomerMutation, useGetAllPlansQuery } from "../../../generated/graphql";
+import {
+  Plan,
+  useCreateCustomerSubscriptionMutation,
+  useCreateStripeCustomerMutation,
+  useGetAllPlansQuery,
+} from "../../../generated/graphql";
 import CustomerCheckout from "./CustomerCheckout";
 
 const stripePromise = loadStripe(
@@ -79,13 +84,27 @@ const CustomerSignup = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [createStripeCustomerMutation, { data: createStripeCustomerData, loading: createStripeCustomerLoading, error: createStripeCustomerError }] = useCreateStripeCustomerMutation();
+  const [
+    createStripeCustomerMutation,
+    {
+      data: createStripeCustomerData,
+      loading: createStripeCustomerLoading,
+      error: createStripeCustomerError,
+    },
+  ] = useCreateStripeCustomerMutation();
 
-  const [createCustomerSubscriptionMutation, { data: createSubscriptionData, loading: createSubscriptionLoading, error: createSubscriptionError }] = useCreateCustomerSubscriptionMutation();
+  const [
+    createCustomerSubscriptionMutation,
+    {
+      data: createSubscriptionData,
+      loading: createSubscriptionLoading,
+      error: createSubscriptionError,
+    },
+  ] = useCreateCustomerSubscriptionMutation();
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
     variables: {
-       isVendor: false
+      isVendor: false,
     },
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -139,11 +158,9 @@ const CustomerSignup = () => {
       setStripeData({
         ...stripeData,
         subscriptionId:
-        createSubscriptionData
-            .createCustomerSubscription.subscriptionId,
+          createSubscriptionData.createCustomerSubscription.subscriptionId,
         clientSecret:
-        createSubscriptionData
-            .createCustomerSubscription.clientSecret,
+          createSubscriptionData.createCustomerSubscription.clientSecret,
       });
       setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
       setPreviousPlanIds([...previousPlanIds, values.planId]);
@@ -319,8 +336,6 @@ const CustomerSignup = () => {
             <EmailPage
               onChange={onChange}
               userEmail={values.userEmail}
-              // setSnackbar={setSnackbar}
-              // setSnackbarOpen={setSnackbarOpen}
               setShouldDisableNext={setShouldDisableNext}
             />
             {renderNavigationButtons(validate(values.userEmail))}
@@ -373,11 +388,13 @@ const CustomerSignup = () => {
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
       return (
         <>
-          {getAllPlansData && <CustomerCompanyReview
-            values={values}
-            getAllPlansData={getAllPlansData}
-            subscriptionInfo={subscriptionInfo}
-          />}
+          {getAllPlansData && (
+            <CustomerCompanyReview
+              values={values}
+              getAllPlansData={getAllPlansData}
+              subscriptionInfo={subscriptionInfo}
+            />
+          )}
           {renderNavigationButtons(true)}
         </>
       );
@@ -399,8 +416,6 @@ const CustomerSignup = () => {
             setCurrentPage={setCurrentPage}
             companyData={values}
             subscriptionId={stripeData.subscriptionId}
-            // setSnackbar={setSnackbar}
-            // setSnackbarOpen={setSnackbarOpen}
             setIsLoading={setIsLoading}
           />
         </Elements>
@@ -421,7 +436,6 @@ const CustomerSignup = () => {
         createSubscriptionLoading ||
         isLoading) && <FullScreenLoading />}
       <Paper sx={{ padding: 8, position: "relative" }}>
-        {CustomSnackbar}
         {renderCompanySignupFlow()}
       </Paper>
     </Container>

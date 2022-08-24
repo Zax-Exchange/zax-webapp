@@ -12,36 +12,37 @@ import { validate } from "email-validator";
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
 import { LoggedInUser, useInviteUserMutation } from "../../generated/graphql";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 
-const InviteUsers = ({ 
-  // setSnackbar, 
-  // setSnackbarOpen 
-}) => {
-  const { user }: { user: LoggedInUser | null } = useContext(AuthContext);
-
+const InviteUsers = () => {
+  const { user } = useContext(AuthContext);
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [email, setEmail] = useState("");
-  const [inviteUser, {loading: inviteUserLoading, data: inviteUserData, error: inviteUserError} ] =
-    useInviteUserMutation();
+  const [
+    inviteUser,
+    {
+      loading: inviteUserLoading,
+      data: inviteUserData,
+      error: inviteUserError,
+    },
+  ] = useInviteUserMutation();
 
   useEffect(() => {
     if (inviteUserError) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "Something went wrong. Please try again later.",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later.",
+      });
+      setSnackbarOpen(true);
     }
     if (inviteUserData) {
-      // setSnackbar({
-      //   severity: "success",
-      //   message: "Invitation sent!",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "success",
+        message: "Invitation sent!",
+      });
+      setSnackbarOpen(true);
     }
-  }, [inviteUserError, inviteUserData, 
-    // setSnackbar, 
-    // setSnackbarOpen
-  ]);
+  }, [inviteUserError, inviteUserData]);
 
   const emailOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -59,6 +60,7 @@ const InviteUsers = ({
   if (inviteUserLoading) return <FullScreenLoading />;
 
   if (inviteUserError) return null;
+
   return (
     <Container>
       <Typography variant="h6">Invite Users</Typography>
@@ -75,13 +77,13 @@ const InviteUsers = ({
           sx={{ display: "flex", justifyContent: "flex-end" }}
           disableGutters
         >
-            <Button
-              variant="contained"
-              disabled={!validate(email)}
-              onClick={sendInvitation}
-            >
-              Send invitation
-            </Button>
+          <Button
+            variant="contained"
+            disabled={!validate(email)}
+            onClick={sendInvitation}
+          >
+            Send invitation
+          </Button>
         </Container>
       </Stack>
     </Container>

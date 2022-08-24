@@ -68,7 +68,7 @@ const CreateProject = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const { CustomSnackbar, setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [createProjectMutation, { data, loading, error }] =
     useCreateProjectMutation();
 
@@ -212,11 +212,6 @@ const CreateProject = () => {
           },
         },
       });
-      setSnackbar({
-        severity: "success",
-        message: "Project created.",
-      });
-      setSnackbarOpen(true);
       if (location.pathname.indexOf("/customer-projects")) {
         navigate("/customer-projects");
       } else {
@@ -226,11 +221,16 @@ const CreateProject = () => {
           },
         });
       }
+      setSnackbar({
+        severity: "success",
+        message: "Project created.",
+      });
     } catch (e) {
       setSnackbar({
         severity: "error",
         message: "Something went wrong. Please try again later.",
       });
+    } finally {
       setSnackbarOpen(true);
     }
   };
@@ -288,11 +288,7 @@ const CreateProject = () => {
             Configure Project Detail
           </Typography>
 
-          <UploadDesign
-            setProjectData={setProjectData}
-            // setSnackbar={setSnackbar}
-            // setSnackbarOpen={setSnackbarOpen}
-          />
+          <UploadDesign setProjectData={setProjectData} />
           <Button
             style={{ marginLeft: 16 }}
             onClick={openComponentModal}

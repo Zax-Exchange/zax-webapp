@@ -9,8 +9,7 @@ import { gql, useMutation } from "@apollo/client";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { ProjectData } from "./CreateProject";
 import { useUploadProjectDesignMutation } from "../../../generated/graphql";
-
-
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 export type File = {
   uri: string;
@@ -24,29 +23,28 @@ type Target = {
 };
 export default function UploadDesign({
   setProjectData,
-}: // setSnackbar,
-// setSnackbarOpen,
-{
+}: {
   setProjectData: React.Dispatch<React.SetStateAction<ProjectData>>;
 }) {
-  const [mutate, { error, loading, data }] = useUploadProjectDesignMutation()
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const [mutate, { error, loading, data }] = useUploadProjectDesignMutation();
 
   useEffect(() => {
     // server error
     if (error) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "Something went wrong. Please try again later.",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later.",
+      });
+      setSnackbarOpen(true);
     }
     // upload success
     if (data) {
-      // setSnackbar({
-      //   severity: "success",
-      //   message: "Project design uploaded successfully.",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "success",
+        message: "Project design uploaded successfully.",
+      });
+      setSnackbarOpen(true);
     }
   }, [error, data]);
 
@@ -59,20 +57,19 @@ export default function UploadDesign({
       mutate({
         variables: { file },
         fetchPolicy: "no-cache",
-      }).then(data => {
+      }).then((data) => {
         setProjectData((projectData) => ({
           ...projectData,
-          designId: data.data!.uploadProjectDesign!
+          designId: data.data!.uploadProjectDesign!,
         }));
-      })
-
+      });
     } else {
       // invalid file type
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "File type is not supported. Please upload pdf only.",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "File type is not supported. Please upload pdf only.",
+      });
+      setSnackbarOpen(true);
     }
   };
 

@@ -41,7 +41,6 @@ const CustomerProjects = () => {
   });
 
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
-  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
 
   const [sortMenuAnchor, setSortMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
@@ -126,7 +125,6 @@ const CustomerProjects = () => {
       sx={{ position: "relative" }}
     >
       {isProjectPageLoading && <FullScreenLoading />}
-      {CustomSnackbar}
       <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
         <Typography variant="subtitle2">Your projects</Typography>
         <IconButton onClick={sortOnClick}>
@@ -169,8 +167,6 @@ const CustomerProjects = () => {
                   key={i}
                   project={project}
                   getCustomerProjectsRefetch={getCustomerProjectsRefetch}
-                  setSnackbar={setSnackbar}
-                  setSnackbarOpen={setSnackbarOpen}
                   setIsProjectPageLoading={setIsProjectPageLoading}
                 />
               </>

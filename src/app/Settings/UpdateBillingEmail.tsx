@@ -5,47 +5,47 @@ import FullScreenLoading from "../Utils/Loading";
 import { validate } from "email-validator";
 import React from "react";
 
-const UpdateBillingEmail = ({
-  // setSnackbar,
-  // setSnackbarOpen
-}) => {
+const UpdateBillingEmail = () => {
   const { user } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
 
   const emailOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-  }
+  };
 
-  const updateBillingEmail = () => {
-
-  }
+  // TODO: implement gql endpoint
+  const updateBillingEmail = () => {};
   // TODO: also need to check duplication
 
-  return <Container>
-    
-    <Typography variant="h6">Update Billing Email</Typography>
+  return (
+    <Container>
+      <Typography variant="h6">Update Billing Email</Typography>
 
-    <Stack spacing={4} sx={{marginTop: 2}}>
-      <TextField 
-        label="Billing email"
-        placeholder="Email"
-        size="small"
-        value={email}
-        onChange={emailOnChange}
-      />
-      
-      <Container sx={{ display: "flex", justifyContent:"flex-end" }} disableGutters>
-        <Button 
-          variant="outlined" 
-          disabled={!validate(email)}
-          onClick={updateBillingEmail}
+      <Stack spacing={4} sx={{ marginTop: 2 }}>
+        <TextField
+          label="Billing email"
+          placeholder="Email"
+          size="small"
+          value={email}
+          onChange={emailOnChange}
+        />
+
+        <Container
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+          disableGutters
         >
-          Update
-        </Button>
-      </Container>
-    </Stack>
-  </Container>
-}
+          <Button
+            variant="outlined"
+            disabled={!validate(email)}
+            onClick={updateBillingEmail}
+          >
+            Update
+          </Button>
+        </Container>
+      </Stack>
+    </Container>
+  );
+};
 
 export default UpdateBillingEmail;

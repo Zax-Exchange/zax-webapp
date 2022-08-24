@@ -42,7 +42,7 @@ const Nav = () => {
   const isVendor = user?.isVendor;
 
   const [sideNavOpen, setSideNavOpen] = useState(false);
-  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const handleSideNavOnClick = (page: string) => {
     if (page === "home") {
@@ -139,7 +139,12 @@ const Nav = () => {
   };
 
   const navigateToCreateProject = () => {
-    navigate("/create-project");
+    // navigate("/create-project");
+    setSnackbar({
+      message: "123",
+      severity: "success",
+    });
+    setSnackbarOpen(true);
   };
   const renderHamburger = () => {
     return (
@@ -168,18 +173,12 @@ const Nav = () => {
   };
 
   const renderSearchBar = () => {
-    return (
-      <SearchBar
-      // setSnackbar={setSnackbar}
-      //  setSnackbarOpen={setSnackbarOpen}
-      />
-    );
+    return <SearchBar />;
   };
   const renderCustomerNav = () => {
     return (
       <>
         <Toolbar>
-          {CustomSnackbar}
           {renderHamburger()}
 
           {renderLogo()}
@@ -248,12 +247,12 @@ const Nav = () => {
           t: 1,
         },
       });
-    } catch (error) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: error.message,
-      // });
-      // setSnackbarOpen(true);
+    } catch (error: any) {
+      setSnackbar({
+        severity: "error",
+        message: error.message,
+      });
+      setSnackbarOpen(true);
     }
   };
 

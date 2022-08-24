@@ -14,27 +14,31 @@ import { validate } from "graphql";
 import React from "react";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useDeactivateUserMutation, useGetAllUsersWithinCompanyQuery, User } from "../../generated/graphql";
+import {
+  useDeactivateUserMutation,
+  useGetAllUsersWithinCompanyQuery,
+  User,
+} from "../../generated/graphql";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 
-const DeactivateUsers = ({ 
-  // setSnackbar, 
-  // setSnackbarOpen 
-}) => {
+const DeactivateUsers = () => {
   const { user } = useContext(AuthContext);
-
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const {
     data: getAllCompanyUsersData,
     loading: getAllCompanyUsersLoading,
     error: getAllCompanyUsersError,
   } = useGetAllUsersWithinCompanyQuery({
     variables: {
-      companyId: user!.companyId
-    }
+      companyId: user!.companyId,
+    },
   });
 
-  const [ deactivateUser, {loading: deactivateUserLoading, error: deactivateUserError} ] =
-    useDeactivateUserMutation();
+  const [
+    deactivateUser,
+    { loading: deactivateUserLoading, error: deactivateUserError },
+  ] = useDeactivateUserMutation();
 
   const [emailsList, setEmailsList] = useState<string[]>([]);
   const [email, setEmail] = useState("");
@@ -55,16 +59,13 @@ const DeactivateUsers = ({
 
   useEffect(() => {
     if (getAllCompanyUsersError) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "Something went wrong. Please try again later.",
-      // });
-      // setSnackbarOpen(true);
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later.",
+      });
+      setSnackbarOpen(true);
     }
-  }, [getAllCompanyUsersError, 
-    // setSnackbar, 
-    // setSnackbarOpen
-  ]);
+  }, [getAllCompanyUsersError]);
 
   const emailOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -81,17 +82,17 @@ const DeactivateUsers = ({
           email,
         },
       });
-      // setSnackbar({
-      //   severity: "success",
-      //   message: "User deactivated.",
-      // });
+      setSnackbar({
+        severity: "success",
+        message: "User deactivated.",
+      });
     } catch (e) {
-      // setSnackbar({
-      //   severity: "error",
-      //   message: "Something went wrong. Please try again later.",
-      // });
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later.",
+      });
     } finally {
-      // setSnackbarOpen(true);
+      setSnackbarOpen(true);
     }
   };
 

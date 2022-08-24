@@ -34,6 +34,7 @@ import {
 } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -47,8 +48,6 @@ export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 const CustomerProjectOverview = ({
   project,
   getCustomerProjectsRefetch,
-  setSnackbar,
-  setSnackbarOpen,
   setIsProjectPageLoading,
 }: {
   project: CustomerProject;
@@ -62,13 +61,6 @@ const CustomerProjectOverview = ({
       | undefined
   ) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setSnackbar: React.Dispatch<
-    React.SetStateAction<{
-      message: string;
-      severity: AlertColor | undefined;
-    }>
-  >;
-  setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
@@ -226,10 +218,6 @@ const CustomerProjectOverview = ({
         getCustomerProjectsRefetch={getCustomerProjectsRefetch}
         setIsProjectPageLoading={setIsProjectPageLoading}
         projectId={project.id}
-        setSnackbar={setSnackbar}
-        setSnackbarOpen={setSnackbarOpen}
-        // setSnackbar={setSnackbar}
-        // setSnackbarOpen={setSnackbarOpen}
       />
 
       <Dialog
