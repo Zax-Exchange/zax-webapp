@@ -26,11 +26,12 @@ import {
   Exact,
   GetVendorProjectsQuery,
   InputMaybe,
+  ProjectPermission,
   VendorProject,
 } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
-import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -77,11 +78,13 @@ const VendorProjectOverview = ({
   };
 
   const viewDetailHandler = () => {
-    navigate(`/vendor-project-detail/${project.id}`);
+    const dest = VENDOR_ROUTES.PROJECT_DETAIL.split(":");
+    dest[1] = project.id;
+    navigate(`${dest.join("")}`);
   };
 
   const canShare = () => {
-    return project.permission !== "VIEWER";
+    return project.permission !== ProjectPermission.Viewer;
   };
 
   const projectMenuOnClick = (

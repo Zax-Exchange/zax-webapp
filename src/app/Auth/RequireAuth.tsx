@@ -8,20 +8,25 @@ import {
   useNavigate,
 } from "react-router-dom";
 import React from "react";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+  VENDOR_ROUTES,
+} from "../constants/loggedInRoutes";
 
 const ZAX_LOGGED_IN_ROUTES = [
-  { path: "*" },
-  { path: "/" },
-  { path: "profile" },
-  { path: "settings" },
-  { path: "customer-projects" },
-  { path: "customer-search-results" },
-  { path: "/customer-project-detail/:projectId" },
-  { path: "/create-project" },
-  { path: "/vendor-projects" },
-  { path: "/vendor-search-results" },
-  { path: "/search-project-detail/:projectId" },
-  { path: "/vendor-project-detail/:projectId" },
+  { path: GENERAL_ROUTES.ARBITRARY },
+  { path: GENERAL_ROUTES.HOME },
+  { path: GENERAL_ROUTES.PROFILE },
+  { path: GENERAL_ROUTES.SETTINGS },
+  { path: CUSTOMER_ROUTES.PROJECTS },
+  { path: CUSTOMER_ROUTES.SEARCH_RESULTS },
+  { path: CUSTOMER_ROUTES.PROJECT_DETAIL },
+  { path: CUSTOMER_ROUTES.CREATE_PROJECT },
+  { path: VENDOR_ROUTES.PROJECTS },
+  { path: VENDOR_ROUTES.SEARCH_RESULTS },
+  { path: VENDOR_ROUTES.SEARCH_PROJECT_DETAIL },
+  { path: VENDOR_ROUTES.PROJECT_DETAIL },
 ];
 
 const RequireAuth = ({
@@ -40,7 +45,8 @@ const RequireAuth = ({
   // this prevents customers/vendors from accessing vendors/customers routes
   if (user && isAllowed) {
     // special case when logged-in user trying to access arbitary route
-    if (currentRoute === "*") {
+
+    if (currentRoute === GENERAL_ROUTES.ARBITRARY) {
       return <Navigate to="/" replace={true} />;
     }
     return children;

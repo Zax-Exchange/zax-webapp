@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { ProjectOverview } from "../../generated/graphql";
+import { VENDOR_ROUTES } from "../constants/loggedInRoutes";
 
 const SearchProjectOverview = ({
   projectData,
@@ -17,7 +18,9 @@ const SearchProjectOverview = ({
   const navigate = useNavigate();
 
   const handleProjectOnClick = (projectId: string) => {
-    navigate(`/search-project-detail/${projectId}`);
+    const dest = VENDOR_ROUTES.SEARCH_PROJECT_DETAIL.split(":");
+    dest[1] = projectId;
+    navigate(`${dest.join("")}`);
   };
 
   const date = new Date(parseInt(projectData.createdAt, 10))

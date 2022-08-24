@@ -20,13 +20,17 @@ import {
 import { Menu, Home, TextSnippet, Settings, Logout } from "@mui/icons-material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import CustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 // import logo from "../../static/logo2.png";
 import { gql, useMutation } from "@apollo/client";
 import CustomerNotification from "../Notification/CustomerNotification";
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+  VENDOR_ROUTES,
+} from "../constants/loggedInRoutes";
 
 const query = gql`
   mutation reset($t: Int) {
@@ -46,15 +50,15 @@ const Nav = () => {
 
   const handleSideNavOnClick = (page: string) => {
     if (page === "home") {
-      navigate("/");
+      navigate(GENERAL_ROUTES.HOME);
     } else if (page === "projects") {
       if (user!.isVendor) {
-        navigate("/vendor-projects");
+        navigate(VENDOR_ROUTES.PROJECTS);
       } else {
-        navigate("/customer-projects");
+        navigate(CUSTOMER_ROUTES.PROJECTS);
       }
     } else {
-      navigate(`/${page}`);
+      navigate(`${page}`);
     }
   };
 
@@ -139,12 +143,7 @@ const Nav = () => {
   };
 
   const navigateToCreateProject = () => {
-    // navigate("/create-project");
-    setSnackbar({
-      message: "123",
-      severity: "success",
-    });
-    setSnackbarOpen(true);
+    navigate(CUSTOMER_ROUTES.CREATE_PROJECT);
   };
   const renderHamburger = () => {
     return (
@@ -166,7 +165,7 @@ const Nav = () => {
         // src={logo}
         height={44}
         style={{ marginBottom: 2, cursor: "pointer" }}
-        onClick={() => navigate("/")}
+        onClick={() => navigate(GENERAL_ROUTES.HOME)}
         alt="logo"
       />
     );
@@ -258,7 +257,6 @@ const Nav = () => {
 
   return (
     <>
-      {CustomSnackbar}
       {resetLoading && <FullScreenLoading />}
       <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
         <AppBar

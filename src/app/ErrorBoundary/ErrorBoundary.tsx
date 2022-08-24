@@ -1,6 +1,7 @@
 import { Container, Typography, Button } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { GENERAL_ROUTES } from "../constants/loggedInRoutes";
 
 const ErrorFallback = ({
   error,
@@ -12,7 +13,7 @@ const ErrorFallback = ({
   const navigate = useNavigate();
 
   const reset = () => {
-    navigate("/");
+    navigate(GENERAL_ROUTES.HOME);
     resetErrorBoundary();
   };
   return (

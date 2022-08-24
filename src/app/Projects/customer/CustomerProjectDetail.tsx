@@ -23,6 +23,7 @@ import {
   useGetCustomerProjectQuery,
 } from "../../../generated/graphql";
 import React from "react";
+import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 
 const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
   flexDirection: "column",
@@ -55,7 +56,7 @@ const CustomerProjectDetail = () => {
   };
 
   const backButtonHandler = () => {
-    navigate("/customer-projects");
+    navigate(CUSTOMER_ROUTES.PROJECTS);
   };
 
   if (loading) {

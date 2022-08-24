@@ -425,11 +425,6 @@ const CustomerSignup = () => {
     }
   };
 
-  if (user) {
-    navigate("/");
-    return null;
-  }
-
   return (
     <Container maxWidth="lg">
       {(createStripeCustomerLoading ||

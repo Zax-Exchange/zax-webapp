@@ -27,10 +27,6 @@ const Login = () => {
     password: "",
   });
 
-  useEffect(() => {
-    if (user) navigate("/");
-  }, [user]);
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
       ...values,

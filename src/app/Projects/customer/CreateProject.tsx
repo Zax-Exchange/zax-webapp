@@ -33,6 +33,7 @@ import {
   useGetCustomerProjectsLazyQuery,
 } from "../../../generated/graphql";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 /**
  * name
  * deliveryDate
@@ -190,7 +191,6 @@ const CreateProject = () => {
 
   const checkProjectInput = () => {
     // check if create project button should be disabled
-
     for (let key in projectData) {
       if (key === "comments" || key === "designId") continue;
 
@@ -212,15 +212,9 @@ const CreateProject = () => {
           },
         },
       });
-      if (location.pathname.indexOf("/customer-projects")) {
-        navigate("/customer-projects");
-      } else {
-        await getCustomerProjects({
-          variables: {
-            userId: user!.id,
-          },
-        });
-      }
+
+      navigate(CUSTOMER_ROUTES.PROJECTS);
+
       setSnackbar({
         severity: "success",
         message: "Project created.",

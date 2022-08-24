@@ -15,6 +15,7 @@ import jwt_decode from "jwt-decode";
 import FullScreenLoading from "../Utils/Loading";
 import React from "react";
 import { LoggedInUser, useCreateUserMutation } from "../../generated/graphql";
+import { GENERAL_ROUTES } from "../constants/loggedInRoutes";
 
 const UserSignup = () => {
   const { login } = useContext(AuthContext);
@@ -23,7 +24,7 @@ const UserSignup = () => {
     useCreateUserMutation({
       onCompleted: ({ createUser }: { createUser: LoggedInUser }) => {
         login(createUser);
-        navigate("/");
+        navigate(GENERAL_ROUTES.HOME);
       },
     });
 

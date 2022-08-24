@@ -21,6 +21,7 @@ import MuiListItem from "@mui/material/ListItem";
 import { useNavigate } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import React from "react";
+import { CUSTOMER_ROUTES } from "../constants/loggedInRoutes";
 
 const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
 const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
@@ -160,8 +161,10 @@ const CustomerNotification = () => {
 
   const navigateToProjectDetail = async (noti: any, ind: number) => {
     notiOnClose();
+    const dest = CUSTOMER_ROUTES.PROJECT_DETAIL.split(":");
+    dest[1] = noti.projectId;
 
-    navigate(`/customer-project-detail/${noti.projectId}`);
+    navigate(`${dest.join("")}`);
 
     for (let activityId of noti.activityIds) {
       await feed.removeActivity(activityId);

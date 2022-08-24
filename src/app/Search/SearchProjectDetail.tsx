@@ -47,7 +47,6 @@ const SearchProjectDetail = () => {
 
   const bidProjectHandler = () => {
     setProjectBidModalOpen(true);
-    // navigate("/project-bid", {state: {projectId: state.projectId}});
   };
   const backHandler = () => {
     navigate(-1);

@@ -24,6 +24,7 @@ import {
   useGetVendorProjectsQuery,
 } from "../../../generated/graphql";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 
 const ProjectBidModal = ({
   setProjectBidModalOpen,
@@ -79,8 +80,7 @@ const ProjectBidModal = ({
         severity: "success",
         message: "Bid created.",
       });
-
-      navigate("/vendor-projects");
+      navigate(VENDOR_ROUTES.PROJECTS);
     } catch (error) {
       setSnackbar({
         severity: "error",

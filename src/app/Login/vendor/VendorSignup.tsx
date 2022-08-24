@@ -228,6 +228,11 @@ const VendorSignup = () => {
           ...values,
           [e.target.name]: parseInt(val, 10),
         });
+      } else {
+        setValues({
+          ...values,
+          [e.target.name]: val,
+        });
       }
     }
   };
@@ -560,11 +565,6 @@ const VendorSignup = () => {
       return <CheckoutSuccess />;
     }
   };
-
-  if (user) {
-    navigate("/");
-    return null;
-  }
 
   return (
     <Container maxWidth="lg">

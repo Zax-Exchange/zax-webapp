@@ -35,6 +35,7 @@ import {
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 
 export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -72,7 +73,11 @@ const CustomerProjectOverview = ({
   const date = new Date(parseInt(project.createdAt)).toISOString().slice(0, 10);
 
   const viewDetailHandler = () => {
-    navigate(`/customer-project-detail/${project.id}`);
+    const dest = CUSTOMER_ROUTES.PROJECT_DETAIL.split(":");
+
+    dest[1] = project.id;
+
+    navigate(`${dest.join("")}`);
   };
 
   const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {

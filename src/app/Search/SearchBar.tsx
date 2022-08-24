@@ -21,6 +21,7 @@ import {
 } from "../../generated/graphql";
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
+import { CUSTOMER_ROUTES, VENDOR_ROUTES } from "../constants/loggedInRoutes";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -113,7 +114,7 @@ const SearchBar = () => {
           },
           fetchPolicy: "no-cache",
         });
-        navigate("/vendor-search-results", {
+        navigate(VENDOR_ROUTES.SEARCH_RESULTS, {
           state: {
             searchResults: data!.searchCustomerProjects,
           },
@@ -130,7 +131,7 @@ const SearchBar = () => {
           },
           fetchPolicy: "no-cache",
         });
-        navigate("/customer-search-results", {
+        navigate(CUSTOMER_ROUTES.SEARCH_RESULTS, {
           state: {
             searchResults: data!.searchVendorCompanies,
           },

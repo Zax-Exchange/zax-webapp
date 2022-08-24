@@ -28,7 +28,11 @@ import VendorProjects from "./app/Projects/vendor/VendorProjects";
 import LoggedOutRoute from "./app/Auth/LoggedOutRoute";
 import { AuthContext } from "./context/AuthContext";
 import { SnackbarContextProvider } from "./context/SnackbarContext";
-
+import {
+  GENERAL_ROUTES,
+  VENDOR_ROUTES,
+  CUSTOMER_ROUTES,
+} from "./app/constants/loggedInRoutes";
 const theme = createTheme({
   palette: {
     type: "light",
@@ -152,7 +156,7 @@ function App() {
               <Routes>
                 {/* START COMMON PATH */}
                 <Route
-                  path="*"
+                  path={GENERAL_ROUTES.ARBITRARY}
                   element={
                     <RequireAuth isAllowed={true}>
                       <Home />
@@ -161,7 +165,7 @@ function App() {
                 />
 
                 <Route
-                  path="/"
+                  path={GENERAL_ROUTES.HOME}
                   element={
                     <RequireAuth isAllowed={true}>
                       <Home />
@@ -169,7 +173,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="profile"
+                  path={GENERAL_ROUTES.PROFILE}
                   element={
                     <RequireAuth isAllowed={true}>
                       <Profile />
@@ -178,7 +182,7 @@ function App() {
                 />
 
                 <Route
-                  path="/settings"
+                  path={GENERAL_ROUTES.SETTINGS}
                   element={
                     <RequireAuth isAllowed={true}>
                       <Settings />
@@ -189,7 +193,7 @@ function App() {
 
                 {/* START CUSTOMER PATH */}
                 <Route
-                  path="/customer-projects"
+                  path={CUSTOMER_ROUTES.PROJECTS}
                   element={
                     <RequireAuth isAllowed={!user?.isVendor}>
                       <CustomerProjects />
@@ -197,7 +201,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/customer-search-results"
+                  path={CUSTOMER_ROUTES.SEARCH_RESULTS}
                   element={
                     <RequireAuth isAllowed={!user?.isVendor}>
                       <CustomerSearchResults />
@@ -205,7 +209,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/customer-project-detail/:projectId"
+                  path={CUSTOMER_ROUTES.PROJECT_DETAIL}
                   element={
                     <RequireAuth isAllowed={!user?.isVendor}>
                       <CustomerProjectDetail />
@@ -213,7 +217,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/create-project"
+                  path={CUSTOMER_ROUTES.CREATE_PROJECT}
                   element={
                     <RequireAuth isAllowed={!user?.isVendor}>
                       <CreateProject />
@@ -224,7 +228,7 @@ function App() {
 
                 {/* START VENDOR PATH */}
                 <Route
-                  path="/vendor-projects"
+                  path={VENDOR_ROUTES.PROJECTS}
                   element={
                     <RequireAuth isAllowed={user?.isVendor}>
                       <VendorProjects />
@@ -233,7 +237,7 @@ function App() {
                 />
 
                 <Route
-                  path="/vendor-search-results"
+                  path={VENDOR_ROUTES.SEARCH_RESULTS}
                   element={
                     <RequireAuth isAllowed={user?.isVendor}>
                       <VendorSearchResults />
@@ -242,7 +246,7 @@ function App() {
                 />
 
                 <Route
-                  path="/search-project-detail/:projectId"
+                  path={VENDOR_ROUTES.SEARCH_PROJECT_DETAIL}
                   element={
                     <RequireAuth isAllowed={user?.isVendor}>
                       <SearchProjectDetail />
@@ -250,7 +254,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/vendor-project-detail/:projectId"
+                  path={VENDOR_ROUTES.PROJECT_DETAIL}
                   element={
                     <RequireAuth isAllowed={user?.isVendor}>
                       <VendorProjectDetail />
