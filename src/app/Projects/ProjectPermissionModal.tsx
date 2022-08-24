@@ -23,19 +23,17 @@ import { AuthContext } from "../../context/AuthContext";
 import {
   CustomerProject,
   ProjectPermission,
-  useDeleteProjectBidPermissionsMutation,
-  useDeleteProjectPermissionsMutation,
-  useGetAllUsersWithinCompanyQuery,
-  useGetProjectBidUsersLazyQuery,
-  useGetProjectBidUsersQuery,
-  useGetProjectUsersLazyQuery,
-  useGetProjectUsersQuery,
   UserPermission,
-  useUpdateProjectBidPermissionsMutation,
-  useUpdateProjectPermissionsMutation,
   VendorProject,
 } from "../../generated/graphql";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
+import { useUpdateProjectPermissionsMutation } from "../gql/update/project/project.generated";
+import { useUpdateProjectBidPermissionsMutation } from "../gql/update/bid/bid.generated";
+import { useDeleteProjectPermissionsMutation } from "../gql/delete/project/project.generated";
+import { useDeleteProjectBidPermissionsMutation } from "../gql/delete/bid/bid.generated";
+import { useGetProjectBidUsersLazyQuery } from "../gql/get/bid/bid.generated";
+import { useGetProjectUsersLazyQuery } from "../gql/get/project/project.generated";
+import { useGetAllUsersWithinCompanyQuery } from "../gql/get/company/company.generated";
 
 const ProjectPermissionModal = ({
   project,

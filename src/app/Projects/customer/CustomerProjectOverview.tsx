@@ -25,17 +25,12 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
-import {
-  CustomerProject,
-  Exact,
-  GetCustomerProjectsQuery,
-  InputMaybe,
-  useGetCustomerProjectsQuery,
-} from "../../../generated/graphql";
+import { CustomerProject, Exact, InputMaybe } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 
 export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",

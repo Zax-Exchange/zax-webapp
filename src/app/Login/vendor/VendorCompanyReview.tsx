@@ -1,10 +1,15 @@
 import { Container, List, Typography } from "@mui/material";
 import React from "react";
-import { GetAllPlansQuery, Plan } from "../../../generated/graphql";
+import { GetAllPlansQuery } from "../../gql/get/company/company.generated";
+
 import { ListItem } from "../customer/CustomerCompanyReview";
 import { VendorSignupData, VendorSubscriptionInfo } from "./VendorSignup";
 
-const VendorCompanyReview = ({ values, subscriptionInfo, getAllPlansData }: {
+const VendorCompanyReview = ({
+  values,
+  subscriptionInfo,
+  getAllPlansData,
+}: {
   values: VendorSignupData;
   subscriptionInfo: VendorSubscriptionInfo;
   getAllPlansData: GetAllPlansQuery;
@@ -82,12 +87,14 @@ const VendorCompanyReview = ({ values, subscriptionInfo, getAllPlansData }: {
             </Typography>
           </ListItem>
 
-          {plan && <ListItem>
-            <Typography variant="subtitle2">Pricing Detail</Typography>
-            <Typography variant="caption">
-              ${plan.pricings!.monthly!.price} / month
-            </Typography>
-          </ListItem>}
+          {plan && (
+            <ListItem>
+              <Typography variant="subtitle2">Pricing Detail</Typography>
+              <Typography variant="caption">
+                ${plan.pricings!.monthly!.price} / month
+              </Typography>
+            </ListItem>
+          )}
         </List>
       </Container>
     </>

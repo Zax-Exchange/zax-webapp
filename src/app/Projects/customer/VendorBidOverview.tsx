@@ -18,18 +18,27 @@ import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import ProjectChat from "../chat/ProjectChat";
-import { ProjectBid, ProjectComponent, useGetCompanyDetailQuery, useGetVendorDetailQuery, VendorDetail } from "../../../generated/graphql";
+import {
+  ProjectBid,
+  ProjectComponent,
+  VendorDetail,
+} from "../../../generated/graphql";
 import { AuthContext } from "../../../context/AuthContext";
 import React from "react";
+import { useGetCompanyDetailQuery } from "../../gql/get/company/company.generated";
+import { useGetVendorDetailQuery } from "../../gql/get/vendor/vendor.generated";
 
 /**
  * Bid overview card displayed in CustomerProjectDetail
  * @param {*} param0
  * @returns
  */
-const VendorBidOverview = ({ bid, projectComponents } : {
-  bid: ProjectBid
-  projectComponents: ProjectComponent[]
+const VendorBidOverview = ({
+  bid,
+  projectComponents,
+}: {
+  bid: ProjectBid;
+  projectComponents: ProjectComponent[];
 }) => {
   const { user } = useContext(AuthContext);
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
@@ -42,8 +51,8 @@ const VendorBidOverview = ({ bid, projectComponents } : {
     loading: getCompanyDetailLoading,
   } = useGetCompanyDetailQuery({
     variables: {
-      companyId: user!.companyId
-    }
+      companyId: user!.companyId,
+    },
   });
   const {
     loading: getVendorDetailLoading,
@@ -51,11 +60,12 @@ const VendorBidOverview = ({ bid, projectComponents } : {
     data: getVendorDetailData,
   } = useGetVendorDetailQuery({
     variables: {
-      companyId: bid.companyId
-    }
+      companyId: bid.companyId,
+    },
   });
 
-  const [vendorBidMenuAnchor, setVendorBidMenuAnchor] = useState<HTMLButtonElement | null>(null);
+  const [vendorBidMenuAnchor, setVendorBidMenuAnchor] =
+    useState<HTMLButtonElement | null>(null);
   const vendorBidMenuOpen = !!vendorBidMenuAnchor;
 
   useEffect(() => {
@@ -76,7 +86,9 @@ const VendorBidOverview = ({ bid, projectComponents } : {
     setVendorBidMenuAnchor(null);
   };
 
-  const vendorBidMenuOnClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+  const vendorBidMenuOnClick = (
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>
+  ) => {
     switch (e.currentTarget.dataset.type) {
       case "conversation":
         setChatOpen(true);

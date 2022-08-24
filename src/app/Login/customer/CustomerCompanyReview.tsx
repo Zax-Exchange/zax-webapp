@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Container, List, Stack, Typography } from "@mui/material";
 import MuiListItem from "@mui/material/ListItem";
 import React from "react";
-import { GetAllPlansQuery } from "../../../generated/graphql";
+import { GetAllPlansQuery } from "../../gql/get/company/company.generated";
 import { CustomerSignupData, SubscriptionInfo } from "./CustomerSignup";
 
 export const ListItem = styled(MuiListItem)(() => ({

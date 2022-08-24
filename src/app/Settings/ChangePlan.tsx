@@ -2,7 +2,7 @@ import { Container, Typography } from "@mui/material";
 import React from "react";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useGetAllPlansQuery } from "../../generated/graphql";
+import { useGetAllPlansQuery } from "../gql/get/company/company.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 

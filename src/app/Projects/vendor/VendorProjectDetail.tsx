@@ -20,7 +20,9 @@ import { AuthContext } from "../../../context/AuthContext";
 import { useContext, useState } from "react";
 import ProjectChat from "../chat/ProjectChat";
 import React from "react";
-import { ProjectBidComponent, QuantityPrice, useGetCompanyDetailQuery, useGetVendorProjectQuery } from "../../../generated/graphql";
+import { ProjectBidComponent, QuantityPrice } from "../../../generated/graphql";
+import { useGetVendorProjectQuery } from "../../gql/get/vendor/vendor.generated";
+import { useGetCompanyDetailQuery } from "../../gql/get/company/company.generated";
 
 const VendorProjectDetail = () => {
   const { user } = useContext(AuthContext);
@@ -36,12 +38,11 @@ const VendorProjectDetail = () => {
     refetch: getVendorProjectRefetch,
   } = useGetVendorProjectQuery({
     variables: {
-      "data": {
-        "projectId": projectId!,
+      data: {
+        projectId: projectId!,
         userId: user!.id,
-        
-      }
-    }
+      },
+    },
   });
 
   const {
@@ -50,14 +51,15 @@ const VendorProjectDetail = () => {
     loading: getCompanyDetailLoading,
   } = useGetCompanyDetailQuery({
     variables: {
-      companyId: user!.companyId
-    }
+      companyId: user!.companyId,
+    },
   });
 
   const [chatOpen, setChatOpen] = useState(false);
 
   const renderProjectDetail = () => {
-    if (!getVendorProjectData || !getVendorProjectData.getVendorProject) return null
+    if (!getVendorProjectData || !getVendorProjectData.getVendorProject)
+      return null;
 
     const {
       name: projectName,

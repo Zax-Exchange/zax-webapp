@@ -11,8 +11,8 @@ import FullScreenLoading from "../Utils/Loading";
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
 import React from "react";
-import { useGetCompanyPlanWithCompanyIdQuery } from "../../generated/graphql";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
+import { useGetCompanyPlanWithCompanyIdQuery } from "../gql/get/company/company.generated";
 
 const ListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",

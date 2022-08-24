@@ -15,13 +15,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
-import {
-  useSearchProjectsLazyQuery,
-  useSearchVendorCompaniesLazyQuery,
-} from "../../generated/graphql";
+
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES, VENDOR_ROUTES } from "../constants/loggedInRoutes";
+import { useSearchProjectsLazyQuery } from "../gql/get/project/project.generated";
+import { useSearchVendorCompaniesLazyQuery } from "../gql/get/vendor/vendor.generated";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",

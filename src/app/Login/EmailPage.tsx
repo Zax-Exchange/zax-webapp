@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useEffect } from "react";
-import { useCheckUserEmailLazyQuery } from "../../generated/graphql";
+import { useCheckUserEmailLazyQuery } from "../gql/utils/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 
 const EmailPage = ({

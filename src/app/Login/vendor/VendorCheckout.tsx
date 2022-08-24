@@ -8,11 +8,12 @@ import {
 import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCreateVendorMutation } from "../../gql/create/vendor/vendor.generated";
 import {
-  useCreateVendorMutation,
   useUpdateCompanyPlanSubscriptionInfoMutation,
   useUpdateCompanyStatusMutation,
-} from "../../../generated/graphql";
+} from "../../gql/update/company/company.generated";
+
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../Utils/Loading";
 import { VendorSignupData, VendorSignupPage } from "./VendorSignup";

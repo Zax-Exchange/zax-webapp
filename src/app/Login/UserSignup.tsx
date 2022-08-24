@@ -14,8 +14,9 @@ import { gql, useMutation } from "@apollo/client";
 import jwt_decode from "jwt-decode";
 import FullScreenLoading from "../Utils/Loading";
 import React from "react";
-import { LoggedInUser, useCreateUserMutation } from "../../generated/graphql";
+import { LoggedInUser } from "../../generated/graphql";
 import { GENERAL_ROUTES } from "../constants/loggedInRoutes";
+import { useCreateUserMutation } from "../gql/create/user/user.generated";
 
 const UserSignup = () => {
   const { login } = useContext(AuthContext);

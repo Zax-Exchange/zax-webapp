@@ -14,11 +14,9 @@ import { validate } from "graphql";
 import React from "react";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import {
-  useDeactivateUserMutation,
-  useGetAllUsersWithinCompanyQuery,
-  User,
-} from "../../generated/graphql";
+import { User } from "../../generated/graphql";
+import { useDeactivateUserMutation } from "../gql/delete/user/user.generated";
+import { useGetAllUsersWithinCompanyQuery } from "../gql/get/company/company.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 

@@ -11,12 +11,9 @@ import {
   IconButton,
 } from "@mui/material";
 import React from "react";
-import {
-  Exact,
-  GetCustomerProjectsQuery,
-  InputMaybe,
-  useDeleteProjectMutation,
-} from "../../../generated/graphql";
+import { Exact, InputMaybe } from "../../../generated/graphql";
+import { useDeleteProjectMutation } from "../../gql/delete/project/project.generated";
+import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 const DeleteProjectModal = ({

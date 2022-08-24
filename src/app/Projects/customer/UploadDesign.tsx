@@ -8,8 +8,8 @@ import {
 import { gql, useMutation } from "@apollo/client";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { ProjectData } from "./CreateProject";
-import { useUploadProjectDesignMutation } from "../../../generated/graphql";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useUploadProjectDesignMutation } from "../../gql/create/project/project.generated";
 
 export type File = {
   uri: string;

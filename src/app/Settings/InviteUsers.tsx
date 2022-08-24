@@ -11,8 +11,9 @@ import { validate } from "email-validator";
 
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
-import { LoggedInUser, useInviteUserMutation } from "../../generated/graphql";
+import { LoggedInUser } from "../../generated/graphql";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
+import { useInviteUserMutation } from "../gql/utils/user/user.generated";
 
 const InviteUsers = () => {
   const { user } = useContext(AuthContext);

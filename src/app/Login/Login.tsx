@@ -15,7 +15,8 @@ import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import FullScreenLoading from "../Utils/Loading";
 import React from "react";
-import { LoggedInUser, useLoginLazyQuery } from "../../generated/graphql";
+import { LoggedInUser } from "../../generated/graphql";
+import { useLoginLazyQuery } from "../gql/utils/user/user.generated";
 
 const Login = () => {
   const { user, login, logout } = useContext(AuthContext);

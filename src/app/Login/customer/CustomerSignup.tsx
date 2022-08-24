@@ -26,13 +26,10 @@ import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import {
-  Plan,
-  useCreateCustomerSubscriptionMutation,
-  useCreateStripeCustomerMutation,
-  useGetAllPlansQuery,
-} from "../../../generated/graphql";
 import CustomerCheckout from "./CustomerCheckout";
+import { useCreateStripeCustomerMutation } from "../../gql/create/company/company.generated";
+import { useCreateCustomerSubscriptionMutation } from "../../gql/create/customer/customer.generated";
+import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
 
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!

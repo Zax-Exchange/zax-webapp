@@ -15,12 +15,10 @@ import React, { useContext, useEffect, useState } from "react";
 import SortIcon from "@mui/icons-material/Sort";
 import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
-import {
-  useGetVendorProjectsQuery,
-  VendorProject,
-} from "../../../generated/graphql";
+import { VendorProject } from "../../../generated/graphql";
 import VendorProjectOverview from "./VendorProjectOverview";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useGetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 
 const VendorProjects = () => {
   const { user } = useContext(AuthContext);

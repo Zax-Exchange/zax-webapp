@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useUpdateUserPasswordMutation } from "../../generated/graphql";
+import { useUpdateUserPasswordMutation } from "../gql/update/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 

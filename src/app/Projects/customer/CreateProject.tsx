@@ -28,12 +28,11 @@ import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import UploadDesign from "./UploadDesign";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
 import React from "react";
-import {
-  useCreateProjectMutation,
-  useGetCustomerProjectsLazyQuery,
-} from "../../../generated/graphql";
+
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+import { useCreateProjectMutation } from "../../gql/create/project/project.generated";
+import { useGetCustomerProjectsLazyQuery } from "../../gql/get/customer/customer.generated";
 /**
  * name
  * deliveryDate

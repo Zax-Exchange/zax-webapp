@@ -24,7 +24,6 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import BusinessIcon from "@mui/icons-material/Business";
 import {
   Exact,
-  GetVendorProjectsQuery,
   InputMaybe,
   ProjectPermission,
   VendorProject,
@@ -32,6 +31,7 @@ import {
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
+import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",

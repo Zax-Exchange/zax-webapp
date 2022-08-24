@@ -20,6 +20,7 @@
   "exclude": [
     "./src/**/*.d.ts",
     "./src/generated",
+    "./src/**/*.generated.ts",
     "./node_modules"
   ]
   // "compilerOptions": {

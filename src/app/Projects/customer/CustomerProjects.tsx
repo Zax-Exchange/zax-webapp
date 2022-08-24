@@ -14,13 +14,11 @@ import React, { useContext, useEffect, useState } from "react";
 // import CustomSnackbar from "../Utils/CustomSnackbar";
 import SortIcon from "@mui/icons-material/Sort";
 import { AuthContext } from "../../../context/AuthContext";
-import {
-  CustomerProject,
-  useGetCustomerProjectsQuery,
-} from "../../../generated/graphql";
+import { CustomerProject } from "../../../generated/graphql";
 import CustomerProjectOverview from "./CustomerProjectOverview";
 import FullScreenLoading from "../../Utils/Loading";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useGetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 
 const CustomerProjects = () => {
   const { user } = useContext(AuthContext);

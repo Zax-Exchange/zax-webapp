@@ -19,12 +19,11 @@ import {
   LoggedInUser,
   Project,
   ProjectComponent,
-  useCreateProjectBidMutation,
-  useGetProjectDetailQuery,
-  useGetVendorProjectsQuery,
 } from "../../../generated/graphql";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
+import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
+import { useGetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 
 const ProjectBidModal = ({
   setProjectBidModalOpen,

@@ -17,13 +17,10 @@ import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
 import { ProjectOverviewListItem } from "./CustomerProjectOverview";
 import styled from "@emotion/styled";
-import {
-  ProjectBid,
-  ProjectComponent,
-  useGetCustomerProjectQuery,
-} from "../../../generated/graphql";
+import { ProjectBid, ProjectComponent } from "../../../generated/graphql";
 import React from "react";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.generated";
 
 const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
   flexDirection: "column",

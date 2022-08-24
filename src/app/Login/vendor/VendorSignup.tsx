@@ -24,20 +24,17 @@ import { loadStripe } from "@stripe/stripe-js";
 import VendorInfo from "./VendorInfo";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutSuccess from "../CheckoutSuccess";
-import CustomSnackbar from "../../Utils/CustomSnackbar";
 import { validate } from "email-validator";
 import VendorPlanSelection from "./VendorPlanSelection";
 import VendorCompanyReview from "./VendorCompanyReview";
 import { isValidInt } from "../../Utils/inputValidators";
 import { Country, StripeData } from "../customer/CustomerSignup";
 import React from "react";
-import {
-  useCreateStripeCustomerMutation,
-  useCreateVendorSubscriptionMutation,
-  useGetAllPlansQuery,
-} from "../../../generated/graphql";
 import VendorCheckout from "./VendorCheckout";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useCreateStripeCustomerMutation } from "../../gql/create/company/company.generated";
+import { useCreateVendorSubscriptionMutation } from "../../gql/create/vendor/vendor.generated";
+import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
 
 export type VendorSignupData = {
   name: string;

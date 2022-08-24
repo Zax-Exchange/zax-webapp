@@ -18,7 +18,8 @@ import FullScreenLoading from "../Utils/Loading";
 import CustomSnackbar from "../Utils/CustomSnackbar";
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
-import { Project, useGetProjectDetailQuery } from "../../generated/graphql";
+import { Project } from "../../generated/graphql";
+import { useGetProjectDetailQuery } from "../gql/get/project/project.generated";
 
 const SearchProjectDetail = () => {
   const { projectId } = useParams();

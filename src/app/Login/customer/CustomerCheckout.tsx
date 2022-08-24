@@ -9,11 +9,11 @@ import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCreateCustomerMutation } from "../../gql/create/customer/customer.generated";
 import {
-  useCreateCustomerMutation,
   useUpdateCompanyPlanSubscriptionInfoMutation,
   useUpdateCompanyStatusMutation,
-} from "../../../generated/graphql";
+} from "../../gql/update/company/company.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../Utils/Loading";
 import { CustomerSignupData, CustomerSignupPage } from "./CustomerSignup";
