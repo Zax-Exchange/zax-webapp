@@ -23,7 +23,7 @@ export type GetCompanyDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetCompanyDetailQuery = { __typename?: 'Query', getCompanyDetail?: { __typename?: 'CompanyDetail', id: string, name: string, contactEmail: string, logo?: string | null, phone: string, fax?: string | null, country: string, isActive: boolean, isVendor: boolean, isVerified: boolean, companyUrl?: string | null, locations?: Array<string | null> | null, materials?: Array<string | null> | null, moq?: string | null, leadTime?: number | null } | null };
+export type GetCompanyDetailQuery = { __typename?: 'Query', getCompanyDetail?: { __typename?: 'CompanyDetail', id: string, name: string, contactEmail: string, logo?: string | null, phone: string, fax?: string | null, country: string, isActive: boolean, isVendor: boolean, isVerified: boolean, companyUrl?: string | null, locations?: Array<string> | null, materials?: Array<string> | null, moq?: string | null, leadTime?: number | null } | null };
 
 export type GetAllPlansQueryVariables = Types.Exact<{
   isVendor: Types.Scalars['Boolean'];

@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "allowJs": false,
     "jsx": "react",
     "rootDir": "src",
-    "outDir": "build",
+    "outDir": "./build",
     "target": "es2016",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "module": "commonjs",                                /* Specify what module code is generated. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
@@ -18,10 +19,9 @@
     "strictNullChecks": true,
   },
   "exclude": [
-    "./src/**/*.d.ts",
     "./src/generated",
-    "./src/**/*.generated.ts",
-    "./node_modules"
+    "./node_modules",
+    "./build"
   ]
   // "compilerOptions": {
   //   "target": "ES2018",

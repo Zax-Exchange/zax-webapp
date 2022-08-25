@@ -19,7 +19,7 @@ const VendorInfo = ({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
   setMoqDetail: React.Dispatch<React.SetStateAction<MoqDetail>>;
-moqDetail: MoqDetail;
+  moqDetail: MoqDetail;
 }) => {
   const [material, setMaterial] = useState("");
 
@@ -27,7 +27,7 @@ moqDetail: MoqDetail;
     const locationLabels = locations.map((l) => l.label);
     setValues({
       ...values,
-      locations: locationLabels
+      locations: locationLabels,
     });
   };
 

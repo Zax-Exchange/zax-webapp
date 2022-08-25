@@ -18,6 +18,13 @@ export type GetCustomerProjectsQueryVariables = Types.Exact<{
 
 export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects: Array<{ __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null }> };
 
+export type GetEditableCustomerDetailQueryVariables = Types.Exact<{
+  companyId: Types.Scalars['String'];
+}>;
+
+
+export type GetEditableCustomerDetailQuery = { __typename?: 'Query', getEditableCustomerDetail: { __typename?: 'EditableCustomerDetail', name: string, contactEmail: string, phone: string, logo?: string | null, country: string, companyUrl?: string | null, fax?: string | null } };
+
 
 export const GetCustomerProjectDocument = gql`
     query getCustomerProject($data: GetProjectInput!) {
@@ -165,3 +172,44 @@ export function useGetCustomerProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetCustomerProjectsQueryHookResult = ReturnType<typeof useGetCustomerProjectsQuery>;
 export type GetCustomerProjectsLazyQueryHookResult = ReturnType<typeof useGetCustomerProjectsLazyQuery>;
 export type GetCustomerProjectsQueryResult = Apollo.QueryResult<GetCustomerProjectsQuery, GetCustomerProjectsQueryVariables>;
+export const GetEditableCustomerDetailDocument = gql`
+    query getEditableCustomerDetail($companyId: String!) {
+  getEditableCustomerDetail(companyId: $companyId) {
+    name
+    contactEmail
+    phone
+    logo
+    country
+    companyUrl
+    fax
+  }
+}
+    `;
+
+/**
+ * __useGetEditableCustomerDetailQuery__
+ *
+ * To run a query within a React component, call `useGetEditableCustomerDetailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEditableCustomerDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEditableCustomerDetailQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useGetEditableCustomerDetailQuery(baseOptions: Apollo.QueryHookOptions<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>(GetEditableCustomerDetailDocument, options);
+      }
+export function useGetEditableCustomerDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>(GetEditableCustomerDetailDocument, options);
+        }
+export type GetEditableCustomerDetailQueryHookResult = ReturnType<typeof useGetEditableCustomerDetailQuery>;
+export type GetEditableCustomerDetailLazyQueryHookResult = ReturnType<typeof useGetEditableCustomerDetailLazyQuery>;
+export type GetEditableCustomerDetailQueryResult = Apollo.QueryResult<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>;

@@ -32,9 +32,9 @@ export type CompanyDetail = {
   isVendor: Scalars['Boolean'];
   isVerified: Scalars['Boolean'];
   leadTime?: Maybe<Scalars['Int']>;
-  locations?: Maybe<Array<Maybe<Scalars['String']>>>;
+  locations?: Maybe<Array<Scalars['String']>>;
   logo?: Maybe<Scalars['String']>;
-  materials?: Maybe<Array<Maybe<Scalars['String']>>>;
+  materials?: Maybe<Array<Scalars['String']>>;
   moq?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   phone: Scalars['String'];
@@ -204,6 +204,17 @@ export type DeleteProjectInput = {
 export type DeleteProjectPermissionsInput = {
   projectId: Scalars['String'];
   userIds: Array<Scalars['String']>;
+};
+
+export type EditableCustomerDetail = {
+  __typename?: 'EditableCustomerDetail';
+  companyUrl?: Maybe<Scalars['String']>;
+  contactEmail: Scalars['String'];
+  country: Scalars['String'];
+  fax?: Maybe<Scalars['String']>;
+  logo?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  phone: Scalars['String'];
 };
 
 export type File = {
@@ -428,9 +439,9 @@ export type PermissionedCompany = {
   isVendor: Scalars['Boolean'];
   isVerified: Scalars['Boolean'];
   leadTime?: Maybe<Scalars['Int']>;
-  locations?: Maybe<Array<Maybe<Scalars['String']>>>;
+  locations?: Maybe<Array<Scalars['String']>>;
   logo: Scalars['String'];
-  materials?: Maybe<Array<Maybe<Scalars['String']>>>;
+  materials?: Maybe<Array<Scalars['String']>>;
   moq?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   phone: Scalars['String'];
@@ -583,6 +594,7 @@ export type Query = {
   getCustomerDetail: CustomerDetail;
   getCustomerProject: CustomerProject;
   getCustomerProjects: Array<CustomerProject>;
+  getEditableCustomerDetail: EditableCustomerDetail;
   getPlanWithPlanId: Plan;
   getProjectBidUsers: Array<UserPermission>;
   getProjectDetail: Project;
@@ -590,10 +602,10 @@ export type Query = {
   getUserWithUserId: User;
   getVendorDetail: VendorDetail;
   getVendorProject: VendorProject;
-  getVendorProjects: Array<Maybe<VendorProject>>;
+  getVendorProjects: Array<VendorProject>;
   login: LoggedInUser;
   searchCustomerProjects: Array<ProjectOverview>;
-  searchVendorCompanies?: Maybe<Array<Maybe<VendorOverview>>>;
+  searchVendorCompanies: Array<VendorOverview>;
 };
 
 
@@ -644,6 +656,11 @@ export type QueryGetCustomerProjectArgs = {
 
 export type QueryGetCustomerProjectsArgs = {
   userId: Scalars['String'];
+};
+
+
+export type QueryGetEditableCustomerDetailArgs = {
+  companyId: Scalars['String'];
 };
 
 
@@ -863,9 +880,9 @@ export type VendorDetail = {
   isActive: Scalars['Boolean'];
   isVerified: Scalars['Boolean'];
   leadTime: Scalars['Int'];
-  locations: Array<Maybe<Scalars['String']>>;
+  locations: Array<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
-  materials: Array<Maybe<Scalars['String']>>;
+  materials: Array<Scalars['String']>;
   moq: Scalars['String'];
   name: Scalars['String'];
   phone: Scalars['String'];
@@ -878,9 +895,9 @@ export type VendorOverview = {
   id: Scalars['String'];
   isVerified: Scalars['Boolean'];
   leadTime: Scalars['Int'];
-  locations: Array<Maybe<Scalars['String']>>;
+  locations: Array<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
-  materials: Array<Maybe<Scalars['String']>>;
+  materials: Array<Scalars['String']>;
   moq: Scalars['String'];
   name: Scalars['String'];
 };

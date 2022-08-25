@@ -5,6 +5,7 @@ const GET_VENDOR_DETAIL = gql`
     getVendorDetail(companyId: $companyId) {
       id
       name
+      contactEmail
       phone
       logo
       country

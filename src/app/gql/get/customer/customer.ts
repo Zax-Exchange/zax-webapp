@@ -93,3 +93,17 @@ const GET_CUSTOMER_PROJECTS = gql`
     }
   }
 `;
+
+const GET_EDITABLE_CUSTOMER_DETAIL = gql`
+  query getEditableCustomerDetail($companyId: String!) {
+    getEditableCustomerDetail(companyId: $companyId) {
+        name
+        contactEmail
+        phone
+        logo
+        country
+        companyUrl
+        fax
+    }
+  }
+`
