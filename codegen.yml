@@ -1,18 +1,25 @@
 # This file is intended for generating graphql TS types
 
+
 overwrite: true
 schema: http://localhost:4000/graphql
 documents: './src/app/gql/**/!(*.generated).ts'
+
 generates:
   src/generated/graphql.ts:
     plugins:
+      - add:
+          content: '// THIS FILE IS GENERATED. DO NOT EDIT.'
       - typescript
+
   src/:
     preset: near-operation-file
     presetConfig:
       extension: .generated.ts
       baseTypesPath: generated/graphql.ts
     plugins:
+      - add:
+          content: '// THIS FILE IS GENERATED. DO NOT EDIT.'
       - typescript-operations
       - typescript-react-apollo
     config:

@@ -1,5 +1,4 @@
-// THIS FILE IS GENERATED. DO NOT EDIT.
-import * as Types from '../../../../generated/graphql';
+import * as Types from '../../../../types';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';

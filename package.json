@@ -67,6 +67,7 @@
   },
   "proxy": "http://localhost:4000",
   "devDependencies": {
+    "@graphql-codegen/add": "^3.2.1",
     "@graphql-codegen/cli": "2.11.6",
     "@graphql-codegen/introspection": "2.2.1",
     "@graphql-codegen/near-operation-file-preset": "^2.4.1",
