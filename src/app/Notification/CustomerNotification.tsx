@@ -1,7 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../../context/AuthContext";
-import { connect } from "getstream";
+import {
+  connect,
+  DefaultGenerics,
+  FeedAPIResponse,
+  NotificationActivity,
+  StreamFeed,
+} from "getstream";
 import {
   Badge,
   Box,
@@ -49,7 +55,7 @@ const CustomerNotification = () => {
   const [notiCount, setNotiCount] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null as any);
   const [client, setClient] = useState(null as any);
-  const [feed, setFeed] = useState(null as any);
+  const [feed, setFeed] = useState<StreamFeed<DefaultGenerics> | null>(null);
 
   // const client = connect(streamApiKey, user.notificationToken, streamAppId);
   // const feed = client.feed("notification", user.id);
@@ -101,14 +107,18 @@ const CustomerNotification = () => {
   }, [feed]);
 
   const getNotifications = async () => {
+    if (!feed) return;
+
     const feeds = await feed.get();
     const notis = [];
     for (let res of feeds.results) {
-      const notiMeta = res.activities[0];
-      const notiObject = JSON.parse(notiMeta.object);
+      const notiMeta = (res as NotificationActivity).activities[0];
+      const notiObject = JSON.parse(notiMeta.object as string);
 
       notis.push({
-        activityIds: res.activities.map((act: any) => act.id),
+        activityIds: (res as NotificationActivity).activities.map(
+          (act: any) => act.id
+        ),
         projectId: notiObject.projectId,
         projectName: notiObject.projectName,
         bidCount: res.activity_count,
@@ -118,7 +128,7 @@ const CustomerNotification = () => {
     }
     console.log("all feeds: ", feeds);
     setNotifications([...notis]);
-    setNotiCount(feeds.unseen);
+    setNotiCount(feeds.unseen ? feeds.unseen : 0);
   };
 
   useEffect(() => {
@@ -132,6 +142,7 @@ const CustomerNotification = () => {
     setNotiCount(0);
   };
   const clearAllNotis = async () => {
+    if (!feed) return;
     for (let noti of notifications) {
       for (let activityId of noti.activityIds) {
         await feed.removeActivity(activityId);
@@ -142,10 +153,12 @@ const CustomerNotification = () => {
   };
 
   const markAllNotisAsRead = () => {
+    if (!feed) return;
     feed.get({ mark_read: true });
   };
 
   const markAllNotisAsSeen = () => {
+    if (!feed) return;
     feed.get({ mark_seen: true });
   };
 
@@ -160,6 +173,7 @@ const CustomerNotification = () => {
   };
 
   const navigateToProjectDetail = async (noti: any, ind: number) => {
+    if (!feed) return;
     notiOnClose();
     const dest = CUSTOMER_ROUTES.PROJECT_DETAIL.split(":");
     dest[1] = noti.projectId;

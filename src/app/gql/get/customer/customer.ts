@@ -94,16 +94,19 @@ const GET_CUSTOMER_PROJECTS = gql`
   }
 `;
 
-const GET_EDITABLE_CUSTOMER_DETAIL = gql`
-  query getEditableCustomerDetail($data: GetEditableCustomerDetailInput!) {
-    getEditableCustomerDetail(data: $data) {
+const GET_CUSTOMER_DETAIL = gql`
+  query getCustomerDetail($data: GetCustomerDetailInput!) {
+    getCustomerDetail(data: $data) {
+        id
         name
         contactEmail
-        phone
         logo
         country
-        companyUrl
+        phone
         fax
+        isVerified
+        isActive
+        companyUrl
     }
   }
 `

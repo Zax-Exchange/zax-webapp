@@ -27,9 +27,9 @@ import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
 import { Country } from "../../Login/customer/CustomerSignup";
-import { useGetEditableCustomerDetailQuery } from "../../gql/get/customer/customer.generated";
 import { validate } from "email-validator";
 import { useUpdateCustomerInfoMutation } from "../../gql/update/customer/customer.generated";
+import { useGetCustomerDetailQuery } from "../../gql/get/customer/customer.generated";
 
 const EditCustomerProfile = () => {
   const { user } = useContext(AuthContext);
@@ -39,7 +39,7 @@ const EditCustomerProfile = () => {
     loading: getCustomerDetailLoading,
     error: getCustomerDetailError,
     refetch: getCustomerDetailRefetch,
-  } = useGetEditableCustomerDetailQuery({
+  } = useGetCustomerDetailQuery({
     variables: {
       data: {
         companyId: user!.companyId,
@@ -60,12 +60,9 @@ const EditCustomerProfile = () => {
     useState<UpdateCustomerInfoInput | null>(null);
 
   useEffect(() => {
-    if (
-      getCustomerDetailData &&
-      getCustomerDetailData.getEditableCustomerDetail
-    ) {
+    if (getCustomerDetailData && getCustomerDetailData.getCustomerDetail) {
       const { name, contactEmail, phone, logo, country, companyUrl, fax } =
-        getCustomerDetailData.getEditableCustomerDetail!;
+        getCustomerDetailData.getCustomerDetail!;
       setCustomerData({
         companyId: user!.companyId,
         name,
@@ -274,7 +271,7 @@ const EditCustomerProfile = () => {
             <TextField
               InputLabelProps={{ shrink: true }}
               label="URL"
-              name="companyrl"
+              name="companyUrl"
               value={customerData.companyUrl}
               onChange={onChange}
             />

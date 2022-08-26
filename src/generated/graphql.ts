@@ -282,10 +282,6 @@ export type GetCustomerProjectsInput = {
   userId: Scalars['String'];
 };
 
-export type GetEditableCustomerDetailInput = {
-  companyId: Scalars['String'];
-};
-
 export type GetPlanInput = {
   planId: Scalars['String'];
 };
@@ -672,7 +668,6 @@ export type Query = {
   getCustomerDetail: CustomerDetail;
   getCustomerProject: CustomerProject;
   getCustomerProjects: Array<CustomerProject>;
-  getEditableCustomerDetail: EditableCustomerDetail;
   getPlan: Plan;
   getProjectBidUsers: Array<UserPermission>;
   getProjectDetail: Project;
@@ -729,11 +724,6 @@ export type QueryGetCustomerProjectArgs = {
 
 export type QueryGetCustomerProjectsArgs = {
   data: GetCustomerProjectsInput;
-};
-
-
-export type QueryGetEditableCustomerDetailArgs = {
-  data: GetEditableCustomerDetailInput;
 };
 
 

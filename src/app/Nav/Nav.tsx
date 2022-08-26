@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../Search/SearchBar";
-import "./Nav.scss";
 import {
   Drawer,
   Box,
@@ -21,7 +20,7 @@ import { Menu, Home, TextSnippet, Settings, Logout } from "@mui/icons-material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
-// import logo from "../../static/logo2.png";
+import logo from "../../static/logo2.png";
 import { gql, useMutation } from "@apollo/client";
 import CustomerNotification from "../Notification/CustomerNotification";
 import React from "react";
@@ -76,7 +75,7 @@ const Nav = () => {
           onKeyDown={() => setSideNavOpen(false)}
         >
           <List>
-            <ListItem onClick={() => handleSideNavOnClick("home")}>
+            <ListItem onClick={() => handleSideNavOnClick(GENERAL_ROUTES.HOME)}>
               <ListItemButton>
                 <ListItemIcon>
                   <Home />
@@ -109,7 +108,9 @@ const Nav = () => {
             </ListItemButton>
           </ListItem> */}
 
-            <ListItem onClick={() => handleSideNavOnClick("settings")}>
+            <ListItem
+              onClick={() => handleSideNavOnClick(GENERAL_ROUTES.SETTINGS)}
+            >
               <ListItemButton>
                 <ListItemIcon>
                   <Settings />
@@ -162,7 +163,7 @@ const Nav = () => {
   const renderLogo = () => {
     return (
       <img
-        // src={logo}
+        src={logo}
         height={44}
         style={{ marginBottom: 2, cursor: "pointer" }}
         onClick={() => navigate(GENERAL_ROUTES.HOME)}

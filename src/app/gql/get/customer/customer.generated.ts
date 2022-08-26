@@ -18,12 +18,12 @@ export type GetCustomerProjectsQueryVariables = Types.Exact<{
 
 export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects: Array<{ __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null }> };
 
-export type GetEditableCustomerDetailQueryVariables = Types.Exact<{
-  data: Types.GetEditableCustomerDetailInput;
+export type GetCustomerDetailQueryVariables = Types.Exact<{
+  data: Types.GetCustomerDetailInput;
 }>;
 
 
-export type GetEditableCustomerDetailQuery = { __typename?: 'Query', getEditableCustomerDetail: { __typename?: 'EditableCustomerDetail', name: string, contactEmail: string, phone: string, logo?: string | null, country: string, companyUrl?: string | null, fax?: string | null } };
+export type GetCustomerDetailQuery = { __typename?: 'Query', getCustomerDetail: { __typename?: 'CustomerDetail', id: string, name: string, contactEmail: string, logo?: string | null, country: string, phone: string, fax?: string | null, isVerified: boolean, isActive: boolean, companyUrl?: string | null } };
 
 
 export const GetCustomerProjectDocument = gql`
@@ -172,44 +172,47 @@ export function useGetCustomerProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetCustomerProjectsQueryHookResult = ReturnType<typeof useGetCustomerProjectsQuery>;
 export type GetCustomerProjectsLazyQueryHookResult = ReturnType<typeof useGetCustomerProjectsLazyQuery>;
 export type GetCustomerProjectsQueryResult = Apollo.QueryResult<GetCustomerProjectsQuery, GetCustomerProjectsQueryVariables>;
-export const GetEditableCustomerDetailDocument = gql`
-    query getEditableCustomerDetail($data: GetEditableCustomerDetailInput!) {
-  getEditableCustomerDetail(data: $data) {
+export const GetCustomerDetailDocument = gql`
+    query getCustomerDetail($data: GetCustomerDetailInput!) {
+  getCustomerDetail(data: $data) {
+    id
     name
     contactEmail
-    phone
     logo
     country
-    companyUrl
+    phone
     fax
+    isVerified
+    isActive
+    companyUrl
   }
 }
     `;
 
 /**
- * __useGetEditableCustomerDetailQuery__
+ * __useGetCustomerDetailQuery__
  *
- * To run a query within a React component, call `useGetEditableCustomerDetailQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetEditableCustomerDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetCustomerDetailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCustomerDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetEditableCustomerDetailQuery({
+ * const { data, loading, error } = useGetCustomerDetailQuery({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useGetEditableCustomerDetailQuery(baseOptions: Apollo.QueryHookOptions<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>) {
+export function useGetCustomerDetailQuery(baseOptions: Apollo.QueryHookOptions<GetCustomerDetailQuery, GetCustomerDetailQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>(GetEditableCustomerDetailDocument, options);
+        return Apollo.useQuery<GetCustomerDetailQuery, GetCustomerDetailQueryVariables>(GetCustomerDetailDocument, options);
       }
-export function useGetEditableCustomerDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>) {
+export function useGetCustomerDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCustomerDetailQuery, GetCustomerDetailQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>(GetEditableCustomerDetailDocument, options);
+          return Apollo.useLazyQuery<GetCustomerDetailQuery, GetCustomerDetailQueryVariables>(GetCustomerDetailDocument, options);
         }
-export type GetEditableCustomerDetailQueryHookResult = ReturnType<typeof useGetEditableCustomerDetailQuery>;
-export type GetEditableCustomerDetailLazyQueryHookResult = ReturnType<typeof useGetEditableCustomerDetailLazyQuery>;
-export type GetEditableCustomerDetailQueryResult = Apollo.QueryResult<GetEditableCustomerDetailQuery, GetEditableCustomerDetailQueryVariables>;
+export type GetCustomerDetailQueryHookResult = ReturnType<typeof useGetCustomerDetailQuery>;
+export type GetCustomerDetailLazyQueryHookResult = ReturnType<typeof useGetCustomerDetailLazyQuery>;
+export type GetCustomerDetailQueryResult = Apollo.QueryResult<GetCustomerDetailQuery, GetCustomerDetailQueryVariables>;
