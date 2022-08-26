@@ -38,8 +38,13 @@ const VendorProjects = () => {
         userId,
       },
     },
+    fetchPolicy: "cache-and-network",
   });
-
+  console.log({
+    getVendorProjectsData,
+    getVendorProjectsLoading,
+    getVendorProjectsError,
+  });
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
 
   const [sortMenuAnchor, setSortMenuAnchor] =
@@ -53,6 +58,15 @@ const VendorProjects = () => {
     }
   }, [getVendorProjectsData]);
 
+  useEffect(() => {
+    if (getVendorProjectsError) {
+      setSnackbar({
+        message: "Could not load your projects. Try again later",
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getVendorProjectsError]);
   const sortByDeliveryDate = () => {
     let proj = [...projects];
     proj = proj.sort(
@@ -100,78 +114,80 @@ const VendorProjects = () => {
 
   if (getVendorProjectsLoading) {
     return (
-      <Container className="user-projects-container">
+      <Container>
         <FullScreenLoading />
       </Container>
     );
   }
 
   if (getVendorProjectsError) {
-    setSnackbar({
-      message: "Error",
-      severity: "error",
-    });
-    setSnackbarOpen(true);
-    return null;
+    return (
+      <Container>
+        <Typography variant="subtitle2">Something went wrong.</Typography>
+      </Container>
+    );
   }
 
-  return (
-    <Container
-      className="user-projects-container"
-      sx={{ position: "relative" }}
-    >
-      {isProjectPageLoading && <FullScreenLoading />}
-      <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
-        <Typography variant="subtitle2">Your projects</Typography>
-        <IconButton onClick={sortOnClick}>
-          <SortIcon />
-        </IconButton>
-      </Box>
-
-      <Menu
-        id="long-menu"
-        anchorEl={sortMenuAnchor}
-        open={sortMenuOpen}
-        onClose={sortOnClose}
-        PaperProps={{
-          style: {
-            maxHeight: "120px",
-          },
-        }}
+  if (getVendorProjectsData) {
+    return (
+      <Container
+        className="user-projects-container"
+        sx={{ position: "relative" }}
       >
-        <MenuList dense sx={{ padding: "4px 0 4px" }}>
-          <MenuItem data-type="name" onClick={sortMenuOnClick}>
-            Sort by name
-          </MenuItem>
+        {isProjectPageLoading && <FullScreenLoading />}
+        <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
+          <Typography variant="subtitle2">Your projects</Typography>
+          <IconButton onClick={sortOnClick}>
+            <SortIcon />
+          </IconButton>
+        </Box>
 
-          <MenuItem data-type="budget" onClick={sortMenuOnClick}>
-            Sort by budget
-          </MenuItem>
+        <Menu
+          id="long-menu"
+          anchorEl={sortMenuAnchor}
+          open={sortMenuOpen}
+          onClose={sortOnClose}
+          PaperProps={{
+            style: {
+              maxHeight: "120px",
+            },
+          }}
+        >
+          <MenuList dense sx={{ padding: "4px 0 4px" }}>
+            <MenuItem data-type="name" onClick={sortMenuOnClick}>
+              Sort by name
+            </MenuItem>
 
-          <MenuItem data-type="date" onClick={sortMenuOnClick}>
-            Sort by delivery date
-          </MenuItem>
-        </MenuList>
-      </Menu>
+            <MenuItem data-type="budget" onClick={sortMenuOnClick}>
+              Sort by budget
+            </MenuItem>
 
-      <Fade in={true}>
-        <Grid container spacing={3} className="user-projects-inner-container">
-          {projects.map((project, i) => {
-            return (
-              <>
-                <VendorProjectOverview
-                  key={i}
-                  project={project}
-                  getVendorProjectsRefetch={getVendorProjectsRefetch}
-                  setIsProjectPageLoading={setIsProjectPageLoading}
-                />
-              </>
-            );
-          })}
-        </Grid>
-      </Fade>
-    </Container>
-  );
+            <MenuItem data-type="date" onClick={sortMenuOnClick}>
+              Sort by delivery date
+            </MenuItem>
+          </MenuList>
+        </Menu>
+
+        <Fade in={true}>
+          <Grid container spacing={3} className="user-projects-inner-container">
+            {projects.map((project, i) => {
+              return (
+                <>
+                  <VendorProjectOverview
+                    key={i}
+                    project={project}
+                    getVendorProjectsRefetch={getVendorProjectsRefetch}
+                    setIsProjectPageLoading={setIsProjectPageLoading}
+                  />
+                </>
+              );
+            })}
+          </Grid>
+        </Fade>
+      </Container>
+    );
+  }
+  return null;
 };
 
 export default VendorProjects;

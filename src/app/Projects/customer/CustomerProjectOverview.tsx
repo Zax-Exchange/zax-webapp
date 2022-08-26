@@ -120,7 +120,7 @@ const CustomerProjectOverview = ({
     <Grid item xs={4} minHeight={300}>
       <Paper
         variant="elevation"
-        elevation={3}
+        elevation={1}
         sx={{
           position: "relative",
           borderRadius: 2,

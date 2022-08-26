@@ -22,6 +22,7 @@ import { useGetCustomerProjectsQuery } from "../../gql/get/customer/customer.gen
 
 const CustomerProjects = () => {
   const { user } = useContext(AuthContext);
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isVendor = user!.isVendor;
 
   const userId = user!.id;
@@ -58,6 +59,15 @@ const CustomerProjects = () => {
     }
   }, [getCustomerProjectsData]);
 
+  useEffect(() => {
+    if (getCustomerProjectsError) {
+      setSnackbar({
+        message: "Could not load projects. Please try again later.",
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getCustomerProjectsError]);
   const sortByDeliveryDate = () => {
     let proj = [...projects];
     proj = proj.sort(
@@ -119,62 +129,65 @@ const CustomerProjects = () => {
     );
   }
 
-  return (
-    <Container
-      className="user-projects-container"
-      sx={{ position: "relative" }}
-    >
-      {isProjectPageLoading && <FullScreenLoading />}
-      <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
-        <Typography variant="subtitle2">Your projects</Typography>
-        <IconButton onClick={sortOnClick}>
-          <SortIcon />
-        </IconButton>
-      </Box>
-
-      <Menu
-        id="long-menu"
-        anchorEl={sortMenuAnchor}
-        open={sortMenuOpen}
-        onClose={sortOnClose}
-        PaperProps={{
-          style: {
-            maxHeight: "120px",
-          },
-        }}
+  if (getCustomerProjectsData) {
+    return (
+      <Container
+        className="user-projects-container"
+        sx={{ position: "relative" }}
       >
-        <MenuList dense sx={{ padding: "4px 0 4px" }}>
-          <MenuItem data-type="name" onClick={sortMenuOnClick}>
-            Sort by name
-          </MenuItem>
+        {isProjectPageLoading && <FullScreenLoading />}
+        <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
+          <Typography variant="subtitle2">Your projects</Typography>
+          <IconButton onClick={sortOnClick}>
+            <SortIcon />
+          </IconButton>
+        </Box>
 
-          <MenuItem data-type="budget" onClick={sortMenuOnClick}>
-            Sort by budget
-          </MenuItem>
+        <Menu
+          id="long-menu"
+          anchorEl={sortMenuAnchor}
+          open={sortMenuOpen}
+          onClose={sortOnClose}
+          PaperProps={{
+            style: {
+              maxHeight: "120px",
+            },
+          }}
+        >
+          <MenuList dense sx={{ padding: "4px 0 4px" }}>
+            <MenuItem data-type="name" onClick={sortMenuOnClick}>
+              Sort by name
+            </MenuItem>
 
-          <MenuItem data-type="date" onClick={sortMenuOnClick}>
-            Sort by delivery date
-          </MenuItem>
-        </MenuList>
-      </Menu>
+            <MenuItem data-type="budget" onClick={sortMenuOnClick}>
+              Sort by budget
+            </MenuItem>
 
-      <Fade in={true}>
-        <Grid container spacing={3} className="user-projects-inner-container">
-          {projects.map((project, i) => {
-            return (
-              <>
-                <CustomerProjectOverview
-                  key={i}
-                  project={project}
-                  setIsProjectPageLoading={setIsProjectPageLoading}
-                />
-              </>
-            );
-          })}
-        </Grid>
-      </Fade>
-    </Container>
-  );
+            <MenuItem data-type="date" onClick={sortMenuOnClick}>
+              Sort by delivery date
+            </MenuItem>
+          </MenuList>
+        </Menu>
+
+        <Fade in={true}>
+          <Grid container spacing={3} className="user-projects-inner-container">
+            {projects.map((project, i) => {
+              return (
+                <>
+                  <CustomerProjectOverview
+                    key={i}
+                    project={project}
+                    setIsProjectPageLoading={setIsProjectPageLoading}
+                  />
+                </>
+              );
+            })}
+          </Grid>
+        </Fade>
+      </Container>
+    );
+  }
+  return null;
 };
 
 export default CustomerProjects;

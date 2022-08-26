@@ -77,6 +77,7 @@ const ProjectBidModal = ({
           },
         },
       });
+      // getVendorProjectsRefetch();
       setSnackbar({
         severity: "success",
         message: "Bid created.",

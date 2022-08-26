@@ -111,17 +111,19 @@ const VendorBidOverview = ({
     return <Typography>Error</Typography>;
   }
   return (
-    <Card sx={{ width: "100%", position: "relative" }}>
+    <Card sx={{ width: "100%", position: "relative" }} variant="outlined">
       {vendorData && (
         <>
           <CardActionArea onClick={() => setIsBidModalOpen(true)}>
             <CardContent>
               <List>
                 <ListItem>
-                  <Typography>Vendor: {vendorData.name}</Typography>
+                  <Typography variant="subtitle2">
+                    Vendor: {vendorData.name}
+                  </Typography>
                 </ListItem>
                 <ListItem>
-                  <Typography>
+                  <Typography variant="caption">
                     Created On: {convertToDate(bid.createdAt)}
                   </Typography>
                 </ListItem>

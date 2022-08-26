@@ -12,7 +12,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import VendorBidOverview from "./VendorBidOverview";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
 import { ProjectOverviewListItem } from "./CustomerProjectOverview";
@@ -21,6 +21,7 @@ import { ProjectBid, ProjectComponent } from "../../../generated/graphql";
 import React from "react";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.generated";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
   flexDirection: "column",
@@ -30,7 +31,7 @@ const CustomerProjectDetail = () => {
   const { projectId } = useParams();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const { data, loading, error, refetch } = useGetCustomerProjectQuery({
     variables: {
       data: {
@@ -40,6 +41,15 @@ const CustomerProjectDetail = () => {
     },
   });
 
+  useEffect(() => {
+    if (error) {
+      setSnackbar({
+        message: "Could not load your project. Please try again later.",
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [error]);
   const getComponentName = (
     componentId: string,
     components: ProjectComponent[]
@@ -63,7 +73,9 @@ const CustomerProjectDetail = () => {
   if (error) {
     return (
       <Container>
-        <Button onClick={() => refetch()}>retry</Button>
+        <Typography variant="subtitle2">
+          Cannot load your project at this time.
+        </Typography>
       </Container>
     );
   }
@@ -105,7 +117,7 @@ const CustomerProjectDetail = () => {
             <Container>
               <Typography variant="h6">Project Detail</Typography>
             </Container>
-            <Paper sx={{ padding: 3 }}>
+            <Paper sx={{ padding: 3 }} variant="outlined">
               <List>
                 <ProjectDetailListItem>
                   <Typography variant="subtitle2">Project Name</Typography>
@@ -157,7 +169,7 @@ const CustomerProjectDetail = () => {
             </Paper>
             {projectData.components.map((comp) => {
               return (
-                <Paper sx={{ marginTop: 1, padding: 3 }}>
+                <Paper sx={{ marginTop: 1, padding: 3 }} variant="outlined">
                   <List>
                     <ProjectDetailListItem>
                       <Typography variant="subtitle2">Name</Typography>

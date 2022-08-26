@@ -73,6 +73,7 @@ const GET_VENDOR_PROJECTS = gql`
         id
         companyId
         permission
+        status
         components {
           projectComponentId
           quantityPrices {

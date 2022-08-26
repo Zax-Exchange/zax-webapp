@@ -531,6 +531,7 @@ export type PermissionedProjectBid = {
   id: Scalars['String'];
   permission: ProjectPermission;
   projectId: Scalars['String'];
+  status: BidStatus;
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
 };
@@ -588,6 +589,7 @@ export type ProjectBid = {
   id: Scalars['String'];
   project: Project;
   projectId: Scalars['String'];
+  status: BidStatus;
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
 };
