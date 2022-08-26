@@ -9,7 +9,7 @@ export type GetProjectBidUsersQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectBidUsersQuery = { __typename?: 'Query', getProjectBidUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: Types.ProjectPermission }> };
+export type GetProjectBidUsersQuery = { __typename?: 'Query', getProjectBidUsers: Array<{ __typename?: 'UserProjectPermission', userId: string, name: string, email: string, permission: Types.ProjectPermission }> };
 
 
 export const GetProjectBidUsersDocument = gql`

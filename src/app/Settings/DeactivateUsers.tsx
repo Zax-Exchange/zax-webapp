@@ -76,6 +76,7 @@ const DeactivateUsers = () => {
   };
 
   const deactivateOnClick = async () => {
+    setDialogOpen(false);
     try {
       await deactivateUser({
         variables: {
@@ -84,6 +85,7 @@ const DeactivateUsers = () => {
           },
         },
       });
+
       setSnackbar({
         severity: "success",
         message: "User deactivated.",

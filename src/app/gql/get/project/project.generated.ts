@@ -9,7 +9,7 @@ export type GetProjectUsersQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectUsersQuery = { __typename?: 'Query', getProjectUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: Types.ProjectPermission }> };
+export type GetProjectUsersQuery = { __typename?: 'Query', getProjectUsers: Array<{ __typename?: 'UserProjectPermission', userId: string, name: string, email: string, permission: Types.ProjectPermission }> };
 
 export type GetProjectDetailQueryVariables = Types.Exact<{
   data: Types.GetProjectDetailInput;

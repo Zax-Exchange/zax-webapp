@@ -35,6 +35,13 @@ const Login = () => {
     });
   };
 
+  useEffect(() => {
+    if (data) {
+      console.log(data.login);
+      login(data.login as LoggedInUser);
+    }
+  }, [data]);
+
   const loginHandler = () => {
     userLogin({
       variables: {
@@ -44,12 +51,12 @@ const Login = () => {
     });
   };
 
-  if (data) {
-    login(data.login as LoggedInUser);
+  if (error) {
+    navigate("/login");
     return null;
   }
 
-  if (loading || user) {
+  if (loading) {
     return <FullScreenLoading />;
   }
 

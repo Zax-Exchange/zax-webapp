@@ -23,7 +23,7 @@ const UserSignup = () => {
   const navigate = useNavigate();
   const [createUser, { error: createUserError, loading: createUserLoading }] =
     useCreateUserMutation({
-      onCompleted: ({ createUser }: { createUser: LoggedInUser }) => {
+      onCompleted: ({ createUser }) => {
         login(createUser);
         navigate(GENERAL_ROUTES.HOME);
       },

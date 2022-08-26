@@ -7,7 +7,6 @@ const CREATE_USER = gql`
       companyId
       isVendor
       isAdmin
-      isActive
       name
       email
       token

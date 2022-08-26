@@ -23,7 +23,7 @@ import { AuthContext } from "../../context/AuthContext";
 import {
   CustomerProject,
   ProjectPermission,
-  UserPermission,
+  UserProjectPermission,
   VendorProject,
 } from "../../generated/graphql";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
@@ -47,7 +47,9 @@ const ProjectPermissionModal = ({
   const isVendor = loggedInUser!.isVendor;
   const [email, setEmail] = useState("");
 
-  const [allProjectUsers, setAllProjectUsers] = useState<UserPermission[]>([]);
+  const [allProjectUsers, setAllProjectUsers] = useState<
+    UserProjectPermission[]
+  >([]);
 
   const [emailsList, setEmailsList] = useState<string[]>([]);
 
@@ -123,7 +125,7 @@ const ProjectPermissionModal = ({
         onCompleted: ({
           getProjectBidUsers,
         }: {
-          getProjectBidUsers: UserPermission[];
+          getProjectBidUsers: UserProjectPermission[];
         }) => {
           setAllProjectUsers(getProjectBidUsers);
         },
@@ -139,7 +141,7 @@ const ProjectPermissionModal = ({
         onCompleted: ({
           getProjectUsers,
         }: {
-          getProjectUsers: UserPermission[];
+          getProjectUsers: UserProjectPermission[];
         }) => {
           console.log("customer project users fetched");
           setAllProjectUsers(getProjectUsers);

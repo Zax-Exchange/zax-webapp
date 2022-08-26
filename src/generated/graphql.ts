@@ -326,7 +326,6 @@ export type LoggedInUser = {
   companyId: Scalars['String'];
   email: Scalars['String'];
   id: Scalars['String'];
-  isActive: Scalars['Boolean'];
   isAdmin: Scalars['Boolean'];
   isVendor: Scalars['Boolean'];
   name: Scalars['String'];
@@ -669,9 +668,9 @@ export type Query = {
   getCustomerProject: CustomerProject;
   getCustomerProjects: Array<CustomerProject>;
   getPlan: Plan;
-  getProjectBidUsers: Array<UserPermission>;
+  getProjectBidUsers: Array<UserProjectPermission>;
   getProjectDetail: Project;
-  getProjectUsers: Array<UserPermission>;
+  getProjectUsers: Array<UserProjectPermission>;
   getUser: User;
   getVendorDetail: VendorDetail;
   getVendorProject: VendorProject;
@@ -929,8 +928,8 @@ export type UserLoginInput = {
   password: Scalars['String'];
 };
 
-export type UserPermission = {
-  __typename?: 'UserPermission';
+export type UserProjectPermission = {
+  __typename?: 'UserProjectPermission';
   email: Scalars['String'];
   name: Scalars['String'];
   permission: ProjectPermission;
