@@ -23,7 +23,6 @@ import { useGetCustomerProjectsQuery } from "../../gql/get/customer/customer.gen
 const CustomerProjects = () => {
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const isVendor = user!.isVendor;
 
   const userId = user!.id;
 

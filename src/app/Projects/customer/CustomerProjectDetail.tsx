@@ -117,7 +117,7 @@ const CustomerProjectDetail = () => {
             <Container>
               <Typography variant="h6">Project Detail</Typography>
             </Container>
-            <Paper sx={{ padding: 3 }} variant="outlined">
+            <Paper sx={{ padding: 3 }} elevation={1}>
               <List>
                 <ProjectDetailListItem>
                   <Typography variant="subtitle2">Project Name</Typography>
@@ -169,7 +169,7 @@ const CustomerProjectDetail = () => {
             </Paper>
             {projectData.components.map((comp) => {
               return (
-                <Paper sx={{ marginTop: 1, padding: 3 }} variant="outlined">
+                <Paper sx={{ marginTop: 1, padding: 3 }} elevation={1}>
                   <List>
                     <ProjectDetailListItem>
                       <Typography variant="subtitle2">Name</Typography>

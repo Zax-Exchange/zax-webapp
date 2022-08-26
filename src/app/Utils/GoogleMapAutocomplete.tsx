@@ -1,12 +1,12 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import parse from 'autosuggest-highlight/parse';
-import throttle from 'lodash/throttle';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import parse from "autosuggest-highlight/parse";
+import throttle from "lodash/throttle";
 
 // This key was created specifically for the demo in mui.com.
 // You need to create a new one for your application.
@@ -17,9 +17,9 @@ function loadScript(src: string, position: HTMLElement | null, id: string) {
     return;
   }
 
-  const script = document.createElement('script');
-  script.setAttribute('async', '');
-  script.setAttribute('id', id);
+  const script = document.createElement("script");
+  script.setAttribute("async", "");
+  script.setAttribute("id", id);
   script.src = src;
   position.appendChild(script);
 }
@@ -41,21 +41,21 @@ interface PlaceType {
 }
 
 export default function GoogleMaps({
-  parentSetDataHandler
+  parentSetDataHandler,
 }: {
-  parentSetDataHandler: (address: string) => void
+  parentSetDataHandler: (address: string) => void;
 }) {
   const [value, setValue] = React.useState<PlaceType | null>(null);
-  const [inputValue, setInputValue] = React.useState('');
+  const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState<readonly PlaceType[]>([]);
   const loaded = React.useRef(false);
 
-  if (typeof window !== 'undefined' && !loaded.current) {
-    if (!document.querySelector('#google-maps')) {
+  if (typeof window !== "undefined" && !loaded.current) {
+    if (!document.querySelector("#google-maps")) {
       loadScript(
         `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
-        document.querySelector('head'),
-        'google-maps',
+        document.querySelector("head"),
+        "google-maps"
       );
     }
 
@@ -67,16 +67,16 @@ export default function GoogleMaps({
       throttle(
         (
           request: { input: string },
-          callback: (results?: readonly PlaceType[]) => void,
+          callback: (results?: readonly PlaceType[]) => void
         ) => {
           (autocompleteService.current as any).getPlacePredictions(
             request,
-            callback,
+            callback
           );
         },
-        200,
+        200
       ),
-    [],
+    []
   );
 
   React.useEffect(() => {
@@ -91,7 +91,7 @@ export default function GoogleMaps({
       return undefined;
     }
 
-    if (inputValue === '') {
+    if (inputValue === "") {
       setOptions(value ? [value] : []);
       return undefined;
     }
@@ -120,9 +120,9 @@ export default function GoogleMaps({
   return (
     <Autocomplete
       id="google-map-demo"
-      sx={{ width: 300 }}
+      sx={{ width: 700 }}
       getOptionLabel={(option) =>
-        typeof option === 'string' ? option : option.description
+        typeof option === "string" ? option : option.description
       }
       filterOptions={(x) => x}
       options={options}
@@ -142,10 +142,14 @@ export default function GoogleMaps({
         <TextField {...params} label="Add a location" fullWidth />
       )}
       renderOption={(props, option) => {
-        const matches = option.structured_formatting.main_text_matched_substrings;
+        const matches =
+          option.structured_formatting.main_text_matched_substrings;
         const parts = parse(
           option.structured_formatting.main_text,
-          matches.map((match: any) => [match.offset, match.offset + match.length]),
+          matches.map((match: any) => [
+            match.offset,
+            match.offset + match.length,
+          ])
         );
 
         return (
@@ -154,7 +158,7 @@ export default function GoogleMaps({
               <Grid item>
                 <Box
                   component={LocationOnIcon}
-                  sx={{ color: 'text.secondary', mr: 2 }}
+                  sx={{ color: "text.secondary", mr: 2 }}
                 />
               </Grid>
               <Grid item xs>
