@@ -7,7 +7,7 @@ const DELETE_PROJECT_PERMISSION = gql`
 `;
 
 const DELETE_PROJECT = gql`
-  mutation deleteProject($projectId: String!) {
-    deleteProject(projectId: $projectId)
+  mutation deleteProject($data: DeleteProjectInput!) {
+    deleteProject(data: $data)
   }
 `;

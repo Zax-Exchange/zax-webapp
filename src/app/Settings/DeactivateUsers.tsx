@@ -29,7 +29,9 @@ const DeactivateUsers = () => {
     error: getAllCompanyUsersError,
   } = useGetAllUsersWithinCompanyQuery({
     variables: {
-      companyId: user!.companyId,
+      data: {
+        companyId: user!.companyId,
+      },
     },
   });
 
@@ -77,7 +79,9 @@ const DeactivateUsers = () => {
     try {
       await deactivateUser({
         variables: {
-          email,
+          data: {
+            email,
+          },
         },
       });
       setSnackbar({

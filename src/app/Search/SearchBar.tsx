@@ -19,7 +19,7 @@ import FullScreenLoading from "../Utils/Loading";
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES, VENDOR_ROUTES } from "../constants/loggedInRoutes";
-import { useSearchProjectsLazyQuery } from "../gql/get/project/project.generated";
+import { useSearchCustomerProjectsLazyQuery } from "../gql/get/project/project.generated";
 import { useSearchVendorCompaniesLazyQuery } from "../gql/get/vendor/vendor.generated";
 
 const Search = styled("div")(({ theme }) => ({
@@ -81,7 +81,7 @@ const SearchBar = () => {
       error: searchProjectsError,
       loading: searchProjectsLoading,
     },
-  ] = useSearchProjectsLazyQuery();
+  ] = useSearchCustomerProjectsLazyQuery();
 
   const [
     searchVendors,
@@ -103,7 +103,7 @@ const SearchBar = () => {
       if (isVendor) {
         const { data } = await searchProjects({
           variables: {
-            searchInput: {
+            data: {
               userInput: input,
               // deliveryCountries: [String]
               // deliveryCities: [String]
@@ -121,7 +121,7 @@ const SearchBar = () => {
       } else {
         const { data } = await searchVendors({
           variables: {
-            searchInput: {
+            data: {
               userInput: input,
               // locations: [String]
               // moq: Int

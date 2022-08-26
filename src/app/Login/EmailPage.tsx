@@ -45,7 +45,9 @@ const EmailPage = ({
     try {
       await checkUserEmailQuery({
         variables: {
-          email: e.target.value,
+          data: {
+            email: e.target.value,
+          },
         },
         fetchPolicy: "no-cache",
       });

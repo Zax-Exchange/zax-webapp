@@ -101,7 +101,9 @@ const CustomerSignup = () => {
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
     variables: {
-      isVendor: false,
+      data: {
+        isVendor: false,
+      },
     },
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -226,7 +228,9 @@ const CustomerSignup = () => {
       try {
         const { data } = await createStripeCustomerMutation({
           variables: {
-            email: values.userEmail,
+            data: {
+              email: values.userEmail,
+            },
           },
         });
         await createCustomerSubscriptionMutation({

@@ -5,28 +5,28 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetVendorDetailQueryVariables = Types.Exact<{
-  companyId: Types.Scalars['String'];
+  data: Types.GetVendorDetailInput;
 }>;
 
 
 export type GetVendorDetailQuery = { __typename?: 'Query', getVendorDetail: { __typename?: 'VendorDetail', id: string, name: string, contactEmail: string, phone: string, logo?: string | null, country: string, isActive: boolean, companyUrl?: string | null, fax?: string | null, isVerified: boolean, locations: Array<string>, materials: Array<string>, moq: string, leadTime: number } };
 
 export type GetVendorProjectQueryVariables = Types.Exact<{
-  data: Types.GetProjectInput;
+  data: Types.GetVendorProjectInput;
 }>;
 
 
 export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject: { __typename?: 'VendorProject', id: string, userId: string, customerName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } };
 
 export type GetVendorProjectsQueryVariables = Types.Exact<{
-  userId: Types.Scalars['String'];
+  data: Types.GetVendorProjectsInput;
 }>;
 
 
 export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProject', id: string, userId: string, companyId: string, customerName: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }, components: Array<{ __typename?: 'ProjectComponent', id: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null }> };
 
 export type SearchVendorCompaniesQueryVariables = Types.Exact<{
-  searchInput: Types.SearchCompanyInput;
+  data: Types.SearchVendorCompanyInput;
 }>;
 
 
@@ -34,8 +34,8 @@ export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCom
 
 
 export const GetVendorDetailDocument = gql`
-    query getVendorDetail($companyId: String!) {
-  getVendorDetail(companyId: $companyId) {
+    query getVendorDetail($data: GetVendorDetailInput!) {
+  getVendorDetail(data: $data) {
     id
     name
     contactEmail
@@ -66,7 +66,7 @@ export const GetVendorDetailDocument = gql`
  * @example
  * const { data, loading, error } = useGetVendorDetailQuery({
  *   variables: {
- *      companyId: // value for 'companyId'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -82,7 +82,7 @@ export type GetVendorDetailQueryHookResult = ReturnType<typeof useGetVendorDetai
 export type GetVendorDetailLazyQueryHookResult = ReturnType<typeof useGetVendorDetailLazyQuery>;
 export type GetVendorDetailQueryResult = Apollo.QueryResult<GetVendorDetailQuery, GetVendorDetailQueryVariables>;
 export const GetVendorProjectDocument = gql`
-    query getVendorProject($data: GetProjectInput!) {
+    query getVendorProject($data: GetVendorProjectInput!) {
   getVendorProject(data: $data) {
     id
     userId
@@ -153,8 +153,8 @@ export type GetVendorProjectQueryHookResult = ReturnType<typeof useGetVendorProj
 export type GetVendorProjectLazyQueryHookResult = ReturnType<typeof useGetVendorProjectLazyQuery>;
 export type GetVendorProjectQueryResult = Apollo.QueryResult<GetVendorProjectQuery, GetVendorProjectQueryVariables>;
 export const GetVendorProjectsDocument = gql`
-    query getVendorProjects($userId: String!) {
-  getVendorProjects(userId: $userId) {
+    query getVendorProjects($data: GetVendorProjectsInput!) {
+  getVendorProjects(data: $data) {
     bidInfo {
       id
       companyId
@@ -208,7 +208,7 @@ export const GetVendorProjectsDocument = gql`
  * @example
  * const { data, loading, error } = useGetVendorProjectsQuery({
  *   variables: {
- *      userId: // value for 'userId'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -224,8 +224,8 @@ export type GetVendorProjectsQueryHookResult = ReturnType<typeof useGetVendorPro
 export type GetVendorProjectsLazyQueryHookResult = ReturnType<typeof useGetVendorProjectsLazyQuery>;
 export type GetVendorProjectsQueryResult = Apollo.QueryResult<GetVendorProjectsQuery, GetVendorProjectsQueryVariables>;
 export const SearchVendorCompaniesDocument = gql`
-    query searchVendorCompanies($searchInput: SearchCompanyInput!) {
-  searchVendorCompanies(searchInput: $searchInput) {
+    query searchVendorCompanies($data: SearchVendorCompanyInput!) {
+  searchVendorCompanies(data: $data) {
     id
     name
     logo
@@ -251,7 +251,7 @@ export const SearchVendorCompaniesDocument = gql`
  * @example
  * const { data, loading, error } = useSearchVendorCompaniesQuery({
  *   variables: {
- *      searchInput: // value for 'searchInput'
+ *      data: // value for 'data'
  *   },
  * });
  */

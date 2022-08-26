@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const GET_VENDOR_DETAIL = gql`
-  query getVendorDetail($companyId: String!) {
-    getVendorDetail(companyId: $companyId) {
+  query getVendorDetail($data: GetVendorDetailInput!) {
+    getVendorDetail(data: $data) {
       id
       name
       contactEmail
@@ -22,7 +22,7 @@ const GET_VENDOR_DETAIL = gql`
 `;
 
 const GET_VENDOR_PROJECT = gql`
-  query getVendorProject($data: GetProjectInput!) {
+  query getVendorProject($data: GetVendorProjectInput!) {
     getVendorProject(data: $data) {
       id
       userId
@@ -67,8 +67,8 @@ const GET_VENDOR_PROJECT = gql`
 `;
 
 const GET_VENDOR_PROJECTS = gql`
-  query getVendorProjects($userId: String!) {
-    getVendorProjects(userId: $userId) {
+  query getVendorProjects($data: GetVendorProjectsInput!) {
+    getVendorProjects(data: $data) {
       bidInfo {
         id
         companyId
@@ -110,9 +110,9 @@ const GET_VENDOR_PROJECTS = gql`
   }
 `;
 
-const SEARCH_VENDORS = gql`
-  query searchVendorCompanies($searchInput: SearchCompanyInput!) {
-    searchVendorCompanies(searchInput: $searchInput) {
+const SEARCH_VENDOR_COMPANIES = gql`
+  query searchVendorCompanies($data: SearchVendorCompanyInput!) {
+    searchVendorCompanies(data: $data) {
       id
       name
       logo

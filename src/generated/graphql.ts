@@ -20,6 +20,18 @@ export enum BidStatus {
   Rejected = 'REJECTED'
 }
 
+export type CancelStripeSubscriptionInput = {
+  email: Scalars['String'];
+};
+
+export type CheckCompanyNameInput = {
+  companyName: Scalars['String'];
+};
+
+export type CheckUserEmailInput = {
+  email: Scalars['String'];
+};
+
 export type CompanyDetail = {
   __typename?: 'CompanyDetail';
   companyUrl?: Maybe<Scalars['String']>;
@@ -117,6 +129,10 @@ export type CreateProjectInput = {
   userId: Scalars['String'];
 };
 
+export type CreateStripeCustomerInput = {
+  email: Scalars['String'];
+};
+
 export type CreateUserInput = {
   companyId: Scalars['String'];
   email: Scalars['String'];
@@ -191,6 +207,10 @@ export type CustomerProject = {
   userId: Scalars['String'];
 };
 
+export type DeactivateUserInput = {
+  email: Scalars['String'];
+};
+
 export type DeleteProjectBidPermissionsInput = {
   projectBidId: Scalars['String'];
   userIds: Array<Scalars['String']>;
@@ -198,7 +218,6 @@ export type DeleteProjectBidPermissionsInput = {
 
 export type DeleteProjectInput = {
   projectId: Scalars['String'];
-  userId: Scalars['String'];
 };
 
 export type DeleteProjectPermissionsInput = {
@@ -234,18 +253,74 @@ export type FileUploadResponse = {
   key: Scalars['String'];
 };
 
-export type GetPermissionedCompanyInput = {
+export type GetAllPlansInput = {
+  isVendor: Scalars['Boolean'];
+};
+
+export type GetAllUsersWithinCompanyInput = {
   companyId: Scalars['String'];
-  userId: Scalars['String'];
 };
 
-export type GetProjectBidInput = {
-  projectBidId: Scalars['String'];
-  userId: Scalars['String'];
+export type GetCompanyDetailInput = {
+  companyId: Scalars['String'];
 };
 
-export type GetProjectInput = {
+export type GetCompanyPlanDetailInput = {
+  companyId: Scalars['String'];
+};
+
+export type GetCustomerDetailInput = {
+  companyId: Scalars['String'];
+};
+
+export type GetCustomerProjectInput = {
   projectId: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type GetCustomerProjectsInput = {
+  userId: Scalars['String'];
+};
+
+export type GetEditableCustomerDetailInput = {
+  companyId: Scalars['String'];
+};
+
+export type GetPlanInput = {
+  planId: Scalars['String'];
+};
+
+export type GetProjectBidUsersInput = {
+  projectBidId: Scalars['String'];
+};
+
+export type GetProjectDetailInput = {
+  projectId: Scalars['String'];
+};
+
+export type GetProjectUsersInput = {
+  projectId: Scalars['String'];
+};
+
+export type GetUserInput = {
+  userId: Scalars['String'];
+};
+
+export type GetVendorDetailInput = {
+  companyId: Scalars['String'];
+};
+
+export type GetVendorProjectInput = {
+  projectId: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type GetVendorProjectsInput = {
+  userId: Scalars['String'];
+};
+
+export type InviteUserInput = {
+  email: Scalars['String'];
   userId: Scalars['String'];
 };
 
@@ -265,6 +340,7 @@ export type LoggedInUser = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  cancelStripeSubscription: Scalars['Boolean'];
   createCustomer: Scalars['String'];
   createCustomerSubscription: StripeSubscription;
   createProject: Scalars['Boolean'];
@@ -282,15 +358,20 @@ export type Mutation = {
   updateCompanyPlan: Scalars['Boolean'];
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
-  updateCustomer: Scalars['Boolean'];
+  updateCustomerInfo: Scalars['Boolean'];
   updateProjectBidPermissions: Scalars['Boolean'];
   updateProjectPermissions: Scalars['Boolean'];
-  updateSubscription: Scalars['Boolean'];
-  updateUser: Scalars['Boolean'];
+  updateStripeSubscription: Scalars['Boolean'];
+  updateUserInfo: Scalars['Boolean'];
   updateUserPassword: Scalars['Boolean'];
   updateUserPower: Scalars['Boolean'];
-  updateVendor: Scalars['Boolean'];
+  updateVendorInfo: Scalars['Boolean'];
   uploadProjectDesign: Scalars['String'];
+};
+
+
+export type MutationCancelStripeSubscriptionArgs = {
+  data: CancelStripeSubscriptionInput;
 };
 
 
@@ -316,7 +397,7 @@ export type MutationCreateProjectBidArgs = {
 
 
 export type MutationCreateStripeCustomerArgs = {
-  email?: InputMaybe<Scalars['String']>;
+  data: CreateStripeCustomerInput;
 };
 
 
@@ -336,12 +417,12 @@ export type MutationCreateVendorSubscriptionArgs = {
 
 
 export type MutationDeactivateUserArgs = {
-  email: Scalars['String'];
+  data: DeactivateUserInput;
 };
 
 
 export type MutationDeleteProjectArgs = {
-  projectId: Scalars['String'];
+  data: DeleteProjectInput;
 };
 
 
@@ -356,8 +437,7 @@ export type MutationDeleteProjectPermissionsArgs = {
 
 
 export type MutationInviteUserArgs = {
-  email: Scalars['String'];
-  userId: Scalars['String'];
+  data: InviteUserInput;
 };
 
 
@@ -372,18 +452,17 @@ export type MutationUpdateCompanyPlanArgs = {
 
 
 export type MutationUpdateCompanyPlanSubscriptionInfoArgs = {
-  subscriptionId: Scalars['String'];
+  data: UpdateCompanyPlanSubscriptionInfoInput;
 };
 
 
 export type MutationUpdateCompanyStatusArgs = {
-  companyId: Scalars['String'];
-  isActive: Scalars['Boolean'];
+  data: UpdateCompanyStatusInput;
 };
 
 
-export type MutationUpdateCustomerArgs = {
-  data: UpdateCustomerInput;
+export type MutationUpdateCustomerInfoArgs = {
+  data: UpdateCustomerInfoInput;
 };
 
 
@@ -397,13 +476,13 @@ export type MutationUpdateProjectPermissionsArgs = {
 };
 
 
-export type MutationUpdateSubscriptionArgs = {
-  subscriptionId: Scalars['String'];
+export type MutationUpdateStripeSubscriptionArgs = {
+  data: UpdateStripeSubscriptionInput;
 };
 
 
-export type MutationUpdateUserArgs = {
-  data: UpdateUserInput;
+export type MutationUpdateUserInfoArgs = {
+  data: UpdateUserInfoInput;
 };
 
 
@@ -417,8 +496,8 @@ export type MutationUpdateUserPowerArgs = {
 };
 
 
-export type MutationUpdateVendorArgs = {
-  data: UpdateVendorInput;
+export type MutationUpdateVendorInfoArgs = {
+  data: UpdateVendorInfoInput;
 };
 
 
@@ -590,16 +669,15 @@ export type Query = {
   getAllUsersWithinCompany: Array<User>;
   getCompanyDetail?: Maybe<CompanyDetail>;
   getCompanyPlanDetail: CompanyPlanDetail;
-  getCompanyPlanWithCompanyId: CompanyPlanDetail;
   getCustomerDetail: CustomerDetail;
   getCustomerProject: CustomerProject;
   getCustomerProjects: Array<CustomerProject>;
   getEditableCustomerDetail: EditableCustomerDetail;
-  getPlanWithPlanId: Plan;
+  getPlan: Plan;
   getProjectBidUsers: Array<UserPermission>;
   getProjectDetail: Project;
   getProjectUsers: Array<UserPermission>;
-  getUserWithUserId: User;
+  getUser: User;
   getVendorDetail: VendorDetail;
   getVendorProject: VendorProject;
   getVendorProjects: Array<VendorProject>;
@@ -610,98 +688,92 @@ export type Query = {
 
 
 export type QueryCheckCompanyNameArgs = {
-  name: Scalars['String'];
+  data: CheckCompanyNameInput;
 };
 
 
 export type QueryCheckUserEmailArgs = {
-  email: Scalars['String'];
+  data: CheckUserEmailInput;
 };
 
 
 export type QueryGetAllPlansArgs = {
-  isVendor: Scalars['Boolean'];
+  data: GetAllPlansInput;
 };
 
 
 export type QueryGetAllUsersWithinCompanyArgs = {
-  companyId?: InputMaybe<Scalars['String']>;
+  data: GetAllUsersWithinCompanyInput;
 };
 
 
 export type QueryGetCompanyDetailArgs = {
-  companyId?: InputMaybe<Scalars['String']>;
+  data?: InputMaybe<GetCompanyDetailInput>;
 };
 
 
 export type QueryGetCompanyPlanDetailArgs = {
-  companyId?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryGetCompanyPlanWithCompanyIdArgs = {
-  companyId?: InputMaybe<Scalars['String']>;
+  data: GetCompanyPlanDetailInput;
 };
 
 
 export type QueryGetCustomerDetailArgs = {
-  companyId: Scalars['String'];
+  data: GetCustomerDetailInput;
 };
 
 
 export type QueryGetCustomerProjectArgs = {
-  data: GetProjectInput;
+  data: GetCustomerProjectInput;
 };
 
 
 export type QueryGetCustomerProjectsArgs = {
-  userId: Scalars['String'];
+  data: GetCustomerProjectsInput;
 };
 
 
 export type QueryGetEditableCustomerDetailArgs = {
-  companyId: Scalars['String'];
+  data: GetEditableCustomerDetailInput;
 };
 
 
-export type QueryGetPlanWithPlanIdArgs = {
-  id: Scalars['String'];
+export type QueryGetPlanArgs = {
+  data: GetPlanInput;
 };
 
 
 export type QueryGetProjectBidUsersArgs = {
-  projectBidId: Scalars['String'];
+  data: GetProjectBidUsersInput;
 };
 
 
 export type QueryGetProjectDetailArgs = {
-  projectId: Scalars['String'];
+  data: GetProjectDetailInput;
 };
 
 
 export type QueryGetProjectUsersArgs = {
-  projectId: Scalars['String'];
+  data: GetProjectUsersInput;
 };
 
 
-export type QueryGetUserWithUserIdArgs = {
-  paranoid?: InputMaybe<Scalars['Boolean']>;
-  userId: Scalars['String'];
+export type QueryGetUserArgs = {
+  data: GetUserInput;
 };
 
 
 export type QueryGetVendorDetailArgs = {
-  companyId: Scalars['String'];
+  data?: InputMaybe<GetVendorDetailInput>;
 };
 
 
 export type QueryGetVendorProjectArgs = {
-  data: GetProjectInput;
+  data: GetVendorProjectInput;
 };
 
 
 export type QueryGetVendorProjectsArgs = {
-  userId: Scalars['String'];
+  data: GetVendorProjectsInput;
 };
 
 
@@ -711,26 +783,26 @@ export type QueryLoginArgs = {
 
 
 export type QuerySearchCustomerProjectsArgs = {
-  searchInput: SearchProjectInput;
+  data: SearchCustomerProjectInput;
 };
 
 
 export type QuerySearchVendorCompaniesArgs = {
-  searchInput: SearchCompanyInput;
+  data: SearchVendorCompanyInput;
 };
 
-export type SearchCompanyInput = {
-  leadTime?: InputMaybe<Scalars['Int']>;
-  locations?: InputMaybe<Array<Scalars['String']>>;
-  moq?: InputMaybe<Scalars['Int']>;
-  userInput: Scalars['String'];
-};
-
-export type SearchProjectInput = {
+export type SearchCustomerProjectInput = {
   budget?: InputMaybe<Scalars['Int']>;
   deliveryCities?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   deliveryCountries?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   leadTime?: InputMaybe<Scalars['Int']>;
+  userInput: Scalars['String'];
+};
+
+export type SearchVendorCompanyInput = {
+  leadTime?: InputMaybe<Scalars['Int']>;
+  locations?: InputMaybe<Array<Scalars['String']>>;
+  moq?: InputMaybe<Scalars['Int']>;
   userInput: Scalars['String'];
 };
 
@@ -745,12 +817,17 @@ export type UpdateCompanyPlanInput = {
   planId: Scalars['String'];
 };
 
-export type UpdateCustomerInput = {
-  data: UpdateCustomerInputData;
-  id: Scalars['String'];
+export type UpdateCompanyPlanSubscriptionInfoInput = {
+  subscriptionId: Scalars['String'];
 };
 
-export type UpdateCustomerInputData = {
+export type UpdateCompanyStatusInput = {
+  companyId: Scalars['String'];
+  isActive: Scalars['Boolean'];
+};
+
+export type UpdateCustomerInfoInput = {
+  companyId: Scalars['String'];
   companyUrl?: InputMaybe<Scalars['String']>;
   contactEmail: Scalars['String'];
   country: Scalars['String'];
@@ -811,28 +888,28 @@ export type UpdateProjectPermissionsInputData = {
   userIds: Array<InputMaybe<Scalars['String']>>;
 };
 
-export type UpdateUserInput = {
-  id: Scalars['String'];
+export type UpdateStripeSubscriptionInput = {
+  subscriptionId: Scalars['String'];
+};
+
+export type UpdateUserInfoInput = {
   name?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
 };
 
 export type UpdateUserPasswordInput = {
   currentPassword: Scalars['String'];
-  id: Scalars['String'];
   newPassword: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type UpdateUserPowerInput = {
-  id: Scalars['String'];
   isAdmin: Scalars['Boolean'];
+  userId: Scalars['String'];
 };
 
-export type UpdateVendorInput = {
-  data: UpdateVendorInputData;
-  id: Scalars['String'];
-};
-
-export type UpdateVendorInputData = {
+export type UpdateVendorInfoInput = {
+  companyId: Scalars['String'];
   companyUrl?: InputMaybe<Scalars['String']>;
   contactEmail: Scalars['String'];
   country: Scalars['String'];

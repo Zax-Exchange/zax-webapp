@@ -48,7 +48,9 @@ const CompanyInfo = ({
 
     await checkCompanyNameQuery({
       variables: {
-        name: e.target.value,
+        data: {
+          companyName: e.target.value,
+        },
       },
       fetchPolicy: "no-cache",
     });

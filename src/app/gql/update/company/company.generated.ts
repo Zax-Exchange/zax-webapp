@@ -5,15 +5,14 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type UpdateCompanyPlanSubscriptionInfoMutationVariables = Types.Exact<{
-  subscriptionId: Types.Scalars['String'];
+  data: Types.UpdateCompanyPlanSubscriptionInfoInput;
 }>;
 
 
 export type UpdateCompanyPlanSubscriptionInfoMutation = { __typename?: 'Mutation', updateCompanyPlanSubscriptionInfo: boolean };
 
 export type UpdateCompanyStatusMutationVariables = Types.Exact<{
-  companyId: Types.Scalars['String'];
-  isActive: Types.Scalars['Boolean'];
+  data: Types.UpdateCompanyStatusInput;
 }>;
 
 
@@ -21,8 +20,8 @@ export type UpdateCompanyStatusMutation = { __typename?: 'Mutation', updateCompa
 
 
 export const UpdateCompanyPlanSubscriptionInfoDocument = gql`
-    mutation updateCompanyPlanSubscriptionInfo($subscriptionId: String!) {
-  updateCompanyPlanSubscriptionInfo(subscriptionId: $subscriptionId)
+    mutation updateCompanyPlanSubscriptionInfo($data: UpdateCompanyPlanSubscriptionInfoInput!) {
+  updateCompanyPlanSubscriptionInfo(data: $data)
 }
     `;
 export type UpdateCompanyPlanSubscriptionInfoMutationFn = Apollo.MutationFunction<UpdateCompanyPlanSubscriptionInfoMutation, UpdateCompanyPlanSubscriptionInfoMutationVariables>;
@@ -40,7 +39,7 @@ export type UpdateCompanyPlanSubscriptionInfoMutationFn = Apollo.MutationFunctio
  * @example
  * const [updateCompanyPlanSubscriptionInfoMutation, { data, loading, error }] = useUpdateCompanyPlanSubscriptionInfoMutation({
  *   variables: {
- *      subscriptionId: // value for 'subscriptionId'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -52,8 +51,8 @@ export type UpdateCompanyPlanSubscriptionInfoMutationHookResult = ReturnType<typ
 export type UpdateCompanyPlanSubscriptionInfoMutationResult = Apollo.MutationResult<UpdateCompanyPlanSubscriptionInfoMutation>;
 export type UpdateCompanyPlanSubscriptionInfoMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyPlanSubscriptionInfoMutation, UpdateCompanyPlanSubscriptionInfoMutationVariables>;
 export const UpdateCompanyStatusDocument = gql`
-    mutation updateCompanyStatus($companyId: String!, $isActive: Boolean!) {
-  updateCompanyStatus(companyId: $companyId, isActive: $isActive)
+    mutation updateCompanyStatus($data: UpdateCompanyStatusInput!) {
+  updateCompanyStatus(data: $data)
 }
     `;
 export type UpdateCompanyStatusMutationFn = Apollo.MutationFunction<UpdateCompanyStatusMutation, UpdateCompanyStatusMutationVariables>;
@@ -71,8 +70,7 @@ export type UpdateCompanyStatusMutationFn = Apollo.MutationFunction<UpdateCompan
  * @example
  * const [updateCompanyStatusMutation, { data, loading, error }] = useUpdateCompanyStatusMutation({
  *   variables: {
- *      companyId: // value for 'companyId'
- *      isActive: // value for 'isActive'
+ *      data: // value for 'data'
  *   },
  * });
  */

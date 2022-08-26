@@ -115,7 +115,9 @@ const ProjectPermissionModal = ({
     if (isVendor) {
       getProjectBidUsers({
         variables: {
-          projectBidId: (project as VendorProject).bidInfo.id,
+          data: {
+            projectBidId: (project as VendorProject).bidInfo.id,
+          },
         },
         fetchPolicy: "no-cache",
         onCompleted: ({
@@ -129,7 +131,9 @@ const ProjectPermissionModal = ({
     } else {
       getProjectUsers({
         variables: {
-          projectId: (project as CustomerProject).id,
+          data: {
+            projectId: (project as CustomerProject).id,
+          },
         },
         fetchPolicy: "no-cache",
         onCompleted: ({
@@ -146,7 +150,9 @@ const ProjectPermissionModal = ({
 
   const { data: getAllCompanyUsersData } = useGetAllUsersWithinCompanyQuery({
     variables: {
-      companyId: loggedInUser!.companyId,
+      data: {
+        companyId: loggedInUser!.companyId,
+      },
     },
   });
 

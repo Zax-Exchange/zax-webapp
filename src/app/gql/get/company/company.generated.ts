@@ -5,28 +5,28 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetAllUsersWithinCompanyQueryVariables = Types.Exact<{
-  companyId: Types.Scalars['String'];
+  data: Types.GetAllUsersWithinCompanyInput;
 }>;
 
 
 export type GetAllUsersWithinCompanyQuery = { __typename?: 'Query', getAllUsersWithinCompany: Array<{ __typename?: 'User', id: string, email: string, name: string }> };
 
-export type GetCompanyPlanWithCompanyIdQueryVariables = Types.Exact<{
-  companyId: Types.Scalars['String'];
+export type GetCompanyPlanDetailQueryVariables = Types.Exact<{
+  data: Types.GetCompanyPlanDetailInput;
 }>;
 
 
-export type GetCompanyPlanWithCompanyIdQuery = { __typename?: 'Query', getCompanyPlanWithCompanyId: { __typename?: 'CompanyPlanDetail', tier: Types.PlanTier, price: number, billingFrequency: string, memberSince: string, subscriptionStartDate: string, subscriptionEndDate: string, trialStartDate?: string | null, trialEndDate?: string | null } };
+export type GetCompanyPlanDetailQuery = { __typename?: 'Query', getCompanyPlanDetail: { __typename?: 'CompanyPlanDetail', tier: Types.PlanTier, price: number, billingFrequency: string, memberSince: string, subscriptionStartDate: string, subscriptionEndDate: string, trialStartDate?: string | null, trialEndDate?: string | null } };
 
 export type GetCompanyDetailQueryVariables = Types.Exact<{
-  companyId: Types.Scalars['String'];
+  data: Types.GetCompanyDetailInput;
 }>;
 
 
 export type GetCompanyDetailQuery = { __typename?: 'Query', getCompanyDetail?: { __typename?: 'CompanyDetail', id: string, name: string, contactEmail: string, logo?: string | null, phone: string, fax?: string | null, country: string, isActive: boolean, isVendor: boolean, isVerified: boolean, companyUrl?: string | null, locations?: Array<string> | null, materials?: Array<string> | null, moq?: string | null, leadTime?: number | null } | null };
 
 export type GetAllPlansQueryVariables = Types.Exact<{
-  isVendor: Types.Scalars['Boolean'];
+  data: Types.GetAllPlansInput;
 }>;
 
 
@@ -34,8 +34,8 @@ export type GetAllPlansQuery = { __typename?: 'Query', getAllPlans: Array<{ __ty
 
 
 export const GetAllUsersWithinCompanyDocument = gql`
-    query getAllUsersWithinCompany($companyId: String!) {
-  getAllUsersWithinCompany(companyId: $companyId) {
+    query getAllUsersWithinCompany($data: GetAllUsersWithinCompanyInput!) {
+  getAllUsersWithinCompany(data: $data) {
     id
     email
     name
@@ -55,7 +55,7 @@ export const GetAllUsersWithinCompanyDocument = gql`
  * @example
  * const { data, loading, error } = useGetAllUsersWithinCompanyQuery({
  *   variables: {
- *      companyId: // value for 'companyId'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -70,9 +70,9 @@ export function useGetAllUsersWithinCompanyLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetAllUsersWithinCompanyQueryHookResult = ReturnType<typeof useGetAllUsersWithinCompanyQuery>;
 export type GetAllUsersWithinCompanyLazyQueryHookResult = ReturnType<typeof useGetAllUsersWithinCompanyLazyQuery>;
 export type GetAllUsersWithinCompanyQueryResult = Apollo.QueryResult<GetAllUsersWithinCompanyQuery, GetAllUsersWithinCompanyQueryVariables>;
-export const GetCompanyPlanWithCompanyIdDocument = gql`
-    query getCompanyPlanWithCompanyId($companyId: String!) {
-  getCompanyPlanWithCompanyId(companyId: $companyId) {
+export const GetCompanyPlanDetailDocument = gql`
+    query getCompanyPlanDetail($data: GetCompanyPlanDetailInput!) {
+  getCompanyPlanDetail(data: $data) {
     tier
     price
     billingFrequency
@@ -86,35 +86,35 @@ export const GetCompanyPlanWithCompanyIdDocument = gql`
     `;
 
 /**
- * __useGetCompanyPlanWithCompanyIdQuery__
+ * __useGetCompanyPlanDetailQuery__
  *
- * To run a query within a React component, call `useGetCompanyPlanWithCompanyIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCompanyPlanWithCompanyIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetCompanyPlanDetailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompanyPlanDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetCompanyPlanWithCompanyIdQuery({
+ * const { data, loading, error } = useGetCompanyPlanDetailQuery({
  *   variables: {
- *      companyId: // value for 'companyId'
+ *      data: // value for 'data'
  *   },
  * });
  */
-export function useGetCompanyPlanWithCompanyIdQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>) {
+export function useGetCompanyPlanDetailQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyPlanDetailQuery, GetCompanyPlanDetailQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>(GetCompanyPlanWithCompanyIdDocument, options);
+        return Apollo.useQuery<GetCompanyPlanDetailQuery, GetCompanyPlanDetailQueryVariables>(GetCompanyPlanDetailDocument, options);
       }
-export function useGetCompanyPlanWithCompanyIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>) {
+export function useGetCompanyPlanDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyPlanDetailQuery, GetCompanyPlanDetailQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>(GetCompanyPlanWithCompanyIdDocument, options);
+          return Apollo.useLazyQuery<GetCompanyPlanDetailQuery, GetCompanyPlanDetailQueryVariables>(GetCompanyPlanDetailDocument, options);
         }
-export type GetCompanyPlanWithCompanyIdQueryHookResult = ReturnType<typeof useGetCompanyPlanWithCompanyIdQuery>;
-export type GetCompanyPlanWithCompanyIdLazyQueryHookResult = ReturnType<typeof useGetCompanyPlanWithCompanyIdLazyQuery>;
-export type GetCompanyPlanWithCompanyIdQueryResult = Apollo.QueryResult<GetCompanyPlanWithCompanyIdQuery, GetCompanyPlanWithCompanyIdQueryVariables>;
+export type GetCompanyPlanDetailQueryHookResult = ReturnType<typeof useGetCompanyPlanDetailQuery>;
+export type GetCompanyPlanDetailLazyQueryHookResult = ReturnType<typeof useGetCompanyPlanDetailLazyQuery>;
+export type GetCompanyPlanDetailQueryResult = Apollo.QueryResult<GetCompanyPlanDetailQuery, GetCompanyPlanDetailQueryVariables>;
 export const GetCompanyDetailDocument = gql`
-    query getCompanyDetail($companyId: String!) {
-  getCompanyDetail(companyId: $companyId) {
+    query getCompanyDetail($data: GetCompanyDetailInput!) {
+  getCompanyDetail(data: $data) {
     id
     name
     contactEmail
@@ -146,7 +146,7 @@ export const GetCompanyDetailDocument = gql`
  * @example
  * const { data, loading, error } = useGetCompanyDetailQuery({
  *   variables: {
- *      companyId: // value for 'companyId'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -162,8 +162,8 @@ export type GetCompanyDetailQueryHookResult = ReturnType<typeof useGetCompanyDet
 export type GetCompanyDetailLazyQueryHookResult = ReturnType<typeof useGetCompanyDetailLazyQuery>;
 export type GetCompanyDetailQueryResult = Apollo.QueryResult<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>;
 export const GetAllPlansDocument = gql`
-    query getAllPlans($isVendor: Boolean!) {
-  getAllPlans(isVendor: $isVendor) {
+    query getAllPlans($data: GetAllPlansInput!) {
+  getAllPlans(data: $data) {
     id
     isVendor
     companySize
@@ -198,7 +198,7 @@ export const GetAllPlansDocument = gql`
  * @example
  * const { data, loading, error } = useGetAllPlansQuery({
  *   variables: {
- *      isVendor: // value for 'isVendor'
+ *      data: // value for 'data'
  *   },
  * });
  */

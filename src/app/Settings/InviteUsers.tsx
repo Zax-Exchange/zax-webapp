@@ -52,8 +52,10 @@ const InviteUsers = () => {
   const sendInvitation = () => {
     inviteUser({
       variables: {
-        email,
-        userId: user!.id,
+        data: {
+          email,
+          userId: user!.id,
+        },
       },
     });
   };

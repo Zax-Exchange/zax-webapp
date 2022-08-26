@@ -33,7 +33,9 @@ const CustomerProjects = () => {
     refetch: getCustomerProjectsRefetch,
   } = useGetCustomerProjectsQuery({
     variables: {
-      userId,
+      data: {
+        userId,
+      },
     },
     fetchPolicy: "no-cache",
   });
@@ -164,7 +166,6 @@ const CustomerProjects = () => {
                 <CustomerProjectOverview
                   key={i}
                   project={project}
-                  getCustomerProjectsRefetch={getCustomerProjectsRefetch}
                   setIsProjectPageLoading={setIsProjectPageLoading}
                 />
               </>

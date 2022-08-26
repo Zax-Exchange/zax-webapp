@@ -18,11 +18,10 @@ import AddIcon from "@mui/icons-material/Add";
 import React from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { useUpdateCustomerMutation } from "../../gql/update/customer/customer.generated";
 import {
   CustomerDetail,
   EditableCustomerDetail,
-  UpdateCustomerInputData,
+  UpdateCustomerInfoInput,
 } from "../../../generated/graphql";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import { countries } from "../../constants/countries";
@@ -30,6 +29,7 @@ import FullScreenLoading from "../../Utils/Loading";
 import { Country } from "../../Login/customer/CustomerSignup";
 import { useGetEditableCustomerDetailQuery } from "../../gql/get/customer/customer.generated";
 import { validate } from "email-validator";
+import { useUpdateCustomerInfoMutation } from "../../gql/update/customer/customer.generated";
 
 const EditCustomerProfile = () => {
   const { user } = useContext(AuthContext);
@@ -41,7 +41,9 @@ const EditCustomerProfile = () => {
     refetch: getCustomerDetailRefetch,
   } = useGetEditableCustomerDetailQuery({
     variables: {
-      companyId: user!.companyId,
+      data: {
+        companyId: user!.companyId,
+      },
     },
   });
 
@@ -52,10 +54,10 @@ const EditCustomerProfile = () => {
       loading: updateCustomerDataLoading,
       data: updateCustomerDataData,
     },
-  ] = useUpdateCustomerMutation();
+  ] = useUpdateCustomerInfoMutation();
 
   const [customerData, setCustomerData] =
-    useState<UpdateCustomerInputData | null>(null);
+    useState<UpdateCustomerInfoInput | null>(null);
 
   useEffect(() => {
     if (
@@ -65,6 +67,7 @@ const EditCustomerProfile = () => {
       const { name, contactEmail, phone, logo, country, companyUrl, fax } =
         getCustomerDetailData.getEditableCustomerDetail!;
       setCustomerData({
+        companyId: user!.companyId,
         name,
         contactEmail,
         phone,
@@ -195,7 +198,7 @@ const EditCustomerProfile = () => {
     };
 
     for (let key in customerData) {
-      const fieldValue = customerData![key as keyof UpdateCustomerInputData];
+      const fieldValue = customerData![key as keyof UpdateCustomerInfoInput];
       if (isRequired(key) && !isValid(key, fieldValue)) return true;
     }
 
@@ -206,10 +209,7 @@ const EditCustomerProfile = () => {
     try {
       await updateCustomerData({
         variables: {
-          data: {
-            id: user!.companyId,
-            data: customerData!,
-          },
+          data: customerData!,
         },
       });
 

@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type CreateStripeCustomerMutationVariables = Types.Exact<{
-  email: Types.Scalars['String'];
+  data: Types.CreateStripeCustomerInput;
 }>;
 
 
@@ -13,8 +13,8 @@ export type CreateStripeCustomerMutation = { __typename?: 'Mutation', createStri
 
 
 export const CreateStripeCustomerDocument = gql`
-    mutation createStripeCustomer($email: String!) {
-  createStripeCustomer(email: $email)
+    mutation createStripeCustomer($data: CreateStripeCustomerInput!) {
+  createStripeCustomer(data: $data)
 }
     `;
 export type CreateStripeCustomerMutationFn = Apollo.MutationFunction<CreateStripeCustomerMutation, CreateStripeCustomerMutationVariables>;
@@ -32,7 +32,7 @@ export type CreateStripeCustomerMutationFn = Apollo.MutationFunction<CreateStrip
  * @example
  * const [createStripeCustomerMutation, { data, loading, error }] = useCreateStripeCustomerMutation({
  *   variables: {
- *      email: // value for 'email'
+ *      data: // value for 'data'
  *   },
  * });
  */

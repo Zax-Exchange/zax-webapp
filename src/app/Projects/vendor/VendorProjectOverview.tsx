@@ -24,6 +24,7 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import BusinessIcon from "@mui/icons-material/Business";
 import {
   Exact,
+  GetVendorProjectsInput,
   InputMaybe,
   ProjectPermission,
   VendorProject,
@@ -53,7 +54,7 @@ const VendorProjectOverview = ({
     variables?:
       | Partial<
           Exact<{
-            userId?: string;
+            data: GetVendorProjectsInput;
           }>
         >
       | undefined

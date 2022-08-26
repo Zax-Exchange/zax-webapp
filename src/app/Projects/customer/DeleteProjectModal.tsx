@@ -10,34 +10,30 @@ import {
   AlertColor,
   IconButton,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 import { Exact, InputMaybe } from "../../../generated/graphql";
 import { useDeleteProjectMutation } from "../../gql/delete/project/project.generated";
-import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
+import {
+  GetCustomerProjectsQuery,
+  useGetCustomerProjectsLazyQuery,
+} from "../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 const DeleteProjectModal = ({
   deleteProjectModalOpen,
   setDeleteProjectModalOpen,
   projectId,
-  getCustomerProjectsRefetch,
   setIsProjectPageLoading,
 }: {
   deleteProjectModalOpen: boolean;
   setDeleteProjectModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   projectId: string;
-  getCustomerProjectsRefetch: (
-    variables?:
-      | Partial<
-          Exact<{
-            userId: string;
-          }>
-        >
-      | undefined
-  ) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const [getCustomerProjects] = useGetCustomerProjectsLazyQuery();
   const [
     deleteProjectMutation,
     {
@@ -53,10 +49,18 @@ const DeleteProjectModal = ({
     try {
       await deleteProjectMutation({
         variables: {
-          projectId,
+          data: {
+            projectId,
+          },
         },
       });
-      await getCustomerProjectsRefetch();
+      await getCustomerProjects({
+        variables: {
+          data: {
+            userId: user!.id,
+          },
+        },
+      });
       setSnackbar({
         message: "Project deleted.",
         severity: "success",

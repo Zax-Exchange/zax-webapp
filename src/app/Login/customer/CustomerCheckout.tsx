@@ -73,7 +73,9 @@ const CustomerCheckout = ({
         if (paymentSuccess && !updateCompanyPlanSuccess) {
           await updateCompanyPlanSubscriptionInfoMutation({
             variables: {
-              subscriptionId,
+              data: {
+                subscriptionId,
+              },
             },
           });
           setUpdateCompanyPlanSuccess(true);
@@ -85,8 +87,10 @@ const CustomerCheckout = ({
 
             await updateCompanyStatusMutation({
               variables: {
-                companyId,
-                isActive: true,
+                data: {
+                  companyId,
+                  isActive: true,
+                },
               },
             });
           }

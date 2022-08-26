@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const GET_PROJECT_USERS = gql`
-  query getProjectUsers($projectId: String!) {
-    getProjectUsers(projectId: $projectId) {
+  query getProjectUsers($data: GetProjectUsersInput!) {
+    getProjectUsers(data: $data) {
       userId
       name
       email
@@ -13,8 +13,8 @@ const GET_PROJECT_USERS = gql`
 
 
 const GET_PROJECT_DETAIL = gql`
-  query getProjectDetail($projectId: String!) {
-    getProjectDetail(projectId: $projectId) {
+  query getProjectDetail($data: GetProjectDetailInput!) {
+    getProjectDetail(data: $data) {
       id
       userId
       companyId
@@ -41,9 +41,9 @@ const GET_PROJECT_DETAIL = gql`
   }
 `;
 
-const SEARCH_PROJECTS = gql`
-  query searchProjects($searchInput: SearchProjectInput!) {
-    searchCustomerProjects(searchInput: $searchInput) {
+const SEARCH_CUSTOMER_PROJECTS = gql`
+  query searchCustomerProjects($data: SearchCustomerProjectInput!) {
+    searchCustomerProjects(data: $data) {
       name
       companyName
       materials

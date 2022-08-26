@@ -5,21 +5,21 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetCustomerProjectQueryVariables = Types.Exact<{
-  data: Types.GetProjectInput;
+  data: Types.GetCustomerProjectInput;
 }>;
 
 
 export type GetCustomerProjectQuery = { __typename?: 'Query', getCustomerProject: { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null } };
 
 export type GetCustomerProjectsQueryVariables = Types.Exact<{
-  userId: Types.Scalars['String'];
+  data: Types.GetCustomerProjectsInput;
 }>;
 
 
 export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects: Array<{ __typename?: 'CustomerProject', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null> | null }> };
 
 export type GetEditableCustomerDetailQueryVariables = Types.Exact<{
-  companyId: Types.Scalars['String'];
+  data: Types.GetEditableCustomerDetailInput;
 }>;
 
 
@@ -27,7 +27,7 @@ export type GetEditableCustomerDetailQuery = { __typename?: 'Query', getEditable
 
 
 export const GetCustomerProjectDocument = gql`
-    query getCustomerProject($data: GetProjectInput!) {
+    query getCustomerProject($data: GetCustomerProjectInput!) {
   getCustomerProject(data: $data) {
     id
     userId
@@ -100,8 +100,8 @@ export type GetCustomerProjectQueryHookResult = ReturnType<typeof useGetCustomer
 export type GetCustomerProjectLazyQueryHookResult = ReturnType<typeof useGetCustomerProjectLazyQuery>;
 export type GetCustomerProjectQueryResult = Apollo.QueryResult<GetCustomerProjectQuery, GetCustomerProjectQueryVariables>;
 export const GetCustomerProjectsDocument = gql`
-    query GetCustomerProjects($userId: String!) {
-  getCustomerProjects(userId: $userId) {
+    query GetCustomerProjects($data: GetCustomerProjectsInput!) {
+  getCustomerProjects(data: $data) {
     id
     userId
     companyId
@@ -157,7 +157,7 @@ export const GetCustomerProjectsDocument = gql`
  * @example
  * const { data, loading, error } = useGetCustomerProjectsQuery({
  *   variables: {
- *      userId: // value for 'userId'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -173,8 +173,8 @@ export type GetCustomerProjectsQueryHookResult = ReturnType<typeof useGetCustome
 export type GetCustomerProjectsLazyQueryHookResult = ReturnType<typeof useGetCustomerProjectsLazyQuery>;
 export type GetCustomerProjectsQueryResult = Apollo.QueryResult<GetCustomerProjectsQuery, GetCustomerProjectsQueryVariables>;
 export const GetEditableCustomerDetailDocument = gql`
-    query getEditableCustomerDetail($companyId: String!) {
-  getEditableCustomerDetail(companyId: $companyId) {
+    query getEditableCustomerDetail($data: GetEditableCustomerDetailInput!) {
+  getEditableCustomerDetail(data: $data) {
     name
     contactEmail
     phone
@@ -198,7 +198,7 @@ export const GetEditableCustomerDetailDocument = gql`
  * @example
  * const { data, loading, error } = useGetEditableCustomerDetailQuery({
  *   variables: {
- *      companyId: // value for 'companyId'
+ *      data: // value for 'data'
  *   },
  * });
  */

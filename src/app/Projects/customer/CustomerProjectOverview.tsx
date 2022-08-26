@@ -25,7 +25,12 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
-import { CustomerProject, Exact, InputMaybe } from "../../../generated/graphql";
+import {
+  CustomerProject,
+  Exact,
+  GetCustomerProjectsInput,
+  InputMaybe,
+} from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
@@ -43,19 +48,9 @@ export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 
 const CustomerProjectOverview = ({
   project,
-  getCustomerProjectsRefetch,
   setIsProjectPageLoading,
 }: {
   project: CustomerProject;
-  getCustomerProjectsRefetch: (
-    variables?:
-      | Partial<
-          Exact<{
-            userId: string;
-          }>
-        >
-      | undefined
-  ) => Promise<ApolloQueryResult<GetCustomerProjectsQuery>>;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
@@ -215,7 +210,6 @@ const CustomerProjectOverview = ({
       <DeleteProjectModal
         deleteProjectModalOpen={deleteProjectModalOpen}
         setDeleteProjectModalOpen={setDeleteProjectModalOpen}
-        getCustomerProjectsRefetch={getCustomerProjectsRefetch}
         setIsProjectPageLoading={setIsProjectPageLoading}
         projectId={project.id}
       />

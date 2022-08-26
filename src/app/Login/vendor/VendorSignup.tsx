@@ -104,7 +104,9 @@ const VendorSignup = () => {
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
     variables: {
-      isVendor: true,
+      data: {
+        isVendor: true,
+      },
     },
   });
 
@@ -299,7 +301,9 @@ const VendorSignup = () => {
       try {
         const { data } = await createStripeCustomerMutation({
           variables: {
-            email: values.userEmail,
+            data: {
+              email: values.userEmail,
+            },
           },
         });
 

@@ -29,7 +29,9 @@ const SearchProjectDetail = () => {
     loading: getProjectDetailLoading,
   } = useGetProjectDetailQuery({
     variables: {
-      projectId: projectId || "",
+      data: {
+        projectId: projectId || "",
+      },
     },
   });
 

@@ -41,7 +41,7 @@ const ChangePassword = () => {
       await updateUserPassword({
         variables: {
           data: {
-            id: user!.id,
+            userId: user!.id,
             currentPassword,
             newPassword,
           },

@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetProjectBidUsersQueryVariables = Types.Exact<{
-  projectBidId: Types.Scalars['String'];
+  data: Types.GetProjectBidUsersInput;
 }>;
 
 
@@ -13,8 +13,8 @@ export type GetProjectBidUsersQuery = { __typename?: 'Query', getProjectBidUsers
 
 
 export const GetProjectBidUsersDocument = gql`
-    query getProjectBidUsers($projectBidId: String!) {
-  getProjectBidUsers(projectBidId: $projectBidId) {
+    query getProjectBidUsers($data: GetProjectBidUsersInput!) {
+  getProjectBidUsers(data: $data) {
     userId
     name
     email
@@ -35,7 +35,7 @@ export const GetProjectBidUsersDocument = gql`
  * @example
  * const { data, loading, error } = useGetProjectBidUsersQuery({
  *   variables: {
- *      projectBidId: // value for 'projectBidId'
+ *      data: // value for 'data'
  *   },
  * });
  */

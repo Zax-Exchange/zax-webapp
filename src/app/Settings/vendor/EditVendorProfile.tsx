@@ -14,22 +14,19 @@ import {
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import AddIcon from "@mui/icons-material/Add";
 import React from "react";
 
 import { AuthContext } from "../../../context/AuthContext";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetVendorDetailQuery } from "../../gql/get/vendor/vendor.generated";
-import {
-  UpdateVendorInputData,
-  VendorDetail,
-} from "../../../generated/graphql";
+
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
-import { useUpdateVendorMutation } from "../../gql/update/vendor/vendor.generated";
 import { Country } from "../../Login/customer/CustomerSignup";
 import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
 import { validate } from "email-validator";
+import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.generated";
+import { UpdateVendorInfoInput } from "../../../generated/graphql";
 
 /**
  * 
@@ -60,7 +57,9 @@ const EditVendorProfile = () => {
     refetch: getVendorDetailRefetch,
   } = useGetVendorDetailQuery({
     variables: {
-      companyId: user!.companyId,
+      data: {
+        companyId: user!.companyId,
+      },
     },
   });
 
@@ -71,9 +70,9 @@ const EditVendorProfile = () => {
       loading: updateVendorDataLoading,
       data: updateVendorDataData,
     },
-  ] = useUpdateVendorMutation();
+  ] = useUpdateVendorInfoMutation();
 
-  const [vendorData, setVendorData] = useState<UpdateVendorInputData | null>(
+  const [vendorData, setVendorData] = useState<UpdateVendorInfoInput | null>(
     null
   );
   const [material, setMaterial] = useState("");
@@ -94,6 +93,7 @@ const EditVendorProfile = () => {
         moq,
       } = getVendorDetailData.getVendorDetail;
       setVendorData({
+        companyId: user!.companyId,
         name,
         contactEmail,
         phone,
@@ -263,7 +263,7 @@ const EditVendorProfile = () => {
     };
 
     for (let key in vendorData) {
-      const fieldValue = vendorData![key as keyof UpdateVendorInputData];
+      const fieldValue = vendorData![key as keyof UpdateVendorInfoInput];
       if (isRequired(key) && !isValid(key, fieldValue)) return true;
     }
 
@@ -385,11 +385,8 @@ const EditVendorProfile = () => {
       await updateVendorData({
         variables: {
           data: {
-            id: user!.companyId,
-            data: {
-              ...vendorData!,
-              leadTime: vendorData!.leadTime,
-            },
+            ...vendorData!,
+            leadTime: vendorData!.leadTime,
           },
         },
       });

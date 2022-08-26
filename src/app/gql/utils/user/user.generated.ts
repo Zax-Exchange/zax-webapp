@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type CheckUserEmailQueryVariables = Types.Exact<{
-  email: Types.Scalars['String'];
+  data: Types.CheckUserEmailInput;
 }>;
 
 
@@ -19,8 +19,7 @@ export type LoginQueryVariables = Types.Exact<{
 export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, isAdmin: boolean, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
 
 export type InviteUserMutationVariables = Types.Exact<{
-  email: Types.Scalars['String'];
-  userId: Types.Scalars['String'];
+  data: Types.InviteUserInput;
 }>;
 
 
@@ -28,8 +27,8 @@ export type InviteUserMutation = { __typename?: 'Mutation', inviteUser: boolean 
 
 
 export const CheckUserEmailDocument = gql`
-    query checkUserEmail($email: String!) {
-  checkUserEmail(email: $email)
+    query checkUserEmail($data: CheckUserEmailInput!) {
+  checkUserEmail(data: $data)
 }
     `;
 
@@ -45,7 +44,7 @@ export const CheckUserEmailDocument = gql`
  * @example
  * const { data, loading, error } = useCheckUserEmailQuery({
  *   variables: {
- *      email: // value for 'email'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -104,8 +103,8 @@ export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
 export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
 export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
 export const InviteUserDocument = gql`
-    mutation inviteUser($email: String!, $userId: String!) {
-  inviteUser(email: $email, userId: $userId)
+    mutation inviteUser($data: InviteUserInput!) {
+  inviteUser(data: $data)
 }
     `;
 export type InviteUserMutationFn = Apollo.MutationFunction<InviteUserMutation, InviteUserMutationVariables>;
@@ -123,8 +122,7 @@ export type InviteUserMutationFn = Apollo.MutationFunction<InviteUserMutation, I
  * @example
  * const [inviteUserMutation, { data, loading, error }] = useInviteUserMutation({
  *   variables: {
- *      email: // value for 'email'
- *      userId: // value for 'userId'
+ *      data: // value for 'data'
  *   },
  * });
  */

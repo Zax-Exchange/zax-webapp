@@ -45,7 +45,9 @@ const ProjectBidModal = ({
 
   const { refetch: getVendorProjectsRefetch } = useGetVendorProjectsQuery({
     variables: {
-      userId: user!.id,
+      data: {
+        userId: user!.id,
+      },
     },
     skip: true,
   });

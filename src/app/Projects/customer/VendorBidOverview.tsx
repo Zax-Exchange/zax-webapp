@@ -51,7 +51,9 @@ const VendorBidOverview = ({
     loading: getCompanyDetailLoading,
   } = useGetCompanyDetailQuery({
     variables: {
-      companyId: user!.companyId,
+      data: {
+        companyId: user!.companyId,
+      },
     },
   });
   const {
@@ -60,7 +62,9 @@ const VendorBidOverview = ({
     data: getVendorDetailData,
   } = useGetVendorDetailQuery({
     variables: {
-      companyId: bid.companyId,
+      data: {
+        companyId: bid.companyId,
+      },
     },
   });
 

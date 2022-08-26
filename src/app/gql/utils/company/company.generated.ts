@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type CheckCompanyNameQueryVariables = Types.Exact<{
-  name: Types.Scalars['String'];
+  data: Types.CheckCompanyNameInput;
 }>;
 
 
@@ -13,8 +13,8 @@ export type CheckCompanyNameQuery = { __typename?: 'Query', checkCompanyName: bo
 
 
 export const CheckCompanyNameDocument = gql`
-    query checkCompanyName($name: String!) {
-  checkCompanyName(name: $name)
+    query checkCompanyName($data: CheckCompanyNameInput!) {
+  checkCompanyName(data: $data)
 }
     `;
 
@@ -30,7 +30,7 @@ export const CheckCompanyNameDocument = gql`
  * @example
  * const { data, loading, error } = useCheckCompanyNameQuery({
  *   variables: {
- *      name: // value for 'name'
+ *      data: // value for 'data'
  *   },
  * });
  */

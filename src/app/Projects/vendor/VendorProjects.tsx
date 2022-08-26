@@ -34,7 +34,9 @@ const VendorProjects = () => {
     refetch: getVendorProjectsRefetch,
   } = useGetVendorProjectsQuery({
     variables: {
-      userId,
+      data: {
+        userId,
+      },
     },
   });
 

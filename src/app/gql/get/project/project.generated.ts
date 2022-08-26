@@ -5,30 +5,30 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetProjectUsersQueryVariables = Types.Exact<{
-  projectId: Types.Scalars['String'];
+  data: Types.GetProjectUsersInput;
 }>;
 
 
 export type GetProjectUsersQuery = { __typename?: 'Query', getProjectUsers: Array<{ __typename?: 'UserPermission', userId: string, name: string, email: string, permission: Types.ProjectPermission }> };
 
 export type GetProjectDetailQueryVariables = Types.Exact<{
-  projectId: Types.Scalars['String'];
+  data: Types.GetProjectDetailInput;
 }>;
 
 
 export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail: { __typename?: 'Project', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, materials: Array<string>, dimension: string, postProcess: string }> } };
 
-export type SearchProjectsQueryVariables = Types.Exact<{
-  searchInput: Types.SearchProjectInput;
+export type SearchCustomerProjectsQueryVariables = Types.Exact<{
+  data: Types.SearchCustomerProjectInput;
 }>;
 
 
-export type SearchProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, materials: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, budget: number, createdAt: string }> };
+export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, materials: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, budget: number, createdAt: string }> };
 
 
 export const GetProjectUsersDocument = gql`
-    query getProjectUsers($projectId: String!) {
-  getProjectUsers(projectId: $projectId) {
+    query getProjectUsers($data: GetProjectUsersInput!) {
+  getProjectUsers(data: $data) {
     userId
     name
     email
@@ -49,7 +49,7 @@ export const GetProjectUsersDocument = gql`
  * @example
  * const { data, loading, error } = useGetProjectUsersQuery({
  *   variables: {
- *      projectId: // value for 'projectId'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -65,8 +65,8 @@ export type GetProjectUsersQueryHookResult = ReturnType<typeof useGetProjectUser
 export type GetProjectUsersLazyQueryHookResult = ReturnType<typeof useGetProjectUsersLazyQuery>;
 export type GetProjectUsersQueryResult = Apollo.QueryResult<GetProjectUsersQuery, GetProjectUsersQueryVariables>;
 export const GetProjectDetailDocument = gql`
-    query getProjectDetail($projectId: String!) {
-  getProjectDetail(projectId: $projectId) {
+    query getProjectDetail($data: GetProjectDetailInput!) {
+  getProjectDetail(data: $data) {
     id
     userId
     companyId
@@ -105,7 +105,7 @@ export const GetProjectDetailDocument = gql`
  * @example
  * const { data, loading, error } = useGetProjectDetailQuery({
  *   variables: {
- *      projectId: // value for 'projectId'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -120,9 +120,9 @@ export function useGetProjectDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetProjectDetailQueryHookResult = ReturnType<typeof useGetProjectDetailQuery>;
 export type GetProjectDetailLazyQueryHookResult = ReturnType<typeof useGetProjectDetailLazyQuery>;
 export type GetProjectDetailQueryResult = Apollo.QueryResult<GetProjectDetailQuery, GetProjectDetailQueryVariables>;
-export const SearchProjectsDocument = gql`
-    query searchProjects($searchInput: SearchProjectInput!) {
-  searchCustomerProjects(searchInput: $searchInput) {
+export const SearchCustomerProjectsDocument = gql`
+    query searchCustomerProjects($data: SearchCustomerProjectInput!) {
+  searchCustomerProjects(data: $data) {
     name
     companyName
     materials
@@ -137,29 +137,29 @@ export const SearchProjectsDocument = gql`
     `;
 
 /**
- * __useSearchProjectsQuery__
+ * __useSearchCustomerProjectsQuery__
  *
- * To run a query within a React component, call `useSearchProjectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSearchCustomerProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchCustomerProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSearchProjectsQuery({
+ * const { data, loading, error } = useSearchCustomerProjectsQuery({
  *   variables: {
- *      searchInput: // value for 'searchInput'
+ *      data: // value for 'data'
  *   },
  * });
  */
-export function useSearchProjectsQuery(baseOptions: Apollo.QueryHookOptions<SearchProjectsQuery, SearchProjectsQueryVariables>) {
+export function useSearchCustomerProjectsQuery(baseOptions: Apollo.QueryHookOptions<SearchCustomerProjectsQuery, SearchCustomerProjectsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SearchProjectsQuery, SearchProjectsQueryVariables>(SearchProjectsDocument, options);
+        return Apollo.useQuery<SearchCustomerProjectsQuery, SearchCustomerProjectsQueryVariables>(SearchCustomerProjectsDocument, options);
       }
-export function useSearchProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchProjectsQuery, SearchProjectsQueryVariables>) {
+export function useSearchCustomerProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchCustomerProjectsQuery, SearchCustomerProjectsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SearchProjectsQuery, SearchProjectsQueryVariables>(SearchProjectsDocument, options);
+          return Apollo.useLazyQuery<SearchCustomerProjectsQuery, SearchCustomerProjectsQueryVariables>(SearchCustomerProjectsDocument, options);
         }
-export type SearchProjectsQueryHookResult = ReturnType<typeof useSearchProjectsQuery>;
-export type SearchProjectsLazyQueryHookResult = ReturnType<typeof useSearchProjectsLazyQuery>;
-export type SearchProjectsQueryResult = Apollo.QueryResult<SearchProjectsQuery, SearchProjectsQueryVariables>;
+export type SearchCustomerProjectsQueryHookResult = ReturnType<typeof useSearchCustomerProjectsQuery>;
+export type SearchCustomerProjectsLazyQueryHookResult = ReturnType<typeof useSearchCustomerProjectsLazyQuery>;
+export type SearchCustomerProjectsQueryResult = Apollo.QueryResult<SearchCustomerProjectsQuery, SearchCustomerProjectsQueryVariables>;

@@ -16,7 +16,9 @@ const ChangePlan = () => {
     refetch: getAllPlansRefetch,
   } = useGetAllPlansQuery({
     variables: {
-      isVendor: user!.isVendor,
+      data: {
+        isVendor: user!.isVendor,
+      },
     },
   });
 

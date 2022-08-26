@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type DeactivateUserMutationVariables = Types.Exact<{
-  email: Types.Scalars['String'];
+  data: Types.DeactivateUserInput;
 }>;
 
 
@@ -13,8 +13,8 @@ export type DeactivateUserMutation = { __typename?: 'Mutation', deactivateUser: 
 
 
 export const DeactivateUserDocument = gql`
-    mutation deactivateUser($email: String!) {
-  deactivateUser(email: $email)
+    mutation deactivateUser($data: DeactivateUserInput!) {
+  deactivateUser(data: $data)
 }
     `;
 export type DeactivateUserMutationFn = Apollo.MutationFunction<DeactivateUserMutation, DeactivateUserMutationVariables>;
@@ -32,7 +32,7 @@ export type DeactivateUserMutationFn = Apollo.MutationFunction<DeactivateUserMut
  * @example
  * const [deactivateUserMutation, { data, loading, error }] = useDeactivateUserMutation({
  *   variables: {
- *      email: // value for 'email'
+ *      data: // value for 'data'
  *   },
  * });
  */

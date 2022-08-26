@@ -12,7 +12,7 @@ import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
-import { useGetCompanyPlanWithCompanyIdQuery } from "../gql/get/company/company.generated";
+import { useGetCompanyPlanDetailQuery } from "../gql/get/company/company.generated";
 
 const ListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -43,9 +43,11 @@ const CurrentPlan = () => {
     data: getCompanyPlanData,
     error: getCompanyPlanError,
     loading: getCompanyPlanLoading,
-  } = useGetCompanyPlanWithCompanyIdQuery({
+  } = useGetCompanyPlanDetailQuery({
     variables: {
-      companyId: user!.companyId,
+      data: {
+        companyId: user!.companyId,
+      },
     },
   });
 
@@ -67,7 +69,7 @@ const CurrentPlan = () => {
     return null;
   }
 
-  if (getCompanyPlanData && getCompanyPlanData.getCompanyPlanWithCompanyId) {
+  if (getCompanyPlanData && getCompanyPlanData.getCompanyPlanDetail) {
     const {
       tier,
       price,
@@ -77,7 +79,7 @@ const CurrentPlan = () => {
       subscriptionEndDate,
       trialStartDate,
       trialEndDate,
-    } = getCompanyPlanData.getCompanyPlanWithCompanyId;
+    } = getCompanyPlanData.getCompanyPlanDetail;
 
     return (
       <Container>

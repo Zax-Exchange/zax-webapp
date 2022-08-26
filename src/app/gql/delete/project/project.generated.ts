@@ -12,7 +12,7 @@ export type DeleteProjectPermissionsMutationVariables = Types.Exact<{
 export type DeleteProjectPermissionsMutation = { __typename?: 'Mutation', deleteProjectPermissions: boolean };
 
 export type DeleteProjectMutationVariables = Types.Exact<{
-  projectId: Types.Scalars['String'];
+  data: Types.DeleteProjectInput;
 }>;
 
 
@@ -51,8 +51,8 @@ export type DeleteProjectPermissionsMutationHookResult = ReturnType<typeof useDe
 export type DeleteProjectPermissionsMutationResult = Apollo.MutationResult<DeleteProjectPermissionsMutation>;
 export type DeleteProjectPermissionsMutationOptions = Apollo.BaseMutationOptions<DeleteProjectPermissionsMutation, DeleteProjectPermissionsMutationVariables>;
 export const DeleteProjectDocument = gql`
-    mutation deleteProject($projectId: String!) {
-  deleteProject(projectId: $projectId)
+    mutation deleteProject($data: DeleteProjectInput!) {
+  deleteProject(data: $data)
 }
     `;
 export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
@@ -70,7 +70,7 @@ export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutat
  * @example
  * const [deleteProjectMutation, { data, loading, error }] = useDeleteProjectMutation({
  *   variables: {
- *      projectId: // value for 'projectId'
+ *      data: // value for 'data'
  *   },
  * });
  */

@@ -51,7 +51,9 @@ const VendorProjectDetail = () => {
     loading: getCompanyDetailLoading,
   } = useGetCompanyDetailQuery({
     variables: {
-      companyId: user!.companyId,
+      data: {
+        companyId: user!.companyId,
+      },
     },
   });
 

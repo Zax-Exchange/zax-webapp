@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const CHECK_USER_EMAIL = gql`
-  query checkUserEmail($email: String!) {
-    checkUserEmail(email: $email)
+  query checkUserEmail($data: CheckUserEmailInput!) {
+    checkUserEmail(data: $data)
   }
 `;
 
@@ -23,7 +23,7 @@ const USER_LOGIN = gql`
 `;
 
 const INVITE_USER = gql`
-  mutation inviteUser($email: String!, $userId: String!) {
-    inviteUser(email: $email, userId: $userId)
+  mutation inviteUser($data: InviteUserInput!) {
+    inviteUser(data: $data)
   }
 `;
