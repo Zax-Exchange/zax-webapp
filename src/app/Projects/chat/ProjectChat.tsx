@@ -54,15 +54,15 @@ const ProjectChat = ({
   chatOpen,
 }: {
   projectBidId: string;
-  setChatOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
   customerName: string;
   vendorName: string;
-  chatOpen: boolean
+  chatOpen: boolean;
 }) => {
   const { user } = useContext(AuthContext);
   const [chatClient, setChatClient] = useState(null as any);
   const [channel, setChannel] = useState(null as any);
-
+  const messagesRef = useRef<HTMLUListElement | null>(null);
   useEffect(() => {
     const initChat = async () => {
       const client = StreamChat.getInstance(streamApiKey);
@@ -99,8 +99,6 @@ const ProjectChat = ({
     };
   }, [chatClient]);
 
-  const messagesRef = useRef(null);
-
   if (!chatClient) {
     return <LoadingIndicator />;
   }
@@ -112,27 +110,24 @@ const ProjectChat = ({
       onClose={() => setChatOpen(false)}
       maxWidth="xl"
       fullWidth={true}
-      sx={{
-        height: "calc(100% - 64px)",
-      }}
     >
-      <DialogTitle>{`Chat with ${
+      <DialogTitle sx={{ borderBottom: "1px solid black" }}>{`Chat with ${
         user!.isVendor ? customerName : vendorName
       }`}</DialogTitle>
       <DialogContent
-        ref={messagesRef}
         sx={{
           paddingBottom: 0,
+          overflow: "hidden",
         }}
       >
-        <Box sx={{ position: "relative", height: "calc(100% - 64px)" }}>
+        <Box sx={{ height: "500px", maxHeight: "500px" }}>
           <Chat client={chatClient} theme="messaging light">
             <Channel channel={channel} Input={CustomMessageInput}>
               <Window>
-                <Messages />
-                <MessageInput />
+                <Messages messagesRef={messagesRef} />
               </Window>
               <Thread />
+              <MessageInput />
             </Channel>
           </Chat>
         </Box>

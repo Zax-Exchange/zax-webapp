@@ -40,6 +40,7 @@ const GET_CUSTOMER_PROJECT = gql`
             price
           }
         }
+        status
         createdAt
         updatedAt
       }

@@ -10,10 +10,10 @@ export default function MessageInput() {
     useMessageInputContext();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    if (e.keyCode === 13 && (e.shiftKey || e.metaKey)) {
+    if (e.key === "Enter" && (e.shiftKey || e.metaKey)) {
       setText(`${text}\n`);
       e.preventDefault();
-    } else if (e.keyCode === 13) {
+    } else if (e.key === "Enter") {
       handleSubmit(e);
       e.preventDefault();
     }
