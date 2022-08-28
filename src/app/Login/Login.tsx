@@ -9,6 +9,7 @@ import {
   Fade,
   Paper,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -17,11 +18,12 @@ import FullScreenLoading from "../Utils/Loading";
 import React from "react";
 import { LoggedInUser } from "../../generated/graphql";
 import { useLoginLazyQuery } from "../gql/utils/user/user.generated";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 
 const Login = () => {
   const { user, login, logout } = useContext(AuthContext);
   const [userLogin, { error, loading, data }] = useLoginLazyQuery();
-
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const navigate = useNavigate();
   const [values, setValues] = useState({
     email: "",
@@ -37,28 +39,34 @@ const Login = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data.login);
       login(data.login as LoggedInUser);
     }
-  }, [data]);
+    if (error) {
+      setSnackbar({
+        message: "Incorrect email/password.",
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [data, error]);
 
-  const loginHandler = () => {
-    userLogin({
-      variables: {
-        data: values,
-      },
-      fetchPolicy: "no-cache",
-    });
+  const loginHandler = async () => {
+    try {
+      await userLogin({
+        variables: {
+          data: values,
+        },
+        fetchPolicy: "no-cache",
+      });
+    } catch (e) {
+      console.log(e);
+      setSnackbar({
+        message: "Incorrect email/password.",
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
   };
-
-  if (error) {
-    navigate("/login");
-    return null;
-  }
-
-  if (loading) {
-    return <FullScreenLoading />;
-  }
 
   return (
     <Fade in={true} timeout={500}>
@@ -83,9 +91,13 @@ const Login = () => {
                 value={values.password}
                 onChange={onChange}
               ></TextField>
-              <Button variant="outlined" onClick={loginHandler}>
+              <LoadingButton
+                loading={loading}
+                variant="outlined"
+                onClick={loginHandler}
+              >
                 Login
-              </Button>
+              </LoadingButton>
             </Stack>
           </Container>
         </Paper>

@@ -13,10 +13,12 @@ import { LoggedInUser } from "../generated/graphql";
  *  email
  * }
  */
+type SessionState = {
+  user: LoggedInUser | null;
+};
 const initialState = {
-  user: null
-}
-
+  user: null,
+};
 
 // TODO: fix all typings in this file
 if (sessionStorage.getItem("token")) {
@@ -32,57 +34,56 @@ if (sessionStorage.getItem("token")) {
 const AuthContext = createContext({
   user: null,
   login: (data) => {},
-  logout: () => {}
+  logout: () => {},
 } as {
   user: LoggedInUser | null;
   login: (data: LoggedInUser) => void;
-  logout: () => void
+  logout: () => void;
 });
 
-const authReducer = (state: any, action: any) => {
-  switch(action.type) {
+const authReducer = (state: SessionState, action: any) => {
+  switch (action.type) {
     case "LOGIN":
       return {
         ...state,
-        user: action.payload
-      }
+        user: action.payload,
+      };
     case "LOGOUT":
       return {
         ...state,
-        user: null
-      }
+        user: null,
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
 const AuthProvider = (props: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const login = (userData: any) => {
+  const login = (userData: LoggedInUser) => {
     sessionStorage.setItem("token", userData.token);
     dispatch({
       type: "LOGIN",
-      payload: userData
+      payload: userData,
     });
-  }
+  };
 
   const logout = () => {
     sessionStorage.removeItem("token");
     dispatch({ type: "LOGOUT" });
-  }
+  };
 
-  return <AuthContext.Provider 
-    value={{
-      user: state.user,
-      login,
-      logout
-    }}
-    {...props}
-  />
-}
+  return (
+    <AuthContext.Provider
+      value={{
+        user: state.user,
+        login,
+        logout,
+      }}
+      {...props}
+    />
+  );
+};
 
-export {
-  AuthContext,
-  AuthProvider
-}
+export { AuthContext, AuthProvider };

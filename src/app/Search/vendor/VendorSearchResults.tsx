@@ -1,9 +1,8 @@
 import { NavigateOptions, useLocation, useNavigate } from "react-router-dom";
-import "./SearchResults.scss";
 import SearchProjectOverview from "./SearchProjectOverview";
 import { Typography, Stack, Grid, Container } from "@mui/material";
 import React from "react";
-import { ProjectOverview, VendorOverview } from "../../generated/graphql";
+import { ProjectOverview, VendorOverview } from "../../../generated/graphql";
 /**
  * 
  * name

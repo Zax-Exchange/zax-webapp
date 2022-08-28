@@ -14,6 +14,7 @@ import FullScreenLoading from "../Utils/Loading";
 import { LoggedInUser } from "../../generated/graphql";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { useInviteUserMutation } from "../gql/utils/user/user.generated";
+import { LoadingButton } from "@mui/lab";
 
 const InviteUsers = () => {
   const { user } = useContext(AuthContext);
@@ -49,20 +50,20 @@ const InviteUsers = () => {
     setEmail(e.target.value);
   };
 
-  const sendInvitation = () => {
-    inviteUser({
-      variables: {
-        data: {
-          email,
-          userId: user!.id,
+  const sendInvitation = async () => {
+    try {
+      await inviteUser({
+        variables: {
+          data: {
+            email,
+            userId: user!.id,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      return;
+    }
   };
-
-  if (inviteUserLoading) return <FullScreenLoading />;
-
-  if (inviteUserError) return null;
 
   return (
     <Container>
@@ -80,13 +81,14 @@ const InviteUsers = () => {
           sx={{ display: "flex", justifyContent: "flex-end" }}
           disableGutters
         >
-          <Button
+          <LoadingButton
+            loading={inviteUserLoading}
             variant="contained"
             disabled={!validate(email)}
             onClick={sendInvitation}
           >
             Send invitation
-          </Button>
+          </LoadingButton>
         </Container>
       </Stack>
     </Container>

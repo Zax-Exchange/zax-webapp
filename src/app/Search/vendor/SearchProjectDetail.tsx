@@ -1,6 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import "./SearchProjectDetail.scss";
 import {
   Dialog,
   Container,
@@ -12,14 +11,14 @@ import {
   Paper,
   Link,
 } from "@mui/material";
-import ProjectBidModal from "../Projects/vendor/ProjectBidModal";
+import ProjectBidModal from "../../Projects/vendor/ProjectBidModal";
 import { useState } from "react";
-import FullScreenLoading from "../Utils/Loading";
-import CustomSnackbar from "../Utils/CustomSnackbar";
+import FullScreenLoading from "../../Utils/Loading";
+import CustomSnackbar from "../../Utils/CustomSnackbar";
 import React from "react";
-import useCustomSnackbar from "../Utils/CustomSnackbar";
-import { Project } from "../../generated/graphql";
-import { useGetProjectDetailQuery } from "../gql/get/project/project.generated";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { Project } from "../../../generated/graphql";
+import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
 
 const SearchProjectDetail = () => {
   const { projectId } = useParams();

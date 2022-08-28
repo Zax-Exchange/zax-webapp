@@ -151,11 +151,11 @@ const SearchBar = () => {
     }
   };
 
-  if (searchProjectsLoading || searchVendorsLoading)
-    return <FullScreenLoading />;
+  const isLoading = searchProjectsLoading || searchVendorsLoading;
 
   return (
     <Box>
+      {isLoading && <FullScreenLoading />}
       <Search>
         <SearchIconWrapper>
           <SearchIcon />

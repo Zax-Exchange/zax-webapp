@@ -7,8 +7,8 @@ import {
   Container,
 } from "@mui/material";
 import React from "react";
-import { ProjectOverview } from "../../generated/graphql";
-import { VENDOR_ROUTES } from "../constants/loggedInRoutes";
+import { ProjectOverview } from "../../../generated/graphql";
+import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 
 const SearchProjectOverview = ({
   projectData,
