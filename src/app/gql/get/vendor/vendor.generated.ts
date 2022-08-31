@@ -16,14 +16,14 @@ export type GetVendorProjectQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject: { __typename?: 'VendorProject', id: string, userId: string, customerName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } };
+export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject: { __typename?: 'VendorProject', id: string, userId: string, customerName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, dimension: string } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } };
 
 export type GetVendorProjectsQueryVariables = Types.Exact<{
   data: Types.GetVendorProjectsInput;
 }>;
 
 
-export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProject', id: string, userId: string, companyId: string, customerName: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, status: Types.BidStatus, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string }>, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null }> };
+export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProject', id: string, userId: string, companyId: string, customerName: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, status: Types.BidStatus, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, dimension: string } }>, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null }> };
 
 export type SearchVendorCompaniesQueryVariables = Types.Exact<{
   data: Types.SearchVendorCompanyInput;
@@ -101,6 +101,11 @@ export const GetVendorProjectDocument = gql`
       id
       projectId
       name
+      componentSpec {
+        id
+        productName
+        dimension
+      }
     }
     bidInfo {
       id
@@ -171,6 +176,11 @@ export const GetVendorProjectsDocument = gql`
       id
       projectId
       name
+      componentSpec {
+        id
+        productName
+        dimension
+      }
     }
     id
     userId

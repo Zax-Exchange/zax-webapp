@@ -175,6 +175,18 @@ const CustomerProjectDetail = () => {
                       <Typography variant="subtitle2">Name</Typography>
                       <Typography variant="caption">{comp.name}</Typography>
                     </ProjectDetailListItem>
+                    <ProjectDetailListItem>
+                      <Typography variant="subtitle2">Product</Typography>
+                      <Typography variant="caption">
+                        {comp.componentSpec.productName}
+                      </Typography>
+                    </ProjectDetailListItem>
+                    <ProjectDetailListItem>
+                      <Typography variant="subtitle2">Dimension</Typography>
+                      <Typography variant="caption">
+                        {comp.componentSpec.dimension}
+                      </Typography>
+                    </ProjectDetailListItem>
                   </List>
                 </Paper>
               );

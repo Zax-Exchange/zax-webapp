@@ -112,8 +112,13 @@ export type CreateProjectBidInput = {
 };
 
 export type CreateProjectComponentInput = {
+  componentSpec: CreateProjectComponentSpecInput;
   name: Scalars['String'];
-  product: Scalars['String'];
+};
+
+export type CreateProjectComponentSpecInput = {
+  dimension: Scalars['String'];
+  productName: Scalars['String'];
 };
 
 export type CreateProjectInput = {
@@ -604,12 +609,19 @@ export type ProjectBidComponent = {
 
 export type ProjectComponent = {
   __typename?: 'ProjectComponent';
+  componentSpec: ProjectComponentSpec;
   createdAt: Scalars['String'];
   id: Scalars['String'];
   name: Scalars['String'];
-  product: Scalars['String'];
   projectId: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type ProjectComponentSpec = {
+  __typename?: 'ProjectComponentSpec';
+  dimension: Scalars['String'];
+  id: Scalars['String'];
+  productName: Scalars['String'];
 };
 
 export type ProjectDesign = {

@@ -16,7 +16,7 @@ export type GetProjectDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail: { __typename?: 'Project', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string }> } };
+export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail: { __typename?: 'Project', id: string, userId: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, budget: number, status: string, createdAt: string, updatedAt: string, design?: { __typename?: 'ProjectDesign', fileName: string, url: string } | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, dimension: string } }> } };
 
 export type SearchCustomerProjectsQueryVariables = Types.Exact<{
   data: Types.SearchCustomerProjectInput;
@@ -83,6 +83,11 @@ export const GetProjectDetailDocument = gql`
       id
       projectId
       name
+      componentSpec {
+        id
+        productName
+        dimension
+      }
     }
     createdAt
     updatedAt

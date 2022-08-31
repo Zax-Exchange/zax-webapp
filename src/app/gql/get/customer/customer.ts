@@ -22,6 +22,11 @@ const GET_CUSTOMER_PROJECT = gql`
         id
         projectId
         name
+        componentSpec {
+          id
+          productName
+          dimension
+        }
       }
 
       bids {
@@ -67,6 +72,11 @@ const GET_CUSTOMER_PROJECTS = gql`
         id
         projectId
         name
+        componentSpec {
+          id
+          productName
+          dimension
+        }
       }
 
       bids {

@@ -41,6 +41,11 @@ const GET_VENDOR_PROJECT = gql`
         id
         projectId
         name
+        componentSpec {
+          id
+          productName
+          dimension
+        }
       }
       bidInfo {
         id
@@ -85,6 +90,11 @@ const GET_VENDOR_PROJECTS = gql`
         id
         projectId
         name
+        componentSpec {
+          id
+          productName
+          dimension
+        }
       }
       id
       userId

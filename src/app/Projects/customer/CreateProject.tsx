@@ -33,6 +33,10 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../gql/create/project/project.generated";
 import { useGetCustomerProjectsLazyQuery } from "../../gql/get/customer/customer.generated";
+import {
+  CreateProjectComponentInput,
+  CreateProjectInput,
+} from "../../../generated/graphql";
 
 export type ProjectData = {
   userId: string;
@@ -45,8 +49,13 @@ export type ProjectData = {
 
 export type ProjectComponentData = {
   name: string;
-  product: string;
 };
+
+export type ProjectComponentSpec = {
+  productName: string;
+  dimension: string;
+};
+
 const CreateProject = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -72,20 +81,32 @@ const CreateProject = () => {
 
   const [componentModalOpen, setComponentModalOpen] = useState(false);
 
-  const [components, setComponents] = useState([] as ProjectComponentData[]);
-
+  const [components, setComponents] = useState<CreateProjectComponentInput[]>(
+    []
+  );
+  const [componentSpec, setComponentSpec] = useState<ProjectComponentSpec>({
+    productName: "",
+    dimension: "",
+  });
   const [componentData, setComponentData] = useState({
     name: "",
-    product: "",
   } as ProjectComponentData);
 
   const openComponentModal = () => {
     setComponentModalOpen(true);
   };
+
+  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // TODO: input sanitization
+    setComponentSpec({
+      ...componentSpec,
+      [e.target.name]: e.target.value,
+    });
+  };
   const productOnChange = (val: string) => {
-    setComponentData({
-      ...componentData,
-      product: val,
+    setComponentSpec({
+      ...componentSpec,
+      productName: val,
     });
   };
 
@@ -134,11 +155,17 @@ const CreateProject = () => {
   const addComponent = () => {
     const comp = {
       ...componentData,
+      componentSpec: {
+        ...componentSpec,
+      },
     };
     setComponents([...components, comp]);
     setComponentData({
       name: "",
-      product: "",
+    });
+    setComponentSpec({
+      productName: "",
+      dimension: "",
     });
     setComponentModalOpen(false);
   };
@@ -200,17 +227,17 @@ const CreateProject = () => {
         sx={{ width: 400 }}
         options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
         autoHighlight
-        inputValue={componentData.product}
+        inputValue={componentSpec.productName}
         onInputChange={(e, v) => {
           productOnChange(v);
         }}
         onChange={(e, v) => {
-          setComponentData({
-            ...componentData,
-            product: v ? v : "",
+          setComponentSpec({
+            ...componentSpec,
+            productName: v ? v : "",
           });
         }}
-        value={componentData.product}
+        value={componentSpec.productName}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -321,6 +348,14 @@ const CreateProject = () => {
                 value={componentData.name}
               />
               {renderProductsDropdown()}
+
+              <TextField
+                autoComplete="new-password"
+                label="Dimension"
+                onChange={componentSpecOnChange}
+                name="dimension"
+                value={componentSpec.dimension}
+              />
             </Stack>
           </Container>
         </DialogContent>
@@ -337,7 +372,9 @@ const CreateProject = () => {
             return (
               <ListItem key={i}>
                 <Typography>Name: {comp.name}</Typography>
-                <Typography>Product: {comp.product}</Typography>
+                <Typography>
+                  Product: {comp.componentSpec.productName}
+                </Typography>
               </ListItem>
             );
           })}

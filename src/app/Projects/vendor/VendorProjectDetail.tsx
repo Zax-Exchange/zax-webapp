@@ -146,21 +146,28 @@ const VendorProjectDetail = () => {
             </Container>
 
             {components.map((comp, i) => {
-              const { id, name } = comp;
-
               return (
                 <>
                   <Paper>
                     <List>
                       <ListItem>
-                        <Typography>name: {name}</Typography>
+                        <Typography>name: {comp.name}</Typography>
                       </ListItem>
-
+                      <ListItem>
+                        <Typography>
+                          product: {comp.componentSpec.productName}
+                        </Typography>
+                      </ListItem>
+                      <ListItem>
+                        <Typography>
+                          dimension: {comp.componentSpec.dimension}
+                        </Typography>
+                      </ListItem>
                       <ListItem>
                         <Typography>Bids</Typography>
                       </ListItem>
                     </List>
-                    {bids[id].map((qp, i) => {
+                    {bids[comp.id].map((qp, i) => {
                       return (
                         <List className="quantity-price-container">
                           <ListItem>

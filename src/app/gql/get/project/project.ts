@@ -31,6 +31,11 @@ const GET_PROJECT_DETAIL = gql`
         id
         projectId
         name
+        componentSpec {
+          id
+          productName
+          dimension
+        }
       }
       createdAt
       updatedAt
