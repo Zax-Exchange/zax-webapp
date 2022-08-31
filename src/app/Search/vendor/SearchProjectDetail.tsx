@@ -100,7 +100,7 @@ const SearchProjectDetail = () => {
         <Typography>Components Detail</Typography>
 
         {components.map((comp, i) => {
-          const { name, materials, dimension, postProcess } = comp;
+          const { name } = comp;
           return (
             <Paper style={{ padding: "12px", marginBottom: "8px" }}>
               <Container style={{ width: "60%" }}>
@@ -110,9 +110,6 @@ const SearchProjectDetail = () => {
                   style={{ textAlign: "left" }}
                 >
                   <Typography>name: {name}</Typography>
-                  <Typography>materials: {materials.join(",")}</Typography>
-                  <Typography>dimension: {dimension}</Typography>
-                  <Typography>post process: {postProcess}</Typography>
                 </Container>
               </Container>
             </Paper>

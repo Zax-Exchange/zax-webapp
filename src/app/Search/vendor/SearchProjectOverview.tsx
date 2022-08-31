@@ -27,22 +27,6 @@ const SearchProjectOverview = ({
     .toISOString()
     .slice(0, 10);
 
-  // const renderMaterialsString = (materials: string[]) => {
-  //   let res = "";
-  //   const searchStrings = document!
-  //     .getElementById("search-bar")!
-  //     .value.split(" ");
-  //   for (let mat of materials) {
-  //     if (searchStrings.includes(mat)) {
-  //       res += `<b>${mat}</b>`;
-  //     } else {
-  //       res += mat;
-  //     }
-  //     res += " ";
-  //   }
-  //   return res;
-  // };
-
   return (
     <Container style={{ marginBottom: "10px" }}>
       <Card
@@ -56,7 +40,7 @@ const SearchProjectOverview = ({
             <Container sx={{ minWidth: 400, textAlign: "left" }}>
               <Typography>Project Name: {projectData.name}</Typography>
               <Typography>
-                Materials: {projectData.materials.join(",")}
+                Products: {projectData.products.join(",")}
               </Typography>
               <Typography>Company: {projectData.companyName}</Typography>
               <Typography>Delivery date: {projectData.deliveryDate}</Typography>

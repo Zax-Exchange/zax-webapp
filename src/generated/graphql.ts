@@ -46,10 +46,10 @@ export type CompanyDetail = {
   leadTime?: Maybe<Scalars['Int']>;
   locations?: Maybe<Array<Scalars['String']>>;
   logo?: Maybe<Scalars['String']>;
-  materials?: Maybe<Array<Scalars['String']>>;
   moq?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   phone: Scalars['String'];
+  products?: Maybe<Array<Scalars['String']>>;
   updatedAt: Scalars['String'];
 };
 
@@ -112,10 +112,8 @@ export type CreateProjectBidInput = {
 };
 
 export type CreateProjectComponentInput = {
-  dimension: Scalars['String'];
-  materials: Array<Scalars['String']>;
   name: Scalars['String'];
-  postProcess: Scalars['String'];
+  product: Scalars['String'];
 };
 
 export type CreateProjectInput = {
@@ -151,11 +149,11 @@ export type CreateVendorInput = {
   leadTime: Scalars['Int'];
   locations: Array<Scalars['String']>;
   logo?: InputMaybe<Scalars['String']>;
-  materials: Array<Scalars['String']>;
   moq: Scalars['String'];
   name: Scalars['String'];
   phone: Scalars['String'];
   planId: Scalars['String'];
+  products: Array<Scalars['String']>;
   userEmail: Scalars['String'];
 };
 
@@ -515,11 +513,11 @@ export type PermissionedCompany = {
   leadTime?: Maybe<Scalars['Int']>;
   locations?: Maybe<Array<Scalars['String']>>;
   logo: Scalars['String'];
-  materials?: Maybe<Array<Scalars['String']>>;
   moq?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   phone: Scalars['String'];
   planInfo: CompanyPlan;
+  products?: Maybe<Array<Scalars['String']>>;
   updatedAt: Scalars['String'];
 };
 
@@ -607,11 +605,9 @@ export type ProjectBidComponent = {
 export type ProjectComponent = {
   __typename?: 'ProjectComponent';
   createdAt: Scalars['String'];
-  dimension: Scalars['String'];
   id: Scalars['String'];
-  materials: Array<Scalars['String']>;
   name: Scalars['String'];
-  postProcess: Scalars['String'];
+  product: Scalars['String'];
   projectId: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -631,8 +627,8 @@ export type ProjectOverview = {
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   id: Scalars['String'];
-  materials: Array<Scalars['String']>;
   name: Scalars['String'];
+  products: Array<Scalars['String']>;
 };
 
 export enum ProjectPermission {
@@ -854,9 +850,9 @@ export type UpdateProjectBidPermissionsInputData = {
 export type UpdateProjectComponentInput = {
   dimension: Scalars['String'];
   id: Scalars['String'];
-  materials: Array<Scalars['String']>;
   name: Scalars['String'];
   postProcess: Scalars['String'];
+  products: Array<Scalars['String']>;
 };
 
 export type UpdateProjectInput = {
@@ -908,10 +904,10 @@ export type UpdateVendorInfoInput = {
   leadTime: Scalars['Int'];
   locations: Array<Scalars['String']>;
   logo?: InputMaybe<Scalars['String']>;
-  materials: Array<Scalars['String']>;
   moq: Scalars['String'];
   name: Scalars['String'];
   phone: Scalars['String'];
+  products: Array<Scalars['String']>;
 };
 
 export type User = {
@@ -950,10 +946,10 @@ export type VendorDetail = {
   leadTime: Scalars['Int'];
   locations: Array<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
-  materials: Array<Scalars['String']>;
   moq: Scalars['String'];
   name: Scalars['String'];
   phone: Scalars['String'];
+  products: Array<Scalars['String']>;
 };
 
 export type VendorOverview = {
@@ -965,9 +961,9 @@ export type VendorOverview = {
   leadTime: Scalars['Int'];
   locations: Array<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
-  materials: Array<Scalars['String']>;
   moq: Scalars['String'];
   name: Scalars['String'];
+  products: Array<Scalars['String']>;
 };
 
 export type VendorProject = {

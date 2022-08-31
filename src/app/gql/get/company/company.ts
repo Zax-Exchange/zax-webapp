@@ -42,7 +42,7 @@ const GET_COMPANY_DETAIL = gql`
       companyUrl
 
       locations
-      materials
+      products
       moq
       leadTime
     }

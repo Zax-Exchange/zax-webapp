@@ -33,21 +33,6 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../gql/create/project/project.generated";
 import { useGetCustomerProjectsLazyQuery } from "../../gql/get/customer/customer.generated";
-/**
- * name
- * deliveryDate
- * deliveryAddress
- * budget
- * design
- * userId
- * comments
- * components {
- *   name
- *   materials
- *   dimension
- *   postProcess
- * }
- */
 
 export type ProjectData = {
   userId: string;
@@ -60,9 +45,7 @@ export type ProjectData = {
 
 export type ProjectComponentData = {
   name: string;
-  materials: string[];
-  dimension: string;
-  postProcess: string;
+  product: string;
 };
 const CreateProject = () => {
   const { user } = useContext(AuthContext);
@@ -86,7 +69,6 @@ const CreateProject = () => {
   const [deliveryDate, setDeliveryDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [material, setMaterial] = useState("");
 
   const [componentModalOpen, setComponentModalOpen] = useState(false);
 
@@ -94,29 +76,17 @@ const CreateProject = () => {
 
   const [componentData, setComponentData] = useState({
     name: "",
-    materials: [],
-    dimension: "",
-    postProcess: "",
+    product: "",
   } as ProjectComponentData);
 
   const openComponentModal = () => {
     setComponentModalOpen(true);
   };
-  const materialOnChange = (val: string) => {
-    // const val = e.target.value || "";
-
-    if (isValidAlphanumeric(val)) {
-      setMaterial(val);
-    }
-  };
-
-  const addMaterial = (value: string[]) => {
-    const materials = [...value].map((v) => v.trim());
+  const productOnChange = (val: string) => {
     setComponentData({
       ...componentData,
-      materials,
+      product: val,
     });
-    setMaterial("");
   };
 
   const projectInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,8 +118,6 @@ const CreateProject = () => {
 
     switch (e.target.name) {
       case "name":
-      case "dimension":
-      case "postProcess":
         isAllowed = isValidAlphanumeric(val);
         break;
       default:
@@ -166,15 +134,11 @@ const CreateProject = () => {
   const addComponent = () => {
     const comp = {
       ...componentData,
-      materials: componentData.materials,
     };
-    setMaterial("");
     setComponents([...components, comp]);
     setComponentData({
       name: "",
-      materials: [],
-      dimension: "",
-      postProcess: "",
+      product: "",
     });
     setComponentModalOpen(false);
   };
@@ -228,28 +192,31 @@ const CreateProject = () => {
     }
   };
 
-  const renderMaterialsDropdown = () => {
+  const renderProductsDropdown = () => {
     // TODO: bug when input chart and click x
     return (
       <Autocomplete
-        id="materials-select"
+        id="products-select"
         sx={{ width: 400 }}
         options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
         autoHighlight
-        inputValue={material}
+        inputValue={componentData.product}
         onInputChange={(e, v) => {
-          materialOnChange(v);
+          productOnChange(v);
         }}
-        onChange={(e, v) => addMaterial(v)}
-        value={componentData.materials}
-        multiple
-        freeSolo
+        onChange={(e, v) => {
+          setComponentData({
+            ...componentData,
+            product: v ? v : "",
+          });
+        }}
+        value={componentData.product}
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Component materials"
-            value={material}
-            onChange={(e) => materialOnChange(e.target.value)}
+            label="Component product"
+            value={componentData}
+            onChange={(e) => productOnChange(e.target.value)}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password",
@@ -353,21 +320,7 @@ const CreateProject = () => {
                 name="name"
                 value={componentData.name}
               />
-              {renderMaterialsDropdown()}
-              <TextField
-                autoComplete="new-password"
-                label="Dimension"
-                onChange={componentInputHandler}
-                name="dimension"
-                value={componentData.dimension}
-              />
-              <TextField
-                autoComplete="new-password"
-                label="Post Process"
-                onChange={componentInputHandler}
-                name="postProcess"
-                value={componentData.postProcess}
-              />
+              {renderProductsDropdown()}
             </Stack>
           </Container>
         </DialogContent>
@@ -384,9 +337,7 @@ const CreateProject = () => {
             return (
               <ListItem key={i}>
                 <Typography>Name: {comp.name}</Typography>
-                <Typography>Materials: {comp.materials.join(",")}</Typography>
-                <Typography>Dimension: {comp.dimension}</Typography>
-                <Typography>Post Process: {comp.postProcess}</Typography>
+                <Typography>Product: {comp.product}</Typography>
               </ListItem>
             );
           })}

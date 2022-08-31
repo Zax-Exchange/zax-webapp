@@ -22,9 +22,6 @@ const GET_CUSTOMER_PROJECT = gql`
         id
         projectId
         name
-        materials
-        dimension
-        postProcess
       }
 
       bids {
@@ -70,9 +67,6 @@ const GET_CUSTOMER_PROJECTS = gql`
         id
         projectId
         name
-        materials
-        dimension
-        postProcess
       }
 
       bids {

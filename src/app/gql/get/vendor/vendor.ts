@@ -14,7 +14,7 @@ const GET_VENDOR_DETAIL = gql`
       fax
       isVerified
       locations
-      materials
+      products
       moq
       leadTime
     }
@@ -41,9 +41,6 @@ const GET_VENDOR_PROJECT = gql`
         id
         projectId
         name
-        materials
-        dimension
-        postProcess
       }
       bidInfo {
         id
@@ -86,10 +83,8 @@ const GET_VENDOR_PROJECTS = gql`
       }
       components {
         id
+        projectId
         name
-        materials
-        dimension
-        postProcess
       }
       id
       userId
@@ -120,7 +115,7 @@ const SEARCH_VENDOR_COMPANIES = gql`
       country
       isVerified
       locations
-      materials
+      products
       moq
       leadTime
     }

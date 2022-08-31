@@ -31,9 +31,6 @@ const GET_PROJECT_DETAIL = gql`
         id
         projectId
         name
-        materials
-        dimension
-        postProcess
       }
       createdAt
       updatedAt
@@ -46,7 +43,7 @@ const SEARCH_CUSTOMER_PROJECTS = gql`
     searchCustomerProjects(data: $data) {
       name
       companyName
-      materials
+      products
       id
       companyId
       deliveryDate

@@ -11,18 +11,6 @@ import React from "react";
 import { useState } from "react";
 import { VendorOverview } from "../../../generated/graphql";
 
-/**
- * 
- *country: "USA"
-  id: 563
-  isVendor: true
-  isVerified: true
-  locations: (2) ['USA', 'China']
-  logo: null
-  materials: (2) ['paper', 'molded fiber']
-  name: "Vendor 1"
- */
-
 const SearchCompanyOverview = ({
   companyData,
 }: {
@@ -46,7 +34,7 @@ const SearchCompanyOverview = ({
                 Locations: {companyData.locations.join(",")}
               </Typography>
               <Typography>
-                Materials: {companyData.materials.join(",")}
+                Products: {companyData.products.join(",")}
               </Typography>
               <Typography>Lead time: {companyData.leadTime}</Typography>
               <Typography>Minimum order quantity: {companyData.moq}</Typography>

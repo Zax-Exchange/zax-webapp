@@ -2,14 +2,9 @@ import {
   Autocomplete,
   Box,
   Button,
-  Chip,
   Container,
-  IconButton,
-  Input,
-  ListItem,
   Stack,
   TextField,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -27,25 +22,6 @@ import FullScreenLoading from "../../Utils/Loading";
 import { validate } from "email-validator";
 import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.generated";
 import { UpdateVendorInfoInput } from "../../../generated/graphql";
-
-/**
- * 
- * id
-  name
-  logo
-  phone
-  fax
-  country
-  companyUrl
-  isActive
-  isVendor
-  isVerified
-
-  locations
-  materials
-  moq
-  leadTime
- */
 
 const EditVendorProfile = () => {
   const { user } = useContext(AuthContext);
@@ -75,7 +51,7 @@ const EditVendorProfile = () => {
   const [vendorData, setVendorData] = useState<UpdateVendorInfoInput | null>(
     null
   );
-  const [material, setMaterial] = useState("");
+  const [product, setProduct] = useState("");
 
   useEffect(() => {
     if (getVendorDetailData && getVendorDetailData.getVendorDetail) {
@@ -89,7 +65,7 @@ const EditVendorProfile = () => {
         fax,
         leadTime,
         locations,
-        materials,
+        products,
         moq,
       } = getVendorDetailData.getVendorDetail;
       setVendorData({
@@ -103,7 +79,7 @@ const EditVendorProfile = () => {
         fax,
         leadTime,
         locations,
-        materials,
+        products,
         moq,
       });
     }
@@ -157,11 +133,11 @@ const EditVendorProfile = () => {
     });
   };
 
-  const materialOnChange = (e: any) => {
+  const productOnChange = (e: any) => {
     const val = e.target.value || "";
 
     if (isValidAlphanumeric(val)) {
-      setMaterial(val);
+      setProduct(val);
     }
   };
 
@@ -173,13 +149,13 @@ const EditVendorProfile = () => {
     });
   };
 
-  const addMaterial = (material: string[]) => {
-    const materials = [...material].map((v) => v.trim());
+  const addProduct = (product: string[]) => {
+    const products = [...product].map((v) => v.trim());
     setVendorData({
       ...vendorData!,
-      materials,
+      products,
     });
-    setMaterial("");
+    setProduct("");
   };
 
   const renderCountryDropdown = () => {
@@ -233,7 +209,7 @@ const EditVendorProfile = () => {
         case "name":
         case "phone":
         case "country":
-        case "materials":
+        case "products":
         case "locations":
         case "moq":
         case "leadTime":
@@ -255,7 +231,7 @@ const EditVendorProfile = () => {
         case "country":
         case "leadTime":
           return !!fieldValue;
-        case "materials":
+        case "products":
         case "locations":
           return (fieldValue as string[]).length;
       }
@@ -271,25 +247,25 @@ const EditVendorProfile = () => {
   };
 
   const renderVendorUpdateForm = () => {
-    const renderMaterialsDropdown = () => {
+    const renderProductsDropdown = () => {
       return (
         <Autocomplete
-          id="materials-select"
+          id="products-select"
           sx={{ width: 400 }}
           options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
           autoHighlight
-          inputValue={material}
-          onInputChange={materialOnChange}
-          onChange={(e, v) => addMaterial(v)}
-          value={vendorData!.materials}
+          inputValue={product}
+          onInputChange={productOnChange}
+          onChange={(e, v) => addProduct(v)}
+          value={vendorData!.products}
           multiple
           freeSolo
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Manufacturing materials"
-              value={material}
-              onChange={materialOnChange}
+              label="Manufacturing products"
+              value={product}
+              onChange={productOnChange}
               inputProps={{
                 ...params.inputProps,
                 autoComplete: "new-password",
@@ -374,7 +350,7 @@ const EditVendorProfile = () => {
           onChange={onChange}
           helperText="e.g. 5000-10000, 6000-8000"
         />
-        {renderMaterialsDropdown()}
+        {renderProductsDropdown()}
         {renderFactoryLocationDropdown()}
       </>
     );

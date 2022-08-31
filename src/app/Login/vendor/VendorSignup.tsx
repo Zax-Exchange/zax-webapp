@@ -49,7 +49,7 @@ export type VendorSignupData = {
   leadTime: string | number;
   locations: string[];
   moq: string;
-  materials: string[];
+  products: string[];
   companyUrl: string;
   planId: string;
   userEmail: string;
@@ -132,7 +132,7 @@ const VendorSignup = () => {
     leadTime: "",
     locations: [],
     moq: "",
-    materials: [],
+    products: [],
     companyUrl: "",
     planId: "",
     userEmail: "",
@@ -437,7 +437,7 @@ const VendorSignup = () => {
             moqDetail={moqDetail}
           />
           {renderNavigationButtons(
-            validateInputs(["leadTime", "moq", "materials", "locations"])
+            validateInputs(["leadTime", "moq", "products", "locations"])
           )}
         </>
       );

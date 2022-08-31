@@ -21,7 +21,7 @@ const VendorInfo = ({
   setMoqDetail: React.Dispatch<React.SetStateAction<MoqDetail>>;
   moqDetail: MoqDetail;
 }) => {
-  const [material, setMaterial] = useState("");
+  const [product, setProduct] = useState("");
 
   const locationOnChange = (locations: { label: string }[]) => {
     const locationLabels = locations.map((l) => l.label);
@@ -31,22 +31,22 @@ const VendorInfo = ({
     });
   };
 
-  // used for controlling materials input to now allow characters other than alphanumeric and white space chars
-  const materialOnChange = (e: any) => {
+  // used for controlling products input to now allow characters other than alphanumeric and white space chars
+  const productOnChange = (e: any) => {
     const val = e.target.value || "";
 
     if (isValidAlphanumeric(val)) {
-      setMaterial(val);
+      setProduct(val);
     }
   };
 
-  const addMaterial = (value: string[]) => {
-    const materials = [...value].map((v) => v.trim());
+  const addProduct = (value: string[]) => {
+    const products = [...value].map((v) => v.trim());
     setValues({
       ...values,
-      materials,
+      products,
     });
-    setMaterial("");
+    setProduct("");
   };
 
   const moqOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,25 +117,25 @@ const VendorInfo = ({
     );
   };
 
-  const renderMaterialsDropdown = () => {
+  const renderProductsropdown = () => {
     return (
       <Autocomplete
-        id="materials-select"
+        id="products-select"
         sx={{ width: 400 }}
         options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
         autoHighlight
-        inputValue={material}
-        onInputChange={materialOnChange}
-        onChange={(e, v) => addMaterial(v)}
-        value={values.materials}
+        inputValue={product}
+        onInputChange={productOnChange}
+        onChange={(e, v) => addProduct(v)}
+        value={values.products}
         multiple
         freeSolo
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Manufacturing materials"
-            value={material}
-            onChange={materialOnChange}
+            label="Manufacturing products"
+            value={product}
+            onChange={productOnChange}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password",
@@ -187,7 +187,7 @@ const VendorInfo = ({
           ></TextField>
         </Box>
 
-        {renderMaterialsDropdown()}
+        {renderProductsropdown()}
         {renderFactoryLocationDropdown()}
       </Stack>
     </>

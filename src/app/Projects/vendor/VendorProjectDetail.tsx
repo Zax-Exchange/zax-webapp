@@ -146,7 +146,7 @@ const VendorProjectDetail = () => {
             </Container>
 
             {components.map((comp, i) => {
-              const { id, name, materials, dimension, postProcess } = comp;
+              const { id, name } = comp;
 
               return (
                 <>
@@ -155,17 +155,7 @@ const VendorProjectDetail = () => {
                       <ListItem>
                         <Typography>name: {name}</Typography>
                       </ListItem>
-                      <ListItem>
-                        <Typography>
-                          materials: {materials.join(",")}
-                        </Typography>
-                      </ListItem>
-                      <ListItem>
-                        <Typography>dimension: {dimension}</Typography>
-                      </ListItem>
-                      <ListItem>
-                        <Typography>post process: {postProcess}</Typography>
-                      </ListItem>
+
                       <ListItem>
                         <Typography>Bids</Typography>
                       </ListItem>

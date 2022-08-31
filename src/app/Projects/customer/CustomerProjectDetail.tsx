@@ -175,27 +175,6 @@ const CustomerProjectDetail = () => {
                       <Typography variant="subtitle2">Name</Typography>
                       <Typography variant="caption">{comp.name}</Typography>
                     </ProjectDetailListItem>
-
-                    <ProjectDetailListItem>
-                      <Typography variant="subtitle2">Materials</Typography>
-                      <Typography variant="caption">
-                        {comp.materials.join(",")}
-                      </Typography>
-                    </ProjectDetailListItem>
-
-                    <ProjectDetailListItem>
-                      <Typography variant="subtitle2">Dimension</Typography>
-                      <Typography variant="caption">
-                        {comp.dimension}
-                      </Typography>
-                    </ProjectDetailListItem>
-
-                    <ProjectDetailListItem>
-                      <Typography variant="subtitle2">Post process</Typography>
-                      <Typography variant="caption">
-                        {comp.postProcess}
-                      </Typography>
-                    </ProjectDetailListItem>
                   </List>
                 </Paper>
               );

@@ -81,9 +81,9 @@ const VendorCompanyReview = ({
             <Typography variant="caption">{values.moq}</Typography>
           </ListItem>
           <ListItem>
-            <Typography variant="subtitle2">Materials</Typography>
+            <Typography variant="subtitle2">Products</Typography>
             <Typography variant="caption">
-              {values.materials.join(",")}
+              {values.products.join(",")}
             </Typography>
           </ListItem>
 
