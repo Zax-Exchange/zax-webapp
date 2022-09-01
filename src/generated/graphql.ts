@@ -117,8 +117,26 @@ export type CreateProjectComponentInput = {
 };
 
 export type CreateProjectComponentSpecInput = {
+  color?: InputMaybe<Scalars['String']>;
   dimension: Scalars['String'];
+  finish?: InputMaybe<Scalars['String']>;
+  flute?: InputMaybe<Scalars['String']>;
+  insideColor?: InputMaybe<Scalars['String']>;
+  insideFinish?: InputMaybe<Scalars['String']>;
+  insideMaterial?: InputMaybe<Scalars['String']>;
+  insideMaterialSource?: InputMaybe<Scalars['String']>;
+  insidePostProcess?: InputMaybe<Scalars['String']>;
+  manufacturingProcess?: InputMaybe<Scalars['String']>;
+  material?: InputMaybe<Scalars['String']>;
+  materialSource?: InputMaybe<Scalars['String']>;
+  outsideColor?: InputMaybe<Scalars['String']>;
+  outsideFinish?: InputMaybe<Scalars['String']>;
+  outsideMaterial?: InputMaybe<Scalars['String']>;
+  outsideMaterialSource?: InputMaybe<Scalars['String']>;
+  outsidePostProcess?: InputMaybe<Scalars['String']>;
+  postProcess?: InputMaybe<Scalars['String']>;
   productName: Scalars['String'];
+  thickness?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateProjectInput = {

@@ -2,6 +2,7 @@ import { Autocomplete, Box, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
 import { useState } from "react";
 import { countries } from "../../constants/countries";
+import { PRODUCT_NAMES } from "../../constants/products";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import { Country } from "../customer/CustomerSignup";
 import { MoqDetail, VendorSignupData } from "./VendorSignup";
@@ -122,7 +123,7 @@ const VendorInfo = ({
       <Autocomplete
         id="products-select"
         sx={{ width: 400 }}
-        options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
+        options={PRODUCT_NAMES}
         autoHighlight
         inputValue={product}
         onInputChange={productOnChange}

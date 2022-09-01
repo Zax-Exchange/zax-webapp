@@ -10,6 +10,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { ProjectData } from "./CreateProject";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useUploadProjectDesignMutation } from "../../gql/create/project/project.generated";
+import { CreateProjectInput } from "../../../generated/graphql";
 
 export type File = {
   uri: string;
@@ -24,7 +25,7 @@ type Target = {
 export default function UploadDesign({
   setProjectData,
 }: {
-  setProjectData: React.Dispatch<React.SetStateAction<ProjectData>>;
+  setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
 }) {
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [mutate, { error, loading, data }] = useUploadProjectDesignMutation();

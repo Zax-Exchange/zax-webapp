@@ -1,18 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
 import {
   Button,
-  DialogActions,
   Container,
   ListItem,
   TextField,
   Typography,
   Box,
-  Autocomplete,
   Stack,
-  CircularProgress,
   Dialog,
-  DialogContent,
-  AlertColor,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
@@ -26,17 +21,14 @@ import FullScreenLoading from "../../Utils/Loading";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import UploadDesign from "./UploadDesign";
-import CustomSnackbar from "../../Utils/CustomSnackbar";
 import React from "react";
 
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../gql/create/project/project.generated";
 import { useGetCustomerProjectsLazyQuery } from "../../gql/get/customer/customer.generated";
-import {
-  CreateProjectComponentInput,
-  CreateProjectInput,
-} from "../../../generated/graphql";
+import { CreateProjectInput } from "../../../generated/graphql";
+import CreateProjectComponentModal from "./CreateProjectComponentModal";
 
 export type ProjectData = {
   userId: string;
@@ -51,67 +43,34 @@ export type ProjectComponentData = {
   name: string;
 };
 
-export type ProjectComponentSpec = {
-  productName: string;
-  dimension: string;
-};
-
 const CreateProject = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [createProjectMutation, { data, loading, error }] =
-    useCreateProjectMutation();
+  const [createProjectMutation, { loading }] = useCreateProjectMutation();
 
   const [getCustomerProjects] = useGetCustomerProjectsLazyQuery();
 
-  const [projectData, setProjectData] = useState({
+  const [projectData, setProjectData] = useState<CreateProjectInput>({
     userId: user!.id,
     name: "",
     deliveryAddress: "",
-    budget: "",
+    deliveryDate: new Date().toISOString().split("T")[0],
+    budget: 0,
     designId: "",
     comments: "",
-  } as ProjectData);
-
-  const [deliveryDate, setDeliveryDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+    components: [],
+  });
 
   const [componentModalOpen, setComponentModalOpen] = useState(false);
-
-  const [components, setComponents] = useState<CreateProjectComponentInput[]>(
-    []
-  );
-  const [componentSpec, setComponentSpec] = useState<ProjectComponentSpec>({
-    productName: "",
-    dimension: "",
-  });
-  const [componentData, setComponentData] = useState({
-    name: "",
-  } as ProjectComponentData);
 
   const openComponentModal = () => {
     setComponentModalOpen(true);
   };
 
-  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // TODO: input sanitization
-    setComponentSpec({
-      ...componentSpec,
-      [e.target.name]: e.target.value,
-    });
-  };
-  const productOnChange = (val: string) => {
-    setComponentSpec({
-      ...componentSpec,
-      productName: val,
-    });
-  };
-
-  const projectInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+  const projectInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val: string | number = e.target.value;
     let isAllowed = true;
 
     switch (e.target.name) {
@@ -121,6 +80,7 @@ const CreateProject = () => {
         break;
       case "budget":
         isAllowed = isValidInt(val);
+        val = parseInt(val, 10);
         break;
       default:
         break;
@@ -133,73 +93,26 @@ const CreateProject = () => {
     }
   };
 
-  const componentInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name) {
-      case "name":
-        isAllowed = isValidAlphanumeric(val);
-        break;
-      default:
-        break;
-    }
-    if (isAllowed || val === "") {
-      setComponentData({
-        ...componentData,
-        [e.target.name]: val,
-      });
-    }
-  };
-
-  const addComponent = () => {
-    const comp = {
-      ...componentData,
-      componentSpec: {
-        ...componentSpec,
-      },
-    };
-    setComponents([...components, comp]);
-    setComponentData({
-      name: "",
-    });
-    setComponentSpec({
-      productName: "",
-      dimension: "",
-    });
-    setComponentModalOpen(false);
-  };
-
-  const checkComponentInput = () => {
-    // check if component add button should be disabled
-    for (let key in componentData) {
-      if (componentData[key as keyof ProjectComponentData].length === 0)
-        return true;
-    }
-    return false;
-  };
-
-  const checkProjectInput = () => {
-    // check if create project button should be disabled
+  // check if create project button should be disabled
+  const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
       if (key === "comments" || key === "designId") continue;
-
-      if (projectData[key as keyof ProjectData].length === 0) return true;
+      if (key === "budget") {
+        if (projectData.budget === 0) return true;
+        continue;
+      }
+      if (!(projectData[key as keyof CreateProjectInput] as string).length)
+        return true;
     }
 
-    return components.length === 0;
+    return projectData.components.length === 0;
   };
 
   const createProject = async () => {
     try {
       await createProjectMutation({
         variables: {
-          data: {
-            ...projectData,
-            deliveryDate,
-            budget: parseInt(projectData.budget, 10),
-            components,
-          },
+          data: projectData,
         },
       });
 
@@ -217,47 +130,6 @@ const CreateProject = () => {
     } finally {
       setSnackbarOpen(true);
     }
-  };
-
-  const renderProductsDropdown = () => {
-    // TODO: bug when input chart and click x
-    return (
-      <Autocomplete
-        id="products-select"
-        sx={{ width: 400 }}
-        options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
-        autoHighlight
-        inputValue={componentSpec.productName}
-        onInputChange={(e, v) => {
-          productOnChange(v);
-        }}
-        onChange={(e, v) => {
-          setComponentSpec({
-            ...componentSpec,
-            productName: v ? v : "",
-          });
-        }}
-        value={componentSpec.productName}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Component product"
-            value={componentData}
-            onChange={(e) => productOnChange(e.target.value)}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
-    );
   };
 
   const handleAddressOnChange = (address: string) => {
@@ -288,7 +160,7 @@ const CreateProject = () => {
           <TextField
             autoComplete="new-password"
             label="Project Name"
-            onChange={projectInputHandler}
+            onChange={projectInputOnChange}
             name="name"
             value={projectData.name}
           />
@@ -297,10 +169,13 @@ const CreateProject = () => {
               disablePast
               label="Delivery Date"
               inputFormat="YYYY-MM-DD"
-              value={deliveryDate}
+              value={projectData.deliveryDate}
               onChange={(v) => {
                 if (!v) return;
-                setDeliveryDate(v);
+                setProjectData({
+                  ...projectData,
+                  deliveryDate: v,
+                });
               }}
               renderInput={(params) => (
                 <TextField {...params} name="deliveryDate" />
@@ -313,15 +188,15 @@ const CreateProject = () => {
             autoComplete="new-password"
             type="tel"
             label="Budget"
-            onChange={projectInputHandler}
+            onChange={projectInputOnChange}
             name="budget"
-            value={projectData.budget}
+            value={projectData.budget || ""}
           />
           <TextField
             autoComplete="new-password"
             multiline
             label="Comments"
-            onChange={projectInputHandler}
+            onChange={projectInputOnChange}
             name="comments"
             value={projectData.comments}
           />
@@ -331,44 +206,18 @@ const CreateProject = () => {
       <Dialog
         open={componentModalOpen}
         onClose={() => setComponentModalOpen(false)}
+        maxWidth="lg"
       >
-        <DialogContent>
-          <Container>
-            <Box>
-              <Typography variant="h6" textAlign="left">
-                Add Project Component
-              </Typography>
-            </Box>
-            <Stack spacing={2} textAlign="left">
-              <TextField
-                autoComplete="new-password"
-                label="Name"
-                onChange={componentInputHandler}
-                name="name"
-                value={componentData.name}
-              />
-              {renderProductsDropdown()}
-
-              <TextField
-                autoComplete="new-password"
-                label="Dimension"
-                onChange={componentSpecOnChange}
-                name="dimension"
-                value={componentSpec.dimension}
-              />
-            </Stack>
-          </Container>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={addComponent} disabled={checkComponentInput()}>
-            ADD
-          </Button>
-        </DialogActions>
+        <CreateProjectComponentModal
+          projectData={projectData}
+          setProjectData={setProjectData}
+          setComponentModalOpen={setComponentModalOpen}
+        />
       </Dialog>
 
       <Container>
         <Stack spacing={2} textAlign="left">
-          {components.map((comp, i) => {
+          {projectData.components.map((comp, i) => {
             return (
               <ListItem key={i}>
                 <Typography>Name: {comp.name}</Typography>
@@ -383,7 +232,7 @@ const CreateProject = () => {
 
       <Button
         variant="contained"
-        disabled={checkProjectInput()}
+        disabled={shouldDisableCreateProjectButton()}
         onClick={createProject}
       >
         CREATE
