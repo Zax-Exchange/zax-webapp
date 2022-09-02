@@ -5,6 +5,8 @@ import {
   Container,
   DialogActions,
   DialogContent,
+  List,
+  ListItem,
   Stack,
   TextField,
   Typography,
@@ -15,7 +17,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
-} from "../../../generated/graphql";
+} from "../../../../generated/graphql";
 import {
   PRODUCT_NAME_CORRUGATE_BOX,
   PRODUCT_NAMES,
@@ -23,19 +25,38 @@ import {
   RIGID_BOX_MATERIALS,
   RIGID_BOX_POST_PROCESSES,
   RIGID_BOX_MATERIAL_SOURCES,
-} from "../../constants/products";
-import { isValidAlphanumeric } from "../../Utils/inputValidators";
+  RIGID_BOX_FINISHES,
+  POST_PROCESS_PRINTING,
+  POST_PROCESS_DEBOSS,
+  POST_PROCESS_EMBOSS,
+  POST_PROCESS_FOIL_STAMP,
+} from "../../../constants/products";
+import { isValidAlphanumeric } from "../../../Utils/inputValidators";
+import RigidBoxSubSection from "./productSpecificSubSections/RigidBoxSubSection";
 
-const componentSpecInitialState: CreateProjectComponentSpecInput = {
-  productName: "",
-  dimension: "",
-  thickness: undefined,
-  outsideMaterial: undefined,
-  outsideMaterialSource: undefined,
-  outsidePostProcess: undefined,
-  outsideFinish: undefined,
-  outsideColor: undefined,
-};
+// const componentSpecInitialState: CreateProjectComponentSpecInput = {
+//   productName: "",
+//   dimension: "",
+//   thickness: undefined,
+//   flute: undefined,
+//   color: undefined,
+//   manufacturingProcess: undefined,
+//   material: undefined,
+//   materialSource: undefined,
+//   postProcess: undefined,
+//   finish: undefined,
+//   outsideMaterial: undefined,
+//   outsideMaterialSource: undefined,
+//   outsidePostProcess: undefined,
+//   outsideFinish: undefined,
+//   outsideColor: undefined,
+//   insideMaterial: undefined,
+//   insideMaterialSource: undefined,
+//   insidePostProcess: undefined,
+//   insideFinish: undefined,
+//   insideColor: undefined,
+// };
+
 const CreateProjectComponentModal = ({
   projectData,
   setProjectData,
@@ -48,9 +69,9 @@ const CreateProjectComponentModal = ({
   const [view, setView] = useState("");
 
   const [componentSpec, setComponentSpec] =
-    useState<CreateProjectComponentSpecInput>({
-      ...componentSpecInitialState,
-    });
+    useState<CreateProjectComponentSpecInput>(
+      {} as CreateProjectComponentSpecInput
+    );
   const [componentData, setComponentData] =
     useState<CreateProjectComponentInput>({
       name: "",
@@ -79,7 +100,7 @@ const CreateProjectComponentModal = ({
 
   const addComponent = () => {
     // construct CreateProjectComponentInput
-    const comp = {
+    const comp: CreateProjectComponentInput = {
       ...componentData,
       componentSpec: {
         ...componentSpec,
@@ -89,16 +110,6 @@ const CreateProjectComponentModal = ({
     setProjectData({
       ...projectData,
       components: [...projectData.components, comp],
-    });
-
-    // reset component and component specs
-    setComponentData({
-      name: "",
-      componentSpec,
-    });
-    setComponentSpec({
-      productName: "",
-      dimension: "",
     });
 
     // close component modal
@@ -120,27 +131,6 @@ const CreateProjectComponentModal = ({
       setComponentData({
         ...componentData,
         [e.target.name]: val,
-      });
-    }
-  };
-
-  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name) {
-      case "dimension":
-        isAllowed = isValidAlphanumeric(val);
-        break;
-      case "thickness":
-      default:
-        break;
-    }
-
-    if (isAllowed) {
-      setComponentSpec({
-        ...componentSpec,
-        [e.target.name]: e.target.value,
       });
     }
   };
@@ -214,96 +204,81 @@ const CreateProjectComponentModal = ({
     },
     []
   );
+
   const renderProductsDropdown = () => {
-    return renderAutocompleteDropdown(
-      PRODUCT_NAMES,
-      "productName",
-      "Product Type"
-    );
-  };
-
-  const renderRigidBoxView = () => {
-    const renderRigixBoxMaterialsDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_MATERIALS,
-        componentSpecAttribute,
-        label
-      );
-    };
-    const renderRigixBoxMaterialSourcesDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_MATERIAL_SOURCES,
-        componentSpecAttribute,
-        label
-      );
-    };
-
-    const renderRigidBoxPostProcessesDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_POST_PROCESSES,
-        componentSpecAttribute,
-        label
-      );
-    };
     return (
-      <>
-        <TextField
-          autoComplete="new-password"
-          label="Thickness"
-          onChange={componentSpecOnChange}
-          name="thickness"
-          value={componentSpec.thickness}
-        />
-        {renderRigixBoxMaterialsDropdown("outsideMaterial", "Outside Material")}
-        {renderRigixBoxMaterialSourcesDropdown(
-          "outsideMaterialSource",
-          "Outside Material Source"
+      <Autocomplete
+        sx={{ width: 200 }}
+        options={PRODUCT_NAMES}
+        autoHighlight
+        onChange={(e, v) => {
+          if (!v) return;
+          setComponentSpec((spec) => {
+            // If product name is same, do nothing.
+            if (v === componentSpec.productName) {
+              return spec;
+            } else {
+              // If product name is different, reset everything
+              return {
+                ...spec,
+                productName: v,
+              };
+            }
+          });
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Product Type"
+            inputProps={{
+              ...params.inputProps,
+              autoComplete: "new-password",
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: 16,
+                top: -7,
+              },
+            }}
+          />
         )}
-        {renderRigidBoxPostProcessesDropdown(
-          "outsidePostProcess",
-          "Outside Post Process"
-        )}
-      </>
+      />
     );
   };
+
   return (
     <>
       <DialogContent>
         <Container>
-          <Box>
+          <Box sx={{ paddingLeft: 2 }}>
             <Typography variant="h6" textAlign="left">
-              Add Project Component
+              Configure Project Component
             </Typography>
           </Box>
-          <Stack spacing={2} textAlign="left">
-            <TextField
-              autoComplete="new-password"
-              label="Name"
-              onChange={componentInputOnChange}
-              name="name"
-              value={componentData.name}
-            />
-            {renderProductsDropdown()}
+          <Box display="flex" flexDirection="row" flexWrap="wrap">
+            <Stack>
+              <ListItem>
+                <Typography variant="subtitle2">Component Detail</Typography>
+              </ListItem>
+              <ListItem>
+                <TextField
+                  autoComplete="new-password"
+                  label="Name"
+                  onChange={componentInputOnChange}
+                  name="name"
+                  value={componentData.name}
+                />
+              </ListItem>
+              <ListItem>{renderProductsDropdown()}</ListItem>
+            </Stack>
 
-            <TextField
-              autoComplete="new-password"
-              label="Dimension"
-              onChange={componentSpecOnChange}
-              name="dimension"
-              value={componentSpec.dimension}
-            />
-
-            {view === PRODUCT_NAME_RIGID_BOX && renderRigidBoxView()}
-          </Stack>
+            {view === PRODUCT_NAME_RIGID_BOX && (
+              <RigidBoxSubSection
+                setComponentSpec={setComponentSpec}
+                componentSpec={componentSpec}
+              />
+            )}
+          </Box>
         </Container>
       </DialogContent>
       <DialogActions>

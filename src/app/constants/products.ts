@@ -27,8 +27,6 @@ export const POST_PROCESS_DEBOSS = "Deboss"
 export const POST_PROCESS_FOIL_STAMP = "Foil Stamp"
 
 
-export const FINISH_COATING = "Coating"
-export const FINISH_LAMINATION = "Lamination"
 export const FINISH_MATTE = "Matte"
 export const FINISH_GLOSS = "Gloss"
 export const FINISH_UNCOATED = "Uncoated"
@@ -71,4 +69,10 @@ export const RIGID_BOX_POST_PROCESSES = [
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING
+]
+
+export const RIGID_BOX_FINISHES = [
+  FINISH_GLOSS,
+  FINISH_MATTE,
+  FINISH_UNCOATED
 ]

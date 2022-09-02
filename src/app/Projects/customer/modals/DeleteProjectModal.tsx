@@ -11,14 +11,14 @@ import {
   IconButton,
 } from "@mui/material";
 import React, { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import { Exact, InputMaybe } from "../../../generated/graphql";
-import { useDeleteProjectMutation } from "../../gql/delete/project/project.generated";
+import { AuthContext } from "../../../../context/AuthContext";
+import { Exact, InputMaybe } from "../../../../generated/graphql";
+import { useDeleteProjectMutation } from "../../../gql/delete/project/project.generated";
 import {
   GetCustomerProjectsQuery,
   useGetCustomerProjectsLazyQuery,
-} from "../../gql/get/customer/customer.generated";
-import useCustomSnackbar from "../../Utils/CustomSnackbar";
+} from "../../../gql/get/customer/customer.generated";
+import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 
 const DeleteProjectModal = ({
   deleteProjectModalOpen,

@@ -8,6 +8,7 @@ import {
   Box,
   Stack,
   Dialog,
+  Paper,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
@@ -28,7 +29,7 @@ import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../gql/create/project/project.generated";
 import { useGetCustomerProjectsLazyQuery } from "../../gql/get/customer/customer.generated";
 import { CreateProjectInput } from "../../../generated/graphql";
-import CreateProjectComponentModal from "./CreateProjectComponentModal";
+import CreateProjectComponentModal from "./modals/CreateProjectComponentModal";
 
 export type ProjectData = {
   userId: string;
@@ -138,10 +139,11 @@ const CreateProject = () => {
       deliveryAddress: address,
     });
   };
+  console.log(projectData.components);
   return (
     <>
       {loading && <FullScreenLoading />}
-      <Container>
+      <Paper sx={{ padding: 5 }}>
         <Box display="flex" mb={4}>
           <Typography variant="h6" textAlign="left" flexGrow={1}>
             Configure Project Detail
@@ -156,57 +158,61 @@ const CreateProject = () => {
             Add component
           </Button>
         </Box>
-        <Stack spacing={2} textAlign="left">
-          <TextField
-            autoComplete="new-password"
-            label="Project Name"
-            onChange={projectInputOnChange}
-            name="name"
-            value={projectData.name}
-          />
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DesktopDatePicker
-              disablePast
-              label="Delivery Date"
-              inputFormat="YYYY-MM-DD"
-              value={projectData.deliveryDate}
-              onChange={(v) => {
-                if (!v) return;
-                setProjectData({
-                  ...projectData,
-                  deliveryDate: v,
-                });
-              }}
-              renderInput={(params) => (
-                <TextField {...params} name="deliveryDate" />
-              )}
+        <Container maxWidth="sm">
+          <Stack spacing={2} textAlign="left">
+            <TextField
+              autoComplete="new-password"
+              label="Project Name"
+              onChange={projectInputOnChange}
+              name="name"
+              value={projectData.name}
             />
-          </LocalizationProvider>
-          <GoogleMapAutocomplete parentSetDataHandler={handleAddressOnChange} />
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DesktopDatePicker
+                disablePast
+                label="Delivery Date"
+                inputFormat="YYYY-MM-DD"
+                value={projectData.deliveryDate}
+                onChange={(v) => {
+                  if (!v) return;
+                  setProjectData({
+                    ...projectData,
+                    deliveryDate: v,
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} name="deliveryDate" />
+                )}
+              />
+            </LocalizationProvider>
+            <GoogleMapAutocomplete
+              parentSetDataHandler={handleAddressOnChange}
+            />
 
-          <TextField
-            autoComplete="new-password"
-            type="tel"
-            label="Budget"
-            onChange={projectInputOnChange}
-            name="budget"
-            value={projectData.budget || ""}
-          />
-          <TextField
-            autoComplete="new-password"
-            multiline
-            label="Comments"
-            onChange={projectInputOnChange}
-            name="comments"
-            value={projectData.comments}
-          />
-        </Stack>
-      </Container>
+            <TextField
+              autoComplete="new-password"
+              type="tel"
+              label="Budget"
+              onChange={projectInputOnChange}
+              name="budget"
+              value={projectData.budget || ""}
+            />
+            <TextField
+              autoComplete="new-password"
+              multiline
+              label="Comments"
+              onChange={projectInputOnChange}
+              name="comments"
+              value={projectData.comments}
+            />
+          </Stack>
+        </Container>
+      </Paper>
 
       <Dialog
         open={componentModalOpen}
         onClose={() => setComponentModalOpen(false)}
-        maxWidth="lg"
+        maxWidth="xl"
       >
         <CreateProjectComponentModal
           projectData={projectData}
@@ -224,6 +230,7 @@ const CreateProject = () => {
                 <Typography>
                   Product: {comp.componentSpec.productName}
                 </Typography>
+                <Typography>{comp.componentSpec.postProcess}</Typography>
               </ListItem>
             );
           })}

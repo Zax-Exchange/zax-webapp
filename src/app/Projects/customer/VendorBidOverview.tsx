@@ -13,7 +13,7 @@ import {
   MenuList,
   MenuItem,
 } from "@mui/material";
-import VendorBidModal from "./VendorBidModal";
+import VendorBidModal from "./modals/VendorBidModal";
 import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
 import MoreIcon from "@mui/icons-material/MoreHoriz";

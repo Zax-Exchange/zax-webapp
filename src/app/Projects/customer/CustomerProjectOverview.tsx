@@ -18,7 +18,7 @@ import {
 import ProjectPermissionModal from "../ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
-import DeleteProjectModal from "./DeleteProjectModal";
+import DeleteProjectModal from "./modals/DeleteProjectModal";
 import MuiListItem from "@mui/material/ListItem";
 import { styled } from "@mui/system";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";

@@ -125,7 +125,7 @@ export type CreateProjectComponentSpecInput = {
   insideFinish?: InputMaybe<Scalars['String']>;
   insideMaterial?: InputMaybe<Scalars['String']>;
   insideMaterialSource?: InputMaybe<Scalars['String']>;
-  insidePostProcess?: InputMaybe<Scalars['String']>;
+  insidePostProcess?: InputMaybe<Array<Scalars['String']>>;
   manufacturingProcess?: InputMaybe<Scalars['String']>;
   material?: InputMaybe<Scalars['String']>;
   materialSource?: InputMaybe<Scalars['String']>;
@@ -133,8 +133,8 @@ export type CreateProjectComponentSpecInput = {
   outsideFinish?: InputMaybe<Scalars['String']>;
   outsideMaterial?: InputMaybe<Scalars['String']>;
   outsideMaterialSource?: InputMaybe<Scalars['String']>;
-  outsidePostProcess?: InputMaybe<Scalars['String']>;
-  postProcess?: InputMaybe<Scalars['String']>;
+  outsidePostProcess?: InputMaybe<Array<Scalars['String']>>;
+  postProcess?: InputMaybe<Array<Scalars['String']>>;
   productName: Scalars['String'];
   thickness?: InputMaybe<Scalars['String']>;
 };
@@ -637,9 +637,27 @@ export type ProjectComponent = {
 
 export type ProjectComponentSpec = {
   __typename?: 'ProjectComponentSpec';
+  color?: Maybe<Scalars['String']>;
   dimension: Scalars['String'];
+  finish?: Maybe<Scalars['String']>;
+  flute?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  insideColor?: Maybe<Scalars['String']>;
+  insideFinish?: Maybe<Scalars['String']>;
+  insideMaterial?: Maybe<Scalars['String']>;
+  insideMaterialSource?: Maybe<Scalars['String']>;
+  insidePostProcess?: Maybe<Array<Scalars['String']>>;
+  manufacturingProcess?: Maybe<Scalars['String']>;
+  material?: Maybe<Scalars['String']>;
+  materialSource?: Maybe<Scalars['String']>;
+  outsideColor?: Maybe<Scalars['String']>;
+  outsideFinish?: Maybe<Scalars['String']>;
+  outsideMaterial?: Maybe<Scalars['String']>;
+  outsideMaterialSource?: Maybe<Scalars['String']>;
+  outsidePostProcess?: Maybe<Array<Scalars['String']>>;
+  postProcess?: Maybe<Array<Scalars['String']>>;
   productName: Scalars['String'];
+  thickness?: Maybe<Scalars['String']>;
 };
 
 export type ProjectDesign = {

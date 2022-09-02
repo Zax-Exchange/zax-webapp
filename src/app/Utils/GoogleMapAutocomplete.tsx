@@ -120,7 +120,7 @@ export default function GoogleMaps({
   return (
     <Autocomplete
       id="google-map-demo"
-      sx={{ width: 700 }}
+      // sx={{ width: 700 }}
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
       }
@@ -139,7 +139,17 @@ export default function GoogleMaps({
         setInputValue(newInputValue);
       }}
       renderInput={(params) => (
-        <TextField {...params} label="Delivery Location" fullWidth />
+        <TextField
+          {...params}
+          label="Delivery Location"
+          fullWidth
+          InputLabelProps={{
+            sx: {
+              fontSize: 16,
+              top: -7,
+            },
+          }}
+        />
       )}
       renderOption={(props, option) => {
         const matches =

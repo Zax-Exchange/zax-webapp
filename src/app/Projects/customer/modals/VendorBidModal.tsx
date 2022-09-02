@@ -20,7 +20,11 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useState } from "react";
 import React from "react";
-import { ProjectBid, ProjectComponent, VendorDetail } from "../../../generated/graphql";
+import {
+  ProjectBid,
+  ProjectComponent,
+  VendorDetail,
+} from "../../../../generated/graphql";
 
 /**
  * Bid modal shown in CustomerProjectDetail
@@ -28,7 +32,7 @@ import { ProjectBid, ProjectComponent, VendorDetail } from "../../../generated/g
  * @returns
  */
 
-const BidComponentRow = ({ row }: { row: any}) => {
+const BidComponentRow = ({ row }: { row: any }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -94,11 +98,11 @@ const VendorBidModal = ({
   projectComponents,
   setIsBidModalOpen,
   vendorData,
-} : {
+}: {
   bid: ProjectBid;
   projectComponents: ProjectComponent[];
-  setIsBidModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  vendorData: VendorDetail
+  setIsBidModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  vendorData: VendorDetail;
 }) => {
   const getComponent = (id: string) => {
     return projectComponents.find((comp) => comp.id === id);
@@ -110,7 +114,7 @@ const VendorBidModal = ({
         {bid.components.map((comp) => {
           const rows: any[] = [];
           const projectComponent = getComponent(comp.projectComponentId);
-          
+
           if (projectComponent) {
             comp.quantityPrices.forEach((qp, i) => {
               rows.push({
