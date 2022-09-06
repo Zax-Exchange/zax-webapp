@@ -354,7 +354,7 @@ const CreateProject = () => {
           </TableCell>
 
           <TableCell>
-            <Typography variant="caption">{outsideMaterial}</Typography>
+            <Typography variant="caption">{outsideMaterialSource}</Typography>
           </TableCell>
         </TableRow>
       );
@@ -432,7 +432,7 @@ const CreateProject = () => {
           </TableCell>
 
           <TableCell>
-            <Typography variant="caption">{insideMaterial}</Typography>
+            <Typography variant="caption">{insideMaterialSource}</Typography>
           </TableCell>
         </TableRow>
       );

@@ -83,7 +83,7 @@ const CreateProjectComponentModal = ({
     );
   const [componentData, setComponentData] =
     useState<CreateProjectComponentInput>({} as CreateProjectComponentInput);
-
+  console.log(componentSpec);
   useEffect(() => {
     if (componentSpec.productName) {
       setComponentSpec({

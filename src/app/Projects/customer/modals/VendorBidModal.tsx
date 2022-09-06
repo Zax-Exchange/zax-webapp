@@ -8,6 +8,7 @@ import {
   List,
   ListItem,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -23,6 +24,7 @@ import React from "react";
 import {
   ProjectBid,
   ProjectComponent,
+  ProjectComponentSpec,
   VendorDetail,
 } from "../../../../generated/graphql";
 
@@ -32,8 +34,349 @@ import {
  * @returns
  */
 
-const BidComponentRow = ({ row }: { row: any }) => {
+type ProjectComponentRow = {
+  name: string;
+  quantity: number;
+  price: number;
+  projectComponent: ProjectComponent;
+  isLast: boolean;
+};
+const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
   const [open, setOpen] = useState(false);
+  const renderComponentSpecAccordionDetail = (spec: ProjectComponentSpec) => {
+    const {
+      productName,
+      dimension,
+      thickness,
+      flute,
+      color,
+      manufacturingProcess,
+      material,
+      materialSource,
+      postProcess,
+      finish,
+      outsideMaterial,
+      outsideMaterialSource,
+      outsidePostProcess,
+      outsideFinish,
+      outsideColor,
+      insideMaterial,
+      insideMaterialSource,
+      insidePostProcess,
+      insideFinish,
+      insideColor,
+    } = spec;
+
+    const res: JSX.Element[] = [];
+
+    // for (let key in spec) {
+
+    if (productName) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Product</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="caption">{productName}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+    if (dimension) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Dimension</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="caption">{dimension}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+    if (thickness) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Thickness</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{thickness}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (flute) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Flute</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{flute}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (color) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Color</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{color}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (manufacturingProcess) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Manufacturing Process</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{manufacturingProcess}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (material) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Material</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{material}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (materialSource) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Material Source</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{materialSource}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (postProcess && postProcess.length) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Post Process</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Stack>
+              {postProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (finish) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Finish</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{finish}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsideMaterial) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Material</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{outsideMaterial}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsideMaterialSource) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Material Source</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{outsideMaterialSource}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsidePostProcess && outsidePostProcess.length) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Post Process</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Stack>
+              {outsidePostProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsideFinish) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Finish</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{outsideFinish}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsideColor) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Color</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{outsideColor}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insideMaterial) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Material</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{insideMaterial}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insideMaterialSource) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Material Source</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{insideMaterialSource}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insidePostProcess && insidePostProcess.length) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Post Process</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Stack>
+              {insidePostProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insideFinish) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Finish</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{insideFinish}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insideColor) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Color</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{insideColor}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return (
+      <Table size="small">
+        <TableBody>{res}</TableBody>
+      </Table>
+    );
+  };
 
   return (
     <>
@@ -65,26 +408,9 @@ const BidComponentRow = ({ row }: { row: any }) => {
                 <Typography variant="subtitle2" gutterBottom>
                   Detail for {row.projectComponent.name}
                 </Typography>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Materials</TableCell>
-                      <TableCell>Dimension</TableCell>
-                      <TableCell align="right">Post Process</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow key={row.projectComponent.id}>
-                      <TableCell component="th" scope="row">
-                        {row.projectComponent.materials}
-                      </TableCell>
-                      <TableCell>{row.projectComponent.dimension}</TableCell>
-                      <TableCell align="right">
-                        {row.projectComponent.postProcess}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                {renderComponentSpecAccordionDetail(
+                  row.projectComponent.componentSpec
+                )}
               </Box>
             </Collapse>
           </TableCell>
@@ -112,7 +438,7 @@ const VendorBidModal = ({
     <TableContainer component={Box}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         {bid.components.map((comp) => {
-          const rows: any[] = [];
+          const rows: ProjectComponentRow[] = [];
           const projectComponent = getComponent(comp.projectComponentId);
 
           if (projectComponent) {

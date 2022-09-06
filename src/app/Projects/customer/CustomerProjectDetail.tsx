@@ -8,6 +8,15 @@ import {
   IconButton,
   Button,
   Link,
+  TableRow,
+  TableCell,
+  Stack,
+  TableContainer,
+  Table,
+  TableBody,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -17,11 +26,17 @@ import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
 import { ProjectOverviewListItem } from "./CustomerProjectOverview";
 import styled from "@emotion/styled";
-import { ProjectBid, ProjectComponent } from "../../../generated/graphql";
+import {
+  CreateProjectComponentSpecInput,
+  ProjectBid,
+  ProjectComponent,
+  ProjectComponentSpec,
+} from "../../../generated/graphql";
 import React from "react";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
   flexDirection: "column",
@@ -67,6 +82,343 @@ const CustomerProjectDetail = () => {
     navigate(CUSTOMER_ROUTES.PROJECTS);
   };
 
+  const renderComponentSpecAccordionDetail = (spec: ProjectComponentSpec) => {
+    const {
+      productName,
+      dimension,
+      thickness,
+      flute,
+      color,
+      manufacturingProcess,
+      material,
+      materialSource,
+      postProcess,
+      finish,
+      outsideMaterial,
+      outsideMaterialSource,
+      outsidePostProcess,
+      outsideFinish,
+      outsideColor,
+      insideMaterial,
+      insideMaterialSource,
+      insidePostProcess,
+      insideFinish,
+      insideColor,
+    } = spec;
+
+    const res: JSX.Element[] = [];
+
+    // for (let key in spec) {
+
+    if (productName) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Product</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="caption">{productName}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+    if (dimension) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Dimension</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="caption">{dimension}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+    if (thickness) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Thickness</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{thickness}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (flute) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Flute</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{flute}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (color) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Color</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{color}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (manufacturingProcess) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Manufacturing Process</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{manufacturingProcess}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (material) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Material</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{material}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (materialSource) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Material Source</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{materialSource}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (postProcess && postProcess.length) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Post Process</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Stack>
+              {postProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (finish) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Finish</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{finish}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsideMaterial) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Material</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{outsideMaterial}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsideMaterialSource) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Material Source</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{outsideMaterialSource}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsidePostProcess && outsidePostProcess.length) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Post Process</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Stack>
+              {outsidePostProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsideFinish) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Finish</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{outsideFinish}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (outsideColor) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Outside Color</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{outsideColor}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insideMaterial) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Material</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{insideMaterial}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insideMaterialSource) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Material Source</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{insideMaterialSource}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insidePostProcess && insidePostProcess.length) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Post Process</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Stack>
+              {insidePostProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insideFinish) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Finish</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{insideFinish}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (insideColor) {
+      res.push(
+        <TableRow>
+          <TableCell>
+            <Typography variant="subtitle2">Inside Color</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">{insideColor}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return (
+      <TableContainer>
+        <Table size="small">
+          <TableBody>{res}</TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+
   if (loading) {
     return <FullScreenLoading />;
   }
@@ -83,7 +435,7 @@ const CustomerProjectDetail = () => {
 
   const projectData = data?.getCustomerProject;
   const bids = projectData?.bids;
-  console.log(projectData);
+
   if (projectData) {
     return (
       <Container>
@@ -95,13 +447,47 @@ const CustomerProjectDetail = () => {
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <Container>
-              <Typography variant="h6">Vendor Bids</Typography>
+              <Typography variant="h6" textAlign="left">
+                Vendor Bids
+              </Typography>
             </Container>
-            <List sx={{ maxHeight: 500 }}>
+            <List sx={{ maxHeight: 500, overflow: "scroll" }}>
               {bids &&
                 bids.map((bid) => {
                   return (
                     <>
+                      <ListItem>
+                        <VendorBidOverview
+                          bid={bid as ProjectBid}
+                          projectComponents={
+                            projectData.components as ProjectComponent[]
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <VendorBidOverview
+                          bid={bid as ProjectBid}
+                          projectComponents={
+                            projectData.components as ProjectComponent[]
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <VendorBidOverview
+                          bid={bid as ProjectBid}
+                          projectComponents={
+                            projectData.components as ProjectComponent[]
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <VendorBidOverview
+                          bid={bid as ProjectBid}
+                          projectComponents={
+                            projectData.components as ProjectComponent[]
+                          }
+                        />
+                      </ListItem>
                       <ListItem>
                         <VendorBidOverview
                           bid={bid as ProjectBid}
@@ -117,7 +503,9 @@ const CustomerProjectDetail = () => {
           </Grid>
           <Grid item xs={8}>
             <Container>
-              <Typography variant="h6">Project Detail</Typography>
+              <Typography variant="h6" textAlign="left">
+                Project Detail
+              </Typography>
             </Container>
             <Paper sx={{ padding: 3 }} elevation={1}>
               <List>
@@ -169,30 +557,34 @@ const CustomerProjectDetail = () => {
                 </ProjectDetailListItem>
               </List>
             </Paper>
-            {projectData.components.map((comp) => {
-              return (
-                <Paper sx={{ marginTop: 1, padding: 3 }} elevation={1}>
-                  <List>
-                    <ProjectDetailListItem>
-                      <Typography variant="subtitle2">Name</Typography>
-                      <Typography variant="caption">{comp.name}</Typography>
-                    </ProjectDetailListItem>
-                    <ProjectDetailListItem>
-                      <Typography variant="subtitle2">Product</Typography>
-                      <Typography variant="caption">
-                        {comp.componentSpec.productName}
-                      </Typography>
-                    </ProjectDetailListItem>
-                    <ProjectDetailListItem>
-                      <Typography variant="subtitle2">Dimension</Typography>
-                      <Typography variant="caption">
-                        {comp.componentSpec.dimension}
-                      </Typography>
-                    </ProjectDetailListItem>
-                  </List>
-                </Paper>
-              );
-            })}
+
+            {!!projectData.components.length && (
+              <Stack sx={{ marginTop: 4 }}>
+                {projectData.components.map((comp, i) => {
+                  return (
+                    <ListItem sx={{ padding: 0, mb: 2 }}>
+                      <Accordion sx={{ flexGrow: 2 }}>
+                        <AccordionSummary
+                          key={i}
+                          expandIcon={<ExpandMoreIcon />}
+                          id={`component-summary-${i}`}
+                        >
+                          <Typography variant="subtitle2">
+                            {comp.name}
+                          </Typography>
+                        </AccordionSummary>
+
+                        <AccordionDetails>
+                          {renderComponentSpecAccordionDetail(
+                            comp.componentSpec
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
+                    </ListItem>
+                  );
+                })}
+              </Stack>
+            )}
           </Grid>
         </Grid>
       </Container>
