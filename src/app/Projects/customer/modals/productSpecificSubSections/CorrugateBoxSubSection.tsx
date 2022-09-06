@@ -1,44 +1,39 @@
-import styled from "@emotion/styled";
 import {
   Autocomplete,
   Button,
   IconButton,
-  List,
   ListItem,
+  Stack,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
 import { useCallback, useState } from "react";
 import { CreateProjectComponentSpecInput } from "../../../../../generated/graphql";
 import {
+  CORRUGATE_BOX_FINISHES,
+  CORRUGATE_BOX_FLUTES,
+  CORRUGATE_BOX_POST_PROCESSES,
+  CORRUGATE_BOX_PRINTING_METHODS,
+  FOLDING_CARTON_MATERIALS,
+  FOLDING_CARTON_MATERIAL_SOURCES,
+  FOLDING_CARTON_POST_PROCESSES,
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING,
-  RIGID_BOX_FINISHES,
-  RIGID_BOX_MATERIALS,
-  RIGID_BOX_MATERIAL_SOURCES,
-  RIGID_BOX_POST_PROCESSES,
 } from "../../../../constants/products";
-import MuiStack from "@mui/material/Stack";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 
-type RigidBoxPostProcessDetail = {
+type CorrugatePostProcessDetail = {
   postProcessName: string;
+  printingMethod?: string;
   numberOfColors?: string;
-  color?: string;
   estimatedArea?: string;
   fontSize?: string;
 };
-
-const Stack = styled((props: any) => {
-  return <MuiStack {...props} spacing={1.5} />;
-})(() => ({}));
-
-const RigidBoxSubSection = ({
+const CorrugateBoxSubSection = ({
   setComponentSpec,
   componentSpec,
 }: {
@@ -48,10 +43,10 @@ const RigidBoxSubSection = ({
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
-    useState<RigidBoxPostProcessDetail>({} as RigidBoxPostProcessDetail);
+    useState<CorrugatePostProcessDetail>({} as CorrugatePostProcessDetail);
 
   const [outsidePostProcessDetail, setOutsidePostProcessDetail] =
-    useState<RigidBoxPostProcessDetail>({} as RigidBoxPostProcessDetail);
+    useState<CorrugatePostProcessDetail>({} as CorrugatePostProcessDetail);
 
   const outsidePostProcessDetailOnChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -81,7 +76,7 @@ const RigidBoxSubSection = ({
       ...componentSpec,
       outsidePostProcess: [...prevPostProcess, res],
     });
-    setOutsidePostProcessDetail({} as RigidBoxPostProcessDetail);
+    setOutsidePostProcessDetail({} as CorrugatePostProcessDetail);
   };
 
   const addinsidePostProcess = () => {
@@ -94,12 +89,13 @@ const RigidBoxSubSection = ({
       ...componentSpec,
       insidePostProcess: [...prevPostProcess, res],
     });
-    setInsidePostProcessDetail({} as RigidBoxPostProcessDetail);
+    setInsidePostProcessDetail({} as CorrugatePostProcessDetail);
   };
 
   const removeOutsidePostProcess = (i: number) => {
     const postProcess = componentSpec.outsidePostProcess;
     postProcess?.splice(i, 1);
+
     console.log(postProcess);
     setComponentSpec({
       ...componentSpec,
@@ -114,6 +110,204 @@ const RigidBoxSubSection = ({
       ...componentSpec,
       insidePostProcess: postProcess,
     });
+  };
+
+  // combine post process detail into string based on post process name
+  const formatPostProcessDetail = (
+    postProcessDetail: CorrugatePostProcessDetail
+  ) => {
+    const {
+      postProcessName,
+      numberOfColors,
+      estimatedArea,
+      fontSize,
+      printingMethod,
+    } = postProcessDetail;
+
+    switch (postProcessName) {
+      case POST_PROCESS_PRINTING:
+        return `${printingMethod} printing with ${numberOfColors} colors`;
+      case POST_PROCESS_EMBOSS:
+        return `Emboss of area size ${estimatedArea} with font size of ${fontSize}.`;
+      case POST_PROCESS_DEBOSS:
+        return `Deboss of area size ${estimatedArea} with font size of ${fontSize}.`;
+      default:
+        return "";
+    }
+  };
+
+  const renderPostProcessDropdown = (
+    postProcessDetail: CorrugatePostProcessDetail,
+    setPostProcessDetail: React.Dispatch<
+      React.SetStateAction<CorrugatePostProcessDetail>
+    >,
+    label: string,
+    key: string
+  ) => {
+    return (
+      <>
+        <Autocomplete
+          sx={{ width: 250 }}
+          options={CORRUGATE_BOX_POST_PROCESSES}
+          autoHighlight
+          value={postProcessDetail.postProcessName}
+          onChange={(e, v) => {
+            setPostProcessDetail((prev) => {
+              console.log(prev.postProcessName, v);
+              // If user selects same post process, do nothing.
+              if (prev.postProcessName === v) {
+                return prev;
+              } else {
+                // If user selects a new post process, reset everything.
+                return {
+                  postProcessName: v ? v : "",
+                };
+              }
+            });
+          }}
+          renderInput={(params) => (
+            <TextField
+              key={key}
+              {...params}
+              label={label}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+            />
+          )}
+        />
+      </>
+    );
+  };
+
+  const renderPostProcessDetailSection = (
+    postProcessDetail: CorrugatePostProcessDetail,
+    postProcessOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    addPostProcess: () => void,
+    // setPostProcess provides inner components to use setState directly (used by post process printing)
+    setPostProcess: React.Dispatch<
+      React.SetStateAction<CorrugatePostProcessDetail>
+    >
+  ) => {
+    let subSection = null;
+    if (postProcessDetail.postProcessName === POST_PROCESS_PRINTING) {
+      subSection = (
+        <>
+          <ListItem>
+            <Autocomplete
+              options={CORRUGATE_BOX_PRINTING_METHODS}
+              sx={{ width: 250 }}
+              autoHighlight
+              onChange={(e, v) => {
+                setPostProcess({
+                  ...postProcessDetail,
+                  printingMethod: v ? v : "",
+                });
+              }}
+              renderInput={(params) => (
+                <TextField
+                  key="corrugate-printing-method-dropdown"
+                  {...params}
+                  label="Printing Method"
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password",
+                  }}
+                  InputLabelProps={{
+                    sx: {
+                      fontSize: 16,
+                      top: -7,
+                    },
+                  }}
+                />
+              )}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              key="corrugate-printing-number-of-colors"
+              autoComplete="new-password"
+              label="Number of Colors"
+              onChange={postProcessOnChange}
+              name="numberOfColors"
+              value={postProcessDetail.numberOfColors}
+            />
+          </ListItem>
+        </>
+      );
+    }
+
+    if (postProcessDetail.postProcessName === POST_PROCESS_EMBOSS) {
+      subSection = (
+        <>
+          <ListItem>
+            <TextField
+              key="folding-carton-emboss-font-size"
+              autoComplete="new-password"
+              label="Emboss Font Size"
+              onChange={postProcessOnChange}
+              name="fontSize"
+              value={postProcessDetail.fontSize}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              key="folding-carton-emboss-estimated-area"
+              autoComplete="new-password"
+              label="Emboss Estimated Area"
+              onChange={postProcessOnChange}
+              name="estimatedArea"
+              value={postProcessDetail.estimatedArea}
+            />
+          </ListItem>
+        </>
+      );
+    }
+
+    if (postProcessDetail.postProcessName === POST_PROCESS_DEBOSS) {
+      subSection = (
+        <>
+          <ListItem>
+            <TextField
+              key="folding-carton-deboss-font-size"
+              autoComplete="new-password"
+              label="Deboss Font Size"
+              onChange={postProcessOnChange}
+              name="fontSize"
+              value={postProcessDetail.fontSize}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              key="folding-carton-deboss-estimated-area"
+              autoComplete="new-password"
+              label="Deboss Estimated Area"
+              onChange={postProcessOnChange}
+              name="estimatedArea"
+              value={postProcessDetail.estimatedArea}
+            />
+          </ListItem>
+        </>
+      );
+    }
+
+    return (
+      !!subSection && (
+        <>
+          {subSection}
+          <Button variant="text" onClick={addPostProcess}>
+            Add Post Process
+          </Button>
+        </>
+      )
+    );
   };
   // Checks and sets input-able component spec
   const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,32 +330,13 @@ const RigidBoxSubSection = ({
     }
   };
 
-  // combine post process detail into string based on post process name
-  const formatPostProcessDetail = (
-    postProcessDetail: RigidBoxPostProcessDetail
-  ) => {
-    const { postProcessName, numberOfColors, color, estimatedArea, fontSize } =
-      postProcessDetail;
-
-    switch (postProcessName) {
-      case POST_PROCESS_PRINTING:
-        return `Printing of area size ${estimatedArea} with ${numberOfColors} colors.`;
-      case POST_PROCESS_EMBOSS:
-        return `Emboss of area size ${estimatedArea} with font size of ${fontSize}.`;
-      case POST_PROCESS_DEBOSS:
-        return `Deboss of area size ${estimatedArea} with font size of ${fontSize}.`;
-      case POST_PROCESS_FOIL_STAMP:
-        return `Foil Stamp of area size ${estimatedArea} with a color of ${color}`;
-      default:
-        return "";
-    }
-  };
-
+  // For dropdowns other than post process
   const renderAutocompleteDropdown = useCallback(
     (
       options: string[],
       componentSpecAttribute: keyof CreateProjectComponentSpecInput,
       label: string,
+      key: string,
       width: number = 250
     ) => {
       return (
@@ -177,6 +352,7 @@ const RigidBoxSubSection = ({
           }}
           renderInput={(params) => (
             <TextField
+              key={key}
               {...params}
               label={label}
               inputProps={{
@@ -197,213 +373,7 @@ const RigidBoxSubSection = ({
     []
   );
 
-  const renderPostProcessSection = (
-    postProcessDetail: RigidBoxPostProcessDetail,
-    setPostProcessDetail: React.Dispatch<
-      React.SetStateAction<RigidBoxPostProcessDetail>
-    >,
-    label: string
-  ) => {
-    return (
-      <>
-        <Autocomplete
-          sx={{ width: 250 }}
-          options={RIGID_BOX_POST_PROCESSES}
-          autoHighlight
-          value={postProcessDetail.postProcessName}
-          onChange={(e, v) => {
-            setPostProcessDetail((prev) => {
-              console.log(prev.postProcessName, v);
-              // If user selects same post process, do nothing.
-              if (prev.postProcessName === v) {
-                return prev;
-              } else {
-                // If user selects a new post process, reset everything.
-                return {
-                  postProcessName: v ? v : "",
-                };
-              }
-            });
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={label}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password",
-              }}
-              InputLabelProps={{
-                sx: {
-                  fontSize: 16,
-                  top: -7,
-                },
-              }}
-            />
-          )}
-        />
-      </>
-    );
-  };
-
-  const renderPostProcessDetailSection = (
-    postProcessDetail: RigidBoxPostProcessDetail,
-    postProcessOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    addPostProcess: () => void
-  ) => {
-    let subSection = null;
-    if (postProcessDetail.postProcessName === POST_PROCESS_PRINTING) {
-      subSection = (
-        <>
-          <ListItem>
-            <TextField
-              key="number-of-colors"
-              autoComplete="new-password"
-              label="Number Of Colors To Print"
-              onChange={postProcessOnChange}
-              name="numberOfColors"
-              value={postProcessDetail.numberOfColors}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              key="printing-estimated-area"
-              autoComplete="new-password"
-              label="Printing Estimated Area"
-              onChange={postProcessOnChange}
-              name="estimatedArea"
-              value={postProcessDetail.estimatedArea}
-            />
-          </ListItem>
-        </>
-      );
-    }
-
-    if (postProcessDetail.postProcessName === POST_PROCESS_EMBOSS) {
-      subSection = (
-        <>
-          <ListItem>
-            <TextField
-              key="emboss-font-size"
-              autoComplete="new-password"
-              label="Emboss Font Size"
-              onChange={postProcessOnChange}
-              name="fontSize"
-              value={postProcessDetail.fontSize}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              key="emboss-estimated-area"
-              autoComplete="new-password"
-              label="Emboss Estimated Area"
-              onChange={postProcessOnChange}
-              name="estimatedArea"
-              value={postProcessDetail.estimatedArea}
-            />
-          </ListItem>
-        </>
-      );
-    }
-
-    if (postProcessDetail.postProcessName === POST_PROCESS_DEBOSS) {
-      subSection = (
-        <>
-          <ListItem>
-            <TextField
-              key="deboss-font-size"
-              autoComplete="new-password"
-              label="Deboss Font Size"
-              onChange={postProcessOnChange}
-              name="fontSize"
-              value={postProcessDetail.fontSize}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              key="deboss-estimated-area"
-              autoComplete="new-password"
-              label="Deboss Estimated Area"
-              onChange={postProcessOnChange}
-              name="estimatedArea"
-              value={postProcessDetail.estimatedArea}
-            />
-          </ListItem>
-        </>
-      );
-    }
-
-    if (postProcessDetail.postProcessName === POST_PROCESS_FOIL_STAMP) {
-      subSection = (
-        <>
-          <ListItem>
-            <TextField
-              key="foil-stamp-color"
-              autoComplete="new-password"
-              label="Foil Stamp Color"
-              onChange={postProcessOnChange}
-              name="color"
-              value={postProcessDetail.color}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              key="foil-stamp-estimated-area"
-              autoComplete="new-password"
-              label="Foil Stamp Estimated Area"
-              onChange={postProcessOnChange}
-              name="estimatedArea"
-              value={postProcessDetail.estimatedArea}
-            />
-          </ListItem>
-        </>
-      );
-    }
-
-    return (
-      !!subSection && (
-        <>
-          {subSection}
-          <Button variant="text" onClick={addPostProcess}>
-            Add Post Process
-          </Button>
-        </>
-      )
-    );
-  };
-
   const renderComponentSpecSection = () => {
-    const renderMaterialsDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_MATERIALS,
-        componentSpecAttribute,
-        label
-      );
-    };
-    const renderRigixBoxMaterialSourcesDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_MATERIAL_SOURCES,
-        componentSpecAttribute,
-        label
-      );
-    };
-
-    const renderRigidBoxFinishesDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_FINISHES,
-        componentSpecAttribute,
-        label
-      );
-    };
     return (
       <>
         <Stack>
@@ -412,6 +382,8 @@ const RigidBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
+              sx={{ width: 250 }}
+              key="folding-carton-dimension"
               autoComplete="new-password"
               label="Dimension"
               onChange={componentSpecOnChange}
@@ -420,12 +392,29 @@ const RigidBoxSubSection = ({
             />
           </ListItem>
           <ListItem>
+            {renderAutocompleteDropdown(
+              CORRUGATE_BOX_FLUTES,
+              "flute",
+              "Flute Type",
+              "corrugate-flute"
+            )}
+          </ListItem>
+          <ListItem>
             <TextField
-              autoComplete="new-password"
-              label="Thickness"
-              onChange={componentSpecOnChange}
-              name="thickness"
-              value={componentSpec.thickness}
+              sx={{ width: 250 }}
+              disabled
+              key="corrugate-material"
+              label="Material"
+              value="Default Corrugate"
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              sx={{ width: 250 }}
+              disabled
+              key="corrugate-material-source"
+              label="Materia Sourcel"
+              value="OCC / Recycled Materials"
             />
           </ListItem>
         </Stack>
@@ -434,28 +423,26 @@ const RigidBoxSubSection = ({
             <Typography variant="subtitle2">Outside Specs</Typography>
           </ListItem>
           <ListItem>
-            {renderMaterialsDropdown("outsideMaterial", "Outside Material")}
-          </ListItem>
-          <ListItem>
-            {renderRigixBoxMaterialSourcesDropdown(
-              "outsideMaterialSource",
-              "Outside Material Source"
+            {renderAutocompleteDropdown(
+              CORRUGATE_BOX_FINISHES,
+              "outsideFinish",
+              "Outside Finish",
+              "corrugate-outside-finish"
             )}
           </ListItem>
           <ListItem>
-            {renderRigidBoxFinishesDropdown("outsideFinish", "Outside Finish")}
-          </ListItem>
-          <ListItem>
-            {renderPostProcessSection(
+            {renderPostProcessDropdown(
               outsidePostProcessDetail,
               setOutsidePostProcessDetail,
-              "Outside Post Process"
+              "Outside Post Process",
+              "corrugate-outisde-post-process"
             )}
           </ListItem>
           {renderPostProcessDetailSection(
             outsidePostProcessDetail,
             outsidePostProcessDetailOnChange,
-            addOutsidePostProcess
+            addOutsidePostProcess,
+            setOutsidePostProcessDetail
           )}
         </Stack>
         <Stack>
@@ -463,28 +450,26 @@ const RigidBoxSubSection = ({
             <Typography variant="subtitle2">Inside Specs</Typography>
           </ListItem>
           <ListItem>
-            {renderMaterialsDropdown("insideMaterial", "Inside Material")}
-          </ListItem>
-          <ListItem>
-            {renderRigixBoxMaterialSourcesDropdown(
-              "insideMaterialSource",
-              "Inside Material Source"
+            {renderAutocompleteDropdown(
+              CORRUGATE_BOX_FINISHES,
+              "insideFinish",
+              "Inside Finish",
+              "folding-carton-inside-finish"
             )}
           </ListItem>
           <ListItem>
-            {renderRigidBoxFinishesDropdown("insideFinish", "Inside Finish")}
-          </ListItem>
-          <ListItem>
-            {renderPostProcessSection(
+            {renderPostProcessDropdown(
               insidePostProcessDetail,
               setInsidePostProcessDetail,
-              "Inside Post Process"
+              "Inside Post Process",
+              "folding-carton-inside-post-process"
             )}
           </ListItem>
           {renderPostProcessDetailSection(
             insidePostProcessDetail,
             insidePostProcessDetailOnChange,
-            addinsidePostProcess
+            addinsidePostProcess,
+            setInsidePostProcessDetail
           )}
         </Stack>
 
@@ -532,4 +517,4 @@ const RigidBoxSubSection = ({
   return renderComponentSpecSection();
 };
 
-export default RigidBoxSubSection;
+export default CorrugateBoxSubSection;

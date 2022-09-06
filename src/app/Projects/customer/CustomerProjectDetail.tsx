@@ -39,6 +39,7 @@ const CustomerProjectDetail = () => {
         userId: user!.id,
       },
     },
+    fetchPolicy: "no-cache",
   });
 
   useEffect(() => {

@@ -1,44 +1,36 @@
-import styled from "@emotion/styled";
 import {
   Autocomplete,
   Button,
   IconButton,
-  List,
   ListItem,
+  Stack,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
 import { useCallback, useState } from "react";
 import { CreateProjectComponentSpecInput } from "../../../../../generated/graphql";
 import {
+  SLEEVE_FINISHES,
+  SLEEVE_MATERIALS,
+  SLEEVE_MATERIAL_SOURCES,
+  SLEEVE_POST_PROCESSES,
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING,
-  RIGID_BOX_FINISHES,
-  RIGID_BOX_MATERIALS,
-  RIGID_BOX_MATERIAL_SOURCES,
-  RIGID_BOX_POST_PROCESSES,
 } from "../../../../constants/products";
-import MuiStack from "@mui/material/Stack";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 
-type RigidBoxPostProcessDetail = {
+type SleevePostProcessDetail = {
   postProcessName: string;
   numberOfColors?: string;
   color?: string;
   estimatedArea?: string;
   fontSize?: string;
 };
-
-const Stack = styled((props: any) => {
-  return <MuiStack {...props} spacing={1.5} />;
-})(() => ({}));
-
-const RigidBoxSubSection = ({
+const SleeveSubSection = ({
   setComponentSpec,
   componentSpec,
 }: {
@@ -48,10 +40,10 @@ const RigidBoxSubSection = ({
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
-    useState<RigidBoxPostProcessDetail>({} as RigidBoxPostProcessDetail);
+    useState<SleevePostProcessDetail>({} as SleevePostProcessDetail);
 
   const [outsidePostProcessDetail, setOutsidePostProcessDetail] =
-    useState<RigidBoxPostProcessDetail>({} as RigidBoxPostProcessDetail);
+    useState<SleevePostProcessDetail>({} as SleevePostProcessDetail);
 
   const outsidePostProcessDetailOnChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -81,7 +73,7 @@ const RigidBoxSubSection = ({
       ...componentSpec,
       outsidePostProcess: [...prevPostProcess, res],
     });
-    setOutsidePostProcessDetail({} as RigidBoxPostProcessDetail);
+    setOutsidePostProcessDetail({} as SleevePostProcessDetail);
   };
 
   const addinsidePostProcess = () => {
@@ -94,7 +86,7 @@ const RigidBoxSubSection = ({
       ...componentSpec,
       insidePostProcess: [...prevPostProcess, res],
     });
-    setInsidePostProcessDetail({} as RigidBoxPostProcessDetail);
+    setInsidePostProcessDetail({} as SleevePostProcessDetail);
   };
 
   const removeOutsidePostProcess = (i: number) => {
@@ -115,30 +107,10 @@ const RigidBoxSubSection = ({
       insidePostProcess: postProcess,
     });
   };
-  // Checks and sets input-able component spec
-  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name) {
-      case "dimension":
-        isAllowed = isValidAlphanumeric(val);
-        break;
-      default:
-        break;
-    }
-
-    if (isAllowed) {
-      setComponentSpec({
-        ...componentSpec,
-        [e.target.name]: e.target.value,
-      });
-    }
-  };
 
   // combine post process detail into string based on post process name
   const formatPostProcessDetail = (
-    postProcessDetail: RigidBoxPostProcessDetail
+    postProcessDetail: SleevePostProcessDetail
   ) => {
     const { postProcessName, numberOfColors, color, estimatedArea, fontSize } =
       postProcessDetail;
@@ -157,63 +129,23 @@ const RigidBoxSubSection = ({
     }
   };
 
-  const renderAutocompleteDropdown = useCallback(
-    (
-      options: string[],
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string,
-      width: number = 250
-    ) => {
-      return (
-        <Autocomplete
-          sx={{ width }}
-          options={options}
-          autoHighlight
-          onChange={(e, v) => {
-            setComponentSpec((spec) => ({
-              ...spec,
-              [componentSpecAttribute]: v ? v : "",
-            }));
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={label}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password",
-              }}
-              InputLabelProps={{
-                sx: {
-                  fontSize: 16,
-                  top: -7,
-                },
-              }}
-            />
-          )}
-        />
-      );
-    },
-    []
-  );
-
-  const renderPostProcessSection = (
-    postProcessDetail: RigidBoxPostProcessDetail,
+  const renderPostProcessDropdown = (
+    postProcessDetail: SleevePostProcessDetail,
     setPostProcessDetail: React.Dispatch<
-      React.SetStateAction<RigidBoxPostProcessDetail>
+      React.SetStateAction<SleevePostProcessDetail>
     >,
-    label: string
+    label: string,
+    key: string
   ) => {
     return (
       <>
         <Autocomplete
           sx={{ width: 250 }}
-          options={RIGID_BOX_POST_PROCESSES}
+          options={SLEEVE_POST_PROCESSES}
           autoHighlight
           value={postProcessDetail.postProcessName}
           onChange={(e, v) => {
             setPostProcessDetail((prev) => {
-              console.log(prev.postProcessName, v);
               // If user selects same post process, do nothing.
               if (prev.postProcessName === v) {
                 return prev;
@@ -227,6 +159,7 @@ const RigidBoxSubSection = ({
           }}
           renderInput={(params) => (
             <TextField
+              key={key}
               {...params}
               label={label}
               inputProps={{
@@ -247,7 +180,7 @@ const RigidBoxSubSection = ({
   };
 
   const renderPostProcessDetailSection = (
-    postProcessDetail: RigidBoxPostProcessDetail,
+    postProcessDetail: SleevePostProcessDetail,
     postProcessOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     addPostProcess: () => void
   ) => {
@@ -257,7 +190,7 @@ const RigidBoxSubSection = ({
         <>
           <ListItem>
             <TextField
-              key="number-of-colors"
+              key="sleeve-number-of-colors"
               autoComplete="new-password"
               label="Number Of Colors To Print"
               onChange={postProcessOnChange}
@@ -267,7 +200,7 @@ const RigidBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              key="printing-estimated-area"
+              key="sleeve-printing-estimated-area"
               autoComplete="new-password"
               label="Printing Estimated Area"
               onChange={postProcessOnChange}
@@ -284,7 +217,7 @@ const RigidBoxSubSection = ({
         <>
           <ListItem>
             <TextField
-              key="emboss-font-size"
+              key="sleeve-emboss-font-size"
               autoComplete="new-password"
               label="Emboss Font Size"
               onChange={postProcessOnChange}
@@ -294,7 +227,7 @@ const RigidBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              key="emboss-estimated-area"
+              key="sleeve-emboss-estimated-area"
               autoComplete="new-password"
               label="Emboss Estimated Area"
               onChange={postProcessOnChange}
@@ -311,7 +244,7 @@ const RigidBoxSubSection = ({
         <>
           <ListItem>
             <TextField
-              key="deboss-font-size"
+              key="sleeve-deboss-font-size"
               autoComplete="new-password"
               label="Deboss Font Size"
               onChange={postProcessOnChange}
@@ -321,7 +254,7 @@ const RigidBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              key="deboss-estimated-area"
+              key="sleeve-deboss-estimated-area"
               autoComplete="new-password"
               label="Deboss Estimated Area"
               onChange={postProcessOnChange}
@@ -338,7 +271,7 @@ const RigidBoxSubSection = ({
         <>
           <ListItem>
             <TextField
-              key="foil-stamp-color"
+              key="sleeve-foil-stamp-color"
               autoComplete="new-password"
               label="Foil Stamp Color"
               onChange={postProcessOnChange}
@@ -348,7 +281,7 @@ const RigidBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              key="foil-stamp-estimated-area"
+              key="sleeve-foil-stamp-estimated-area"
               autoComplete="new-password"
               label="Foil Stamp Estimated Area"
               onChange={postProcessOnChange}
@@ -371,39 +304,71 @@ const RigidBoxSubSection = ({
       )
     );
   };
+  // Checks and sets input-able component spec
+  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    let isAllowed = true;
+
+    switch (e.target.name) {
+      case "dimension":
+        isAllowed = isValidAlphanumeric(val);
+        break;
+      default:
+        break;
+    }
+
+    if (isAllowed) {
+      setComponentSpec({
+        ...componentSpec,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  // For dropdowns other than post process
+  const renderAutocompleteDropdown = useCallback(
+    (
+      options: string[],
+      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
+      label: string,
+      key: string,
+      width: number = 250
+    ) => {
+      return (
+        <Autocomplete
+          sx={{ width }}
+          options={options}
+          autoHighlight
+          onChange={(e, v) => {
+            setComponentSpec((spec) => ({
+              ...spec,
+              [componentSpecAttribute]: v ? v : "",
+            }));
+          }}
+          renderInput={(params) => (
+            <TextField
+              key={key}
+              {...params}
+              label={label}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+            />
+          )}
+        />
+      );
+    },
+    []
+  );
 
   const renderComponentSpecSection = () => {
-    const renderMaterialsDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_MATERIALS,
-        componentSpecAttribute,
-        label
-      );
-    };
-    const renderRigixBoxMaterialSourcesDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_MATERIAL_SOURCES,
-        componentSpecAttribute,
-        label
-      );
-    };
-
-    const renderRigidBoxFinishesDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_FINISHES,
-        componentSpecAttribute,
-        label
-      );
-    };
     return (
       <>
         <Stack>
@@ -428,28 +393,41 @@ const RigidBoxSubSection = ({
               value={componentSpec.thickness}
             />
           </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              SLEEVE_MATERIALS,
+              "material",
+              "Component Material",
+              "sleeve-material"
+            )}
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              SLEEVE_MATERIAL_SOURCES,
+              "materialSource",
+              "Material Source",
+              "sleeve-material-source"
+            )}
+          </ListItem>
         </Stack>
         <Stack>
           <ListItem>
             <Typography variant="subtitle2">Outside Specs</Typography>
           </ListItem>
           <ListItem>
-            {renderMaterialsDropdown("outsideMaterial", "Outside Material")}
-          </ListItem>
-          <ListItem>
-            {renderRigixBoxMaterialSourcesDropdown(
-              "outsideMaterialSource",
-              "Outside Material Source"
+            {renderAutocompleteDropdown(
+              SLEEVE_FINISHES,
+              "outsideFinish",
+              "Outside Finish",
+              "sleeve-outside-finish"
             )}
           </ListItem>
           <ListItem>
-            {renderRigidBoxFinishesDropdown("outsideFinish", "Outside Finish")}
-          </ListItem>
-          <ListItem>
-            {renderPostProcessSection(
+            {renderPostProcessDropdown(
               outsidePostProcessDetail,
               setOutsidePostProcessDetail,
-              "Outside Post Process"
+              "Outside Post Process",
+              "sleeve-outside-post-process"
             )}
           </ListItem>
           {renderPostProcessDetailSection(
@@ -463,22 +441,19 @@ const RigidBoxSubSection = ({
             <Typography variant="subtitle2">Inside Specs</Typography>
           </ListItem>
           <ListItem>
-            {renderMaterialsDropdown("insideMaterial", "Inside Material")}
-          </ListItem>
-          <ListItem>
-            {renderRigixBoxMaterialSourcesDropdown(
-              "insideMaterialSource",
-              "Inside Material Source"
+            {renderAutocompleteDropdown(
+              SLEEVE_FINISHES,
+              "insideFinish",
+              "Inside Finish",
+              "sleeve-inside-finish"
             )}
           </ListItem>
           <ListItem>
-            {renderRigidBoxFinishesDropdown("insideFinish", "Inside Finish")}
-          </ListItem>
-          <ListItem>
-            {renderPostProcessSection(
+            {renderPostProcessDropdown(
               insidePostProcessDetail,
               setInsidePostProcessDetail,
-              "Inside Post Process"
+              "Inside Post Process",
+              "sleeve-inside-post-process"
             )}
           </ListItem>
           {renderPostProcessDetailSection(
@@ -532,4 +507,4 @@ const RigidBoxSubSection = ({
   return renderComponentSpecSection();
 };
 
-export default RigidBoxSubSection;
+export default SleeveSubSection;

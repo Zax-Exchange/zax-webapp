@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import { gql, useMutation } from "@apollo/client";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { ProjectData } from "./CreateProject";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useUploadProjectDesignMutation } from "../../gql/create/project/project.generated";
 import { CreateProjectInput } from "../../../generated/graphql";

@@ -30,31 +30,38 @@ import {
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
+  PRODUCT_NAME_FOLDING_CARTON,
+  PRODUCT_NAME_SLEEVE,
+  PRODUCT_NAME_MOLDED_FIBER,
+  PRODUCT_NAME_PAPER_TUBE,
 } from "../../../constants/products";
 import { isValidAlphanumeric } from "../../../Utils/inputValidators";
+import CorrugateBoxSubSection from "./productSpecificSubSections/CorrugateBoxSubSection";
+import FoldingCartonSubSection from "./productSpecificSubSections/FoldingCartonSubSection";
 import RigidBoxSubSection from "./productSpecificSubSections/RigidBoxSubSection";
+import SleeveSubSection from "./productSpecificSubSections/SleeveSubSection";
 
 // const componentSpecInitialState: CreateProjectComponentSpecInput = {
-//   productName: "",
-//   dimension: "",
-//   thickness: undefined,
-//   flute: undefined,
-//   color: undefined,
-//   manufacturingProcess: undefined,
-//   material: undefined,
-//   materialSource: undefined,
-//   postProcess: undefined,
-//   finish: undefined,
-//   outsideMaterial: undefined,
-//   outsideMaterialSource: undefined,
-//   outsidePostProcess: undefined,
-//   outsideFinish: undefined,
-//   outsideColor: undefined,
-//   insideMaterial: undefined,
-//   insideMaterialSource: undefined,
-//   insidePostProcess: undefined,
-//   insideFinish: undefined,
-//   insideColor: undefined,
+// productName: "",
+// dimension: "",
+// thickness: undefined,
+// flute: undefined,
+// color: undefined,
+// manufacturingProcess: undefined,
+// material: undefined,
+// materialSource: undefined,
+// postProcess: undefined,
+// finish: undefined,
+// outsideMaterial: undefined,
+// outsideMaterialSource: undefined,
+// outsidePostProcess: undefined,
+// outsideFinish: undefined,
+// outsideColor: undefined,
+// insideMaterial: undefined,
+// insideMaterialSource: undefined,
+// insidePostProcess: undefined,
+// insideFinish: undefined,
+// insideColor: undefined,
 // };
 
 const CreateProjectComponentModal = ({
@@ -73,27 +80,35 @@ const CreateProjectComponentModal = ({
       {} as CreateProjectComponentSpecInput
     );
   const [componentData, setComponentData] =
-    useState<CreateProjectComponentInput>({
-      name: "",
-      componentSpec,
-    });
-
-  useEffect(() => {
-    // set component data when component spec changes
-    setComponentData({
-      ...componentData,
-      componentSpec,
-    });
-  }, [componentSpec]);
+    useState<CreateProjectComponentInput>({} as CreateProjectComponentInput);
 
   useEffect(() => {
     if (componentSpec.productName) {
+      setComponentSpec({
+        productName: componentSpec.productName,
+      } as CreateProjectComponentSpecInput);
+
       switch (componentSpec.productName) {
         case PRODUCT_NAME_RIGID_BOX:
           setView(PRODUCT_NAME_RIGID_BOX);
-          return;
+          break;
+        case PRODUCT_NAME_FOLDING_CARTON:
+          setView(PRODUCT_NAME_FOLDING_CARTON);
+          break;
+        case PRODUCT_NAME_SLEEVE:
+          setView(PRODUCT_NAME_SLEEVE);
+          break;
+        case PRODUCT_NAME_CORRUGATE_BOX:
+          setView(PRODUCT_NAME_CORRUGATE_BOX);
+          break;
+        case PRODUCT_NAME_MOLDED_FIBER:
+          setView(PRODUCT_NAME_MOLDED_FIBER);
+          break;
+        case PRODUCT_NAME_PAPER_TUBE:
+          setView(PRODUCT_NAME_PAPER_TUBE);
+          break;
         default:
-          return;
+          break;
       }
     }
   }, [componentSpec.productName]);
@@ -135,11 +150,14 @@ const CreateProjectComponentModal = ({
     }
   };
 
+  // TODO: finish implementation
   // check if component modal add button should be disabled
   const shouldDisableComponentModalAddButton = () => {
     // check each required spec is filled
 
     const isInvalidComponentSpec = () => {
+      if (Object.keys(componentSpec).length === 0) return true;
+
       for (let key in componentSpec) {
         const val = componentSpec[key as keyof CreateProjectComponentSpecInput];
 
@@ -149,11 +167,11 @@ const CreateProjectComponentModal = ({
       }
       return false;
     };
+
     if (isInvalidComponentSpec()) return true;
 
     for (let key in componentData) {
       if (key === "componentSpec") {
-        // skip componentSpec input check as it is done above
         continue;
       }
       if (
@@ -230,6 +248,7 @@ const CreateProjectComponentModal = ({
           <TextField
             {...params}
             label="Product Type"
+            name=""
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password",
@@ -256,7 +275,7 @@ const CreateProjectComponentModal = ({
             </Typography>
           </Box>
           <Box display="flex" flexDirection="row" flexWrap="wrap">
-            <Stack>
+            <Stack spacing={1.5}>
               <ListItem>
                 <Typography variant="subtitle2">Component Detail</Typography>
               </ListItem>
@@ -274,6 +293,27 @@ const CreateProjectComponentModal = ({
 
             {view === PRODUCT_NAME_RIGID_BOX && (
               <RigidBoxSubSection
+                setComponentSpec={setComponentSpec}
+                componentSpec={componentSpec}
+              />
+            )}
+
+            {view === PRODUCT_NAME_FOLDING_CARTON && (
+              <FoldingCartonSubSection
+                setComponentSpec={setComponentSpec}
+                componentSpec={componentSpec}
+              />
+            )}
+
+            {view === PRODUCT_NAME_SLEEVE && (
+              <SleeveSubSection
+                setComponentSpec={setComponentSpec}
+                componentSpec={componentSpec}
+              />
+            )}
+
+            {view === PRODUCT_NAME_CORRUGATE_BOX && (
+              <CorrugateBoxSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />
