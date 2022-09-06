@@ -65,7 +65,7 @@ const CreateProject = () => {
     comments: "",
     components: [],
   });
-
+  console.log(projectData.components);
   const [componentModalOpen, setComponentModalOpen] = useState(false);
 
   const removeComponent = (i: number) => {
@@ -296,7 +296,7 @@ const CreateProject = () => {
       );
     }
 
-    if (postProcess) {
+    if (postProcess && postProcess.length) {
       res.push(
         <TableRow>
           <TableCell>
@@ -304,7 +304,15 @@ const CreateProject = () => {
           </TableCell>
 
           <TableCell>
-            <Typography variant="caption">{postProcess}</Typography>
+            <Stack>
+              {postProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
           </TableCell>
         </TableRow>
       );
@@ -352,7 +360,7 @@ const CreateProject = () => {
       );
     }
 
-    if (outsidePostProcess) {
+    if (outsidePostProcess && outsidePostProcess.length) {
       res.push(
         <TableRow>
           <TableCell>
@@ -360,7 +368,15 @@ const CreateProject = () => {
           </TableCell>
 
           <TableCell>
-            <Typography variant="caption">{outsidePostProcess}</Typography>
+            <Stack>
+              {outsidePostProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
           </TableCell>
         </TableRow>
       );
@@ -422,7 +438,7 @@ const CreateProject = () => {
       );
     }
 
-    if (insidePostProcess) {
+    if (insidePostProcess && insidePostProcess.length) {
       res.push(
         <TableRow>
           <TableCell>
@@ -430,7 +446,15 @@ const CreateProject = () => {
           </TableCell>
 
           <TableCell>
-            <Typography variant="caption">{insidePostProcess}</Typography>
+            <Stack>
+              {insidePostProcess.map((process) => {
+                return (
+                  <ListItem sx={{ padding: 0 }}>
+                    <Typography variant="caption">{process}</Typography>
+                  </ListItem>
+                );
+              })}
+            </Stack>
           </TableCell>
         </TableRow>
       );
@@ -463,8 +487,6 @@ const CreateProject = () => {
         </TableRow>
       );
     }
-
-    // }
 
     return (
       <TableContainer>

@@ -38,6 +38,8 @@ import {
 import { isValidAlphanumeric } from "../../../Utils/inputValidators";
 import CorrugateBoxSubSection from "./productSpecificSubSections/CorrugateBoxSubSection";
 import FoldingCartonSubSection from "./productSpecificSubSections/FoldingCartonSubSection";
+import MoldedFiberSubSection from "./productSpecificSubSections/MoldedFiberSubSection";
+import PaperTubeSubSection from "./productSpecificSubSections/PaperTubeSubSection";
 import RigidBoxSubSection from "./productSpecificSubSections/RigidBoxSubSection";
 import SleeveSubSection from "./productSpecificSubSections/SleeveSubSection";
 
@@ -314,6 +316,20 @@ const CreateProjectComponentModal = ({
 
             {view === PRODUCT_NAME_CORRUGATE_BOX && (
               <CorrugateBoxSubSection
+                setComponentSpec={setComponentSpec}
+                componentSpec={componentSpec}
+              />
+            )}
+
+            {view === PRODUCT_NAME_MOLDED_FIBER && (
+              <MoldedFiberSubSection
+                setComponentSpec={setComponentSpec}
+                componentSpec={componentSpec}
+              />
+            )}
+
+            {view === PRODUCT_NAME_PAPER_TUBE && (
+              <PaperTubeSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />

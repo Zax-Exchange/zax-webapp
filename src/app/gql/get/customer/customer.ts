@@ -26,6 +26,26 @@ const GET_CUSTOMER_PROJECT = gql`
           id
           productName
           dimension
+          productName
+          dimension
+          thickness
+          flute
+          color
+          manufacturingProcess
+          material
+          materialSource
+          postProcess
+          finish
+          outsideMaterial
+          outsideMaterialSource
+          outsidePostProcess
+          outsideFinish
+          outsideColor
+          insideMaterial
+          insideMaterialSource
+          insidePostProcess
+          insideFinish
+          insideColor
         }
       }
 
@@ -68,34 +88,55 @@ const GET_CUSTOMER_PROJECTS = gql`
       permission
       createdAt
       updatedAt
-      components {
-        id
-        projectId
-        name
-        componentSpec {
-          id
-          productName
-          dimension
-        }
-      }
+      # components {
+      #   id
+      #   projectId
+      #   name
+      #   componentSpec {
+      #     id
+      #     productName
+      #     dimension
+      #     productName
+      #     dimension
+      #     thickness
+      #     flute
+      #     color
+      #     manufacturingProcess
+      #     material
+      #     materialSource
+      #     postProcess
+      #     finish
+      #     outsideMaterial
+      #     outsideMaterialSource
+      #     outsidePostProcess
+      #     outsideFinish
+      #     outsideColor
+      #     insideMaterial
+      #     insideMaterialSource
+      #     insidePostProcess
+      #     insideFinish
+      #     insideColor
+      #   }
+      # }
 
-      bids {
-        id
-        userId
-        companyId
-        components {
-          id
-          projectBidId
-          projectComponentId
-          quantityPrices {
-            quantity
-            price
-          }
-        }
-        createdAt
-        updatedAt
-      }
-    }
+    #   bids {
+    #     id
+    #     userId
+    #     companyId
+    #     components {
+    #       id
+    #       projectBidId
+    #       projectComponentId
+    #       quantityPrices {
+    #         quantity
+    #         price
+    #       }
+    #     }
+    #     createdAt
+    #     updatedAt
+    #   }
+    # }
+  }
   }
 `;
 

@@ -11,13 +11,13 @@ import React from "react";
 import { useCallback, useState } from "react";
 import { CreateProjectComponentSpecInput } from "../../../../../generated/graphql";
 import {
-  CORRUGATE_BOX_FINISHES,
-  CORRUGATE_BOX_FLUTES,
-  CORRUGATE_BOX_POST_PROCESSES,
-  CORRUGATE_BOX_PRINTING_METHODS,
+  FOLDING_CARTON_FINISHES,
   FOLDING_CARTON_MATERIALS,
   FOLDING_CARTON_MATERIAL_SOURCES,
   FOLDING_CARTON_POST_PROCESSES,
+  PAPER_TUBE_FINISHES,
+  PAPER_TUBE_MATERIALS,
+  PAPER_TUBE_MATERIAL_SOURCES,
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
@@ -26,14 +26,14 @@ import {
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 
-type CorrugatePostProcessDetail = {
+type PaperTubePostProcessDetail = {
   postProcessName: string;
-  printingMethod?: string;
   numberOfColors?: string;
+  color?: string;
   estimatedArea?: string;
   fontSize?: string;
 };
-const CorrugateBoxSubSection = ({
+const PaperTubeSubSection = ({
   setComponentSpec,
   componentSpec,
 }: {
@@ -43,10 +43,10 @@ const CorrugateBoxSubSection = ({
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
-    useState<CorrugatePostProcessDetail>({} as CorrugatePostProcessDetail);
+    useState<PaperTubePostProcessDetail>({} as PaperTubePostProcessDetail);
 
   const [outsidePostProcessDetail, setOutsidePostProcessDetail] =
-    useState<CorrugatePostProcessDetail>({} as CorrugatePostProcessDetail);
+    useState<PaperTubePostProcessDetail>({} as PaperTubePostProcessDetail);
 
   const outsidePostProcessDetailOnChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -76,7 +76,7 @@ const CorrugateBoxSubSection = ({
       ...componentSpec,
       outsidePostProcess: [...prevPostProcess, res],
     });
-    setOutsidePostProcessDetail({} as CorrugatePostProcessDetail);
+    setOutsidePostProcessDetail({} as PaperTubePostProcessDetail);
   };
 
   const addinsidePostProcess = () => {
@@ -89,7 +89,7 @@ const CorrugateBoxSubSection = ({
       ...componentSpec,
       insidePostProcess: [...prevPostProcess, res],
     });
-    setInsidePostProcessDetail({} as CorrugatePostProcessDetail);
+    setInsidePostProcessDetail({} as PaperTubePostProcessDetail);
   };
 
   const removeOutsidePostProcess = (i: number) => {
@@ -114,32 +114,29 @@ const CorrugateBoxSubSection = ({
 
   // combine post process detail into string based on post process name
   const formatPostProcessDetail = (
-    postProcessDetail: CorrugatePostProcessDetail
+    postProcessDetail: PaperTubePostProcessDetail
   ) => {
-    const {
-      postProcessName,
-      numberOfColors,
-      estimatedArea,
-      fontSize,
-      printingMethod,
-    } = postProcessDetail;
+    const { postProcessName, numberOfColors, color, estimatedArea, fontSize } =
+      postProcessDetail;
 
     switch (postProcessName) {
       case POST_PROCESS_PRINTING:
-        return `${printingMethod} printing with ${numberOfColors} colors.`;
+        return `Printing of area size ${estimatedArea} with ${numberOfColors} colors.`;
       case POST_PROCESS_EMBOSS:
         return `Emboss of area size ${estimatedArea} with font size of ${fontSize}.`;
       case POST_PROCESS_DEBOSS:
         return `Deboss of area size ${estimatedArea} with font size of ${fontSize}.`;
+      case POST_PROCESS_FOIL_STAMP:
+        return `Foil Stamp of area size ${estimatedArea} with a color of ${color}`;
       default:
         return "";
     }
   };
 
   const renderPostProcessDropdown = (
-    postProcessDetail: CorrugatePostProcessDetail,
+    postProcessDetail: PaperTubePostProcessDetail,
     setPostProcessDetail: React.Dispatch<
-      React.SetStateAction<CorrugatePostProcessDetail>
+      React.SetStateAction<PaperTubePostProcessDetail>
     >,
     label: string,
     key: string
@@ -148,7 +145,7 @@ const CorrugateBoxSubSection = ({
       <>
         <Autocomplete
           sx={{ width: 250 }}
-          options={CORRUGATE_BOX_POST_PROCESSES}
+          options={FOLDING_CARTON_POST_PROCESSES}
           autoHighlight
           value={postProcessDetail.postProcessName}
           onChange={(e, v) => {
@@ -188,56 +185,32 @@ const CorrugateBoxSubSection = ({
   };
 
   const renderPostProcessDetailSection = (
-    postProcessDetail: CorrugatePostProcessDetail,
+    postProcessDetail: PaperTubePostProcessDetail,
     postProcessOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    addPostProcess: () => void,
-    // setPostProcess provides inner components to use setState directly (used by post process printing)
-    setPostProcess: React.Dispatch<
-      React.SetStateAction<CorrugatePostProcessDetail>
-    >
+    addPostProcess: () => void
   ) => {
     let subSection = null;
     if (postProcessDetail.postProcessName === POST_PROCESS_PRINTING) {
       subSection = (
         <>
           <ListItem>
-            <Autocomplete
-              options={CORRUGATE_BOX_PRINTING_METHODS}
-              sx={{ width: 250 }}
-              autoHighlight
-              onChange={(e, v) => {
-                setPostProcess({
-                  ...postProcessDetail,
-                  printingMethod: v ? v : "",
-                });
-              }}
-              renderInput={(params) => (
-                <TextField
-                  key="corrugate-printing-method-dropdown"
-                  {...params}
-                  label="Printing Method"
-                  inputProps={{
-                    ...params.inputProps,
-                    autoComplete: "new-password",
-                  }}
-                  InputLabelProps={{
-                    sx: {
-                      fontSize: 16,
-                      top: -7,
-                    },
-                  }}
-                />
-              )}
+            <TextField
+              key="paper-tube-number-of-colors"
+              autoComplete="new-password"
+              label="Number Of Colors To Print"
+              onChange={postProcessOnChange}
+              name="numberOfColors"
+              value={postProcessDetail.numberOfColors}
             />
           </ListItem>
           <ListItem>
             <TextField
-              key="corrugate-printing-number-of-colors"
+              key="paper-tube-printing-estimated-area"
               autoComplete="new-password"
-              label="Number of Colors"
+              label="Printing Estimated Area"
               onChange={postProcessOnChange}
-              name="numberOfColors"
-              value={postProcessDetail.numberOfColors}
+              name="estimatedArea"
+              value={postProcessDetail.estimatedArea}
             />
           </ListItem>
         </>
@@ -249,7 +222,7 @@ const CorrugateBoxSubSection = ({
         <>
           <ListItem>
             <TextField
-              key="folding-carton-emboss-font-size"
+              key="paper-tube-emboss-font-size"
               autoComplete="new-password"
               label="Emboss Font Size"
               onChange={postProcessOnChange}
@@ -259,7 +232,7 @@ const CorrugateBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              key="folding-carton-emboss-estimated-area"
+              key="paper-tube-emboss-estimated-area"
               autoComplete="new-password"
               label="Emboss Estimated Area"
               onChange={postProcessOnChange}
@@ -276,7 +249,7 @@ const CorrugateBoxSubSection = ({
         <>
           <ListItem>
             <TextField
-              key="folding-carton-deboss-font-size"
+              key="paper-tube-deboss-font-size"
               autoComplete="new-password"
               label="Deboss Font Size"
               onChange={postProcessOnChange}
@@ -286,9 +259,36 @@ const CorrugateBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              key="folding-carton-deboss-estimated-area"
+              key="paper-tube-deboss-estimated-area"
               autoComplete="new-password"
               label="Deboss Estimated Area"
+              onChange={postProcessOnChange}
+              name="estimatedArea"
+              value={postProcessDetail.estimatedArea}
+            />
+          </ListItem>
+        </>
+      );
+    }
+
+    if (postProcessDetail.postProcessName === POST_PROCESS_FOIL_STAMP) {
+      subSection = (
+        <>
+          <ListItem>
+            <TextField
+              key="paper-tube-foil-stamp-color"
+              autoComplete="new-password"
+              label="Foil Stamp Color"
+              onChange={postProcessOnChange}
+              name="color"
+              value={postProcessDetail.color}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              key="paper-tube-foil-stamp-estimated-area"
+              autoComplete="new-password"
+              label="Foil Stamp Estimated Area"
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -316,6 +316,7 @@ const CorrugateBoxSubSection = ({
 
     switch (e.target.name) {
       case "dimension":
+      case "thickness":
         isAllowed = isValidAlphanumeric(val);
         break;
       default:
@@ -382,8 +383,7 @@ const CorrugateBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              sx={{ width: 250 }}
-              key="folding-carton-dimension"
+              key="paper-tube-dimension"
               autoComplete="new-password"
               label="Dimension"
               onChange={componentSpecOnChange}
@@ -392,29 +392,13 @@ const CorrugateBoxSubSection = ({
             />
           </ListItem>
           <ListItem>
-            {renderAutocompleteDropdown(
-              CORRUGATE_BOX_FLUTES,
-              "flute",
-              "Flute Type",
-              "corrugate-flute"
-            )}
-          </ListItem>
-          <ListItem>
             <TextField
-              sx={{ width: 250 }}
-              disabled
-              key="corrugate-material"
-              label="Material"
-              value="Default Corrugate"
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              sx={{ width: 250 }}
-              disabled
-              key="corrugate-material-source"
-              label="Materia Sourcel"
-              value="OCC / Recycled Materials"
+              key="paper-tube-thickness"
+              autoComplete="new-password"
+              label="Thickness"
+              onChange={componentSpecOnChange}
+              name="thickness"
+              value={componentSpec.thickness}
             />
           </ListItem>
         </Stack>
@@ -424,10 +408,26 @@ const CorrugateBoxSubSection = ({
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
-              CORRUGATE_BOX_FINISHES,
+              PAPER_TUBE_MATERIALS,
+              "outsideMaterial",
+              "Outside Material",
+              "paper-tube-outside-material"
+            )}
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              PAPER_TUBE_MATERIAL_SOURCES,
+              "outsideMaterialSource",
+              "Outside Material Source",
+              "paper-tube-outside-material-source"
+            )}
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              PAPER_TUBE_FINISHES,
               "outsideFinish",
               "Outside Finish",
-              "corrugate-outside-finish"
+              "paper-tube-outside-finish"
             )}
           </ListItem>
           <ListItem>
@@ -435,14 +435,13 @@ const CorrugateBoxSubSection = ({
               outsidePostProcessDetail,
               setOutsidePostProcessDetail,
               "Outside Post Process",
-              "corrugate-outisde-post-process"
+              "paper-tube-outisde-post-process"
             )}
           </ListItem>
           {renderPostProcessDetailSection(
             outsidePostProcessDetail,
             outsidePostProcessDetailOnChange,
-            addOutsidePostProcess,
-            setOutsidePostProcessDetail
+            addOutsidePostProcess
           )}
         </Stack>
         <Stack>
@@ -450,27 +449,10 @@ const CorrugateBoxSubSection = ({
             <Typography variant="subtitle2">Inside Specs</Typography>
           </ListItem>
           <ListItem>
-            {renderAutocompleteDropdown(
-              CORRUGATE_BOX_FINISHES,
-              "insideFinish",
-              "Inside Finish",
-              "folding-carton-inside-finish"
-            )}
+            <Typography variant="caption">
+              Inside specs for Paper Tube will be default.
+            </Typography>
           </ListItem>
-          <ListItem>
-            {renderPostProcessDropdown(
-              insidePostProcessDetail,
-              setInsidePostProcessDetail,
-              "Inside Post Process",
-              "folding-carton-inside-post-process"
-            )}
-          </ListItem>
-          {renderPostProcessDetailSection(
-            insidePostProcessDetail,
-            insidePostProcessDetailOnChange,
-            addinsidePostProcess,
-            setInsidePostProcessDetail
-          )}
         </Stack>
 
         {!!componentSpec.outsidePostProcess?.length && (
@@ -492,24 +474,6 @@ const CorrugateBoxSubSection = ({
             })}
           </Stack>
         )}
-
-        {!!componentSpec.insidePostProcess?.length && (
-          <Stack>
-            <ListItem>
-              <Typography variant="subtitle2">Inside Post Processes</Typography>
-            </ListItem>
-            {componentSpec.insidePostProcess.map((postProcess, i) => {
-              return (
-                <ListItem>
-                  <Typography variant="caption">{postProcess}</Typography>
-                  <IconButton onClick={() => removeInsidePostProcess(i)}>
-                    <CancelIcon />
-                  </IconButton>
-                </ListItem>
-              );
-            })}
-          </Stack>
-        )}
       </>
     );
   };
@@ -517,4 +481,4 @@ const CorrugateBoxSubSection = ({
   return renderComponentSpecSection();
 };
 
-export default CorrugateBoxSubSection;
+export default PaperTubeSubSection;

@@ -45,6 +45,26 @@ const GET_VENDOR_PROJECT = gql`
           id
           productName
           dimension
+          productName
+          dimension
+          thickness
+          flute
+          color
+          manufacturingProcess
+          material
+          materialSource
+          postProcess
+          finish
+          outsideMaterial
+          outsideMaterialSource
+          outsidePostProcess
+          outsideFinish
+          outsideColor
+          insideMaterial
+          insideMaterialSource
+          insidePostProcess
+          insideFinish
+          insideColor
         }
       }
       bidInfo {
@@ -86,16 +106,36 @@ const GET_VENDOR_PROJECTS = gql`
         createdAt
         updatedAt
       }
-      components {
-        id
-        projectId
-        name
-        componentSpec {
-          id
-          productName
-          dimension
-        }
-      }
+      # components {
+      #   id
+      #   projectId
+      #   name
+      #   componentSpec {
+      #     id
+      #     productName
+      #     dimension
+      #     productName
+      #     dimension
+      #     thickness
+      #     flute
+      #     color
+      #     manufacturingProcess
+      #     material
+      #     materialSource
+      #     postProcess
+      #     finish
+      #     outsideMaterial
+      #     outsideMaterialSource
+      #     outsidePostProcess
+      #     outsideFinish
+      #     outsideColor
+      #     insideMaterial
+      #     insideMaterialSource
+      #     insidePostProcess
+      #     insideFinish
+      #     insideColor
+      #   }
+      # }
       id
       userId
       companyId
@@ -104,10 +144,10 @@ const GET_VENDOR_PROJECTS = gql`
       deliveryDate
       deliveryAddress
       budget
-      design {
-        fileName
-        url
-      }
+      # design {
+      #   fileName
+      #   url
+      # }
       status
       permission
       createdAt

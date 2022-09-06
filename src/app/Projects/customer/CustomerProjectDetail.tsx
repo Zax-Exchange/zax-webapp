@@ -80,9 +80,10 @@ const CustomerProjectDetail = () => {
       </Container>
     );
   }
-  const projectData = data!.getCustomerProject;
-  const bids = projectData?.bids;
 
+  const projectData = data?.getCustomerProject;
+  const bids = projectData?.bids;
+  console.log(projectData);
   if (projectData) {
     return (
       <Container>
