@@ -562,7 +562,7 @@ const CustomerProjectDetail = () => {
               <Stack sx={{ marginTop: 4 }}>
                 {projectData.components.map((comp, i) => {
                   return (
-                    <ListItem sx={{ padding: 0, mb: 2 }}>
+                    <ListItem sx={{ padding: 0, mb: 2 }} key={i}>
                       <Accordion sx={{ flexGrow: 2 }}>
                         <AccordionSummary
                           key={i}

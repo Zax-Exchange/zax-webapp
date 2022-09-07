@@ -26,7 +26,7 @@ const GET_VENDOR_PROJECT = gql`
     getVendorProject(data: $data) {
       id
       userId
-      customerName
+      companyName
       companyId
       name
       deliveryDate
@@ -139,7 +139,7 @@ const GET_VENDOR_PROJECTS = gql`
       id
       userId
       companyId
-      customerName
+      companyName
       name
       deliveryDate
       deliveryAddress

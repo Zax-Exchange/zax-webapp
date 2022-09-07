@@ -17,6 +17,7 @@ const GET_PROJECT_DETAIL = gql`
     getProjectDetail(data: $data) {
       id
       userId
+      companyName
       companyId
       name
       deliveryDate
@@ -35,6 +36,26 @@ const GET_PROJECT_DETAIL = gql`
           id
           productName
           dimension
+          productName
+          dimension
+          thickness
+          flute
+          color
+          manufacturingProcess
+          material
+          materialSource
+          postProcess
+          finish
+          outsideMaterial
+          outsideMaterialSource
+          outsidePostProcess
+          outsideFinish
+          outsideColor
+          insideMaterial
+          insideMaterialSource
+          insidePostProcess
+          insideFinish
+          insideColor
         }
       }
       createdAt

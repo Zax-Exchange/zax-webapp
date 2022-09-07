@@ -212,9 +212,10 @@ export type CustomerOverview = {
 
 export type CustomerProject = {
   __typename?: 'CustomerProject';
-  bids?: Maybe<Array<Maybe<ProjectBid>>>;
+  bids?: Maybe<Array<ProjectBid>>;
   budget: Scalars['Int'];
   companyId: Scalars['String'];
+  companyName: Scalars['String'];
   components: Array<ProjectComponent>;
   createdAt: Scalars['String'];
   deliveryAddress: Scalars['String'];
@@ -1019,9 +1020,9 @@ export type VendorProject = {
   bidInfo: PermissionedProjectBid;
   budget: Scalars['Int'];
   companyId: Scalars['String'];
+  companyName: Scalars['String'];
   components: Array<ProjectComponent>;
   createdAt: Scalars['String'];
-  customerName: Scalars['String'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   design?: Maybe<ProjectDesign>;

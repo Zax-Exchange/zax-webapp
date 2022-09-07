@@ -152,7 +152,7 @@ const VendorProjectOverview = ({
               <Tooltip title="Customer" arrow placement="top">
                 <BusinessIcon />
               </Tooltip>
-              <Typography variant="caption">{project.customerName}</Typography>
+              <Typography variant="caption">{project.companyName}</Typography>
             </ProjectOverviewListItem>
             <ProjectOverviewListItem>
               <Tooltip title="Delivery date" arrow placement="top">

@@ -10,6 +10,9 @@ import React from "react";
 import { ProjectOverview } from "../../../generated/graphql";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 
+export type SearchProjectDetailLocationState = {
+  customerName: string;
+};
 const SearchProjectOverview = ({
   projectData,
 }: {

@@ -72,7 +72,7 @@ const VendorProjectDetail = () => {
       status,
       components,
       companyId,
-      customerName,
+      companyName: customerName,
       bidInfo,
     } = getVendorProjectData.getVendorProject;
 
