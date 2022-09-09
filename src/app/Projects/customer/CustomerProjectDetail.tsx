@@ -17,6 +17,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Box,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -38,15 +41,38 @@ import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.gene
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`component-tabpanel-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
 const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
   flexDirection: "column",
   alignItems: "flex-start",
 }));
+
 const CustomerProjectDetail = () => {
   const { projectId } = useParams();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const [currentTab, setCurrentTab] = useState(0);
   const { data, loading, error, refetch } = useGetCustomerProjectQuery({
     variables: {
       data: {
@@ -66,6 +92,13 @@ const CustomerProjectDetail = () => {
       setSnackbarOpen(true);
     }
   }, [error]);
+
+  const componentTabOnChange = (
+    event: React.SyntheticEvent,
+    newTab: number
+  ) => {
+    setCurrentTab(newTab);
+  };
   const getComponentName = (
     componentId: string,
     components: ProjectComponent[]
@@ -446,11 +479,11 @@ const CustomerProjectDetail = () => {
         </Container>
         <Grid container spacing={2}>
           <Grid item xs={4}>
-            <Container>
+            <Box>
               <Typography variant="h6" textAlign="left">
                 Vendor Bids
               </Typography>
-            </Container>
+            </Box>
             <List sx={{ maxHeight: 500, overflow: "scroll" }}>
               {bids &&
                 bids.map((bid) => {
@@ -502,11 +535,11 @@ const CustomerProjectDetail = () => {
             </List>
           </Grid>
           <Grid item xs={8}>
-            <Container>
+            <Box>
               <Typography variant="h6" textAlign="left">
                 Project Detail
               </Typography>
-            </Container>
+            </Box>
             <Paper sx={{ padding: 3 }} elevation={1}>
               <List>
                 <ProjectDetailListItem>
@@ -558,33 +591,27 @@ const CustomerProjectDetail = () => {
               </List>
             </Paper>
 
-            {!!projectData.components.length && (
-              <Stack sx={{ marginTop: 4 }}>
-                {projectData.components.map((comp, i) => {
-                  return (
-                    <ListItem sx={{ padding: 0, mb: 2 }} key={i}>
-                      <Accordion sx={{ flexGrow: 2 }}>
-                        <AccordionSummary
-                          key={i}
-                          expandIcon={<ExpandMoreIcon />}
-                          id={`component-summary-${i}`}
-                        >
-                          <Typography variant="subtitle2">
-                            {comp.name}
-                          </Typography>
-                        </AccordionSummary>
-
-                        <AccordionDetails>
-                          {renderComponentSpecAccordionDetail(
-                            comp.componentSpec
-                          )}
-                        </AccordionDetails>
-                      </Accordion>
-                    </ListItem>
-                  );
-                })}
-              </Stack>
-            )}
+            <Box mt={5}>
+              <Typography variant="h6" textAlign="left">
+                Components Detail
+              </Typography>
+            </Box>
+            <Paper sx={{ mt: 1 }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs value={currentTab} onChange={componentTabOnChange}>
+                  {projectData.components.map((comp, i) => {
+                    return <Tab label={comp.name} key={i} />;
+                  })}
+                </Tabs>
+              </Box>
+              {projectData.components.map((comp, i) => {
+                return (
+                  <TabPanel value={currentTab} index={i}>
+                    {renderComponentSpecAccordionDetail(comp.componentSpec)}
+                  </TabPanel>
+                );
+              })}
+            </Paper>
           </Grid>
         </Grid>
       </Container>
@@ -594,3 +621,29 @@ const CustomerProjectDetail = () => {
 };
 
 export default CustomerProjectDetail;
+
+// <Stack sx={{ marginTop: 4 }}>
+//   {projectData.components.map((comp, i) => {
+//     return (
+//       <ListItem sx={{ padding: 0, mb: 2 }} key={i}>
+//         <Accordion sx={{ flexGrow: 2 }}>
+//           <AccordionSummary
+//             key={i}
+//             expandIcon={<ExpandMoreIcon />}
+//             id={`component-summary-${i}`}
+//           >
+//             <Typography variant="subtitle2">
+//               {comp.name}
+//             </Typography>
+//           </AccordionSummary>
+
+//           <AccordionDetails>
+//             {renderComponentSpecAccordionDetail(
+//               comp.componentSpec
+//             )}
+//           </AccordionDetails>
+//         </Accordion>
+//       </ListItem>
+//     );
+//   })}
+// </Stack>

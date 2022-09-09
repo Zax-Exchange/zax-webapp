@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useLazyQuery, gql } from "@apollo/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Container,
   Input,
@@ -73,6 +73,7 @@ const SearchBar = () => {
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isVendor = user!.isVendor;
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [
     searchProjects,
@@ -101,23 +102,7 @@ const SearchBar = () => {
   const handleSearchOnClick = async () => {
     try {
       if (isVendor) {
-        const { data } = await searchProjects({
-          variables: {
-            data: {
-              userInput: input,
-              // deliveryCountries: [String]
-              // deliveryCities: [String]
-              // budget: Int
-              // leadTime: Int
-            },
-          },
-          fetchPolicy: "no-cache",
-        });
-        navigate(VENDOR_ROUTES.SEARCH_RESULTS, {
-          state: {
-            searchResults: data!.searchCustomerProjects,
-          },
-        });
+        navigate(`${VENDOR_ROUTES.SEARCH_RESULTS}/?userInput=${input}`);
       } else {
         const { data } = await searchVendors({
           variables: {
@@ -146,7 +131,7 @@ const SearchBar = () => {
   };
 
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.keyCode === 13) {
+    if (e.key === "Enter") {
       handleSearchOnClick();
     }
   };

@@ -10,6 +10,17 @@ import {
   Grid,
   Link,
   AlertColor,
+  TextField,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  DialogActions,
+  IconButton,
+  Stack,
+  Box,
 } from "@mui/material";
 import { AuthContext } from "../../../context/AuthContext";
 
@@ -24,145 +35,141 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
 import { useGetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
+import { QuantityPriceData } from "../../Search/vendor/SearchProjectDetail";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const ProjectBidModal = ({
   setProjectBidModalOpen,
-  projectId,
-  projectData,
+  component,
+  setComponentsQpData,
 }: {
   setProjectBidModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  projectId?: string;
-  projectData: Project;
+  component: ProjectComponent | null;
+  setComponentsQpData: React.Dispatch<
+    React.SetStateAction<Record<string, QuantityPriceData[]>>
+  >;
 }) => {
-  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const { user }: { user: LoggedInUser | null } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const [quantity, setQuantity] = useState("");
+  const [price, setPrice] = useState("");
 
-  const [
-    createProjectBid,
-    { loading: createProjectBidLoading, error: createProjectBidError },
-  ] = useCreateProjectBidMutation();
+  // Note that this is for ONE component (singular) only
+  const [componentQpData, setComponentQpData] = useState<QuantityPriceData[]>(
+    []
+  );
 
-  const { refetch: getVendorProjectsRefetch } = useGetVendorProjectsQuery({
-    variables: {
-      data: {
-        userId: user!.id,
-      },
-    },
-    skip: true,
-  });
+  if (!component) return null;
 
-  const [comments, setComments] = useState("");
-  const [componentsQpData, setComponentQpData] = useState<
-    Record<string, any[]>
-  >({});
+  const { id, name } = component;
 
-  const submitBid = async () => {
-    const components = [];
-    for (let id in componentsQpData) {
-      components.push({
-        projectComponentId: id,
-        quantityPrices: componentsQpData[id],
-      });
-    }
-
-    try {
-      await createProjectBid({
-        variables: {
-          data: {
-            userId: user!.id,
-            projectId: projectId!,
-            comments,
-            components,
-          },
-        },
-      });
-      // getVendorProjectsRefetch();
-      setSnackbar({
-        severity: "success",
-        message: "Bid created.",
-      });
-      navigate(VENDOR_ROUTES.PROJECTS);
-    } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: "Something went wrong. Please try again later.",
-      });
-    } finally {
-      setProjectBidModalOpen(false);
-      setSnackbarOpen(true);
+  const handleQpInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "quantity") {
+      setQuantity(e.target.value);
+    } else {
+      setPrice(e.target.value);
     }
   };
 
-  if (!projectId) {
-    navigate(-1);
-    return null;
-  }
+  const addQp = () => {
+    const list = [
+      ...componentQpData,
+      {
+        quantity: parseInt(quantity, 10),
+        price: parseInt(price, 10),
+      },
+    ];
+    list.sort((a, b) => a.quantity - b.quantity);
+    setComponentQpData(list);
+    setQuantity("");
+    setPrice("");
+  };
 
-  const {
-    name: projectName,
-    deliveryDate,
-    deliveryAddress,
-    budget,
-    design,
-    status,
-    components,
-  } = projectData;
+  const deleteQp = (i: number) => {
+    const list = [...componentQpData];
+    list.splice(i, 1);
+    list.sort((a, b) => a.quantity - b.quantity);
+    setComponentQpData(list);
+  };
+
+  const addBidsOnClick = () => {
+    setComponentsQpData((prev) => ({
+      ...prev,
+      [component.id]: componentQpData,
+    }));
+    setProjectBidModalOpen(false);
+  };
 
   return (
     <Container className="project-bid-container">
-      {createProjectBidLoading && <FullScreenLoading />}
-      <Grid container>
-        <Grid item xs={6}>
-          <Typography>Project Detail</Typography>
-          <List>
-            <ListItem>
-              <Typography>name: {projectName}</Typography>
-            </ListItem>
-            <ListItem>
-              <Typography>deliveryDate: {deliveryDate}</Typography>
-            </ListItem>
-            <ListItem>
-              <Typography>deliveryAddress: {deliveryAddress}</Typography>
-            </ListItem>
-            <ListItem>
-              <Typography>budget: {budget}</Typography>
-            </ListItem>
-            {design && (
-              <ListItem>
-                <Typography>
-                  Design:{" "}
-                  <Link href={design.url} target="_blank" rel="noopener">
-                    {design.fileName}
-                  </Link>
-                </Typography>
-              </ListItem>
-            )}
-            <ListItem>
-              <Typography>status: {status}</Typography>
-            </ListItem>
-          </List>
-        </Grid>
+      <Box>
+        <Typography variant="subtitle1">Add Bids For {name}</Typography>
+      </Box>
 
-        <Grid item xs={6}>
-          <Typography>Components Detail</Typography>
+      <Stack direction="row">
+        <ListItem>
+          <TextField
+            label="Quantity"
+            name="quantity"
+            autoComplete="new-password"
+            onChange={handleQpInput}
+            value={quantity}
+          />
+        </ListItem>
+        <ListItem>
+          <TextField
+            label="Price"
+            name="price"
+            autoComplete="new-password"
+            onChange={handleQpInput}
+            value={price}
+          />
+        </ListItem>
+        <ListItem sx={{ flexShrink: 2 }}>
+          <IconButton onClick={addQp} disabled={!quantity || !price}>
+            <AddCircleIcon />
+          </IconButton>
+        </ListItem>
+      </Stack>
 
-          {components.map((comp) => {
-            return (
-              <ProjectBidComponent
-                component={comp as ProjectComponent}
-                setComponentQpData={setComponentQpData}
-                componentsQpData={componentsQpData}
-              />
-            );
-          })}
-        </Grid>
+      {!!componentQpData.length && (
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {componentQpData.map((qp, i) => {
+                return (
+                  <TableRow>
+                    <TableCell>{qp.quantity}</TableCell>
+                    <TableCell>{qp.price}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => deleteQp(i)}>
+                        <CancelIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
-        <Container>
-          <Button onClick={submitBid}>Submit</Button>
-          <Button onClick={() => setProjectBidModalOpen(false)}>Cancel</Button>
-        </Container>
-      </Grid>
+      <DialogActions>
+        <Button onClick={() => setProjectBidModalOpen(false)}>Cancel</Button>
+        <Button
+          onClick={addBidsOnClick}
+          variant="outlined"
+          disabled={!componentQpData.length}
+        >
+          Add Bids
+        </Button>
+      </DialogActions>
     </Container>
   );
 };

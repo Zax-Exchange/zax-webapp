@@ -24,6 +24,7 @@
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "qs": "^6.11.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-email-validator": "^1.0.2",

@@ -22,6 +22,7 @@ import FullScreenLoading from "../../Utils/Loading";
 import { validate } from "email-validator";
 import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.generated";
 import { UpdateVendorInfoInput } from "../../../generated/graphql";
+import { PRODUCT_NAMES } from "../../constants/products";
 
 const EditVendorProfile = () => {
   const { user } = useContext(AuthContext);
@@ -252,7 +253,7 @@ const EditVendorProfile = () => {
         <Autocomplete
           id="products-select"
           sx={{ width: 400 }}
-          options={["Rigid Box", "Folding Carton", "Molded Fiber", "Corrugate"]}
+          options={PRODUCT_NAMES}
           autoHighlight
           inputValue={product}
           onInputChange={productOnChange}

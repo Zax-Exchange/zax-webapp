@@ -69,24 +69,18 @@ const ProjectBidComponent = ({
         </ListItem>
 
         <ListItem>
-          <Typography className="quantity-container">
-            Quantity
-            <TextField
-              type="number"
-              name="quantity"
-              onChange={handleQpInput}
-              value={quantity}
-            />
-          </Typography>
-          <Typography className="price-container">
-            Price
-            <TextField
-              type="number"
-              name="price"
-              onChange={handleQpInput}
-              value={price}
-            />
-          </Typography>
+          <TextField
+            label="Quantity"
+            name="quantity"
+            onChange={handleQpInput}
+            value={quantity}
+          />
+          <TextField
+            label="Price"
+            name="price"
+            onChange={handleQpInput}
+            value={price}
+          />
         </ListItem>
         <ListItem>
           <Button onClick={addQp}>Add</Button>

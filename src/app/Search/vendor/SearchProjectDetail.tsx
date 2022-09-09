@@ -11,7 +11,6 @@ import {
   Paper,
   Link,
   Stack,
-  ListItem,
   Box,
   Accordion,
   AccordionSummary,
@@ -21,21 +20,142 @@ import {
   TableContainer,
   Table,
   TableBody,
+  Grid,
+  styled,
+  Tabs,
+  Tab,
+  TableHead,
+  TextField,
+  ClickAwayListener,
 } from "@mui/material";
 import ProjectBidModal from "../../Projects/vendor/ProjectBidModal";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { Project, ProjectComponentSpec } from "../../../generated/graphql";
+import {
+  Project,
+  ProjectComponent,
+  ProjectComponentSpec,
+} from "../../../generated/graphql";
 import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
 import { SearchProjectDetailLocationState } from "./SearchProjectOverview";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MuiListItem from "@mui/material/ListItem";
+import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
+import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
+import { isValidInt } from "../../Utils/inputValidators";
+import { AuthContext } from "../../../context/AuthContext";
+
+export type QuantityPriceData = {
+  quantity: number;
+  price: number;
+};
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`component-tabpanel-${index}`}
+      style={{ position: "relative" }}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+const EditableTableCell = ({
+  qpType,
+  data,
+  index,
+  setComponentsQpData,
+  componentId,
+}: {
+  qpType: "quantity" | "price";
+  data: number;
+  index: number;
+  componentId: string;
+  setComponentsQpData: React.Dispatch<
+    React.SetStateAction<Record<string, QuantityPriceData[]>>
+  >;
+}) => {
+  const [value, setValue] = useState(data);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const qpDataOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val: number | string = e.target.value;
+
+    if (!isValidInt(val)) return;
+
+    val = parseInt(val, 10) || 0;
+
+    setComponentsQpData((prev) => {
+      const componentQpList = [...prev[componentId]];
+      const targetQp = componentQpList[index];
+      targetQp[qpType] = val as number;
+      componentQpList.splice(index, 1, targetQp);
+      return {
+        ...prev,
+        [componentId]: componentQpList,
+      };
+    });
+    setValue(val);
+  };
+
+  if (isEditing) {
+    return (
+      <ClickAwayListener onClickAway={() => setIsEditing(false)}>
+        <TableCell sx={{ width: "50%" }}>
+          <TextField
+            focused
+            onChange={qpDataOnChange}
+            value={value ? value : ""}
+            size="small"
+          />
+        </TableCell>
+      </ClickAwayListener>
+    );
+  } else {
+    return (
+      <TableCell
+        sx={{
+          width: "50%",
+          cursor: "pointer",
+          ":hover": {
+            backgroundColor: "#eee",
+          },
+          borderRadius: 1,
+        }}
+        onClick={() => setIsEditing(true)}
+      >
+        {value ? value : ""}
+      </TableCell>
+    );
+  }
+};
+const ProjectListItem = styled(MuiListItem)(() => ({
+  display: "flex",
+  justifyContent: "space-between",
+  "& .MuiTypography-root:last-child": {
+    flexBasis: "65%",
+    whiteSpace: "pre-wrap",
+  },
+}));
 
 const SearchProjectDetail = () => {
+  const { user } = useContext(AuthContext);
   const { projectId } = useParams();
-
+  const [currentTab, setCurrentTab] = useState(0);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const {
     data: getProjectDetailData,
@@ -51,6 +171,27 @@ const SearchProjectDetail = () => {
 
   const navigate = useNavigate();
   const [projectBidModalOpen, setProjectBidModalOpen] = useState(false);
+  const [biddingComponent, setBiddingComponent] =
+    useState<ProjectComponent | null>(null);
+  const [componentsQpData, setComponentsQpData] = useState<
+    Record<string, QuantityPriceData[]>
+  >({});
+
+  const [
+    createProjectBid,
+    { loading: createProjectBidLoading, error: createProjectBidError },
+  ] = useCreateProjectBidMutation();
+
+  // initialize componentsQpData with componentIds
+  useEffect(() => {
+    if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
+      const qpData: Record<string, QuantityPriceData[]> = {};
+      getProjectDetailData.getProjectDetail.components.forEach((comp) => {
+        qpData[comp.id] = [];
+      });
+      setComponentsQpData(qpData);
+    }
+  }, [getProjectDetailData]);
 
   useEffect(() => {
     if (getProjectDetailError) {
@@ -62,11 +203,23 @@ const SearchProjectDetail = () => {
     }
   }, [getProjectDetailError]);
 
+  const componentTabOnChange = (
+    event: React.SyntheticEvent,
+    newTab: number
+  ) => {
+    setCurrentTab(newTab);
+  };
+
   const openModal = () => {
     setProjectBidModalOpen(true);
   };
 
   const afterOpenModal = () => {};
+
+  const addBidsOnClick = (comp: ProjectComponent) => {
+    setBiddingComponent(comp);
+    setProjectBidModalOpen(true);
+  };
 
   const closeModal = () => {
     setProjectBidModalOpen(false);
@@ -77,6 +230,58 @@ const SearchProjectDetail = () => {
   };
   const backHandler = () => {
     navigate(-1);
+  };
+
+  const getComponentName = (id: string) => {
+    if (!getProjectDetailData) return "";
+
+    return getProjectDetailData.getProjectDetail.components.find(
+      (comp) => comp.id === id
+    )!.name;
+  };
+
+  const shouldDisableSubmitBidButton = () => {
+    for (let id in componentsQpData) {
+      // If theres at least one qp bid for any component, we let user submit
+      if (componentsQpData[id].length) return false;
+    }
+    return true;
+  };
+
+  const submitBid = async () => {
+    const components = [];
+    for (let id in componentsQpData) {
+      components.push({
+        projectComponentId: id,
+        quantityPrices: componentsQpData[id],
+      });
+    }
+
+    try {
+      await createProjectBid({
+        variables: {
+          data: {
+            userId: user!.id,
+            projectId: projectId!,
+            comments: "",
+            components,
+          },
+        },
+      });
+      setSnackbar({
+        severity: "success",
+        message: "Bid created.",
+      });
+      navigate(VENDOR_ROUTES.PROJECTS);
+    } catch (error) {
+      setSnackbar({
+        severity: "error",
+        message: "Something went wrong. Please try again later.",
+      });
+    } finally {
+      setProjectBidModalOpen(false);
+      setSnackbarOpen(true);
+    }
   };
 
   const renderComponentSpecAccordionDetail = (spec: ProjectComponentSpec) => {
@@ -226,9 +431,9 @@ const SearchProjectDetail = () => {
             <Stack>
               {postProcess.map((process) => {
                 return (
-                  <ListItem sx={{ padding: 0 }}>
+                  <MuiListItem sx={{ padding: 0 }}>
                     <Typography variant="caption">{process}</Typography>
-                  </ListItem>
+                  </MuiListItem>
                 );
               })}
             </Stack>
@@ -290,9 +495,9 @@ const SearchProjectDetail = () => {
             <Stack>
               {outsidePostProcess.map((process) => {
                 return (
-                  <ListItem sx={{ padding: 0 }}>
+                  <MuiListItem sx={{ padding: 0 }}>
                     <Typography variant="caption">{process}</Typography>
-                  </ListItem>
+                  </MuiListItem>
                 );
               })}
             </Stack>
@@ -368,9 +573,9 @@ const SearchProjectDetail = () => {
             <Stack>
               {insidePostProcess.map((process) => {
                 return (
-                  <ListItem sx={{ padding: 0 }}>
+                  <MuiListItem sx={{ padding: 0 }}>
                     <Typography variant="caption">{process}</Typography>
-                  </ListItem>
+                  </MuiListItem>
                 );
               })}
             </Stack>
@@ -415,6 +620,7 @@ const SearchProjectDetail = () => {
       </TableContainer>
     );
   };
+
   const renderProjectDetail = () => {
     if (!getProjectDetailData || !getProjectDetailData.getProjectDetail)
       return null;
@@ -428,87 +634,166 @@ const SearchProjectDetail = () => {
       design,
       status,
       components,
-    } = getProjectDetailData.getProjectDetail;
+    } = getProjectDetailData.getProjectDetail as Project;
 
     return (
-      <Container>
-        <Box display="flex" justifyContent="space-between" mb={1.5}>
-          <Box>
-            <Typography variant="subtitle1">Project Detail</Typography>
-          </Box>
-          <Box>
-            <Button
-              onClick={backHandler}
-              variant="text"
-              style={{ marginRight: 16 }}
-            >
-              Back
-            </Button>
-            <Button onClick={bidProjectHandler} variant="contained">
-              Bid Project
-            </Button>
-          </Box>
-        </Box>
-        <Paper style={{ padding: "12px", marginBottom: "8px" }}>
-          <Box style={{ width: "60%" }}>
-            <Stack>
-              <ListItem>
-                <Typography variant="subtitle2">Project Name</Typography>
-                <Typography variant="caption">{projectName}</Typography>
-              </ListItem>
-              <ListItem>
-                <Typography variant="subtitle2">Delivery Date</Typography>
-                <Typography variant="caption">{deliveryDate}</Typography>
-              </ListItem>
-              <ListItem>
-                <Typography variant="subtitle2">Delivery Address</Typography>
-                <Typography variant="caption">{deliveryAddress}</Typography>
-              </ListItem>
-              <ListItem>
-                <Typography variant="subtitle2">Budget</Typography>
-                <Typography variant="caption">{budget}</Typography>
-              </ListItem>
-
-              {design && (
-                <ListItem>
-                  <Typography variant="subtitle2">Design File</Typography>
-                  <Typography variant="caption">
-                    <Link href={design.url} target="_blank" rel="noopener">
-                      {design.fileName}
-                    </Link>
+      <Box>
+        <Grid container>
+          <Grid item xs={7}>
+            <Box display="flex" justifyContent="space-between" mb={1.5}>
+              <Box>
+                <Typography variant="subtitle1">Project Detail</Typography>
+              </Box>
+            </Box>
+            <Paper style={{ padding: "12px", marginBottom: "8px" }}>
+              <Stack>
+                <ProjectListItem>
+                  <Typography variant="subtitle2">Customer Name</Typography>
+                  <Typography variant="caption" component="p">
+                    {companyName}
                   </Typography>
-                </ListItem>
-              )}
-            </Stack>
-          </Box>
-        </Paper>
+                </ProjectListItem>
+                <ProjectListItem>
+                  <Typography variant="subtitle2">Project Name</Typography>
+                  <Typography variant="caption" component="p">
+                    {projectName}
+                  </Typography>
+                </ProjectListItem>
+                <ProjectListItem>
+                  <Typography variant="subtitle2">Delivery Date</Typography>
+                  <Typography variant="caption" component="p">
+                    {deliveryDate}
+                  </Typography>
+                </ProjectListItem>
+                <ProjectListItem>
+                  <Typography variant="subtitle2">Delivery Address</Typography>
+                  <Typography variant="caption" component="p">
+                    {deliveryAddress}
+                  </Typography>
+                </ProjectListItem>
+                <ProjectListItem>
+                  <Typography variant="subtitle2">Budget</Typography>
+                  <Typography variant="caption" component="p">
+                    {budget}
+                  </Typography>
+                </ProjectListItem>
 
-        <Box mt={2} mb={1.5} display="flex">
-          <Typography variant="subtitle1">Components Detail</Typography>
-        </Box>
+                {design && (
+                  <ProjectListItem>
+                    <Typography variant="subtitle2">Design File</Typography>
+                    <Typography variant="caption" component="p">
+                      <Link href={design.url} target="_blank" rel="noopener">
+                        {design.fileName}
+                      </Link>
+                    </Typography>
+                  </ProjectListItem>
+                )}
+              </Stack>
+            </Paper>
 
-        <Stack>
-          {components.map((comp, i) => {
-            return (
-              <ListItem sx={{ padding: 0, mb: 2 }} key={i}>
-                <Accordion sx={{ flexGrow: 2 }}>
-                  <AccordionSummary
-                    key={i}
-                    expandIcon={<ExpandMoreIcon />}
-                    id={`component-summary-${i}`}
-                  >
-                    <Typography variant="subtitle2">{comp.name}</Typography>
-                  </AccordionSummary>
+            <Box mt={2} mb={1.5} display="flex">
+              <Typography variant="subtitle1">Components Detail</Typography>
+            </Box>
 
-                  <AccordionDetails>
+            <Paper sx={{ mt: 1 }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={currentTab}
+                  onChange={componentTabOnChange}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                >
+                  {components.map((comp, i) => {
+                    return <Tab label={comp.name} key={i} />;
+                  })}
+                </Tabs>
+              </Box>
+
+              {components.map((comp, i) => {
+                return (
+                  <TabPanel value={currentTab} index={i}>
+                    <Button
+                      variant="outlined"
+                      style={{ position: "absolute", right: 8, top: 8 }}
+                      onClick={() => addBidsOnClick(comp)}
+                    >
+                      Add Bids
+                    </Button>
                     {renderComponentSpecAccordionDetail(comp.componentSpec)}
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
-            );
-          })}
-        </Stack>
-      </Container>
+                  </TabPanel>
+                );
+              })}
+            </Paper>
+          </Grid>
+
+          <Grid item xs={5}>
+            <Container>
+              <Box display="flex" justifyContent="space-between" mb={1.5}>
+                <Box>
+                  <Typography variant="subtitle1" textAlign="left">
+                    Bids Detail
+                  </Typography>
+                </Box>
+                <Box>
+                  <Button
+                    onClick={submitBid}
+                    variant="contained"
+                    disabled={shouldDisableSubmitBidButton()}
+                  >
+                    Submit Bid
+                  </Button>
+                </Box>
+              </Box>
+              {!!Object.keys(componentsQpData).length && (
+                <Box>
+                  {Object.keys(componentsQpData).map((id, i) => {
+                    if (!componentsQpData[id].length) return null;
+                    return (
+                      <Paper key={i} sx={{ padding: 5 }}>
+                        <Typography variant="subtitle2">
+                          {getComponentName(id)}
+                        </Typography>
+                        <TableContainer>
+                          <Table size="small">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Quantity</TableCell>
+                                <TableCell>Price</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {componentsQpData[id].map((qp, i) => {
+                                return (
+                                  <TableRow>
+                                    <EditableTableCell
+                                      qpType="quantity"
+                                      index={i}
+                                      componentId={id}
+                                      data={qp.quantity}
+                                      setComponentsQpData={setComponentsQpData}
+                                    />
+                                    <EditableTableCell
+                                      qpType="price"
+                                      index={i}
+                                      componentId={id}
+                                      data={qp.price}
+                                      setComponentsQpData={setComponentsQpData}
+                                    />
+                                  </TableRow>
+                                );
+                              })}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Paper>
+                    );
+                  })}
+                </Box>
+              )}
+            </Container>
+          </Grid>
+        </Grid>
+      </Box>
     );
   };
 
@@ -519,19 +804,15 @@ const SearchProjectDetail = () => {
   if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
     return (
       <>
-        <Container className="project-detail-container">
+        {createProjectBidLoading && <FullScreenLoading />}
+        <Container>
           {renderProjectDetail()}
 
-          <Dialog
-            open={projectBidModalOpen}
-            onClose={closeModal}
-            fullWidth={true}
-            maxWidth="md"
-          >
+          <Dialog open={projectBidModalOpen} onClose={closeModal} maxWidth="md">
             <ProjectBidModal
               setProjectBidModalOpen={setProjectBidModalOpen}
-              projectId={projectId}
-              projectData={getProjectDetailData.getProjectDetail as Project}
+              component={biddingComponent}
+              setComponentsQpData={setComponentsQpData}
             />
           </Dialog>
         </Container>

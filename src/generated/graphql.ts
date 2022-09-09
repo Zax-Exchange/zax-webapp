@@ -828,10 +828,8 @@ export type QuerySearchVendorCompaniesArgs = {
 };
 
 export type SearchCustomerProjectInput = {
-  budget?: InputMaybe<Scalars['Int']>;
-  deliveryCities?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  deliveryCountries?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  leadTime?: InputMaybe<Scalars['Int']>;
+  budget?: InputMaybe<Scalars['String']>;
+  deliveryDate?: InputMaybe<Scalars['String']>;
   userInput: Scalars['String'];
 };
 
