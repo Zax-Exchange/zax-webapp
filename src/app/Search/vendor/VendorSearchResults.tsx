@@ -15,6 +15,7 @@ import {
   FormControlLabel,
   Checkbox,
   Button,
+  useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -41,6 +42,7 @@ type VendorFiltersType = {
 };
 
 const VendorSearchResults = () => {
+  const theme = useTheme();
   // location is used to extract query params
   const location = useLocation();
 
@@ -52,12 +54,15 @@ const VendorSearchResults = () => {
 
   // state to indicate whether query params is malformed and display error if needed
   const [queryParamError, setQueryParamError] = useState(false);
+
+  // Filter values, this will be initialized based on url if there is any, otherwise they will be empty string
   const [filters, setFilters] = useState<VendorFiltersType>({
     budget: "",
     deliveryDate: "",
   });
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  // TODO: verify query strings isn't tempered by user
+
+  // Query params after ? e.g. "budget=5000&deliveryDate=2022-12-31"
   const queries = location.search.substring(1);
 
   const queryMap = qs.parse(queries);
@@ -71,6 +76,7 @@ const VendorSearchResults = () => {
     },
   ] = useSearchCustomerProjectsLazyQuery();
 
+  // Display error if any
   useEffect(() => {
     if (searchProjectsError) {
       setSnackbar({
@@ -89,6 +95,7 @@ const VendorSearchResults = () => {
     }
   }, [searchProjectsError, queryParamError]);
 
+  // Validate url query string and set error if needed, also initializes filters value
   useEffect(() => {
     let valid = true;
     for (let key in queryMap) {
@@ -98,8 +105,24 @@ const VendorSearchResults = () => {
     }
     setValidQueryString(valid);
     setQueryParamError(!valid);
+
+    if (valid) {
+      if (queryMap.budget) {
+        setFilters({
+          ...filters,
+          budget: queryMap.budget as string,
+        });
+      }
+      if (queryMap.deliveryDate) {
+        setFilters({
+          ...filters,
+          deliveryDate: queryMap.deliveryDate as string,
+        });
+      }
+    }
   }, [queries]);
 
+  // Runs on every query change based on userInput or filters, only runs if queries are valid.
   useEffect(() => {
     if (validQueryString) {
       searchProjects({
@@ -117,22 +140,18 @@ const VendorSearchResults = () => {
     }
   }, [validQueryString, queries]);
 
+  // Clears all filters and sets searchParam to only contain userInput. This changes the url and thus trigger a search request
   const clearFilters = () => {
     setFilters({
       budget: "",
       deliveryDate: "",
     });
-    setSearchParams(
-      {
-        userInput: queryMap.userInput as string,
-      },
-      {
-        replace: true,
-      }
-    );
+    setSearchParams({
+      userInput: queryMap.userInput as string,
+    });
   };
 
-  console.log(queryMap, filters);
+  // Add current selected filters to url to trigger a new search request based on new query params
   const applyFilters = () => {
     let currentSearchParams: any = {
       ...searchParams,
@@ -154,7 +173,7 @@ const VendorSearchResults = () => {
     onClickCallback: () => void,
     onClearCallback: () => void,
     shouldDisable: boolean,
-    shouldCheck: boolean
+    shouldCheck: boolean // persists filter check state when reload
   ) => {
     return (
       <FormControlLabel
@@ -178,6 +197,19 @@ const VendorSearchResults = () => {
         checked={shouldCheck}
         disabled={shouldDisable}
         label={label}
+        style={{ maxHeight: "30px" }}
+        sx={{
+          ":hover": !shouldDisable
+            ? {
+                "& .MuiTypography-root": {
+                  fontWeight: 600,
+                },
+                "& .MuiSvgIcon-root": {
+                  color: theme.palette.primary.light,
+                },
+              }
+            : {},
+        }}
       />
     );
   };
@@ -210,9 +242,23 @@ const VendorSearchResults = () => {
     };
     return (
       <>
-        <Typography variant="subtitle2" textAlign="left">
-          Budget
-        </Typography>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          mt={2}
+        >
+          <Typography variant="subtitle2" textAlign="left">
+            Budget
+          </Typography>
+          <Typography
+            variant="caption"
+            onClick={clearFilters}
+            style={{ cursor: "pointer", color: theme.palette.primary.main }}
+          >
+            clear filters
+          </Typography>
+        </Box>
         <FormGroup>
           {renderCheckBox(
             "5000 +",
@@ -284,9 +330,11 @@ const VendorSearchResults = () => {
     };
     return (
       <>
-        <Typography variant="subtitle2" textAlign="left">
-          Delivery Date
-        </Typography>
+        <Box mt={2}>
+          <Typography variant="subtitle2" textAlign="left">
+            Delivery Date
+          </Typography>
+        </Box>
         <FormGroup>
           {renderCheckBox(
             "in 3 months",
@@ -328,31 +376,36 @@ const VendorSearchResults = () => {
   if (searchProjectsData) {
     return (
       <Grid container justifyContent="space-evenly" spacing={0.5}>
-        <Grid item xs={3} className="search-results-sortby-container">
+        <Grid item xs={2} className="search-results-sortby-container">
           <Box>
             <Box>
               <Box>{renderBudgetFilters()}</Box>
               <Box>{renderDeliveryDateFilters()}</Box>
             </Box>
           </Box>
-          <Box>
-            <Button variant="outlined" onClick={clearFilters}>
-              Clear Filters
-            </Button>
-            <Button variant="outlined" onClick={applyFilters}>
+          <Box mt={2}>
+            <Button variant="outlined" onClick={applyFilters} fullWidth>
               Apply Filters
             </Button>
           </Box>
         </Grid>
 
         <Grid item xs={7} className="search-results-inner-container">
-          <Stack direction="column">
-            {searchProjectsData.searchCustomerProjects.map(
-              (result: ProjectOverview, i: number) => {
-                return <SearchProjectOverview projectData={result} key={i} />;
-              }
-            )}
-          </Stack>
+          {!searchProjectsData.searchCustomerProjects.length && (
+            <Typography variant="caption">
+              Sorry, but we could not find any projects for your search. Try
+              searching for other products!
+            </Typography>
+          )}
+          {searchProjectsData.searchCustomerProjects.length && (
+            <Stack direction="column">
+              {searchProjectsData.searchCustomerProjects.map(
+                (result: ProjectOverview, i: number) => {
+                  return <SearchProjectOverview projectData={result} key={i} />;
+                }
+              )}
+            </Stack>
+          )}
         </Grid>
       </Grid>
     );

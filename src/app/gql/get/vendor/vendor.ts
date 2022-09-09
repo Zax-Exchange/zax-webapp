@@ -161,6 +161,7 @@ const SEARCH_VENDOR_COMPANIES = gql`
     searchVendorCompanies(data: $data) {
       id
       name
+      contactEmail
       logo
       country
       isVerified

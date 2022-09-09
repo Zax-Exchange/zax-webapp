@@ -73,25 +73,6 @@ const SearchBar = () => {
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isVendor = user!.isVendor;
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [
-    searchProjects,
-    {
-      data: searchProjectsData,
-      error: searchProjectsError,
-      loading: searchProjectsLoading,
-    },
-  ] = useSearchCustomerProjectsLazyQuery();
-
-  const [
-    searchVendors,
-    {
-      data: searchVendorsData,
-      error: searchVendorsError,
-      loading: searchVendorsLoading,
-    },
-  ] = useSearchVendorCompaniesLazyQuery();
 
   const [input, setInput] = useState("");
 
@@ -104,22 +85,7 @@ const SearchBar = () => {
       if (isVendor) {
         navigate(`${VENDOR_ROUTES.SEARCH_RESULTS}/?userInput=${input}`);
       } else {
-        const { data } = await searchVendors({
-          variables: {
-            data: {
-              userInput: input,
-              // locations: [String]
-              // moq: Int
-              // leadTime: Int
-            },
-          },
-          fetchPolicy: "no-cache",
-        });
-        navigate(CUSTOMER_ROUTES.SEARCH_RESULTS, {
-          state: {
-            searchResults: data!.searchVendorCompanies,
-          },
-        });
+        navigate(`${CUSTOMER_ROUTES.SEARCH_RESULTS}/?userInput=${input}`);
       }
     } catch (error) {
       setSnackbar({
@@ -136,11 +102,8 @@ const SearchBar = () => {
     }
   };
 
-  const isLoading = searchProjectsLoading || searchVendorsLoading;
-
   return (
     <Box>
-      {isLoading && <FullScreenLoading />}
       <Search>
         <SearchIconWrapper>
           <SearchIcon />

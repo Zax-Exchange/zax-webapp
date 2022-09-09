@@ -30,7 +30,7 @@ export type SearchVendorCompaniesQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorOverview', id: string, name: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, moq: string, leadTime: number }> };
+export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, moq: string, leadTime: number }> };
 
 
 export const GetVendorDetailDocument = gql`
@@ -240,6 +240,7 @@ export const SearchVendorCompaniesDocument = gql`
   searchVendorCompanies(data: $data) {
     id
     name
+    contactEmail
     logo
     country
     isVerified

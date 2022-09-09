@@ -834,9 +834,11 @@ export type SearchCustomerProjectInput = {
 };
 
 export type SearchVendorCompanyInput = {
-  leadTime?: InputMaybe<Scalars['Int']>;
-  locations?: InputMaybe<Array<Scalars['String']>>;
-  moq?: InputMaybe<Scalars['Int']>;
+  countries?: InputMaybe<Array<Scalars['String']>>;
+  factoryLocations?: InputMaybe<Array<Scalars['String']>>;
+  leadTime?: InputMaybe<Scalars['String']>;
+  moqMax?: InputMaybe<Scalars['String']>;
+  moqMin?: InputMaybe<Scalars['String']>;
   userInput: Scalars['String'];
 };
 
