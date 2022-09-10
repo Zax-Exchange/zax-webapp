@@ -152,7 +152,7 @@ function App() {
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <CustomSnackbar />
             <Nav />
-            <Container maxWidth="xl" sx={{ mb: 12 }}>
+            <Container maxWidth="xl" sx={{ mb: 12, pt: 12 }}>
               <Routes>
                 {/* START COMMON PATH */}
                 <Route

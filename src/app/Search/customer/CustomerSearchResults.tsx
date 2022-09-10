@@ -406,11 +406,25 @@ const CustomerSearchResults = () => {
             shouldCheck("China")
           )}
           {renderCheckBox(
-            "Albania",
-            setFactoryLocationsFilter("Albania"),
-            clearFactoryLocationsFilter("Albania"),
+            "Vietnam",
+            setFactoryLocationsFilter("Vietnam"),
+            clearFactoryLocationsFilter("Vietnam"),
             shouldDisable(),
-            shouldCheck("Albania")
+            shouldCheck("Vietnam")
+          )}
+          {renderCheckBox(
+            "Mexico",
+            setFactoryLocationsFilter("Mexico"),
+            clearFactoryLocationsFilter("Mexico"),
+            shouldDisable(),
+            shouldCheck("Mexico")
+          )}
+          {renderCheckBox(
+            "India",
+            setFactoryLocationsFilter("India"),
+            clearFactoryLocationsFilter("India"),
+            shouldDisable(),
+            shouldCheck("India")
           )}
         </FormGroup>
       </>
@@ -432,7 +446,7 @@ const CustomerSearchResults = () => {
     };
     return (
       <>
-        <Box mt={2} mb={2}>
+        <Box mt={1.5} mb={1.5}>
           <Typography variant="subtitle2" textAlign="left">
             MOQ Range
           </Typography>
@@ -469,8 +483,8 @@ const CustomerSearchResults = () => {
           <Box>
             <Box>
               <Box>{renderLeadTimeFilters()}</Box>
-              <Box>{renderFactoryLocationsFilter()}</Box>
               <Box>{renderMoqFilters()}</Box>
+              <Box>{renderFactoryLocationsFilter()}</Box>
             </Box>
           </Box>
           <Box mt={2}>
@@ -488,7 +502,7 @@ const CustomerSearchResults = () => {
             </Typography>
           )}
 
-          {searchVendorsData.searchVendorCompanies.length && (
+          {!!searchVendorsData.searchVendorCompanies.length && (
             <Stack direction="column">
               {searchVendorsData.searchVendorCompanies.map((result, i) => {
                 return <SearchCompanyOverview companyData={result} />;

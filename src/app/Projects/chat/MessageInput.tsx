@@ -6,6 +6,7 @@ import { Theme, useTheme } from "@emotion/react";
 
 export default function MessageInput() {
   const theme: any = useTheme();
+
   const { handleSubmit, text, handleChange, setText } =
     useMessageInputContext();
 
@@ -31,6 +32,8 @@ export default function MessageInput() {
         bottom: 0,
         backgroundColor: theme.palette.background.default,
         paddingBottom: 3,
+        pl: 1,
+        pr: 1,
       }}
     >
       <TextField

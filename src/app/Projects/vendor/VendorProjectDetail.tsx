@@ -20,6 +20,8 @@ import {
   Tabs,
   Tab,
   TableHead,
+  useTheme,
+  Tooltip,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import FullScreenLoading from "../../Utils/Loading";
@@ -37,6 +39,7 @@ import { useGetVendorProjectQuery } from "../../gql/get/vendor/vendor.generated"
 import { useGetCompanyDetailQuery } from "../../gql/get/company/company.generated";
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -70,6 +73,7 @@ const ProjectListItem = styled(MuiListItem)(() => ({
 
 const VendorProjectDetail = () => {
   const { user } = useContext(AuthContext);
+  const theme = useTheme();
   const location = useLocation();
   const { projectId } = useParams();
   const [currentTab, setCurrentTab] = useState(0);
@@ -110,7 +114,7 @@ const VendorProjectDetail = () => {
     setCurrentTab(newTab);
   };
 
-  const renderComponentSpecAccordionDetail = (spec: ProjectComponentSpec) => {
+  const renderComponentSpecDetailTable = (spec: ProjectComponentSpec) => {
     const {
       productName,
       dimension,
@@ -480,7 +484,6 @@ const VendorProjectDetail = () => {
 
     return (
       <>
-        <Button onClick={() => setChatOpen(true)}>chat</Button>
         <ProjectChat
           setChatOpen={setChatOpen}
           projectBidId={bidInfo.id}
@@ -490,7 +493,23 @@ const VendorProjectDetail = () => {
         />
         <Grid container className="vendor-project-info-container" spacing={2}>
           <Grid item xs={5.5}>
-            <Paper style={{ padding: "12px", marginBottom: "8px" }}>
+            <Paper
+              style={{
+                padding: "12px",
+                marginBottom: "8px",
+                position: "relative",
+              }}
+            >
+              <IconButton
+                onClick={() => setChatOpen(true)}
+                sx={{ position: "absolute", top: 6, right: 6, zIndex: 9 }}
+              >
+                <Tooltip title="Message Customer" arrow placement="top">
+                  <QuestionAnswerIcon
+                    sx={{ color: theme.palette.primary.dark }}
+                  />
+                </Tooltip>
+              </IconButton>
               <Stack>
                 <ProjectListItem>
                   <Typography variant="subtitle2">Customer Name</Typography>
@@ -541,7 +560,7 @@ const VendorProjectDetail = () => {
             {components.map((comp, i) => {
               if (!bids[comp.id]) return null;
               return (
-                <Paper sx={{ mt: 1 }}>
+                <Paper>
                   <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                     <Tabs
                       value={currentTab}
@@ -566,9 +585,7 @@ const VendorProjectDetail = () => {
                               Component Detail
                             </Typography>
                           </Box>
-                          {renderComponentSpecAccordionDetail(
-                            comp.componentSpec
-                          )}
+                          {renderComponentSpecDetailTable(comp.componentSpec)}
                         </Box>
 
                         <Box mt={3}>
@@ -661,11 +678,11 @@ const VendorProjectDetail = () => {
   }
   return (
     <Container>
-      <Container disableGutters style={{ textAlign: "left" }}>
-        <IconButton onClick={() => navigate(-1)} sx={{ position: "absolute" }}>
+      <Box textAlign="left">
+        <IconButton onClick={() => navigate(-1)}>
           <KeyboardBackspaceIcon style={{ color: "rgb(43, 52, 89)" }} />
         </IconButton>
-      </Container>
+      </Box>
       {renderProjectDetail()}
     </Container>
   );

@@ -259,9 +259,16 @@ const Nav = () => {
   return (
     <>
       {resetLoading && <FullScreenLoading />}
-      <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          marginBottom: 5,
+          width: "100%",
+          zIndex: 9,
+          position: "fixed",
+        }}
+      >
         <AppBar
-          position="static"
           sx={{
             backgroundColor: "white",
             boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)",
@@ -271,8 +278,8 @@ const Nav = () => {
           {!user && renderLoggedOutNav()}
           {user && user.isVendor && renderVendorNav()}
           {user && !user.isVendor && renderCustomerNav()}
+          {/* <Button onClick={resetData}>RESET</Button> */}
         </AppBar>
-        <Button onClick={resetData}>RESET</Button>
       </Box>
       {renderSideNav()}
     </>

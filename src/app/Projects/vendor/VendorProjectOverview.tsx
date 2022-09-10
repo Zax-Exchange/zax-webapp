@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import CreateIcon from "@mui/icons-material/Create";
 import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
@@ -179,7 +179,7 @@ const VendorProjectOverview = ({
 
             <ProjectOverviewListItem>
               <Tooltip title="Posted on" arrow placement="top">
-                <CalendarMonthIcon />
+                <CreateIcon />
               </Tooltip>
               <Typography variant="caption">{date}</Typography>
             </ProjectOverviewListItem>

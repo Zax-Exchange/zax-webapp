@@ -482,7 +482,6 @@ const ProjectPermissionModal = ({
                   }}
                   onChange={shareHandler}
                   value={email}
-                  variant="standard"
                 />
               )}
             />

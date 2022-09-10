@@ -4,6 +4,7 @@ import {
   DialogTitle,
   DialogContent,
   Dialog,
+  Paper,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { StreamChat } from "stream-chat";
@@ -26,7 +27,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import Messages from "./Messages";
 import CustomMessageInput from "./MessageInput";
 import React from "react";
-
+import "./Chat.scss";
 const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
 const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
 const filters = { type: "messaging", members: { $in: ["ancient-mountain-4"] } };
@@ -83,7 +84,7 @@ const ProjectChat = ({
       // Here, 'travel' will be the channel ID
       channel.addMembers([user!.companyId]);
       const data = await channel.watch();
-      console.log(data, channel);
+
       setChatClient(client);
       setChannel(channel);
     };
@@ -99,8 +100,13 @@ const ProjectChat = ({
     };
   }, [chatClient]);
 
+  // Use this so we can pass props into CustomMessageInput if needed.
+  const getCustomeMessageInput = () => {
+    return <CustomMessageInput />;
+  };
+
   if (!chatClient) {
-    return <LoadingIndicator />;
+    return null;
   }
   if (!chatOpen) return null;
 
@@ -111,18 +117,20 @@ const ProjectChat = ({
       maxWidth="xl"
       fullWidth={true}
     >
-      <DialogTitle sx={{ borderBottom: "1px solid black" }}>{`Chat with ${
-        user!.isVendor ? customerName : vendorName
-      }`}</DialogTitle>
+      <Box sx={{ boxShadow: "0px 1px 4px 0px rgb(168 168 168 / 75%)" }}>
+        <DialogTitle>
+          {`Chat with ${user!.isVendor ? customerName : vendorName}`}
+        </DialogTitle>
+      </Box>
       <DialogContent
         sx={{
-          paddingBottom: 0,
+          padding: 0,
           overflow: "hidden",
         }}
       >
         <Box sx={{ height: "500px", maxHeight: "500px" }}>
           <Chat client={chatClient} theme="messaging light">
-            <Channel channel={channel} Input={CustomMessageInput}>
+            <Channel channel={channel} Input={getCustomeMessageInput}>
               <Window>
                 <Messages messagesRef={messagesRef} />
               </Window>
