@@ -13,7 +13,8 @@ const GET_CUSTOMER_PROJECT = gql`
         fileName
         url
       }
-      budget
+      targetPrice
+      orderQuantities
       status
       permission
       createdAt
@@ -83,7 +84,8 @@ const GET_CUSTOMER_PROJECTS = gql`
         fileName
         url
       }
-      budget
+      targetPrice
+      orderQuantities
       status
       permission
       createdAt

@@ -30,6 +30,7 @@ import {
   LoggedInUser,
   Project,
   ProjectComponent,
+  QuantityPrice,
 } from "../../../generated/graphql";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
@@ -38,60 +39,50 @@ import { useGetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated
 import { QuantityPriceData } from "../../Search/vendor/SearchProjectDetail";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { isValidInt } from "../../Utils/inputValidators";
 
 const ProjectBidModal = ({
   setProjectBidModalOpen,
   component,
+  orderQuantities,
   setComponentsQpData,
 }: {
   setProjectBidModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   component: ProjectComponent | null;
+  orderQuantities: number[];
   setComponentsQpData: React.Dispatch<
     React.SetStateAction<Record<string, QuantityPriceData[]>>
   >;
 }) => {
-  const [quantity, setQuantity] = useState("");
-  const [price, setPrice] = useState("");
-
-  // Note that this is for ONE component (singular) only
-  const [componentQpData, setComponentQpData] = useState<QuantityPriceData[]>(
-    []
-  );
+  const [prices, setPrices] = useState([
+    ...Array(orderQuantities.length).map(() => ""),
+  ]);
 
   if (!component) return null;
 
-  const { id, name } = component;
+  const pricesOnChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ind: number
+  ) => {
+    const val = e.target.value;
 
-  const handleQpInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.name === "quantity") {
-      setQuantity(e.target.value);
-    } else {
-      setPrice(e.target.value);
-    }
-  };
+    if (!isValidInt(val)) return;
 
-  const addQp = () => {
-    const list = [
-      ...componentQpData,
-      {
-        quantity: parseInt(quantity, 10),
-        price: parseInt(price, 10),
-      },
-    ];
-    list.sort((a, b) => a.quantity - b.quantity);
-    setComponentQpData(list);
-    setQuantity("");
-    setPrice("");
-  };
-
-  const deleteQp = (i: number) => {
-    const list = [...componentQpData];
-    list.splice(i, 1);
-    list.sort((a, b) => a.quantity - b.quantity);
-    setComponentQpData(list);
+    const curPrices = [...prices];
+    curPrices[ind] = val;
+    setPrices(curPrices);
   };
 
   const addBidsOnClick = () => {
+    const componentQpData: QuantityPriceData[] = [];
+    prices.forEach((price, i) => {
+      if (price) {
+        componentQpData.push({
+          quantity: orderQuantities[i],
+          price: parseInt(price, 10),
+        });
+      }
+    });
     setComponentsQpData((prev) => ({
       ...prev,
       [component.id]: componentQpData,
@@ -102,70 +93,43 @@ const ProjectBidModal = ({
   return (
     <Container className="project-bid-container">
       <Box>
-        <Typography variant="subtitle1">Add Bids For {name}</Typography>
+        <Typography variant="subtitle1">
+          Input Bids For {component.name}
+        </Typography>
       </Box>
 
-      <Stack direction="row">
-        <ListItem>
-          <TextField
-            label="Quantity"
-            name="quantity"
-            autoComplete="new-password"
-            onChange={handleQpInput}
-            value={quantity}
-          />
-        </ListItem>
-        <ListItem>
-          <TextField
-            label="Price"
-            name="price"
-            autoComplete="new-password"
-            onChange={handleQpInput}
-            value={price}
-          />
-        </ListItem>
-        <ListItem sx={{ flexShrink: 2 }}>
-          <IconButton onClick={addQp} disabled={!quantity || !price}>
-            <AddCircleIcon />
-          </IconButton>
-        </ListItem>
-      </Stack>
-
-      {!!componentQpData.length && (
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Quantity</TableCell>
-                <TableCell>Price</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {componentQpData.map((qp, i) => {
-                return (
-                  <TableRow>
-                    <TableCell>{qp.quantity}</TableCell>
-                    <TableCell>{qp.price}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => deleteQp(i)}>
-                        <CancelIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+      <TableContainer>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Quantity</TableCell>
+              <TableCell>Price</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {orderQuantities.map((quantity, i) => {
+              return (
+                <TableRow key={i}>
+                  <TableCell>{quantity}</TableCell>
+                  <TableCell>
+                    <TextField
+                      onChange={(e) => pricesOnChange(e, i)}
+                      value={prices[i]}
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <DialogActions>
         <Button onClick={() => setProjectBidModalOpen(false)}>Cancel</Button>
         <Button
           onClick={addBidsOnClick}
           variant="outlined"
-          disabled={!componentQpData.length}
+          disabled={!prices.some((v) => !!v)}
         >
           Add Bids
         </Button>

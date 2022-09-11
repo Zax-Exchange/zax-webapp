@@ -577,9 +577,15 @@ const CustomerProjectDetail = () => {
                   </ProjectDetailListItem>
                 )}
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">Budget</Typography>
+                  <Typography variant="subtitle2">Target Price</Typography>
                   <Typography variant="caption">
-                    {projectData.budget}
+                    {projectData.targetPrice}
+                  </Typography>
+                </ProjectDetailListItem>
+                <ProjectDetailListItem>
+                  <Typography variant="subtitle2">Order Quantities</Typography>
+                  <Typography variant="caption">
+                    {projectData.orderQuantities.join(", ")}
                   </Typography>
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>

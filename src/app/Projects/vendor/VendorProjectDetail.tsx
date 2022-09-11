@@ -459,7 +459,8 @@ const VendorProjectDetail = () => {
       name: projectName,
       deliveryDate,
       deliveryAddress,
-      budget,
+      targetPrice,
+      orderQuantities,
       design,
       status,
       components,
@@ -536,9 +537,15 @@ const VendorProjectDetail = () => {
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Budget</Typography>
+                  <Typography variant="subtitle2">Order Quantities</Typography>
                   <Typography variant="caption" component="p">
-                    {budget}
+                    {orderQuantities.join(", ")}
+                  </Typography>
+                </ProjectListItem>
+                <ProjectListItem>
+                  <Typography variant="subtitle2">Target Price</Typography>
+                  <Typography variant="caption" component="p">
+                    {targetPrice}
                   </Typography>
                 </ProjectListItem>
 

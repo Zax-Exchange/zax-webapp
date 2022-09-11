@@ -22,7 +22,8 @@ const GET_PROJECT_DETAIL = gql`
       name
       deliveryDate
       deliveryAddress
-      budget
+      targetPrice
+      orderQuantities
       design {
         fileName
         url
@@ -74,7 +75,8 @@ const SEARCH_CUSTOMER_PROJECTS = gql`
       companyId
       deliveryDate
       deliveryAddress
-      budget
+      targetPrice
+      orderQuantities
       createdAt
     }
   }

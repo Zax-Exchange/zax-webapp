@@ -31,7 +31,8 @@ const GET_VENDOR_PROJECT = gql`
       name
       deliveryDate
       deliveryAddress
-      budget
+      targetPrice
+      orderQuantities
       status
       design {
         fileName
@@ -143,7 +144,8 @@ const GET_VENDOR_PROJECTS = gql`
       name
       deliveryDate
       deliveryAddress
-      budget
+      targetPrice
+      orderQuantities
       # design {
       #   fileName
       #   url

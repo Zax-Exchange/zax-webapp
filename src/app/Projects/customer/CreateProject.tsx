@@ -45,7 +45,7 @@ import {
 } from "../../../generated/graphql";
 import CreateProjectComponentModal from "./modals/CreateProjectComponentModal";
 import CancelIcon from "@mui/icons-material/Cancel";
-
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 const CreateProject = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -60,13 +60,35 @@ const CreateProject = () => {
     name: "",
     deliveryAddress: "",
     deliveryDate: new Date().toISOString().split("T")[0],
-    budget: 0,
+    targetPrice: 0,
+    orderQuantities: [],
     designId: "",
     comments: "",
     components: [],
   });
-  console.log(projectData.components);
+
+  const [orderQuantity, setOrderQuantity] = useState("");
   const [componentModalOpen, setComponentModalOpen] = useState(false);
+
+  const addOrderQuantity = () => {
+    setProjectData({
+      ...projectData,
+      orderQuantities: [
+        ...projectData.orderQuantities,
+        parseInt(orderQuantity, 10),
+      ],
+    });
+    setOrderQuantity("");
+  };
+
+  const removeOrderQuantity = (ind: number) => {
+    const orderQuantities = [...projectData.orderQuantities];
+    orderQuantities.splice(ind, 1);
+    setProjectData({
+      ...projectData,
+      orderQuantities,
+    });
+  };
 
   const removeComponent = (i: number) => {
     const comps = [...projectData.components];
@@ -81,6 +103,12 @@ const CreateProject = () => {
     setComponentModalOpen(true);
   };
 
+  const orderQuantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value;
+    if (isValidInt(val)) {
+      setOrderQuantity(val);
+    }
+  };
   const projectInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val: string | number = e.target.value;
     let isAllowed = true;
@@ -90,7 +118,8 @@ const CreateProject = () => {
       case "comments":
         isAllowed = isValidAlphanumeric(val);
         break;
-      case "budget":
+      case "targetPrice":
+      case "orderQuantities":
         isAllowed = isValidInt(val);
         val = parseInt(val, 10);
         break;
@@ -109,8 +138,8 @@ const CreateProject = () => {
   const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
       if (key === "comments" || key === "designId") continue;
-      if (key === "budget") {
-        if (projectData.budget === 0) return true;
+      if (key === "targetPrice") {
+        if (projectData.targetPrice === 0) return true;
         continue;
       }
       if (
@@ -527,52 +556,91 @@ const CreateProject = () => {
           </Stack>
         </Box>
         <Container maxWidth="sm">
-          <Stack spacing={2} textAlign="left">
-            <TextField
-              autoComplete="new-password"
-              label="Project Name"
-              onChange={projectInputOnChange}
-              name="name"
-              value={projectData.name}
-            />
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <DesktopDatePicker
-                disablePast
-                label="Delivery Date"
-                inputFormat="YYYY-MM-DD"
-                value={projectData.deliveryDate}
-                onChange={(v: any) => {
-                  if (!v) return;
-                  setProjectData({
-                    ...projectData,
-                    deliveryDate: new Date(v._d).toISOString().split("T")[0],
-                  });
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} name="deliveryDate" />
-                )}
+          <Stack
+            spacing={2}
+            textAlign="left"
+            sx={{ "& .MuiListItem-root div": { flexGrow: 2 } }}
+          >
+            <ListItem>
+              <TextField
+                autoComplete="new-password"
+                label="Project Name"
+                onChange={projectInputOnChange}
+                name="name"
+                value={projectData.name}
               />
-            </LocalizationProvider>
-            <GoogleMapAutocomplete
-              parentSetDataHandler={handleAddressOnChange}
-            />
+            </ListItem>
+            <ListItem>
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DesktopDatePicker
+                  disablePast
+                  label="Delivery Date"
+                  inputFormat="YYYY-MM-DD"
+                  value={projectData.deliveryDate}
+                  onChange={(v: any) => {
+                    if (!v) return;
+                    setProjectData({
+                      ...projectData,
+                      deliveryDate: new Date(v._d).toISOString().split("T")[0],
+                    });
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} name="deliveryDate" />
+                  )}
+                />
+              </LocalizationProvider>
+            </ListItem>
 
-            <TextField
-              autoComplete="new-password"
-              type="tel"
-              label="Budget"
-              onChange={projectInputOnChange}
-              name="budget"
-              value={projectData.budget || ""}
-            />
-            <TextField
-              autoComplete="new-password"
-              multiline
-              label="Comments"
-              onChange={projectInputOnChange}
-              name="comments"
-              value={projectData.comments}
-            />
+            <ListItem>
+              <GoogleMapAutocomplete
+                parentSetDataHandler={handleAddressOnChange}
+              />
+            </ListItem>
+
+            <ListItem>
+              <TextField
+                autoComplete="new-password"
+                type="tel"
+                label="Target Price"
+                onChange={projectInputOnChange}
+                name="targetPrice"
+                value={projectData.targetPrice || ""}
+              />
+            </ListItem>
+
+            <ListItem>
+              <TextField
+                autoComplete="new-password"
+                type="tel"
+                label="Order Quantity"
+                onChange={orderQuantityOnChange}
+                value={orderQuantity}
+              />
+              <IconButton onClick={addOrderQuantity}>
+                <AddCircleIcon />
+              </IconButton>
+            </ListItem>
+            {!!projectData.orderQuantities.length &&
+              projectData.orderQuantities.map((quantity, i) => {
+                return (
+                  <ListItem>
+                    <Typography variant="caption">{quantity}</Typography>
+                    <IconButton onClick={() => removeOrderQuantity(i)}>
+                      <CancelIcon />
+                    </IconButton>
+                  </ListItem>
+                );
+              })}
+            <ListItem>
+              <TextField
+                autoComplete="new-password"
+                multiline
+                label="Comments"
+                onChange={projectInputOnChange}
+                name="comments"
+                value={projectData.comments}
+              />
+            </ListItem>
           </Stack>
         </Container>
       </Paper>

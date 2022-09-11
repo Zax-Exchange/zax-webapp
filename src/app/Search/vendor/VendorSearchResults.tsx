@@ -32,12 +32,12 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 // Allowed search params, if user tempers the url we will not allow search request to fire
 const allowedParams = {
   userInput: true,
-  budget: true,
+  targetPrice: true,
   deliveryDate: true,
 } as { [key: string]: boolean };
 
 type VendorFiltersType = {
-  budget: string;
+  targetPrice: string;
   deliveryDate: string;
 };
 
@@ -57,12 +57,12 @@ const VendorSearchResults = () => {
 
   // Filter values, this will be initialized based on url if there is any, otherwise they will be empty string
   const [filters, setFilters] = useState<VendorFiltersType>({
-    budget: "",
+    targetPrice: "",
     deliveryDate: "",
   });
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
-  // Query params after ? e.g. "budget=5000&deliveryDate=2022-12-31"
+  // Query params after ? e.g. "targetPrice=5000&deliveryDate=2022-12-31"
   const queries = location.search.substring(1);
 
   const queryMap = qs.parse(queries);
@@ -107,10 +107,10 @@ const VendorSearchResults = () => {
     setQueryParamError(!valid);
 
     if (valid) {
-      if (queryMap.budget) {
+      if (queryMap.targetPrice) {
         setFilters({
           ...filters,
-          budget: queryMap.budget as string,
+          targetPrice: queryMap.targetPrice as string,
         });
       }
       if (queryMap.deliveryDate) {
@@ -129,7 +129,9 @@ const VendorSearchResults = () => {
         variables: {
           data: {
             userInput: queryMap.userInput as string,
-            budget: queryMap.budget ? (queryMap.budget as string) : undefined,
+            targetPrice: queryMap.targetPrice
+              ? (queryMap.targetPrice as string)
+              : undefined,
             deliveryDate: queryMap.deliveryDate
               ? (queryMap.deliveryDate as string)
               : undefined,
@@ -143,7 +145,7 @@ const VendorSearchResults = () => {
   // Clears all filters and sets searchParam to only contain userInput. This changes the url and thus trigger a search request
   const clearFilters = () => {
     setFilters({
-      budget: "",
+      targetPrice: "",
       deliveryDate: "",
     });
     setSearchParams({
@@ -157,8 +159,8 @@ const VendorSearchResults = () => {
       ...searchParams,
       userInput: queryMap.userInput,
     };
-    if (filters.budget) {
-      currentSearchParams.budget = filters.budget;
+    if (filters.targetPrice) {
+      currentSearchParams.targetPrice = filters.targetPrice;
     }
 
     if (filters.deliveryDate) {
@@ -214,31 +216,31 @@ const VendorSearchResults = () => {
     );
   };
 
-  const renderBudgetFilters = () => {
-    const setBudgetFilter = (budget: string) => () => {
+  const renderTargetPriceFilters = () => {
+    const setTargetPriceFilter = (targetPrice: string) => () => {
       setFilters({
         ...filters,
-        budget,
+        targetPrice,
       });
     };
 
-    const clearBudgetFilter = () => {
+    const clearTargetPriceFilter = () => {
       setFilters({
         ...filters,
-        budget: "",
+        targetPrice: "",
       });
     };
 
     const shouldDisable = (value: string) => {
-      // If no budget filter is set, should not disable checkbox.
-      if (!filters.budget) return false;
+      // If no targetPrice filter is set, should not disable checkbox.
+      if (!filters.targetPrice) return false;
 
       // If current filter value is not the same as selected, should disable.
-      return filters.budget !== value;
+      return filters.targetPrice !== value;
     };
 
     const shouldCheck = (value: string) => {
-      return filters.budget === value;
+      return filters.targetPrice === value;
     };
     return (
       <>
@@ -249,7 +251,7 @@ const VendorSearchResults = () => {
           mt={2}
         >
           <Typography variant="subtitle2" textAlign="left">
-            Budget
+            Target Price
           </Typography>
           <Typography
             variant="caption"
@@ -262,36 +264,36 @@ const VendorSearchResults = () => {
         <FormGroup>
           {renderCheckBox(
             "5000 +",
-            setBudgetFilter("5000"),
-            clearBudgetFilter,
+            setTargetPriceFilter("5000"),
+            clearTargetPriceFilter,
             shouldDisable("5000"),
             shouldCheck("5000")
           )}
           {renderCheckBox(
             "10000 +",
-            setBudgetFilter("10000"),
-            clearBudgetFilter,
+            setTargetPriceFilter("10000"),
+            clearTargetPriceFilter,
             shouldDisable("10000"),
             shouldCheck("10000")
           )}
           {renderCheckBox(
             "30000 +",
-            setBudgetFilter("30000"),
-            clearBudgetFilter,
+            setTargetPriceFilter("30000"),
+            clearTargetPriceFilter,
             shouldDisable("30000"),
             shouldCheck("30000")
           )}
           {renderCheckBox(
             "50000 +",
-            setBudgetFilter("50000"),
-            clearBudgetFilter,
+            setTargetPriceFilter("50000"),
+            clearTargetPriceFilter,
             shouldDisable("50000"),
             shouldCheck("50000")
           )}
           {renderCheckBox(
             "100000 +",
-            setBudgetFilter("100000"),
-            clearBudgetFilter,
+            setTargetPriceFilter("100000"),
+            clearTargetPriceFilter,
             shouldDisable("100000"),
             shouldCheck("100000")
           )}
@@ -379,7 +381,7 @@ const VendorSearchResults = () => {
         <Grid item xs={2} className="search-results-sortby-container">
           <Box>
             <Box>
-              <Box>{renderBudgetFilters()}</Box>
+              <Box>{renderTargetPriceFilters()}</Box>
               <Box>{renderDeliveryDateFilters()}</Box>
             </Box>
           </Box>

@@ -75,9 +75,9 @@ const CustomerProjects = () => {
     setProjects([...proj]);
   };
 
-  const sortByBudget = () => {
+  const sortByTargetPrice = () => {
     let proj = [...projects];
-    proj = proj.sort((a, b) => a.budget - b.budget);
+    proj = proj.sort((a, b) => a.targetPrice - b.targetPrice);
     setProjects([...proj]);
   };
 
@@ -103,8 +103,8 @@ const CustomerProjects = () => {
       case "date":
         sortByDeliveryDate();
         break;
-      case "budget":
-        sortByBudget();
+      case "targetPrice":
+        sortByTargetPrice();
         break;
       default:
         break;
@@ -158,8 +158,8 @@ const CustomerProjects = () => {
               Sort by name
             </MenuItem>
 
-            <MenuItem data-type="budget" onClick={sortMenuOnClick}>
-              Sort by budget
+            <MenuItem data-type="targetPrice" onClick={sortMenuOnClick}>
+              Sort by targetPrice
             </MenuItem>
 
             <MenuItem data-type="date" onClick={sortMenuOnClick}>

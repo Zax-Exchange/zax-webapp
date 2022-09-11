@@ -78,7 +78,7 @@ const CustomerSearchResults = () => {
   });
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
-  // Query params after ? e.g. "budget=5000&deliveryDate=2022-12-31"
+  // Query params after ? e.g. "targetPrice=5000&deliveryDate=2022-12-31"
   const queries = location.search.substring(1);
 
   // We use queryMap to determine the query params sent to server.
@@ -280,7 +280,7 @@ const CustomerSearchResults = () => {
     };
 
     const shouldDisable = (value: string) => {
-      // If no budget filter is set, should not disable checkbox.
+      // If no targetPrice filter is set, should not disable checkbox.
       if (!filters.leadTime) return false;
 
       // If current filter value is not the same as selected, should disable.

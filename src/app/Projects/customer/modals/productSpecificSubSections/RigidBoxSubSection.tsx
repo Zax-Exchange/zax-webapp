@@ -162,6 +162,7 @@ const RigidBoxSubSection = ({
       options: string[],
       componentSpecAttribute: keyof CreateProjectComponentSpecInput,
       label: string,
+      helperText: string = "",
       width: number = 250
     ) => {
       return (
@@ -189,6 +190,7 @@ const RigidBoxSubSection = ({
                   top: -7,
                 },
               }}
+              helperText={helperText}
             />
           )}
         />
@@ -434,16 +436,28 @@ const RigidBoxSubSection = ({
             <Typography variant="subtitle2">Outside Specs</Typography>
           </ListItem>
           <ListItem>
-            {renderMaterialsDropdown("outsideMaterial", "Outside Material")}
-          </ListItem>
-          <ListItem>
-            {renderRigixBoxMaterialSourcesDropdown(
-              "outsideMaterialSource",
-              "Outside Material Source"
+            {renderAutocompleteDropdown(
+              RIGID_BOX_MATERIALS,
+              "outsideMaterial",
+              "Outside Material",
+              "If unsure, we recommend C2S."
             )}
           </ListItem>
           <ListItem>
-            {renderRigidBoxFinishesDropdown("outsideFinish", "Outside Finish")}
+            {renderAutocompleteDropdown(
+              RIGID_BOX_MATERIAL_SOURCES,
+              "outsideMaterialSource",
+              "Outside Material Source",
+              "If unsure, we recoomend Standard."
+            )}
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              RIGID_BOX_FINISHES,
+              "outsideFinish",
+              "Outside Finish",
+              "If unsure, we recoomend SHIT."
+            )}
           </ListItem>
           <ListItem>
             {renderPostProcessSection(

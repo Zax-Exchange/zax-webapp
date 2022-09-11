@@ -92,11 +92,11 @@ const SearchProjectOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Budget" arrow placement="top">
+                  <Tooltip title="Target Price" arrow placement="top">
                     <AttachMoneyIcon />
                   </Tooltip>
                   <Typography variant="caption">
-                    $ {projectData.budget}
+                    $ {projectData.targetPrice}
                   </Typography>
                 </ProjectOverviewListItem>
 

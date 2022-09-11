@@ -188,10 +188,10 @@ const CustomerProjectOverview = ({
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              <Tooltip title="Budget" arrow placement="top">
+              <Tooltip title="Target Price" arrow placement="top">
                 <AttachMoneyIcon />
               </Tooltip>
-              <Typography variant="caption">${project.budget}</Typography>
+              <Typography variant="caption">${project.targetPrice}</Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>

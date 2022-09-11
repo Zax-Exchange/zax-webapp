@@ -216,6 +216,7 @@ const CorrugateBoxSubSection = ({
                   key="corrugate-printing-method-dropdown"
                   {...params}
                   label="Printing Method"
+                  helperText="If unsure, we recommend Litho/Flexo."
                   inputProps={{
                     ...params.inputProps,
                     autoComplete: "new-password",
@@ -337,6 +338,7 @@ const CorrugateBoxSubSection = ({
       componentSpecAttribute: keyof CreateProjectComponentSpecInput,
       label: string,
       key: string,
+      helperText: string = "",
       width: number = 250
     ) => {
       return (
@@ -359,6 +361,7 @@ const CorrugateBoxSubSection = ({
                 ...params.inputProps,
                 autoComplete: "new-password",
               }}
+              helperText={helperText}
               InputLabelProps={{
                 sx: {
                   fontSize: 16,
@@ -389,6 +392,15 @@ const CorrugateBoxSubSection = ({
               onChange={componentSpecOnChange}
               name="dimension"
               value={componentSpec.dimension}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              autoComplete="new-password"
+              label="Thickness"
+              onChange={componentSpecOnChange}
+              name="thickness"
+              value={componentSpec.thickness}
             />
           </ListItem>
           <ListItem>
@@ -427,7 +439,8 @@ const CorrugateBoxSubSection = ({
               CORRUGATE_BOX_FINISHES,
               "outsideFinish",
               "Outside Finish",
-              "corrugate-outside-finish"
+              "corrugate-outside-finish",
+              "If unsure, we recommend Uncoated."
             )}
           </ListItem>
           <ListItem>
@@ -454,7 +467,8 @@ const CorrugateBoxSubSection = ({
               CORRUGATE_BOX_FINISHES,
               "insideFinish",
               "Inside Finish",
-              "folding-carton-inside-finish"
+              "corrugate-inside-finish",
+              "If unsure, we recommend Uncoated."
             )}
           </ListItem>
           <ListItem>
@@ -462,7 +476,7 @@ const CorrugateBoxSubSection = ({
               insidePostProcessDetail,
               setInsidePostProcessDetail,
               "Inside Post Process",
-              "folding-carton-inside-post-process"
+              "corrugate-inside-post-process"
             )}
           </ListItem>
           {renderPostProcessDetailSection(

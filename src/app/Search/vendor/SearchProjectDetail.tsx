@@ -630,7 +630,8 @@ const SearchProjectDetail = () => {
       companyName,
       deliveryDate,
       deliveryAddress,
-      budget,
+      targetPrice,
+      orderQuantities,
       design,
       status,
       components,
@@ -672,9 +673,15 @@ const SearchProjectDetail = () => {
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Budget</Typography>
+                  <Typography variant="subtitle2">Order Quantities</Typography>
                   <Typography variant="caption" component="p">
-                    {budget}
+                    {orderQuantities.join(", ")}
+                  </Typography>
+                </ProjectListItem>
+                <ProjectListItem>
+                  <Typography variant="subtitle2">Target Price</Typography>
+                  <Typography variant="caption" component="p">
+                    {targetPrice}
                   </Typography>
                 </ProjectListItem>
 
@@ -811,6 +818,9 @@ const SearchProjectDetail = () => {
           <Dialog open={projectBidModalOpen} onClose={closeModal} maxWidth="md">
             <ProjectBidModal
               setProjectBidModalOpen={setProjectBidModalOpen}
+              orderQuantities={
+                getProjectDetailData.getProjectDetail.orderQuantities
+              }
               component={biddingComponent}
               setComponentsQpData={setComponentsQpData}
             />
