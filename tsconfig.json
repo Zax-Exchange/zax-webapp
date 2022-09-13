@@ -17,12 +17,13 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
+    "resolveJsonModule": true
   },
   "exclude": [
     "./src/generated",
     "./node_modules",
     "./build"
-  ]
+  ],
   // "compilerOptions": {
   //   "target": "ES2018",
   //   "moduleResolution": "node16",

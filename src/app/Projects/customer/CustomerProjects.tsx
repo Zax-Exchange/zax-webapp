@@ -19,8 +19,10 @@ import CustomerProjectOverview from "./CustomerProjectOverview";
 import FullScreenLoading from "../../Utils/Loading";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
+import { useIntl } from "react-intl";
 
 const CustomerProjects = () => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
@@ -61,7 +63,7 @@ const CustomerProjects = () => {
   useEffect(() => {
     if (getCustomerProjectsError) {
       setSnackbar({
-        message: "Could not load projects. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
@@ -113,17 +115,15 @@ const CustomerProjects = () => {
   };
 
   if (getCustomerProjectsLoading) {
-    return (
-      <Container className="user-projects-container">
-        <FullScreenLoading />
-      </Container>
-    );
+    return <FullScreenLoading />;
   }
 
   if (getCustomerProjectsError) {
     return (
-      <Container className="user-projects-container">
-        Something went wrong!
+      <Container>
+        {intl.formatMessage({
+          id: "app.general.network.error",
+        })}
       </Container>
     );
   }
@@ -136,7 +136,9 @@ const CustomerProjects = () => {
       >
         {isProjectPageLoading && <FullScreenLoading />}
         <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
-          <Typography variant="subtitle2">Your projects</Typography>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.customer.projects.title" })}
+          </Typography>
           <IconButton onClick={sortOnClick}>
             <SortIcon />
           </IconButton>
@@ -155,15 +157,17 @@ const CustomerProjects = () => {
         >
           <MenuList dense sx={{ padding: "4px 0 4px" }}>
             <MenuItem data-type="name" onClick={sortMenuOnClick}>
-              Sort by name
+              {intl.formatMessage({ id: "app.customer.projects.sortBy.name" })}
             </MenuItem>
 
             <MenuItem data-type="targetPrice" onClick={sortMenuOnClick}>
-              Sort by targetPrice
+              {intl.formatMessage({
+                id: "app.customer.projects.sortBy.targetPrice",
+              })}
             </MenuItem>
 
             <MenuItem data-type="date" onClick={sortMenuOnClick}>
-              Sort by delivery date
+              {intl.formatMessage({ id: "app.customer.projects.sortBy.date" })}
             </MenuItem>
           </MenuList>
         </Menu>

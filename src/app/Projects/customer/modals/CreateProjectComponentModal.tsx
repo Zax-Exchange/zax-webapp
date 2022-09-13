@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import React, { useCallback } from "react";
 import { useEffect, useState } from "react";
+import { useIntl } from "react-intl";
 import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
@@ -75,6 +76,7 @@ const CreateProjectComponentModal = ({
   setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
   setComponentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const intl = useIntl();
   const [view, setView] = useState("");
 
   const [componentSpec, setComponentSpec] =
@@ -185,46 +187,6 @@ const CreateProjectComponentModal = ({
     return false;
   };
 
-  const renderAutocompleteDropdown = useCallback(
-    (
-      options: string[],
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string,
-      width: number = 400
-    ) => {
-      return (
-        <Autocomplete
-          sx={{ width }}
-          options={options}
-          autoHighlight
-          onChange={(e, v) => {
-            setComponentSpec((spec) => ({
-              ...spec,
-              [componentSpecAttribute]: v ? v : "",
-            }));
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={label}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password",
-              }}
-              InputLabelProps={{
-                sx: {
-                  fontSize: 16,
-                  top: -7,
-                },
-              }}
-            />
-          )}
-        />
-      );
-    },
-    []
-  );
-
   const renderProductsDropdown = () => {
     return (
       <Autocomplete
@@ -273,18 +235,26 @@ const CreateProjectComponentModal = ({
         <Container>
           <Box sx={{ paddingLeft: 2 }}>
             <Typography variant="h6" textAlign="left">
-              Configure Project Component
+              {intl.formatMessage({
+                id: "app.customer.createProject.configureComponentDetail",
+              })}
             </Typography>
           </Box>
           <Box display="flex" flexDirection="row" flexWrap="wrap">
             <Stack spacing={1.5}>
               <ListItem>
-                <Typography variant="subtitle2">Component Detail</Typography>
+                <Typography variant="subtitle2">
+                  {intl.formatMessage({
+                    id: "app.customer.createProject.componentDetail",
+                  })}
+                </Typography>
               </ListItem>
               <ListItem>
                 <TextField
                   autoComplete="new-password"
-                  label="Name"
+                  label={intl.formatMessage({
+                    id: "app.component.attribute.name",
+                  })}
                   onChange={componentInputOnChange}
                   name="name"
                   value={componentData.name}

@@ -40,6 +40,7 @@ import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useIntl } from "react-intl";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -68,6 +69,7 @@ const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
 }));
 
 const CustomerProjectDetail = () => {
+  const intl = useIntl();
   const { projectId } = useParams();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -147,7 +149,9 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Product</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.product" })}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography variant="caption">{productName}</Typography>
@@ -159,7 +163,9 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Dimension</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.dimension" })}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography variant="caption">{dimension}</Typography>
@@ -171,7 +177,9 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Thickness</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.thickness" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -185,7 +193,9 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Flute</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.flute" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -199,7 +209,9 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.color" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -213,7 +225,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Manufacturing Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.manufacturingProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -227,7 +243,9 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.material" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -241,7 +259,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.materialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -255,7 +277,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.postProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -277,7 +303,9 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.finish" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -291,7 +319,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideMaterial",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -305,7 +337,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideMaterialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -319,7 +355,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -341,7 +381,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideFinish",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -355,7 +399,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideColor",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -369,7 +417,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideMaterial",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -383,7 +435,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideMaterialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -397,7 +453,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -419,7 +479,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideFinish",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -433,7 +497,11 @@ const CustomerProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideColor",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -459,9 +527,7 @@ const CustomerProjectDetail = () => {
   if (error) {
     return (
       <Container>
-        <Typography variant="subtitle2">
-          Cannot load your project at this time.
-        </Typography>
+        <Typography variant="subtitle2"></Typography>
       </Container>
     );
   }
@@ -481,7 +547,9 @@ const CustomerProjectDetail = () => {
           <Grid item xs={4}>
             <Box>
               <Typography variant="h6" textAlign="left">
-                Vendor Bids
+                {intl.formatMessage({
+                  id: "app.customer.projects.vendorBids",
+                })}
               </Typography>
             </Box>
             <List sx={{ maxHeight: 500, overflow: "scroll" }}>
@@ -489,38 +557,6 @@ const CustomerProjectDetail = () => {
                 bids.map((bid) => {
                   return (
                     <>
-                      <ListItem>
-                        <VendorBidOverview
-                          bid={bid as ProjectBid}
-                          projectComponents={
-                            projectData.components as ProjectComponent[]
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <VendorBidOverview
-                          bid={bid as ProjectBid}
-                          projectComponents={
-                            projectData.components as ProjectComponent[]
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <VendorBidOverview
-                          bid={bid as ProjectBid}
-                          projectComponents={
-                            projectData.components as ProjectComponent[]
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <VendorBidOverview
-                          bid={bid as ProjectBid}
-                          projectComponents={
-                            projectData.components as ProjectComponent[]
-                          }
-                        />
-                      </ListItem>
                       <ListItem>
                         <VendorBidOverview
                           bid={bid as ProjectBid}
@@ -537,13 +573,17 @@ const CustomerProjectDetail = () => {
           <Grid item xs={8}>
             <Box>
               <Typography variant="h6" textAlign="left">
-                Project Detail
+                {intl.formatMessage({
+                  id: "app.customer.projects.projectDetail",
+                })}
               </Typography>
             </Box>
             <Paper sx={{ padding: 3 }} elevation={1}>
               <List>
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">Project Name</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({ id: "app.project.attribute.name" })}
+                  </Typography>
                   <Typography variant="caption">{projectData.name}</Typography>
                 </ProjectDetailListItem>
                 {/* <ProjectDetailListItem>
@@ -551,13 +591,21 @@ const CustomerProjectDetail = () => {
                   <Typography variant="caption">{projectData.userId}</Typography>
                 </ProjectDetailListItem> */}
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">Delivery Date</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.deliveryDate",
+                    })}
+                  </Typography>
                   <Typography variant="caption">
                     {projectData.deliveryDate}
                   </Typography>
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">Delivery Address</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.deliveryAddress",
+                    })}
+                  </Typography>
                   <Typography variant="caption">
                     {projectData.deliveryAddress}
                   </Typography>
@@ -565,7 +613,11 @@ const CustomerProjectDetail = () => {
 
                 {projectData.design && (
                   <ProjectDetailListItem>
-                    <Typography variant="subtitle2">Design</Typography>
+                    <Typography variant="subtitle2">
+                      {intl.formatMessage({
+                        id: "app.project.attribute.design",
+                      })}
+                    </Typography>
 
                     <Link
                       href={projectData.design.url}
@@ -577,19 +629,31 @@ const CustomerProjectDetail = () => {
                   </ProjectDetailListItem>
                 )}
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">Target Price</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.targetPrice",
+                    })}
+                  </Typography>
                   <Typography variant="caption">
                     {projectData.targetPrice}
                   </Typography>
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">Order Quantities</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.orderQuantities",
+                    })}
+                  </Typography>
                   <Typography variant="caption">
                     {projectData.orderQuantities.join(", ")}
                   </Typography>
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">Posted on</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.postedOn",
+                    })}
+                  </Typography>
                   <Typography variant="caption">
                     {convertToDate(projectData.createdAt)}
                   </Typography>
@@ -599,7 +663,9 @@ const CustomerProjectDetail = () => {
 
             <Box mt={5}>
               <Typography variant="h6" textAlign="left">
-                Components Detail
+                {intl.formatMessage({
+                  id: "app.customer.projects.componentsDetail",
+                })}
               </Typography>
             </Box>
             <Paper sx={{ mt: 1 }}>

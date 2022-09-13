@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
+import { useIntl } from "react-intl";
 
 // This key was created specifically for the demo in mui.com.
 // You need to create a new one for your application.
@@ -45,6 +46,7 @@ export default function GoogleMaps({
 }: {
   parentSetDataHandler: (address: string) => void;
 }) {
+  const intl = useIntl();
   const [value, setValue] = React.useState<PlaceType | null>(null);
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState<readonly PlaceType[]>([]);
@@ -141,7 +143,9 @@ export default function GoogleMaps({
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Delivery Location"
+          label={intl.formatMessage({
+            id: "app.project.attribute.deliveryAddress",
+          })}
           fullWidth
           InputLabelProps={{
             sx: {

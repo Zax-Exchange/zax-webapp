@@ -52,6 +52,7 @@ export type QuantityPriceData = {
   quantity: number;
   price: number;
 };
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -74,75 +75,82 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const EditableTableCell = ({
-  qpType,
-  data,
-  index,
-  setComponentsQpData,
-  componentId,
-}: {
-  qpType: "quantity" | "price";
-  data: number;
-  index: number;
-  componentId: string;
-  setComponentsQpData: React.Dispatch<
-    React.SetStateAction<Record<string, QuantityPriceData[]>>
-  >;
-}) => {
-  const [value, setValue] = useState(data);
-  const [isEditing, setIsEditing] = useState(false);
+// const EditableTableCell = ({
+//   data,
+//   index,
+//   setComponentsQpData,
+//   componentId,
+// }: {
+//   data: number;
+//   index: number;
+//   componentId: string;
+//   setComponentsQpData: React.Dispatch<
+//     React.SetStateAction<Record<string, QuantityPriceData[]>>
+//   >;
+// }) => {
+//   const [value, setValue] = useState(data);
+//   const [isEditing, setIsEditing] = useState(false);
 
-  const qpDataOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val: number | string = e.target.value;
+//   const qpDataOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     let val: number | string = e.target.value;
 
-    if (!isValidInt(val)) return;
+//     if (!isValidInt(val)) return;
 
-    val = parseInt(val, 10) || 0;
+//     val = parseInt(val, 10) || 0;
 
-    setComponentsQpData((prev) => {
-      const componentQpList = [...prev[componentId]];
-      const targetQp = componentQpList[index];
-      targetQp[qpType] = val as number;
-      componentQpList.splice(index, 1, targetQp);
-      return {
-        ...prev,
-        [componentId]: componentQpList,
-      };
-    });
-    setValue(val);
-  };
+//     setComponentsQpData((prev) => {
+//       const componentQpList = [...prev[componentId]];
+//       const targetQp = componentQpList[index];
+//       const prevPrice = targetQp.price;
 
-  if (isEditing) {
-    return (
-      <ClickAwayListener onClickAway={() => setIsEditing(false)}>
-        <TableCell sx={{ width: "50%" }}>
-          <TextField
-            focused
-            onChange={qpDataOnChange}
-            value={value ? value : ""}
-            size="small"
-          />
-        </TableCell>
-      </ClickAwayListener>
-    );
-  } else {
-    return (
-      <TableCell
-        sx={{
-          width: "50%",
-          cursor: "pointer",
-          ":hover": {
-            backgroundColor: "#eee",
-          },
-          borderRadius: 1,
-        }}
-        onClick={() => setIsEditing(true)}
-      >
-        {value ? value : ""}
-      </TableCell>
-    );
-  }
-};
+//       // This makes sure user doesn't change to empty input price
+//       targetQp.price = val !== "" ? (val as number) : prevPrice;
+//       componentQpList.splice(index, 1, targetQp);
+//       return {
+//         ...prev,
+//         [componentId]: componentQpList,
+//       };
+//     });
+//     setValue(val);
+//   };
+
+//   const handleKeyDown = (e: React.KeyboardEvent) => {
+//     if (e.key === "Enter") {
+//       setIsEditing(false);
+//     }
+//   };
+//   if (isEditing) {
+//     return (
+//       <ClickAwayListener onClickAway={() => setIsEditing(false)}>
+//         <TableCell sx={{ width: "50%" }}>
+//           <TextField
+//             focused
+//             onChange={qpDataOnChange}
+//             onKeyDown={handleKeyDown}
+//             value={value ? value : ""}
+//             size="small"
+//           />
+//         </TableCell>
+//       </ClickAwayListener>
+//     );
+//   } else {
+//     return (
+//       <TableCell
+//         sx={{
+//           width: "50%",
+//           cursor: "pointer",
+//           ":hover": {
+//             backgroundColor: "#eee",
+//           },
+//           borderRadius: 1,
+//         }}
+//         onClick={() => setIsEditing(true)}
+//       >
+//         {value ? value : ""}
+//       </TableCell>
+//     );
+//   }
+// };
 const ProjectListItem = styled(MuiListItem)(() => ({
   display: "flex",
   justifyContent: "space-between",
@@ -155,7 +163,8 @@ const ProjectListItem = styled(MuiListItem)(() => ({
 const SearchProjectDetail = () => {
   const { user } = useContext(AuthContext);
   const { projectId } = useParams();
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentComponentTab, setCurrentComponentTab] = useState(0);
+  const [currentBidTab, setCurrentBidTab] = useState(0);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const {
     data: getProjectDetailData,
@@ -186,8 +195,15 @@ const SearchProjectDetail = () => {
   useEffect(() => {
     if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
       const qpData: Record<string, QuantityPriceData[]> = {};
-      getProjectDetailData.getProjectDetail.components.forEach((comp) => {
-        qpData[comp.id] = [];
+      const { components, orderQuantities } =
+        getProjectDetailData.getProjectDetail;
+      components.forEach((comp) => {
+        qpData[comp.id] = orderQuantities.map((quantity) => {
+          return {
+            quantity,
+            price: 0,
+          };
+        });
       });
       setComponentsQpData(qpData);
     }
@@ -203,11 +219,26 @@ const SearchProjectDetail = () => {
     }
   }, [getProjectDetailError]);
 
+  const qpDataOnChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    componentId: string,
+    ind: number
+  ) => {
+    const val = e.target.value;
+    if (!isValidInt(val)) return;
+
+    const cur = [...componentsQpData[componentId]];
+    cur[ind].price = parseInt(val, 10);
+    setComponentsQpData({
+      ...componentsQpData,
+      [componentId]: cur,
+    });
+  };
   const componentTabOnChange = (
     event: React.SyntheticEvent,
     newTab: number
   ) => {
-    setCurrentTab(newTab);
+    setCurrentComponentTab(newTab);
   };
 
   const openModal = () => {
@@ -622,7 +653,11 @@ const SearchProjectDetail = () => {
   };
 
   const renderProjectDetail = () => {
-    if (!getProjectDetailData || !getProjectDetailData.getProjectDetail)
+    if (
+      !getProjectDetailData ||
+      !getProjectDetailData.getProjectDetail ||
+      !Object.keys(componentsQpData).length
+    )
       return null;
 
     const {
@@ -705,7 +740,7 @@ const SearchProjectDetail = () => {
             <Paper sx={{ mt: 1 }}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
-                  value={currentTab}
+                  value={currentComponentTab}
                   onChange={componentTabOnChange}
                   variant="scrollable"
                   scrollButtons="auto"
@@ -718,7 +753,7 @@ const SearchProjectDetail = () => {
 
               {components.map((comp, i) => {
                 return (
-                  <TabPanel value={currentTab} index={i}>
+                  <TabPanel value={currentComponentTab} index={i}>
                     <Button
                       variant="outlined"
                       style={{ position: "absolute", right: 8, top: 8 }}
@@ -751,52 +786,61 @@ const SearchProjectDetail = () => {
                   </Button>
                 </Box>
               </Box>
-              {!!Object.keys(componentsQpData).length && (
-                <Box>
-                  {Object.keys(componentsQpData).map((id, i) => {
-                    if (!componentsQpData[id].length) return null;
-                    return (
-                      <Paper key={i} sx={{ padding: 5 }}>
-                        <Typography variant="subtitle2">
-                          {getComponentName(id)}
-                        </Typography>
-                        <TableContainer>
-                          <Table size="small">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Quantity</TableCell>
-                                <TableCell>Price</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {componentsQpData[id].map((qp, i) => {
+              <Paper sx={{ mt: 1 }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <Tabs
+                    value={currentBidTab}
+                    onChange={componentTabOnChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                  >
+                    {components.map((comp, i) => {
+                      return <Tab label={comp.name} key={i} />;
+                    })}
+                  </Tabs>
+                </Box>
+
+                {components.map((comp, i) => {
+                  return (
+                    <TabPanel value={currentBidTab} index={i}>
+                      <TableContainer>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Quantity</TableCell>
+                              <TableCell>Price</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {getProjectDetailData.getProjectDetail.orderQuantities.map(
+                              (quantity, i) => {
                                 return (
                                   <TableRow>
-                                    <EditableTableCell
-                                      qpType="quantity"
-                                      index={i}
-                                      componentId={id}
-                                      data={qp.quantity}
-                                      setComponentsQpData={setComponentsQpData}
-                                    />
-                                    <EditableTableCell
-                                      qpType="price"
-                                      index={i}
-                                      componentId={id}
-                                      data={qp.price}
-                                      setComponentsQpData={setComponentsQpData}
-                                    />
+                                    <TableCell>{quantity}</TableCell>
+                                    <TableCell>
+                                      <TextField
+                                        onChange={(e) =>
+                                          qpDataOnChange(e, comp.id, i)
+                                        }
+                                        value={
+                                          componentsQpData[comp.id][i].price
+                                            ? componentsQpData[comp.id][i].price
+                                            : ""
+                                        }
+                                        size="small"
+                                      />
+                                    </TableCell>
                                   </TableRow>
                                 );
-                              })}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Paper>
-                    );
-                  })}
-                </Box>
-              )}
+                              }
+                            )}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                  );
+                })}
+              </Paper>
             </Container>
           </Grid>
         </Grid>

@@ -36,6 +36,9 @@ import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
+import { useIntl } from "react-intl";
+
+type ProjectOverviewMenuOption = "view-detail" | "share" | "delete";
 
 export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -53,6 +56,7 @@ const CustomerProjectOverview = ({
   project: CustomerProject;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const intl = useIntl();
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
@@ -78,20 +82,20 @@ const CustomerProjectOverview = ({
     setProjectMenuAnchor(null);
   };
 
-  const projectMenuOnClick = (
-    e: React.MouseEvent<HTMLLIElement, MouseEvent>
-  ) => {
-    if (e.currentTarget.innerText === "View detail") {
-      viewDetailHandler();
+  const projectMenuOnClick = (type: ProjectOverviewMenuOption) => {
+    switch (type) {
+      case "view-detail":
+        viewDetailHandler();
+        break;
+      case "share":
+        if (canShare()) setPermissionModalOpen(true);
+        break;
+      case "delete":
+        if (canDelete()) setDeleteProjectModalOpen(true);
+        break;
+      default:
+        break;
     }
-    if (e.currentTarget.innerText === "Share" && canShare()) {
-      setPermissionModalOpen(true);
-    }
-
-    if (e.currentTarget.innerText === "Delete" && canDelete()) {
-      setDeleteProjectModalOpen(true);
-    }
-
     moreOnClose();
   };
 
@@ -146,13 +150,21 @@ const CustomerProjectOverview = ({
           }}
         >
           <MenuList dense sx={{ padding: "4px 0 4px" }}>
-            <MenuItem onClick={projectMenuOnClick}>View detail</MenuItem>
+            <MenuItem onClick={() => projectMenuOnClick("view-detail")}>
+              View detail
+            </MenuItem>
 
-            <MenuItem onClick={projectMenuOnClick} disabled={!canShare()}>
+            <MenuItem
+              onClick={() => projectMenuOnClick("share")}
+              disabled={!canShare()}
+            >
               Share
             </MenuItem>
 
-            <MenuItem onClick={projectMenuOnClick} disabled={!canDelete()}>
+            <MenuItem
+              onClick={() => projectMenuOnClick("delete")}
+              disabled={!canDelete()}
+            >
               Delete
             </MenuItem>
           </MenuList>
@@ -172,14 +184,26 @@ const CustomerProjectOverview = ({
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              <Tooltip title="Delivery date" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.project.attribute.deliveryDate",
+                })}
+                arrow
+                placement="top"
+              >
                 <LocalShippingOutlinedIcon />
               </Tooltip>
               <Typography variant="caption">{project.deliveryDate}</Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              <Tooltip title="Delivery address" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.project.attribute.deliveryAddress",
+                })}
+                arrow
+                placement="top"
+              >
                 <PlaceIcon />
               </Tooltip>
               <Typography variant="caption">
@@ -188,14 +212,26 @@ const CustomerProjectOverview = ({
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              <Tooltip title="Target Price" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.project.attribute.targetPrice",
+                })}
+                arrow
+                placement="top"
+              >
                 <AttachMoneyIcon />
               </Tooltip>
               <Typography variant="caption">${project.targetPrice}</Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              <Tooltip title="Posted on" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.project.attribute.postedOn",
+                })}
+                arrow
+                placement="top"
+              >
                 <CalendarMonthIcon />
               </Tooltip>
               <Typography variant="caption">{date}</Typography>

@@ -46,7 +46,10 @@ import {
 import CreateProjectComponentModal from "./modals/CreateProjectComponentModal";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { useIntl } from "react-intl";
+
 const CreateProject = () => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -221,7 +224,9 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Product</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.product" })}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography variant="caption">{productName}</Typography>
@@ -233,7 +238,9 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Dimension</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.dimension" })}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography variant="caption">{dimension}</Typography>
@@ -245,7 +252,9 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Thickness</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.thickness" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -259,7 +268,9 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Flute</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.flute" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -273,7 +284,9 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.color" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -287,7 +300,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Manufacturing Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.manufacturingProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -301,7 +318,9 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.material" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -315,7 +334,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.materialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -329,7 +352,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.postProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -351,7 +378,9 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.finish" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -365,7 +394,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideMaterial",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -379,7 +412,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideMaterialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -393,7 +430,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -415,7 +456,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideFinish",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -429,7 +474,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideColor",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -443,7 +492,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideMaterial",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -457,7 +510,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideMaterialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -471,7 +528,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -493,7 +554,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideFinish",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -507,7 +572,11 @@ const CreateProject = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideColor",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -532,7 +601,9 @@ const CreateProject = () => {
       <Paper sx={{ padding: 5 }}>
         <Box display="flex" mb={4}>
           <Typography variant="h6" textAlign="left" flexGrow={1}>
-            Configure Project Detail
+            {intl.formatMessage({
+              id: "app.customer.createProject.configureProjectDetail",
+            })}
           </Typography>
 
           <Stack direction="row">
@@ -541,7 +612,9 @@ const CreateProject = () => {
             </ListItem>
             <ListItem>
               <Button onClick={openComponentModal} variant="text">
-                Add component
+                {intl.formatMessage({
+                  id: "app.customer.createProject.addComponent",
+                })}
               </Button>
             </ListItem>
             <ListItem>
@@ -550,7 +623,9 @@ const CreateProject = () => {
                 disabled={shouldDisableCreateProjectButton()}
                 onClick={createProject}
               >
-                CREATE
+                {intl.formatMessage({
+                  id: "app.customer.createProject.create",
+                })}
               </Button>
             </ListItem>
           </Stack>
@@ -564,7 +639,9 @@ const CreateProject = () => {
             <ListItem>
               <TextField
                 autoComplete="new-password"
-                label="Project Name"
+                label={intl.formatMessage({
+                  id: "app.project.attribute.name",
+                })}
                 onChange={projectInputOnChange}
                 name="name"
                 value={projectData.name}
@@ -574,7 +651,9 @@ const CreateProject = () => {
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DesktopDatePicker
                   disablePast
-                  label="Delivery Date"
+                  label={intl.formatMessage({
+                    id: "app.project.attribute.deliveryDate",
+                  })}
                   inputFormat="YYYY-MM-DD"
                   value={projectData.deliveryDate}
                   onChange={(v: any) => {
@@ -601,7 +680,9 @@ const CreateProject = () => {
               <TextField
                 autoComplete="new-password"
                 type="tel"
-                label="Target Price"
+                label={intl.formatMessage({
+                  id: "app.project.attribute.targetPrice",
+                })}
                 onChange={projectInputOnChange}
                 name="targetPrice"
                 value={projectData.targetPrice || ""}
@@ -612,7 +693,9 @@ const CreateProject = () => {
               <TextField
                 autoComplete="new-password"
                 type="tel"
-                label="Order Quantity"
+                label={intl.formatMessage({
+                  id: "app.project.attribute.orderQuantities",
+                })}
                 onChange={orderQuantityOnChange}
                 value={orderQuantity}
               />
@@ -635,7 +718,9 @@ const CreateProject = () => {
               <TextField
                 autoComplete="new-password"
                 multiline
-                label="Comments"
+                label={intl.formatMessage({
+                  id: "app.project.attribute.comments",
+                })}
                 onChange={projectInputOnChange}
                 name="comments"
                 value={projectData.comments}

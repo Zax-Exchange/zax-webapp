@@ -492,7 +492,7 @@ const VendorProjectDetail = () => {
           vendorName={getCompanyDetailData!.getCompanyDetail!.name}
           chatOpen={chatOpen}
         />
-        <Grid container className="vendor-project-info-container" spacing={2}>
+        <Grid container spacing={2}>
           <Grid item xs={5.5}>
             <Paper
               style={{
@@ -507,7 +507,7 @@ const VendorProjectDetail = () => {
               >
                 <Tooltip title="Message Customer" arrow placement="top">
                   <QuestionAnswerIcon
-                    sx={{ color: theme.palette.primary.dark }}
+                    sx={{ color: theme.palette.primary.light }}
                   />
                 </Tooltip>
               </IconButton>
@@ -626,44 +626,6 @@ const VendorProjectDetail = () => {
                     );
                   })}
                 </Paper>
-                // <>
-                //   <Paper>
-                //     <List>
-                //       <ListItem>
-                //         <Typography>name: {comp.name}</Typography>
-                //       </ListItem>
-                //       <ListItem>
-                //         <Typography>
-                //           product: {comp.componentSpec.productName}
-                //         </Typography>
-                //       </ListItem>
-                //       <ListItem>
-                //         <Typography>
-                //           dimension: {comp.componentSpec.dimension}
-                //         </Typography>
-                //       </ListItem>
-                //       <ListItem>
-                //         <Typography>Bids</Typography>
-                //       </ListItem>
-                //     </List>
-                //     {bids[comp.id].map((qp, i) => {
-                //       return (
-                //         <List className="quantity-price-container">
-                //           <ListItem>
-                //             <Typography className="quantity">
-                //               Quantity: {qp.quantity}
-                //             </Typography>
-                //           </ListItem>
-                //           <ListItem>
-                //             <Typography className="price">
-                //               Price: {qp.price}
-                //             </Typography>
-                //           </ListItem>
-                //         </List>
-                //       );
-                //     })}
-                //   </Paper>
-                // </>
               );
             })}
           </Grid>

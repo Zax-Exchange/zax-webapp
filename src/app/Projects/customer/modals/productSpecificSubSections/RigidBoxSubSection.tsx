@@ -25,6 +25,7 @@ import {
 import MuiStack from "@mui/material/Stack";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useIntl } from "react-intl";
 
 type RigidBoxPostProcessDetail = {
   postProcessName: string;
@@ -47,6 +48,7 @@ const RigidBoxSubSection = ({
   >;
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
+  const intl = useIntl();
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
     useState<RigidBoxPostProcessDetail>({} as RigidBoxPostProcessDetail);
 
@@ -261,7 +263,9 @@ const RigidBoxSubSection = ({
             <TextField
               key="number-of-colors"
               autoComplete="new-password"
-              label="Number Of Colors To Print"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.numberOfColors",
+              })}
               onChange={postProcessOnChange}
               name="numberOfColors"
               value={postProcessDetail.numberOfColors}
@@ -271,7 +275,9 @@ const RigidBoxSubSection = ({
             <TextField
               key="printing-estimated-area"
               autoComplete="new-password"
-              label="Printing Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -288,7 +294,9 @@ const RigidBoxSubSection = ({
             <TextField
               key="emboss-font-size"
               autoComplete="new-password"
-              label="Emboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -298,7 +306,9 @@ const RigidBoxSubSection = ({
             <TextField
               key="emboss-estimated-area"
               autoComplete="new-password"
-              label="Emboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -315,7 +325,9 @@ const RigidBoxSubSection = ({
             <TextField
               key="deboss-font-size"
               autoComplete="new-password"
-              label="Deboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -325,7 +337,9 @@ const RigidBoxSubSection = ({
             <TextField
               key="deboss-estimated-area"
               autoComplete="new-password"
-              label="Deboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -342,7 +356,9 @@ const RigidBoxSubSection = ({
             <TextField
               key="foil-stamp-color"
               autoComplete="new-password"
-              label="Foil Stamp Color"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.color",
+              })}
               onChange={postProcessOnChange}
               name="color"
               value={postProcessDetail.color}
@@ -352,7 +368,9 @@ const RigidBoxSubSection = ({
             <TextField
               key="foil-stamp-estimated-area"
               autoComplete="new-password"
-              label="Foil Stamp Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -367,7 +385,9 @@ const RigidBoxSubSection = ({
         <>
           {subSection}
           <Button variant="text" onClick={addPostProcess}>
-            Add Post Process
+            {intl.formatMessage({
+              id: "app.component.postProcess.add",
+            })}
           </Button>
         </>
       )
@@ -375,42 +395,15 @@ const RigidBoxSubSection = ({
   };
 
   const renderComponentSpecSection = () => {
-    const renderMaterialsDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_MATERIALS,
-        componentSpecAttribute,
-        label
-      );
-    };
-    const renderRigixBoxMaterialSourcesDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_MATERIAL_SOURCES,
-        componentSpecAttribute,
-        label
-      );
-    };
-
-    const renderRigidBoxFinishesDropdown = (
-      componentSpecAttribute: keyof CreateProjectComponentSpecInput,
-      label: string
-    ) => {
-      return renderAutocompleteDropdown(
-        RIGID_BOX_FINISHES,
-        componentSpecAttribute,
-        label
-      );
-    };
     return (
       <>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">General Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.generalSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             <TextField
@@ -433,13 +426,19 @@ const RigidBoxSubSection = ({
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Outside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.outsideSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
               RIGID_BOX_MATERIALS,
               "outsideMaterial",
-              "Outside Material",
+              intl.formatMessage({
+                id: "app.component.attribute.outsideMaterial",
+              }),
               "If unsure, we recommend C2S."
             )}
           </ListItem>
@@ -447,7 +446,9 @@ const RigidBoxSubSection = ({
             {renderAutocompleteDropdown(
               RIGID_BOX_MATERIAL_SOURCES,
               "outsideMaterialSource",
-              "Outside Material Source",
+              intl.formatMessage({
+                id: "app.component.attribute.outsideMaterialSource",
+              }),
               "If unsure, we recoomend Standard."
             )}
           </ListItem>
@@ -455,7 +456,9 @@ const RigidBoxSubSection = ({
             {renderAutocompleteDropdown(
               RIGID_BOX_FINISHES,
               "outsideFinish",
-              "Outside Finish",
+              intl.formatMessage({
+                id: "app.component.attribute.outsideFinish",
+              }),
               "If unsure, we recoomend SHIT."
             )}
           </ListItem>
@@ -474,25 +477,42 @@ const RigidBoxSubSection = ({
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Inside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.insideSpecs" })}
+            </Typography>
           </ListItem>
           <ListItem>
-            {renderMaterialsDropdown("insideMaterial", "Inside Material")}
-          </ListItem>
-          <ListItem>
-            {renderRigixBoxMaterialSourcesDropdown(
-              "insideMaterialSource",
-              "Inside Material Source"
+            {renderAutocompleteDropdown(
+              RIGID_BOX_MATERIALS,
+              "insideMaterial",
+              intl.formatMessage({
+                id: "app.component.attribute.insideMaterial",
+              })
             )}
           </ListItem>
           <ListItem>
-            {renderRigidBoxFinishesDropdown("insideFinish", "Inside Finish")}
+            {renderAutocompleteDropdown(
+              RIGID_BOX_MATERIAL_SOURCES,
+              "insideMaterialSource",
+              intl.formatMessage({
+                id: "app.component.attribute.insideMaterial",
+              })
+            )}
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              RIGID_BOX_FINISHES,
+              "insideFinish",
+              intl.formatMessage({ id: "app.component.attribute.insideFinish" })
+            )}
           </ListItem>
           <ListItem>
             {renderPostProcessSection(
               insidePostProcessDetail,
               setInsidePostProcessDetail,
-              "Inside Post Process"
+              intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              })
             )}
           </ListItem>
           {renderPostProcessDetailSection(
@@ -506,7 +526,9 @@ const RigidBoxSubSection = ({
           <Stack>
             <ListItem>
               <Typography variant="subtitle2">
-                Outside Post Processes
+                {intl.formatMessage({
+                  id: "app.component.attribute.outsidePostProcess",
+                })}
               </Typography>
             </ListItem>
             {componentSpec.outsidePostProcess.map((postProcess, i) => {
@@ -525,7 +547,10 @@ const RigidBoxSubSection = ({
         {!!componentSpec.insidePostProcess?.length && (
           <Stack>
             <ListItem>
-              <Typography variant="subtitle2">Inside Post Processes</Typography>
+              {intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              })}
+              <Typography variant="subtitle2"></Typography>
             </ListItem>
             {componentSpec.insidePostProcess.map((postProcess, i) => {
               return (
