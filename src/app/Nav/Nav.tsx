@@ -30,6 +30,7 @@ import {
   GENERAL_ROUTES,
   VENDOR_ROUTES,
 } from "../constants/loggedInRoutes";
+import { useIntl } from "react-intl";
 
 const query = gql`
   mutation reset($t: Int) {
@@ -37,8 +38,8 @@ const query = gql`
   }
 `;
 
-// TODO: add route protections to prevent customer/vendors from accessing vendors/customers pages
 const Nav = () => {
+  const intl = useIntl();
   const [reset, { loading: resetLoading }] = useMutation(query);
   const navigate = useNavigate();
   const { user, login, logout } = useContext(AuthContext);
@@ -81,7 +82,9 @@ const Nav = () => {
                   <Home />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Home"
+                  primary={intl.formatMessage({
+                    id: "app.routes.loggedIn.home",
+                  })}
                   primaryTypographyProps={{ variant: "subtitle1" }}
                 ></ListItemText>
               </ListItemButton>
@@ -93,7 +96,9 @@ const Nav = () => {
                   <TextSnippet />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Projects"
+                  primary={intl.formatMessage({
+                    id: "app.routes.loggedIn.projects",
+                  })}
                   primaryTypographyProps={{ variant: "subtitle1" }}
                 ></ListItemText>
               </ListItemButton>
@@ -116,7 +121,9 @@ const Nav = () => {
                   <Settings />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Settings"
+                  primary={intl.formatMessage({
+                    id: "app.routes.loggedIn.settings",
+                  })}
                   primaryTypographyProps={{ variant: "subtitle1" }}
                 ></ListItemText>
               </ListItemButton>
@@ -128,7 +135,9 @@ const Nav = () => {
                   <Logout />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Log out"
+                  primary={intl.formatMessage({
+                    id: "app.general.logout",
+                  })}
                   primaryTypographyProps={{ variant: "subtitle1" }}
                 ></ListItemText>
               </ListItemButton>
@@ -191,7 +200,9 @@ const Nav = () => {
               variant="contained"
               sx={{ borderRadius: 40 }}
             >
-              NEW PROJECT
+              {intl.formatMessage({
+                id: "app.routes.loggedIn.newProject",
+              })}
             </Button>
           </Box>
 
@@ -214,13 +225,17 @@ const Nav = () => {
               variant="outlined"
               onClick={() => handleLoggedOutOnClick("login")}
             >
-              Log In
+              {intl.formatMessage({
+                id: "app.general.logout",
+              })}
             </Button>
             <Button
               variant="contained"
               onClick={() => handleLoggedOutOnClick("company-signup")}
             >
-              Get Started
+              {intl.formatMessage({
+                id: "app.routes.loggedOut.getStarted",
+              })}
             </Button>
           </Box>
         </Toolbar>

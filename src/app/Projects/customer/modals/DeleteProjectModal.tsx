@@ -11,6 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import React, { useContext } from "react";
+import { useIntl } from "react-intl";
 import { AuthContext } from "../../../../context/AuthContext";
 import { Exact, InputMaybe } from "../../../../generated/graphql";
 import { useDeleteProjectMutation } from "../../../gql/delete/project/project.generated";
@@ -31,6 +32,7 @@ const DeleteProjectModal = ({
   projectId: string;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [getCustomerProjects] = useGetCustomerProjectsLazyQuery();
@@ -79,13 +81,21 @@ const DeleteProjectModal = ({
   const renderDeleteProjectConfirmation = () => {
     return (
       <>
-        <Typography>Do you want to delete the project?</Typography>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({
+            id: "app.customer.projects.modal.delete.title",
+          })}
+        </Typography>
         <DialogActions>
           <Button onClick={deleteProjectOnClick} color="error">
-            Confirm
+            {intl.formatMessage({
+              id: "app.general.confirm",
+            })}
           </Button>
           <Button onClick={() => setDeleteProjectModalOpen(false)}>
-            Cancel
+            {intl.formatMessage({
+              id: "app.general.cancel",
+            })}
           </Button>
         </DialogActions>
       </>

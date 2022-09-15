@@ -27,6 +27,7 @@ import {
   ProjectComponentSpec,
   VendorDetail,
 } from "../../../../generated/graphql";
+import { useIntl } from "react-intl";
 
 /**
  * Bid modal shown in CustomerProjectDetail
@@ -42,6 +43,7 @@ type ProjectComponentRow = {
   isLast: boolean;
 };
 const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
+  const intl = useIntl();
   const [open, setOpen] = useState(false);
   const renderComponentSpecAccordionDetail = (spec: ProjectComponentSpec) => {
     const {
@@ -69,13 +71,13 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
 
     const res: JSX.Element[] = [];
 
-    // for (let key in spec) {
-
     if (productName) {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Product</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.product" })}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography variant="caption">{productName}</Typography>
@@ -87,7 +89,9 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Dimension</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.dimension" })}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography variant="caption">{dimension}</Typography>
@@ -99,7 +103,9 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Thickness</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.thickness" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -113,7 +119,9 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Flute</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.flute" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -127,7 +135,9 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.color" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -141,7 +151,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Manufacturing Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.manufacturingProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -155,7 +169,9 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.material" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -169,7 +185,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.materialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -183,7 +203,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.postProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -205,7 +229,9 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.finish" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -219,7 +245,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideMaterial",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -233,7 +263,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideMaterialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -247,7 +281,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -269,7 +307,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideFinish",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -283,7 +325,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideColor",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -297,7 +343,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideMaterial",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -311,7 +361,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideMaterialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -325,7 +379,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -347,7 +405,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideFinish",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -361,7 +423,11 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideColor",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -406,7 +472,7 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
                 <Typography variant="subtitle2" gutterBottom>
-                  Detail for {row.projectComponent.name}
+                  {row.projectComponent.name}
                 </Typography>
                 {renderComponentSpecAccordionDetail(
                   row.projectComponent.componentSpec
@@ -419,6 +485,7 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
     </>
   );
 };
+
 const VendorBidModal = ({
   bid,
   projectComponents,
@@ -430,6 +497,7 @@ const VendorBidModal = ({
   setIsBidModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   vendorData: VendorDetail;
 }) => {
+  const intl = useIntl();
   const getComponent = (id: string) => {
     return projectComponents.find((comp) => comp.id === id);
   };
@@ -458,9 +526,15 @@ const VendorBidModal = ({
               <TableHead>
                 <TableRow>
                   <TableCell />
-                  <TableCell>Component Name</TableCell>
-                  <TableCell align="right">Quantity</TableCell>
-                  <TableCell align="right">Price</TableCell>
+                  <TableCell>
+                    {intl.formatMessage({ id: "app.component.attribute.name" })}
+                  </TableCell>
+                  <TableCell align="right">
+                    {intl.formatMessage({ id: "app.bid.attribute.quantity" })}
+                  </TableCell>
+                  <TableCell align="right">
+                    {intl.formatMessage({ id: "app.bid.attribute.price" })}
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

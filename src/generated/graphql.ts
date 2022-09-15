@@ -378,6 +378,7 @@ export type Mutation = {
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
   updateCustomerInfo: Scalars['Boolean'];
+  updateProject?: Maybe<Scalars['Boolean']>;
   updateProjectBidPermissions: Scalars['Boolean'];
   updateProjectPermissions: Scalars['Boolean'];
   updateStripeSubscription: Scalars['Boolean'];
@@ -482,6 +483,11 @@ export type MutationUpdateCompanyStatusArgs = {
 
 export type MutationUpdateCustomerInfoArgs = {
   data: UpdateCustomerInfoInput;
+};
+
+
+export type MutationUpdateProjectArgs = {
+  data?: InputMaybe<UpdateProjectInput>;
 };
 
 
@@ -902,11 +908,32 @@ export type UpdateProjectBidPermissionsInputData = {
 };
 
 export type UpdateProjectComponentInput = {
-  dimension: Scalars['String'];
+  componentSpec: UpdateProjectComponentSpecInput;
   id: Scalars['String'];
   name: Scalars['String'];
-  postProcess: Scalars['String'];
-  products: Array<Scalars['String']>;
+};
+
+export type UpdateProjectComponentSpecInput = {
+  color?: InputMaybe<Scalars['String']>;
+  dimension: Scalars['String'];
+  finish?: InputMaybe<Scalars['String']>;
+  flute?: InputMaybe<Scalars['String']>;
+  insideColor?: InputMaybe<Scalars['String']>;
+  insideFinish?: InputMaybe<Scalars['String']>;
+  insideMaterial?: InputMaybe<Scalars['String']>;
+  insideMaterialSource?: InputMaybe<Scalars['String']>;
+  insidePostProcess?: InputMaybe<Array<Scalars['String']>>;
+  manufacturingProcess?: InputMaybe<Scalars['String']>;
+  material?: InputMaybe<Scalars['String']>;
+  materialSource?: InputMaybe<Scalars['String']>;
+  outsideColor?: InputMaybe<Scalars['String']>;
+  outsideFinish?: InputMaybe<Scalars['String']>;
+  outsideMaterial?: InputMaybe<Scalars['String']>;
+  outsideMaterialSource?: InputMaybe<Scalars['String']>;
+  outsidePostProcess?: InputMaybe<Array<Scalars['String']>>;
+  postProcess?: InputMaybe<Array<Scalars['String']>>;
+  productName: Scalars['String'];
+  thickness?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateProjectInput = {

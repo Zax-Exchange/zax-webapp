@@ -28,6 +28,7 @@ import qs from "qs";
 import { useSearchCustomerProjectsLazyQuery } from "../../gql/get/project/project.generated";
 import FullScreenLoading from "../../Utils/Loading";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useIntl } from "react-intl";
 
 // Allowed search params, if user tempers the url we will not allow search request to fire
 const allowedParams = {
@@ -42,7 +43,9 @@ type VendorFiltersType = {
 };
 
 const VendorSearchResults = () => {
+  const intl = useIntl();
   const theme = useTheme();
+
   // location is used to extract query params
   const location = useLocation();
 
@@ -251,14 +254,18 @@ const VendorSearchResults = () => {
           mt={2}
         >
           <Typography variant="subtitle2" textAlign="left">
-            Target Price
+            {intl.formatMessage({
+              id: "app.project.attribute.targetPrice",
+            })}
           </Typography>
           <Typography
             variant="caption"
             onClick={clearFilters}
             style={{ cursor: "pointer", color: theme.palette.primary.main }}
           >
-            clear filters
+            {intl.formatMessage({
+              id: "app.search.clearFilters",
+            })}
           </Typography>
         </Box>
         <FormGroup>
@@ -334,7 +341,9 @@ const VendorSearchResults = () => {
       <>
         <Box mt={2}>
           <Typography variant="subtitle2" textAlign="left">
-            Delivery Date
+            {intl.formatMessage({
+              id: "app.project.attribute.deliveryDate",
+            })}
           </Typography>
         </Box>
         <FormGroup>
@@ -387,7 +396,9 @@ const VendorSearchResults = () => {
           </Box>
           <Box mt={2}>
             <Button variant="outlined" onClick={applyFilters} fullWidth>
-              Apply Filters
+              {intl.formatMessage({
+                id: "app.search.applyFilters",
+              })}
             </Button>
           </Box>
         </Grid>
@@ -395,18 +406,28 @@ const VendorSearchResults = () => {
         <Grid item xs={7} className="search-results-inner-container">
           {!searchProjectsData.searchCustomerProjects.length && (
             <Typography variant="caption">
-              Sorry, but we could not find any projects for your search. Try
-              searching for other products!
+              {intl.formatMessage({
+                id: "app.search.noResults",
+              })}
             </Typography>
           )}
           {searchProjectsData.searchCustomerProjects.length && (
-            <Stack direction="column">
-              {searchProjectsData.searchCustomerProjects.map(
-                (result: ProjectOverview, i: number) => {
-                  return <SearchProjectOverview projectData={result} key={i} />;
-                }
-              )}
-            </Stack>
+            <>
+              <Box>
+                <Typography variant="caption">
+                  {intl.formatMessage({ id: "app.search.resultsTitle" })}
+                </Typography>
+              </Box>
+              <Stack direction="column">
+                {searchProjectsData.searchCustomerProjects.map(
+                  (result: ProjectOverview, i: number) => {
+                    return (
+                      <SearchProjectOverview projectData={result} key={i} />
+                    );
+                  }
+                )}
+              </Stack>
+            </>
           )}
         </Grid>
       </Grid>

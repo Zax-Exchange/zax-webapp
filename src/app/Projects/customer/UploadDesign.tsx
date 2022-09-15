@@ -10,6 +10,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useUploadProjectDesignMutation } from "../../gql/create/project/project.generated";
 import { CreateProjectInput } from "../../../generated/graphql";
+import { useIntl } from "react-intl";
 
 export type File = {
   uri: string;
@@ -26,6 +27,7 @@ export default function UploadDesign({
 }: {
   setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
 }) {
+  const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [mutate, { error, loading, data }] = useUploadProjectDesignMutation();
 
@@ -34,7 +36,7 @@ export default function UploadDesign({
     if (error) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
       setSnackbarOpen(true);
     }
@@ -42,7 +44,9 @@ export default function UploadDesign({
     if (data) {
       setSnackbar({
         severity: "success",
-        message: "Project design uploaded successfully.",
+        message: intl.formatMessage({
+          id: "app.customer.createProject.upload.success",
+        }),
       });
       setSnackbarOpen(true);
     }
@@ -67,7 +71,9 @@ export default function UploadDesign({
       // invalid file type
       setSnackbar({
         severity: "error",
-        message: "File type is not supported. Please upload pdf only.",
+        message: intl.formatMessage({
+          id: "app.customer.createProject.upload.fileTypeError",
+        }),
       });
       setSnackbarOpen(true);
     }
@@ -78,7 +84,11 @@ export default function UploadDesign({
       <input hidden type="file" onChange={onUpload} accept=".pdf" />
       {loading && <CircularProgress />}
       {!loading && <CloudUploadIcon />}
-      <Typography>Upload design</Typography>
+      <Typography>
+        {intl.formatMessage({
+          id: "app.customer.createProject.uploadDesign",
+        })}
+      </Typography>
     </IconButton>
   );
 }

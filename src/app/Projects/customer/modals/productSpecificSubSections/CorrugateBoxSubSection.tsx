@@ -25,6 +25,7 @@ import {
 } from "../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useIntl } from "react-intl";
 
 type CorrugatePostProcessDetail = {
   postProcessName: string;
@@ -42,6 +43,7 @@ const CorrugateBoxSubSection = ({
   >;
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
+  const intl = useIntl();
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
     useState<CorrugatePostProcessDetail>({} as CorrugatePostProcessDetail);
 
@@ -215,7 +217,9 @@ const CorrugateBoxSubSection = ({
                 <TextField
                   key="corrugate-printing-method-dropdown"
                   {...params}
-                  label="Printing Method"
+                  label={intl.formatMessage({
+                    id: "app.component.postProcess.printing.method",
+                  })}
                   helperText="If unsure, we recommend Litho/Flexo."
                   inputProps={{
                     ...params.inputProps,
@@ -235,7 +239,9 @@ const CorrugateBoxSubSection = ({
             <TextField
               key="corrugate-printing-number-of-colors"
               autoComplete="new-password"
-              label="Number of Colors"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.printing.numberOfColors",
+              })}
               onChange={postProcessOnChange}
               name="numberOfColors"
               value={postProcessDetail.numberOfColors}
@@ -252,7 +258,9 @@ const CorrugateBoxSubSection = ({
             <TextField
               key="folding-carton-emboss-font-size"
               autoComplete="new-password"
-              label="Emboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.emboss.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -262,7 +270,9 @@ const CorrugateBoxSubSection = ({
             <TextField
               key="folding-carton-emboss-estimated-area"
               autoComplete="new-password"
-              label="Emboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.emboss.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -279,7 +289,9 @@ const CorrugateBoxSubSection = ({
             <TextField
               key="folding-carton-deboss-font-size"
               autoComplete="new-password"
-              label="Deboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.deboss.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -289,7 +301,9 @@ const CorrugateBoxSubSection = ({
             <TextField
               key="folding-carton-deboss-estimated-area"
               autoComplete="new-password"
-              label="Deboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.deboss.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -304,7 +318,9 @@ const CorrugateBoxSubSection = ({
         <>
           {subSection}
           <Button variant="text" onClick={addPostProcess}>
-            Add Post Process
+            {intl.formatMessage({
+              id: "app.component.postProcess.add",
+            })}
           </Button>
         </>
       )
@@ -381,14 +397,20 @@ const CorrugateBoxSubSection = ({
       <>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">General Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.generalSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             <TextField
               sx={{ width: 250 }}
               key="folding-carton-dimension"
               autoComplete="new-password"
-              label="Dimension"
+              label={intl.formatMessage({
+                id: "app.component.attribute.dimension",
+              })}
               onChange={componentSpecOnChange}
               name="dimension"
               value={componentSpec.dimension}
@@ -397,7 +419,9 @@ const CorrugateBoxSubSection = ({
           <ListItem>
             <TextField
               autoComplete="new-password"
-              label="Thickness"
+              label={intl.formatMessage({
+                id: "app.component.attribute.thickness",
+              })}
               onChange={componentSpecOnChange}
               name="thickness"
               value={componentSpec.thickness}
@@ -407,7 +431,9 @@ const CorrugateBoxSubSection = ({
             {renderAutocompleteDropdown(
               CORRUGATE_BOX_FLUTES,
               "flute",
-              "Flute Type",
+              intl.formatMessage({
+                id: "app.component.attribute.flute",
+              }),
               "corrugate-flute"
             )}
           </ListItem>
@@ -416,7 +442,9 @@ const CorrugateBoxSubSection = ({
               sx={{ width: 250 }}
               disabled
               key="corrugate-material"
-              label="Material"
+              label={intl.formatMessage({
+                id: "app.component.attribute.material",
+              })}
               value="Default Corrugate"
             />
           </ListItem>
@@ -425,20 +453,28 @@ const CorrugateBoxSubSection = ({
               sx={{ width: 250 }}
               disabled
               key="corrugate-material-source"
-              label="Materia Sourcel"
+              label={intl.formatMessage({
+                id: "app.component.attribute.materialSource",
+              })}
               value="OCC / Recycled Materials"
             />
           </ListItem>
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Outside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.outsideSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
               CORRUGATE_BOX_FINISHES,
               "outsideFinish",
-              "Outside Finish",
+              intl.formatMessage({
+                id: "app.component.attribute.outsideFinish",
+              }),
               "corrugate-outside-finish",
               "If unsure, we recommend Uncoated."
             )}
@@ -447,7 +483,9 @@ const CorrugateBoxSubSection = ({
             {renderPostProcessDropdown(
               outsidePostProcessDetail,
               setOutsidePostProcessDetail,
-              "Outside Post Process",
+              intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              }),
               "corrugate-outisde-post-process"
             )}
           </ListItem>
@@ -460,13 +498,19 @@ const CorrugateBoxSubSection = ({
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Inside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.insideSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
               CORRUGATE_BOX_FINISHES,
               "insideFinish",
-              "Inside Finish",
+              intl.formatMessage({
+                id: "app.component.attribute.insideFinish",
+              }),
               "corrugate-inside-finish",
               "If unsure, we recommend Uncoated."
             )}
@@ -475,7 +519,9 @@ const CorrugateBoxSubSection = ({
             {renderPostProcessDropdown(
               insidePostProcessDetail,
               setInsidePostProcessDetail,
-              "Inside Post Process",
+              intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              }),
               "corrugate-inside-post-process"
             )}
           </ListItem>
@@ -491,7 +537,9 @@ const CorrugateBoxSubSection = ({
           <Stack>
             <ListItem>
               <Typography variant="subtitle2">
-                Outside Post Processes
+                {intl.formatMessage({
+                  id: "app.component.attribute.outsidePostProcess",
+                })}
               </Typography>
             </ListItem>
             {componentSpec.outsidePostProcess.map((postProcess, i) => {
@@ -510,7 +558,11 @@ const CorrugateBoxSubSection = ({
         {!!componentSpec.insidePostProcess?.length && (
           <Stack>
             <ListItem>
-              <Typography variant="subtitle2">Inside Post Processes</Typography>
+              <Typography variant="subtitle2">
+                {intl.formatMessage({
+                  id: "app.component.attribute.insidePostProcess",
+                })}
+              </Typography>
             </ListItem>
             {componentSpec.insidePostProcess.map((postProcess, i) => {
               return (

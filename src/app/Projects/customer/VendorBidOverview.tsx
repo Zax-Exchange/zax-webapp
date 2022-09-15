@@ -27,6 +27,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import React from "react";
 import { useGetCompanyDetailQuery } from "../../gql/get/company/company.generated";
 import { useGetVendorDetailQuery } from "../../gql/get/vendor/vendor.generated";
+import { useIntl } from "react-intl";
 
 /**
  * Bid overview card displayed in CustomerProjectDetail
@@ -40,6 +41,7 @@ const VendorBidOverview = ({
   bid: ProjectBid;
   projectComponents: ProjectComponent[];
 }) => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
   const [vendorData, setVendorData] = useState<VendorDetail | null>(null);
@@ -108,7 +110,11 @@ const VendorBidOverview = ({
   }
 
   if (getVendorDetailError || getCompanyDetailError) {
-    return <Typography>Error</Typography>;
+    return (
+      <Typography>
+        {intl.formatMessage({ id: "app.general.network.error" })}
+      </Typography>
+    );
   }
   return (
     <Card sx={{ width: "100%", position: "relative" }} variant="outlined">
@@ -119,12 +125,14 @@ const VendorBidOverview = ({
               <List>
                 <ListItem>
                   <Typography variant="subtitle2">
-                    Vendor: {vendorData.name}
+                    {intl.formatMessage({ id: "app.general.vendor" })}:{" "}
+                    {vendorData.name}
                   </Typography>
                 </ListItem>
                 <ListItem>
                   <Typography variant="caption">
-                    Created On: {convertToDate(bid.createdAt)}
+                    {intl.formatMessage({ id: "app.general.createdAt" })}:{" "}
+                    {convertToDate(bid.createdAt)}
                   </Typography>
                 </ListItem>
               </List>
@@ -146,17 +154,33 @@ const VendorBidOverview = ({
           >
             <MenuList dense sx={{ padding: "4px 0 4px" }}>
               <MenuItem onClick={vendorBidMenuOnClick} data-type="view-profile">
-                View vendor profile
+                {intl.formatMessage({
+                  id: "app.customer.createProject.menu.viewVendorProfile",
+                })}
               </MenuItem>
               <MenuItem onClick={vendorBidMenuOnClick} data-type="conversation">
-                Open conversation
+                {intl.formatMessage({
+                  id: "app.customer.createProject.menu.openConversation",
+                })}
               </MenuItem>
 
-              <MenuItem onClick={vendorBidMenuOnClick}>Export to pdf</MenuItem>
+              <MenuItem onClick={vendorBidMenuOnClick}>
+                {intl.formatMessage({
+                  id: "app.customer.createProject.menu.exportToPdf",
+                })}
+              </MenuItem>
 
-              <MenuItem onClick={vendorBidMenuOnClick}>Accept</MenuItem>
+              <MenuItem onClick={vendorBidMenuOnClick}>
+                {intl.formatMessage({
+                  id: "app.customer.createProject.menu.acceptBid",
+                })}
+              </MenuItem>
 
-              <MenuItem onClick={vendorBidMenuOnClick}>Reject</MenuItem>
+              <MenuItem onClick={vendorBidMenuOnClick}>
+                {intl.formatMessage({
+                  id: "app.customer.createProject.menu.rejectBid",
+                })}
+              </MenuItem>
             </MenuList>
           </Menu>
 

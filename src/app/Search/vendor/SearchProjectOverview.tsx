@@ -19,6 +19,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import BusinessIcon from "@mui/icons-material/Business";
 import CategoryIcon from "@mui/icons-material/Category";
+import { useIntl } from "react-intl";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -37,6 +38,7 @@ const SearchProjectOverview = ({
 }: {
   projectData: ProjectOverview;
 }) => {
+  const intl = useIntl();
   const navigate = useNavigate();
 
   const handleProjectOnClick = (projectId: string) => {
@@ -52,7 +54,6 @@ const SearchProjectOverview = ({
   return (
     <Container style={{ marginBottom: "10px" }}>
       <Card
-        className="search-project-overview-container"
         onClick={() => handleProjectOnClick(projectData.id)}
         variant="elevation"
         elevation={2}
@@ -65,7 +66,13 @@ const SearchProjectOverview = ({
               </Typography>
               <List>
                 <ProjectOverviewListItem>
-                  <Tooltip title="Products" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.vendor.project.attribute.products",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <CategoryIcon />
                   </Tooltip>
                   <Typography variant="caption">
@@ -74,7 +81,13 @@ const SearchProjectOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Customer" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.vendor.project.attribute.customer",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <BusinessIcon />
                   </Tooltip>
                   <Typography variant="caption">
@@ -83,7 +96,13 @@ const SearchProjectOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Delivery address" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.project.attribute.deliveryAddress",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <PlaceIcon />
                   </Tooltip>
                   <Typography variant="caption">
@@ -92,7 +111,13 @@ const SearchProjectOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Target Price" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.project.attribute.targetPrice",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <AttachMoneyIcon />
                   </Tooltip>
                   <Typography variant="caption">
@@ -101,7 +126,13 @@ const SearchProjectOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Delivery date" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.project.attribute.deliveryDate",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <LocalShippingOutlinedIcon />
                   </Tooltip>
                   <Typography variant="caption">

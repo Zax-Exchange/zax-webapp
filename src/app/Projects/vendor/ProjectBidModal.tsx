@@ -40,6 +40,7 @@ import { QuantityPriceData } from "../../Search/vendor/SearchProjectDetail";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { isValidInt } from "../../Utils/inputValidators";
+import { useIntl } from "react-intl";
 
 const ProjectBidModal = ({
   setProjectBidModalOpen,
@@ -54,6 +55,7 @@ const ProjectBidModal = ({
     React.SetStateAction<Record<string, QuantityPriceData[]>>
   >;
 }) => {
+  const intl = useIntl();
   const [prices, setPrices] = useState([
     ...Array(orderQuantities.length).map(() => ""),
   ]);
@@ -102,8 +104,12 @@ const ProjectBidModal = ({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Price</TableCell>
+              <TableCell>
+                {intl.formatMessage({ id: "app.bid.attribute.quantity" })}
+              </TableCell>
+              <TableCell>
+                {intl.formatMessage({ id: "app.bid.attribute.price" })}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

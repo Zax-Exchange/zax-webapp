@@ -20,6 +20,10 @@ import {
   Box,
   Tabs,
   Tab,
+  Tooltip,
+  useTheme,
+  TextField,
+  ButtonGroup,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -31,9 +35,12 @@ import { ProjectOverviewListItem } from "./CustomerProjectOverview";
 import styled from "@emotion/styled";
 import {
   CreateProjectComponentSpecInput,
+  Project,
   ProjectBid,
   ProjectComponent,
   ProjectComponentSpec,
+  UpdateProjectComponentInput,
+  UpdateProjectInput,
 } from "../../../generated/graphql";
 import React from "react";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
@@ -41,6 +48,9 @@ import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.gene
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useIntl } from "react-intl";
+import EditIcon from "@mui/icons-material/Edit";
+import { useUpdateProjectMutation } from "../../gql/update/project/project.generated";
+import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -68,13 +78,72 @@ const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
   alignItems: "flex-start",
 }));
 
+// For project data
+const EditableTypography = (
+  isEditMode: boolean,
+  setData: React.Dispatch<React.SetStateAction<UpdateProjectInput>>,
+  projectAttribute: keyof UpdateProjectInput,
+  value: string | number
+) => {
+  // TODO: handle empty input
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val: string | number = e.target.value;
+    let isAllowed = true;
+    switch (projectAttribute) {
+      case "name":
+        if (!isValidAlphanumeric(val)) isAllowed = false;
+        break;
+      case "targetPrice":
+        if (!isValidInt(val)) isAllowed = false;
+        else val = parseInt(val, 10) || "";
+        break;
+      default:
+        break;
+    }
+    if (isAllowed) {
+      setData((prev) => ({
+        ...prev,
+        [projectAttribute]: val,
+      }));
+    }
+  };
+
+  if (isEditMode) {
+    return (
+      <TextField
+        onChange={onChange}
+        value={value}
+        size="small"
+        sx={{
+          marginLeft: 2,
+          "& .MuiInputBase-root": {
+            height: "2em",
+          },
+        }}
+      />
+    );
+  }
+  return <Typography variant="caption">{value}</Typography>;
+};
+
 const CustomerProjectDetail = () => {
+  const theme = useTheme();
   const intl = useIntl();
   const { projectId } = useParams();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+
+  const [projectEditMode, setProjectEditMode] = useState(false);
+  const [updateProjectData, setUpdateProjectData] = useState(
+    {} as UpdateProjectInput
+  );
   const [currentTab, setCurrentTab] = useState(0);
+  const [
+    updateProjectMutation,
+    { data: updateSuccess, error: updateError, loading: updateLoading },
+  ] = useUpdateProjectMutation();
+
   const { data, loading, error, refetch } = useGetCustomerProjectQuery({
     variables: {
       data: {
@@ -85,15 +154,125 @@ const CustomerProjectDetail = () => {
     fetchPolicy: "no-cache",
   });
 
+  // init project data for potential project update
+  useEffect(() => {
+    if (data) {
+      initializeUpdateProjectData();
+    }
+  }, [data]);
+
   useEffect(() => {
     if (error) {
       setSnackbar({
-        message: "Could not load your project. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
   }, [error]);
+
+  useEffect(() => {
+    if (updateSuccess) {
+      setSnackbar({
+        message: "success",
+        severity: "success",
+      });
+      setSnackbarOpen(true);
+    }
+    if (updateError) {
+      // In case of an error, we reset the project data to what it was originally.
+      initializeUpdateProjectData();
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [updateError, updateSuccess]);
+
+  // Initialize project data for update purpose.
+  const initializeUpdateProjectData = () => {
+    const {
+      id,
+      name,
+      deliveryAddress,
+      deliveryDate,
+      targetPrice,
+      orderQuantities,
+      components,
+    } = data!.getCustomerProject;
+
+    const compsForUpdate: UpdateProjectComponentInput[] = [];
+    for (let comp of components) {
+      const { id, name, componentSpec } = comp;
+      const {
+        productName,
+        dimension,
+
+        flute,
+        manufacturingProcess,
+
+        thickness,
+        color,
+        material,
+        materialSource,
+        postProcess,
+        finish,
+
+        outsideColor,
+        outsideMaterial,
+        outsideMaterialSource,
+        outsidePostProcess,
+        outsideFinish,
+
+        insideColor,
+        insideMaterial,
+        insideMaterialSource,
+        insidePostProcess,
+        insideFinish,
+      } = componentSpec;
+
+      compsForUpdate.push({
+        id,
+        name,
+        componentSpec: {
+          productName,
+          dimension,
+
+          flute,
+          manufacturingProcess,
+
+          thickness,
+          color,
+          material,
+          materialSource,
+          postProcess,
+          finish,
+
+          outsideColor,
+          outsideMaterial,
+          outsideMaterialSource,
+          outsidePostProcess,
+          outsideFinish,
+
+          insideColor,
+          insideMaterial,
+          insideMaterialSource,
+          insidePostProcess,
+          insideFinish,
+        },
+      });
+    }
+    setUpdateProjectData({
+      id,
+      name,
+      deliveryDate,
+      deliveryAddress,
+      targetPrice,
+      orderQuantities,
+      components: compsForUpdate,
+    });
+  };
 
   const componentTabOnChange = (
     event: React.SyntheticEvent,
@@ -101,12 +280,14 @@ const CustomerProjectDetail = () => {
   ) => {
     setCurrentTab(newTab);
   };
-  const getComponentName = (
-    componentId: string,
-    components: ProjectComponent[]
-  ) => {
-    const comp = components.find((comp) => comp.id === componentId);
-    if (comp) return comp.name;
+
+  const updateProject = async () => {
+    setProjectEditMode(false);
+    updateProjectMutation({
+      variables: {
+        data: updateProjectData,
+      },
+    });
   };
 
   const convertToDate = (timestamp: string) => {
@@ -520,9 +701,7 @@ const CustomerProjectDetail = () => {
     );
   };
 
-  if (loading) {
-    return <FullScreenLoading />;
-  }
+  const isLoading = loading || updateLoading;
 
   if (error) {
     return (
@@ -535,14 +714,16 @@ const CustomerProjectDetail = () => {
   const projectData = data?.getCustomerProject;
   const bids = projectData?.bids;
 
-  if (projectData) {
+  if (projectData && Object.keys(updateProjectData).length) {
     return (
       <Container>
+        {isLoading && <FullScreenLoading />}
         <Container disableGutters style={{ textAlign: "left" }}>
           <IconButton onClick={backButtonHandler}>
             <KeyboardBackspaceIcon />
           </IconButton>
         </Container>
+        {/* BID SECTION */}
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <Box>
@@ -570,6 +751,7 @@ const CustomerProjectDetail = () => {
                 })}
             </List>
           </Grid>
+          {/* PROJECT SECTION */}
           <Grid item xs={8}>
             <Box>
               <Typography variant="h6" textAlign="left">
@@ -578,18 +760,31 @@ const CustomerProjectDetail = () => {
                 })}
               </Typography>
             </Box>
-            <Paper sx={{ padding: 3 }} elevation={1}>
+            <Paper sx={{ padding: 3, position: "relative" }} elevation={1}>
+              <IconButton
+                sx={{ position: "absolute", top: 10, right: 10, zIndex: 9 }}
+                onClick={() => setProjectEditMode(true)}
+              >
+                <Tooltip
+                  title={intl.formatMessage({ id: "app.general.action.edit" })}
+                  placement="left"
+                >
+                  <EditIcon color="action" />
+                </Tooltip>
+              </IconButton>
               <List>
                 <ProjectDetailListItem>
                   <Typography variant="subtitle2">
                     {intl.formatMessage({ id: "app.project.attribute.name" })}
                   </Typography>
-                  <Typography variant="caption">{projectData.name}</Typography>
+                  {EditableTypography(
+                    projectEditMode,
+                    setUpdateProjectData,
+                    "name",
+                    updateProjectData.name!
+                  )}
                 </ProjectDetailListItem>
-                {/* <ProjectDetailListItem>
-                  <Typography variant="subtitle2">Posted By</Typography>
-                  <Typography variant="caption">{projectData.userId}</Typography>
-                </ProjectDetailListItem> */}
+
                 <ProjectDetailListItem>
                   <Typography variant="subtitle2">
                     {intl.formatMessage({
@@ -597,7 +792,7 @@ const CustomerProjectDetail = () => {
                     })}
                   </Typography>
                   <Typography variant="caption">
-                    {projectData.deliveryDate}
+                    {updateProjectData.deliveryDate}
                   </Typography>
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
@@ -607,7 +802,7 @@ const CustomerProjectDetail = () => {
                     })}
                   </Typography>
                   <Typography variant="caption">
-                    {projectData.deliveryAddress}
+                    {updateProjectData.deliveryAddress}
                   </Typography>
                 </ProjectDetailListItem>
 
@@ -634,9 +829,12 @@ const CustomerProjectDetail = () => {
                       id: "app.project.attribute.targetPrice",
                     })}
                   </Typography>
-                  <Typography variant="caption">
-                    {projectData.targetPrice}
-                  </Typography>
+                  {EditableTypography(
+                    projectEditMode,
+                    setUpdateProjectData,
+                    "targetPrice",
+                    updateProjectData.targetPrice!
+                  )}
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
                   <Typography variant="subtitle2">
@@ -645,7 +843,7 @@ const CustomerProjectDetail = () => {
                     })}
                   </Typography>
                   <Typography variant="caption">
-                    {projectData.orderQuantities.join(", ")}
+                    {updateProjectData.orderQuantities!.join(", ")}
                   </Typography>
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
@@ -659,8 +857,29 @@ const CustomerProjectDetail = () => {
                   </Typography>
                 </ProjectDetailListItem>
               </List>
+              {projectEditMode && (
+                <Stack
+                  sx={{ position: "absolute", bottom: 10, right: 10 }}
+                  direction="row"
+                  spacing={2}
+                >
+                  <Button
+                    variant="text"
+                    onClick={() => {
+                      initializeUpdateProjectData();
+                      setProjectEditMode(false);
+                    }}
+                  >
+                    {intl.formatMessage({ id: "app.general.cancel" })}
+                  </Button>
+                  <Button variant="outlined" onClick={() => updateProject()}>
+                    {intl.formatMessage({ id: "app.general.confirm" })}
+                  </Button>
+                </Stack>
+              )}
             </Paper>
 
+            {/* COMPONENTS SECTION */}
             <Box mt={5}>
               <Typography variant="h6" textAlign="left">
                 {intl.formatMessage({
@@ -693,29 +912,3 @@ const CustomerProjectDetail = () => {
 };
 
 export default CustomerProjectDetail;
-
-// <Stack sx={{ marginTop: 4 }}>
-//   {projectData.components.map((comp, i) => {
-//     return (
-//       <ListItem sx={{ padding: 0, mb: 2 }} key={i}>
-//         <Accordion sx={{ flexGrow: 2 }}>
-//           <AccordionSummary
-//             key={i}
-//             expandIcon={<ExpandMoreIcon />}
-//             id={`component-summary-${i}`}
-//           >
-//             <Typography variant="subtitle2">
-//               {comp.name}
-//             </Typography>
-//           </AccordionSummary>
-
-//           <AccordionDetails>
-//             {renderComponentSpecAccordionDetail(
-//               comp.componentSpec
-//             )}
-//           </AccordionDetails>
-//         </Accordion>
-//       </ListItem>
-//     );
-//   })}
-// </Stack>

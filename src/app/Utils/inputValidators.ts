@@ -5,6 +5,7 @@ export const isValidString = (val: string) => {
 
 export const isValidAlphanumeric = (val: string) => {
   const alphanumericOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
+
   return (alphanumericOnlyRegEx.test(val) || val === "") && val !== " ";
 };
 

@@ -32,6 +32,28 @@ import { CUSTOMER_ROUTES } from "../constants/loggedInRoutes";
 const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
 const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
 
+enum NotificationType {
+  NEW_BID = "NEW_BID",
+  BID_DATA_UPDATE = "BID_DATA_UPDATE",
+  PROJECT_DATA_UPDATE = "PROJECT_DATA_UPDATE",
+  BID_STATUS_UPDATE = "BID_STATUS_UPDATE",
+  PROJECT_STATUS_UPDATE = "PROJECT_STATUS_UPDATE",
+}
+
+interface NewBidNotification {
+  projectId: string;
+  projectName: string;
+}
+
+interface Notification {
+  notificationType: NotificationType;
+  activityIds: string[];
+  data: NewBidNotification;
+  activityCount: number;
+  unread: boolean;
+  unseen: boolean;
+}
+
 const ListItem = styled(MuiListItem)(({ theme }: any) => ({
   display: "flex",
   justifyContent: "center",
@@ -51,7 +73,7 @@ const CustomerNotification = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
-  const [notifications, setNotifications] = useState([] as any[]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notiCount, setNotiCount] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null as any);
   const [client, setClient] = useState(null as any);
@@ -60,6 +82,7 @@ const CustomerNotification = () => {
   // const client = connect(streamApiKey, user.notificationToken, streamAppId);
   // const feed = client.feed("notification", user.id);
 
+  // initialize stream client and notification feed for current user
   useEffect(() => {
     const streamClient = connect(
       streamApiKey,
@@ -71,6 +94,7 @@ const CustomerNotification = () => {
     setFeed(streamClient.feed("notification", user!.id));
   }, []);
 
+  // add listener to feed to listen for real time notifications
   useEffect(() => {
     // open up connection to receive live notification
     function successCallback() {
@@ -87,15 +111,19 @@ const CustomerNotification = () => {
       notis = notis.map((noti: any) => {
         const notiObject = JSON.parse(noti.object);
         return {
+          verb: noti.verb,
+          notificationType: noti.notificationType as NotificationType,
           activityIds: [noti.id],
-          projectId: notiObject.projectId,
-          projectName: notiObject.projectName,
-          bidCount: 1,
+          data: {
+            projectId: notiObject.projectId,
+            projectName: notiObject.projectName,
+          },
+          activityCount: 1,
           unread: true,
           unseen: true,
         };
       });
-      setNotifications((currentNotis: any) => [...notis, ...currentNotis]);
+      setNotifications((currentNotis) => [...notis, ...currentNotis]);
       setNotiCount((count) => count + 1);
     }
     if (feed) {
@@ -111,28 +139,32 @@ const CustomerNotification = () => {
 
     const feeds = await feed.get();
     const notis = [];
+
     for (let res of feeds.results) {
       const notiMeta = (res as NotificationActivity).activities[0];
       const notiObject = JSON.parse(notiMeta.object as string);
 
       notis.push({
+        verb: notiMeta.verb,
+        notificationType: notiMeta.notificationType as NotificationType,
         activityIds: (res as NotificationActivity).activities.map(
-          (act: any) => act.id
+          (act) => act.id
         ),
-        projectId: notiObject.projectId,
-        projectName: notiObject.projectName,
-        bidCount: res.activity_count,
+        data: {
+          projectId: notiObject.projectId,
+          projectName: notiObject.projectName,
+        },
+        activityCount: res.activity_count as number,
         unread: true,
         unseen: true,
       });
     }
-    console.log("all feeds: ", feeds);
     setNotifications([...notis]);
     setNotiCount(feeds.unseen ? feeds.unseen : 0);
   };
 
+  // init notifications when app starts
   useEffect(() => {
-    // init unseen notifications when app starts
     if (feed) {
       getNotifications();
     }
@@ -141,6 +173,7 @@ const CustomerNotification = () => {
   const clearNotiCount = () => {
     setNotiCount(0);
   };
+
   const clearAllNotis = async () => {
     if (!feed) return;
     for (let noti of notifications) {
@@ -172,11 +205,11 @@ const CustomerNotification = () => {
     setAnchorEl(null);
   };
 
-  const navigateToProjectDetail = async (noti: any, ind: number) => {
+  const navigateToProjectDetail = async (noti: Notification, ind: number) => {
     if (!feed) return;
     notiOnClose();
     const dest = CUSTOMER_ROUTES.PROJECT_DETAIL.split(":");
-    dest[1] = noti.projectId;
+    dest[1] = (noti.data as NewBidNotification).projectId;
 
     navigate(`${dest.join("")}`);
 
@@ -185,6 +218,21 @@ const CustomerNotification = () => {
     }
     clearNotiCount();
     getNotifications();
+  };
+
+  const renderNewBidNotificationItem = (noti: Notification, ind: number) => {
+    return (
+      <ListItem
+        key={ind}
+        className="with-background"
+        onClick={() => navigateToProjectDetail(noti, ind)}
+      >
+        <Typography variant="caption" sx={{ whiteSpace: "normal" }}>
+          You have <b>{noti.activityCount}</b> new bid(s) for{" "}
+          <b>{(noti.data as NewBidNotification).projectName}</b>
+        </Typography>
+      </ListItem>
+    );
   };
 
   const renderNotifications = () => {
@@ -226,21 +274,11 @@ const CustomerNotification = () => {
               </Box>
               <List sx={{ padding: 0 }}>
                 {notifications.map((noti, i) => {
-                  return (
-                    <ListItem
-                      key={i}
-                      className="with-background"
-                      onClick={() => navigateToProjectDetail(noti, i)}
-                    >
-                      <Typography
-                        variant="caption"
-                        sx={{ whiteSpace: "normal" }}
-                      >
-                        You have <b>{noti.bidCount}</b> new bid(s) for{" "}
-                        <b>{noti.projectName}</b>
-                      </Typography>
-                    </ListItem>
-                  );
+                  switch (noti.notificationType) {
+                    case NotificationType.NEW_BID:
+                      return renderNewBidNotificationItem(noti, i);
+                  }
+                  return null;
                 })}
               </List>
             </>

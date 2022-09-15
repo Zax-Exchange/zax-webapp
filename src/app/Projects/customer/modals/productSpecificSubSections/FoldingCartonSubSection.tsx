@@ -22,6 +22,7 @@ import {
 } from "../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useIntl } from "react-intl";
 
 type FoldingCartonPostProcessDetail = {
   postProcessName: string;
@@ -39,6 +40,7 @@ const FoldingCartonSubSection = ({
   >;
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
+  const intl = useIntl();
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
     useState<FoldingCartonPostProcessDetail>(
       {} as FoldingCartonPostProcessDetail
@@ -97,7 +99,6 @@ const FoldingCartonSubSection = ({
     const postProcess = componentSpec.outsidePostProcess;
     postProcess?.splice(i, 1);
 
-    console.log(postProcess);
     setComponentSpec({
       ...componentSpec,
       outsidePostProcess: postProcess,
@@ -151,7 +152,6 @@ const FoldingCartonSubSection = ({
           value={postProcessDetail.postProcessName}
           onChange={(e, v) => {
             setPostProcessDetail((prev) => {
-              console.log(prev.postProcessName, v);
               // If user selects same post process, do nothing.
               if (prev.postProcessName === v) {
                 return prev;
@@ -198,7 +198,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-number-of-colors"
               autoComplete="new-password"
-              label="Number Of Colors To Print"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.printing.numberOfColors",
+              })}
               onChange={postProcessOnChange}
               name="numberOfColors"
               value={postProcessDetail.numberOfColors}
@@ -208,7 +210,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-printing-estimated-area"
               autoComplete="new-password"
-              label="Printing Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.printing.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -225,7 +229,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-emboss-font-size"
               autoComplete="new-password"
-              label="Emboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.emboss.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -235,7 +241,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-emboss-estimated-area"
               autoComplete="new-password"
-              label="Emboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.emboss.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -252,7 +260,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-deboss-font-size"
               autoComplete="new-password"
-              label="Deboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.deboss.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -262,7 +272,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-deboss-estimated-area"
               autoComplete="new-password"
-              label="Deboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.deboss.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -279,7 +291,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-foil-stamp-color"
               autoComplete="new-password"
-              label="Foil Stamp Color"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.foilStamp.color",
+              })}
               onChange={postProcessOnChange}
               name="color"
               value={postProcessDetail.color}
@@ -289,7 +303,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-foil-stamp-estimated-area"
               autoComplete="new-password"
-              label="Foil Stamp Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.foilStamp.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -304,7 +320,9 @@ const FoldingCartonSubSection = ({
         <>
           {subSection}
           <Button variant="text" onClick={addPostProcess}>
-            Add Post Process
+            {intl.formatMessage({
+              id: "app.component.postProcess.add",
+            })}
           </Button>
         </>
       )
@@ -379,13 +397,17 @@ const FoldingCartonSubSection = ({
       <>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">General Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.generalSpecs" })}
+            </Typography>
           </ListItem>
           <ListItem>
             <TextField
               key="folding-carton-dimension"
               autoComplete="new-password"
-              label="Dimension"
+              label={intl.formatMessage({
+                id: "app.component.attribute.dimension",
+              })}
               onChange={componentSpecOnChange}
               name="dimension"
               value={componentSpec.dimension}
@@ -395,7 +417,9 @@ const FoldingCartonSubSection = ({
             <TextField
               key="folding-carton-thickness"
               autoComplete="new-password"
-              label="Thickness"
+              label={intl.formatMessage({
+                id: "app.component.attribute.thickness",
+              })}
               onChange={componentSpecOnChange}
               name="thickness"
               value={componentSpec.thickness}
@@ -405,7 +429,9 @@ const FoldingCartonSubSection = ({
             {renderAutocompleteDropdown(
               FOLDING_CARTON_MATERIALS,
               "material",
-              "Component Material",
+              intl.formatMessage({
+                id: "app.component.attribute.material",
+              }),
               "folding-carton-material"
             )}
           </ListItem>
@@ -420,13 +446,19 @@ const FoldingCartonSubSection = ({
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Outside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.outsideSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
               FOLDING_CARTON_FINISHES,
               "outsideFinish",
-              "Outside Finish",
+              intl.formatMessage({
+                id: "app.component.attribute.outsideFinish",
+              }),
               "folding-carton-outside-finish"
             )}
           </ListItem>
@@ -434,7 +466,9 @@ const FoldingCartonSubSection = ({
             {renderPostProcessDropdown(
               outsidePostProcessDetail,
               setOutsidePostProcessDetail,
-              "Outside Post Process",
+              intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              }),
               "folding-carton-outisde-post-process"
             )}
           </ListItem>
@@ -446,13 +480,19 @@ const FoldingCartonSubSection = ({
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Inside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.insideSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
               FOLDING_CARTON_FINISHES,
               "insideFinish",
-              "Inside Finish",
+              intl.formatMessage({
+                id: "app.component.attribute.insideFinish",
+              }),
               "folding-carton-inside-finish"
             )}
           </ListItem>
@@ -460,7 +500,9 @@ const FoldingCartonSubSection = ({
             {renderPostProcessDropdown(
               insidePostProcessDetail,
               setInsidePostProcessDetail,
-              "Inside Post Process",
+              intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              }),
               "folding-carton-inside-post-process"
             )}
           </ListItem>
@@ -475,7 +517,9 @@ const FoldingCartonSubSection = ({
           <Stack>
             <ListItem>
               <Typography variant="subtitle2">
-                Outside Post Processes
+                {intl.formatMessage({
+                  id: "app.component.attribute.outsidePostProcess",
+                })}
               </Typography>
             </ListItem>
             {componentSpec.outsidePostProcess.map((postProcess, i) => {
@@ -494,7 +538,11 @@ const FoldingCartonSubSection = ({
         {!!componentSpec.insidePostProcess?.length && (
           <Stack>
             <ListItem>
-              <Typography variant="subtitle2">Inside Post Processes</Typography>
+              <Typography variant="subtitle2">
+                {intl.formatMessage({
+                  id: "app.component.attribute.insidePostProcess",
+                })}
+              </Typography>
             </ListItem>
             {componentSpec.insidePostProcess.map((postProcess, i) => {
               return (

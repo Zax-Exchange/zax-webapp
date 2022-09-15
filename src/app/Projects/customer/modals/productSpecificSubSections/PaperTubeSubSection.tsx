@@ -25,6 +25,7 @@ import {
 } from "../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useIntl } from "react-intl";
 
 type PaperTubePostProcessDetail = {
   postProcessName: string;
@@ -42,6 +43,7 @@ const PaperTubeSubSection = ({
   >;
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
+  const intl = useIntl();
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
     useState<PaperTubePostProcessDetail>({} as PaperTubePostProcessDetail);
 
@@ -197,7 +199,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-number-of-colors"
               autoComplete="new-password"
-              label="Number Of Colors To Print"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.printing.numberOfColors",
+              })}
               onChange={postProcessOnChange}
               name="numberOfColors"
               value={postProcessDetail.numberOfColors}
@@ -207,7 +211,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-printing-estimated-area"
               autoComplete="new-password"
-              label="Printing Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.printing.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -224,7 +230,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-emboss-font-size"
               autoComplete="new-password"
-              label="Emboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.emboss.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -234,7 +242,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-emboss-estimated-area"
               autoComplete="new-password"
-              label="Emboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.emboss.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -251,7 +261,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-deboss-font-size"
               autoComplete="new-password"
-              label="Deboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.deboss.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -261,7 +273,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-deboss-estimated-area"
               autoComplete="new-password"
-              label="Deboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.deboss.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -278,7 +292,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-foil-stamp-color"
               autoComplete="new-password"
-              label="Foil Stamp Color"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.foilStamp.color",
+              })}
               onChange={postProcessOnChange}
               name="color"
               value={postProcessDetail.color}
@@ -288,7 +304,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-foil-stamp-estimated-area"
               autoComplete="new-password"
-              label="Foil Stamp Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.foilStamp.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -303,7 +321,9 @@ const PaperTubeSubSection = ({
         <>
           {subSection}
           <Button variant="text" onClick={addPostProcess}>
-            Add Post Process
+            {intl.formatMessage({
+              id: "app.component.postProcess.add",
+            })}
           </Button>
         </>
       )
@@ -379,13 +399,19 @@ const PaperTubeSubSection = ({
       <>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">General Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.generalSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             <TextField
               key="paper-tube-dimension"
               autoComplete="new-password"
-              label="Dimension"
+              label={intl.formatMessage({
+                id: "app.component.attribute.dimension",
+              })}
               onChange={componentSpecOnChange}
               name="dimension"
               value={componentSpec.dimension}
@@ -395,7 +421,9 @@ const PaperTubeSubSection = ({
             <TextField
               key="paper-tube-thickness"
               autoComplete="new-password"
-              label="Thickness"
+              label={intl.formatMessage({
+                id: "app.component.attribute.thickness",
+              })}
               onChange={componentSpecOnChange}
               name="thickness"
               value={componentSpec.thickness}
@@ -404,13 +432,19 @@ const PaperTubeSubSection = ({
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Outside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.outsideSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
               PAPER_TUBE_MATERIALS,
               "outsideMaterial",
-              "Outside Material",
+              intl.formatMessage({
+                id: "app.component.attribute.outsideMaterial",
+              }),
               "paper-tube-outside-material"
             )}
           </ListItem>
@@ -418,7 +452,9 @@ const PaperTubeSubSection = ({
             {renderAutocompleteDropdown(
               PAPER_TUBE_MATERIAL_SOURCES,
               "outsideMaterialSource",
-              "Outside Material Source",
+              intl.formatMessage({
+                id: "app.component.attribute.outsideMaterialSource",
+              }),
               "paper-tube-outside-material-source"
             )}
           </ListItem>
@@ -426,7 +462,9 @@ const PaperTubeSubSection = ({
             {renderAutocompleteDropdown(
               PAPER_TUBE_FINISHES,
               "outsideFinish",
-              "Outside Finish",
+              intl.formatMessage({
+                id: "app.component.attribute.outsideFinish",
+              }),
               "paper-tube-outside-finish"
             )}
           </ListItem>
@@ -434,7 +472,9 @@ const PaperTubeSubSection = ({
             {renderPostProcessDropdown(
               outsidePostProcessDetail,
               setOutsidePostProcessDetail,
-              "Outside Post Process",
+              intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              }),
               "paper-tube-outisde-post-process"
             )}
           </ListItem>
@@ -446,7 +486,11 @@ const PaperTubeSubSection = ({
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Inside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.insideSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             <Typography variant="caption">
@@ -459,7 +503,9 @@ const PaperTubeSubSection = ({
           <Stack>
             <ListItem>
               <Typography variant="subtitle2">
-                Outside Post Processes
+                {intl.formatMessage({
+                  id: "app.component.attribute.outsidePostProcess",
+                })}
               </Typography>
             </ListItem>
             {componentSpec.outsidePostProcess.map((postProcess, i) => {

@@ -21,6 +21,7 @@ import {
 } from "../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useIntl } from "react-intl";
 
 type MoldedFiberPostProcessDetail = {
   postProcessName: string;
@@ -38,6 +39,7 @@ const MoldedFiberSubSection = ({
   >;
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
+  const intl = useIntl();
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
     useState<MoldedFiberPostProcessDetail>({} as MoldedFiberPostProcessDetail);
 
@@ -191,7 +193,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-number-of-colors"
               autoComplete="new-password"
-              label="Number Of Colors To Print"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.printing.numberOfColors",
+              })}
               onChange={postProcessOnChange}
               name="numberOfColors"
               value={postProcessDetail.numberOfColors}
@@ -208,7 +212,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-emboss-font-size"
               autoComplete="new-password"
-              label="Emboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.emboss.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -218,7 +224,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-emboss-estimated-area"
               autoComplete="new-password"
-              label="Emboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.emboss.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -235,7 +243,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-deboss-font-size"
               autoComplete="new-password"
-              label="Deboss Font Size"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.deboss.fontSize",
+              })}
               onChange={postProcessOnChange}
               name="fontSize"
               value={postProcessDetail.fontSize}
@@ -245,7 +255,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-deboss-estimated-area"
               autoComplete="new-password"
-              label="Deboss Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.deboss.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -262,7 +274,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-foil-stamp-color"
               autoComplete="new-password"
-              label="Foil Stamp Color"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.foilStamp.color",
+              })}
               onChange={postProcessOnChange}
               name="color"
               value={postProcessDetail.color}
@@ -272,7 +286,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-foil-stamp-estimated-area"
               autoComplete="new-password"
-              label="Foil Stamp Estimated Area"
+              label={intl.formatMessage({
+                id: "app.component.postProcess.foilStamp.estimatedArea",
+              })}
               onChange={postProcessOnChange}
               name="estimatedArea"
               value={postProcessDetail.estimatedArea}
@@ -287,7 +303,9 @@ const MoldedFiberSubSection = ({
         <>
           {subSection}
           <Button variant="text" onClick={addPostProcess}>
-            Add Post Process
+            {intl.formatMessage({
+              id: "app.component.postProcess.add",
+            })}
           </Button>
         </>
       )
@@ -364,13 +382,19 @@ const MoldedFiberSubSection = ({
       <>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">General Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.generalSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             <TextField
               key="molded-fiber-dimension"
               autoComplete="new-password"
-              label="Dimension"
+              label={intl.formatMessage({
+                id: "app.component.attribute.dimension",
+              })}
               onChange={componentSpecOnChange}
               name="dimension"
               value={componentSpec.dimension}
@@ -380,7 +404,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-thickness"
               autoComplete="new-password"
-              label="Thickness"
+              label={intl.formatMessage({
+                id: "app.component.attribute.thickness",
+              })}
               onChange={componentSpecOnChange}
               name="thickness"
               value={componentSpec.thickness}
@@ -390,7 +416,9 @@ const MoldedFiberSubSection = ({
             <TextField
               key="molded-fiber-color"
               autoComplete="new-password"
-              label="Color"
+              label={intl.formatMessage({
+                id: "app.component.attribute.color",
+              })}
               onChange={componentSpecOnChange}
               name="color"
               value={componentSpec.color}
@@ -400,7 +428,9 @@ const MoldedFiberSubSection = ({
             {renderAutocompleteDropdown(
               MOLDED_FIBER_MANUFACTURING_PROCESSES,
               "manufacturingProcess",
-              "Manufacturing Process",
+              intl.formatMessage({
+                id: "app.component.attribute.manufacturingProcess",
+              }),
               "molded-fiber-manufacturing-process"
             )}
           </ListItem>
@@ -408,20 +438,28 @@ const MoldedFiberSubSection = ({
             {renderAutocompleteDropdown(
               MOLDED_FIBER_MATERIAL_SOURCES,
               "materialSource",
-              "Material Source",
+              intl.formatMessage({
+                id: "app.component.attribute.materialSource",
+              }),
               "molded-fiber-material-source"
             )}
           </ListItem>
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Outside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.outsideSpecs",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             {renderPostProcessDropdown(
               outsidePostProcessDetail,
               setOutsidePostProcessDetail,
-              "Outside Post Process",
+              intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              }),
               "molded-fiber-outisde-post-process"
             )}
           </ListItem>
@@ -433,13 +471,19 @@ const MoldedFiberSubSection = ({
         </Stack>
         <Stack>
           <ListItem>
-            <Typography variant="subtitle2">Inside Specs</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.insidePostProcess",
+              })}
+            </Typography>
           </ListItem>
           <ListItem>
             {renderPostProcessDropdown(
               insidePostProcessDetail,
               setInsidePostProcessDetail,
-              "Inside Post Process",
+              intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              }),
               "molded-fiber-inside-post-process"
             )}
           </ListItem>
@@ -454,7 +498,9 @@ const MoldedFiberSubSection = ({
           <Stack>
             <ListItem>
               <Typography variant="subtitle2">
-                Outside Post Processes
+                {intl.formatMessage({
+                  id: "app.component.attribute.outsidePostProcess",
+                })}
               </Typography>
             </ListItem>
             {componentSpec.outsidePostProcess.map((postProcess, i) => {
@@ -473,7 +519,11 @@ const MoldedFiberSubSection = ({
         {!!componentSpec.insidePostProcess?.length && (
           <Stack>
             <ListItem>
-              <Typography variant="subtitle2">Inside Post Processes</Typography>
+              <Typography variant="subtitle2">
+                {intl.formatMessage({
+                  id: "app.component.attribute.insidePostProcess",
+                })}
+              </Typography>
             </ListItem>
             {componentSpec.insidePostProcess.map((postProcess, i) => {
               return (

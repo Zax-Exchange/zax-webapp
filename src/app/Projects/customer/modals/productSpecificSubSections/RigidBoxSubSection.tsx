@@ -264,7 +264,7 @@ const RigidBoxSubSection = ({
               key="number-of-colors"
               autoComplete="new-password"
               label={intl.formatMessage({
-                id: "app.component.postProcess.numberOfColors",
+                id: "app.component.postProcess.printing.numberOfColors",
               })}
               onChange={postProcessOnChange}
               name="numberOfColors"
@@ -276,7 +276,7 @@ const RigidBoxSubSection = ({
               key="printing-estimated-area"
               autoComplete="new-password"
               label={intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
+                id: "app.component.postProcess.printing.estimatedArea",
               })}
               onChange={postProcessOnChange}
               name="estimatedArea"
@@ -295,7 +295,7 @@ const RigidBoxSubSection = ({
               key="emboss-font-size"
               autoComplete="new-password"
               label={intl.formatMessage({
-                id: "app.component.postProcess.fontSize",
+                id: "app.component.postProcess.emboss.fontSize",
               })}
               onChange={postProcessOnChange}
               name="fontSize"
@@ -307,7 +307,7 @@ const RigidBoxSubSection = ({
               key="emboss-estimated-area"
               autoComplete="new-password"
               label={intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
+                id: "app.component.postProcess.emboss.estimatedArea",
               })}
               onChange={postProcessOnChange}
               name="estimatedArea"
@@ -326,7 +326,7 @@ const RigidBoxSubSection = ({
               key="deboss-font-size"
               autoComplete="new-password"
               label={intl.formatMessage({
-                id: "app.component.postProcess.fontSize",
+                id: "app.component.postProcess.deboss.fontSize",
               })}
               onChange={postProcessOnChange}
               name="fontSize"
@@ -338,7 +338,7 @@ const RigidBoxSubSection = ({
               key="deboss-estimated-area"
               autoComplete="new-password"
               label={intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
+                id: "app.component.postProcess.deboss.estimatedArea",
               })}
               onChange={postProcessOnChange}
               name="estimatedArea"
@@ -357,7 +357,7 @@ const RigidBoxSubSection = ({
               key="foil-stamp-color"
               autoComplete="new-password"
               label={intl.formatMessage({
-                id: "app.component.postProcess.color",
+                id: "app.component.postProcess.foilStamp.color",
               })}
               onChange={postProcessOnChange}
               name="color"
@@ -369,7 +369,7 @@ const RigidBoxSubSection = ({
               key="foil-stamp-estimated-area"
               autoComplete="new-password"
               label={intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
+                id: "app.component.postProcess.foilStamp.estimatedArea",
               })}
               onChange={postProcessOnChange}
               name="estimatedArea"

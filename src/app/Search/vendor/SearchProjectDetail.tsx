@@ -27,6 +27,7 @@ import {
   TableHead,
   TextField,
   ClickAwayListener,
+  ListItem,
 } from "@mui/material";
 import ProjectBidModal from "../../Projects/vendor/ProjectBidModal";
 import { useContext, useEffect, useState } from "react";
@@ -47,6 +48,7 @@ import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
 import { isValidInt } from "../../Utils/inputValidators";
 import { AuthContext } from "../../../context/AuthContext";
+import { useIntl } from "react-intl";
 
 export type QuantityPriceData = {
   quantity: number;
@@ -75,82 +77,6 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-// const EditableTableCell = ({
-//   data,
-//   index,
-//   setComponentsQpData,
-//   componentId,
-// }: {
-//   data: number;
-//   index: number;
-//   componentId: string;
-//   setComponentsQpData: React.Dispatch<
-//     React.SetStateAction<Record<string, QuantityPriceData[]>>
-//   >;
-// }) => {
-//   const [value, setValue] = useState(data);
-//   const [isEditing, setIsEditing] = useState(false);
-
-//   const qpDataOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     let val: number | string = e.target.value;
-
-//     if (!isValidInt(val)) return;
-
-//     val = parseInt(val, 10) || 0;
-
-//     setComponentsQpData((prev) => {
-//       const componentQpList = [...prev[componentId]];
-//       const targetQp = componentQpList[index];
-//       const prevPrice = targetQp.price;
-
-//       // This makes sure user doesn't change to empty input price
-//       targetQp.price = val !== "" ? (val as number) : prevPrice;
-//       componentQpList.splice(index, 1, targetQp);
-//       return {
-//         ...prev,
-//         [componentId]: componentQpList,
-//       };
-//     });
-//     setValue(val);
-//   };
-
-//   const handleKeyDown = (e: React.KeyboardEvent) => {
-//     if (e.key === "Enter") {
-//       setIsEditing(false);
-//     }
-//   };
-//   if (isEditing) {
-//     return (
-//       <ClickAwayListener onClickAway={() => setIsEditing(false)}>
-//         <TableCell sx={{ width: "50%" }}>
-//           <TextField
-//             focused
-//             onChange={qpDataOnChange}
-//             onKeyDown={handleKeyDown}
-//             value={value ? value : ""}
-//             size="small"
-//           />
-//         </TableCell>
-//       </ClickAwayListener>
-//     );
-//   } else {
-//     return (
-//       <TableCell
-//         sx={{
-//           width: "50%",
-//           cursor: "pointer",
-//           ":hover": {
-//             backgroundColor: "#eee",
-//           },
-//           borderRadius: 1,
-//         }}
-//         onClick={() => setIsEditing(true)}
-//       >
-//         {value ? value : ""}
-//       </TableCell>
-//     );
-//   }
-// };
 const ProjectListItem = styled(MuiListItem)(() => ({
   display: "flex",
   justifyContent: "space-between",
@@ -161,6 +87,7 @@ const ProjectListItem = styled(MuiListItem)(() => ({
 }));
 
 const SearchProjectDetail = () => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { projectId } = useParams();
   const [currentComponentTab, setCurrentComponentTab] = useState(0);
@@ -212,7 +139,7 @@ const SearchProjectDetail = () => {
   useEffect(() => {
     if (getProjectDetailError) {
       setSnackbar({
-        message: "Could not load project at this time. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
@@ -347,7 +274,9 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Product</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.product" })}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography variant="caption">{productName}</Typography>
@@ -359,7 +288,9 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Dimension</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.dimension" })}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography variant="caption">{dimension}</Typography>
@@ -371,7 +302,9 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Thickness</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.thickness" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -385,7 +318,9 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Flute</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.flute" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -399,7 +334,9 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.color" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -413,7 +350,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Manufacturing Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.manufacturingProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -427,7 +368,9 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.material" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -441,7 +384,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.materialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -451,20 +398,24 @@ const SearchProjectDetail = () => {
       );
     }
 
-    if (postProcess && postProcess.length) {
+    if (postProcess) {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.postProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
             <Stack>
               {postProcess.map((process) => {
                 return (
-                  <MuiListItem sx={{ padding: 0 }}>
+                  <ListItem sx={{ padding: 0 }}>
                     <Typography variant="caption">{process}</Typography>
-                  </MuiListItem>
+                  </ListItem>
                 );
               })}
             </Stack>
@@ -477,7 +428,9 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.finish" })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -491,7 +444,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideMaterial",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -505,7 +462,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideMaterialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -515,20 +476,24 @@ const SearchProjectDetail = () => {
       );
     }
 
-    if (outsidePostProcess && outsidePostProcess.length) {
+    if (outsidePostProcess) {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
             <Stack>
               {outsidePostProcess.map((process) => {
                 return (
-                  <MuiListItem sx={{ padding: 0 }}>
+                  <ListItem sx={{ padding: 0 }}>
                     <Typography variant="caption">{process}</Typography>
-                  </MuiListItem>
+                  </ListItem>
                 );
               })}
             </Stack>
@@ -541,7 +506,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideFinish",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -555,7 +524,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Outside Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.outsideColor",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -569,7 +542,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Material</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideMaterial",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -583,7 +560,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Material Source</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideMaterialSource",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -597,16 +578,20 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Post Process</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insidePostProcess",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
             <Stack>
               {insidePostProcess.map((process) => {
                 return (
-                  <MuiListItem sx={{ padding: 0 }}>
+                  <ListItem sx={{ padding: 0 }}>
                     <Typography variant="caption">{process}</Typography>
-                  </MuiListItem>
+                  </ListItem>
                 );
               })}
             </Stack>
@@ -619,7 +604,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Finish</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideFinish",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -633,7 +622,11 @@ const SearchProjectDetail = () => {
       res.push(
         <TableRow>
           <TableCell>
-            <Typography variant="subtitle2">Inside Color</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.insideColor",
+              })}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -651,7 +644,6 @@ const SearchProjectDetail = () => {
       </TableContainer>
     );
   };
-
   const renderProjectDetail = () => {
     if (
       !getProjectDetailData ||
@@ -678,43 +670,72 @@ const SearchProjectDetail = () => {
           <Grid item xs={7}>
             <Box display="flex" justifyContent="space-between" mb={1.5}>
               <Box>
-                <Typography variant="subtitle1">Project Detail</Typography>
+                <Typography variant="subtitle1">
+                  {intl.formatMessage({
+                    id: "app.vendor.search.projectDetail",
+                  })}
+                </Typography>
               </Box>
             </Box>
             <Paper style={{ padding: "12px", marginBottom: "8px" }}>
               <Stack>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Customer Name</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.vendor.project.attribute.customerName",
+                    })}
+                  </Typography>
                   <Typography variant="caption" component="p">
                     {companyName}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Project Name</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.name",
+                    })}
+                  </Typography>
                   <Typography variant="caption" component="p">
                     {projectName}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Delivery Date</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.deliveryDate",
+                    })}
+                  </Typography>
                   <Typography variant="caption" component="p">
                     {deliveryDate}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Delivery Address</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.deliveryAddress",
+                    })}
+                  </Typography>
                   <Typography variant="caption" component="p">
                     {deliveryAddress}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Order Quantities</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.orderQuantities",
+                    })}
+                    s
+                  </Typography>
                   <Typography variant="caption" component="p">
                     {orderQuantities.join(", ")}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Target Price</Typography>
+                  <Typography variant="subtitle2">
+                    {intl.formatMessage({
+                      id: "app.project.attribute.targetPrice",
+                    })}
+                  </Typography>
                   <Typography variant="caption" component="p">
                     {targetPrice}
                   </Typography>
@@ -722,7 +743,11 @@ const SearchProjectDetail = () => {
 
                 {design && (
                   <ProjectListItem>
-                    <Typography variant="subtitle2">Design File</Typography>
+                    <Typography variant="subtitle2">
+                      {intl.formatMessage({
+                        id: "app.project.attribute.design",
+                      })}
+                    </Typography>
                     <Typography variant="caption" component="p">
                       <Link href={design.url} target="_blank" rel="noopener">
                         {design.fileName}
@@ -734,7 +759,11 @@ const SearchProjectDetail = () => {
             </Paper>
 
             <Box mt={2} mb={1.5} display="flex">
-              <Typography variant="subtitle1">Components Detail</Typography>
+              <Typography variant="subtitle1">
+                {intl.formatMessage({
+                  id: "app.vendor.search.componentsDetail",
+                })}
+              </Typography>
             </Box>
 
             <Paper sx={{ mt: 1 }}>
@@ -754,13 +783,6 @@ const SearchProjectDetail = () => {
               {components.map((comp, i) => {
                 return (
                   <TabPanel value={currentComponentTab} index={i}>
-                    <Button
-                      variant="outlined"
-                      style={{ position: "absolute", right: 8, top: 8 }}
-                      onClick={() => addBidsOnClick(comp)}
-                    >
-                      Add Bids
-                    </Button>
                     {renderComponentSpecAccordionDetail(comp.componentSpec)}
                   </TabPanel>
                 );
@@ -773,7 +795,9 @@ const SearchProjectDetail = () => {
               <Box display="flex" justifyContent="space-between" mb={1.5}>
                 <Box>
                   <Typography variant="subtitle1" textAlign="left">
-                    Bids Detail
+                    {intl.formatMessage({
+                      id: "app.vendor.search.bidsDetail",
+                    })}
                   </Typography>
                 </Box>
                 <Box>
@@ -782,7 +806,9 @@ const SearchProjectDetail = () => {
                     variant="contained"
                     disabled={shouldDisableSubmitBidButton()}
                   >
-                    Submit Bid
+                    {intl.formatMessage({
+                      id: "app.vendor.search.submitBids",
+                    })}
                   </Button>
                 </Box>
               </Box>
@@ -807,8 +833,16 @@ const SearchProjectDetail = () => {
                         <Table size="small">
                           <TableHead>
                             <TableRow>
-                              <TableCell>Quantity</TableCell>
-                              <TableCell>Price</TableCell>
+                              <TableCell>
+                                {intl.formatMessage({
+                                  id: "app.bid.attribute.quantity",
+                                })}
+                              </TableCell>
+                              <TableCell>
+                                {intl.formatMessage({
+                                  id: "app.bid.attribute.price",
+                                })}
+                              </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -859,7 +893,7 @@ const SearchProjectDetail = () => {
         <Container>
           {renderProjectDetail()}
 
-          <Dialog open={projectBidModalOpen} onClose={closeModal} maxWidth="md">
+          {/* <Dialog open={projectBidModalOpen} onClose={closeModal} maxWidth="md">
             <ProjectBidModal
               setProjectBidModalOpen={setProjectBidModalOpen}
               orderQuantities={
@@ -868,7 +902,7 @@ const SearchProjectDetail = () => {
               component={biddingComponent}
               setComponentsQpData={setComponentsQpData}
             />
-          </Dialog>
+          </Dialog> */}
         </Container>
       </>
     );
