@@ -12,7 +12,10 @@
   "app.general.logout": "Log Out",
   "app.general.action.edit": "Edit",
   "app.general.createdAt": "Created On",
-  "app.general.updatedAt": "Updated On",
+  "app.general.updatedAt": "Last Updated",
+  "app.general.input.dateError": "Invalid date.",
+  "app.general.input.invalidError": "Invalid input.",
+  "app.general.input.emptyError": "Field cannot be empty.",
   
   "app.routes.loggedOut.getStarted": "Get Started",
   "app.routes.loggedIn.home": "Home",
@@ -51,11 +54,19 @@
   "app.project.attribute.targetPrice": "Target Price",
   "app.project.attribute.orderQuantities": "Order Quantities",
   "app.project.attribute.comments": "Comments",
-  "app.project.attribute.postedOn": "Posted On",
-  
+  "app.project.status.open": "Open",
+  "app.project.status.inProgress": "In progress",
+  "app.project.status.completed": "Completed",
+  "app.project.status.closed": "Closed",
+
   "app.bid.attribute.quantity": "Quantity",
   "app.bid.attribute.price": "Price",
-    
+  "app.bid.status.open": "Open",
+  "app.bid.status.outdated": "Outdated",
+  "app.bid.status.accepted": "Accepted",
+  "app.bid.status.rejected": "Rejected",
+  "app.bid.status.expired": "Expired",
+
   "app.component.generalSpecs": "General Specs",
   "app.component.outsideSpecs": "Outside Specs",
   "app.component.insideSpecs": "Inside Specs",
@@ -114,6 +125,7 @@
   "app.customer.createProject.menu.exportToPdf": "Export to pdf",
   "app.customer.createProject.menu.acceptBid": "Accept",
   "app.customer.createProject.menu.rejectBid": "Reject",
+  "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
 
   "app.vendor.search.projectDetail": "Project Detail",
   "app.vendor.search.componentsDetail": "Components Detail",

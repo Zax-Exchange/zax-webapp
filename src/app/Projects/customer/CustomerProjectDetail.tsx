@@ -51,6 +51,12 @@ import { useIntl } from "react-intl";
 import EditIcon from "@mui/icons-material/Edit";
 import { useUpdateProjectMutation } from "../../gql/update/project/project.generated";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import GoogleMaps from "../../Utils/GoogleMapAutocomplete";
+import CancelIcon from "@mui/icons-material/Cancel";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -78,53 +84,7 @@ const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
   alignItems: "flex-start",
 }));
 
-// For project data
-const EditableTypography = (
-  isEditMode: boolean,
-  setData: React.Dispatch<React.SetStateAction<UpdateProjectInput>>,
-  projectAttribute: keyof UpdateProjectInput,
-  value: string | number
-) => {
-  // TODO: handle empty input
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val: string | number = e.target.value;
-    let isAllowed = true;
-    switch (projectAttribute) {
-      case "name":
-        if (!isValidAlphanumeric(val)) isAllowed = false;
-        break;
-      case "targetPrice":
-        if (!isValidInt(val)) isAllowed = false;
-        else val = parseInt(val, 10) || "";
-        break;
-      default:
-        break;
-    }
-    if (isAllowed) {
-      setData((prev) => ({
-        ...prev,
-        [projectAttribute]: val,
-      }));
-    }
-  };
-
-  if (isEditMode) {
-    return (
-      <TextField
-        onChange={onChange}
-        value={value}
-        size="small"
-        sx={{
-          marginLeft: 2,
-          "& .MuiInputBase-root": {
-            height: "2em",
-          },
-        }}
-      />
-    );
-  }
-  return <Typography variant="caption">{value}</Typography>;
-};
+type EditProjectErrors = Record<keyof UpdateProjectInput, boolean>;
 
 const CustomerProjectDetail = () => {
   const theme = useTheme();
@@ -134,17 +94,37 @@ const CustomerProjectDetail = () => {
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
+  // Flag to indicate whether project detail section is in edit mode or not.
   const [projectEditMode, setProjectEditMode] = useState(false);
-  const [updateProjectData, setUpdateProjectData] = useState(
-    {} as UpdateProjectInput
+
+  // Flags to indicate which project detail field input is in error.
+  const [projectEditError, setProjectEditError] = useState(
+    {} as EditProjectErrors
   );
+
+  const [updateProjectData, setUpdateProjectData] =
+    useState<UpdateProjectInput | null>(null);
+
+  const [updateProjectComponentData, setUpdateProjectComponentData] = useState<
+    UpdateProjectComponentInput[]
+  >([]);
+
+  // For project component section.
   const [currentTab, setCurrentTab] = useState(0);
+
+  // State variable to store order quantity input when user enables edit mode on project detail section.
+  const [orderQuantity, setOrderQuantity] = useState("");
+
   const [
     updateProjectMutation,
     { data: updateSuccess, error: updateError, loading: updateLoading },
   ] = useUpdateProjectMutation();
 
-  const { data, loading, error, refetch } = useGetCustomerProjectQuery({
+  const {
+    data: getProjectData,
+    loading: getProjectLoading,
+    error: getProjectError,
+  } = useGetCustomerProjectQuery({
     variables: {
       data: {
         projectId: projectId || "",
@@ -156,22 +136,20 @@ const CustomerProjectDetail = () => {
 
   // init project data for potential project update
   useEffect(() => {
-    if (data) {
+    if (getProjectData) {
       initializeUpdateProjectData();
     }
-  }, [data]);
+  }, [getProjectData]);
 
+  // For snackbar display purposes based on update mutation status
   useEffect(() => {
-    if (error) {
+    if (getProjectError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [error]);
-
-  useEffect(() => {
     if (updateSuccess) {
       setSnackbar({
         message: "success",
@@ -188,23 +166,44 @@ const CustomerProjectDetail = () => {
       });
       setSnackbarOpen(true);
     }
-  }, [updateError, updateSuccess]);
+  }, [getProjectError, updateError, updateSuccess]);
+
+  // Leverage useEffect to set error flags for project detail edit mode.
+  useEffect(() => {
+    if (updateProjectData) {
+      // Since in edit mode, order quantity input is not a direct input field that can be converted to Typography
+      // but rather an input for adding to order quantities list we listen for order quantities changes and indicate
+      // error when the list is empty.
+      if (!updateProjectData.orderQuantities.length) {
+        setProjectEditError((prev) => ({ ...prev, orderQuantities: true }));
+      } else {
+        setProjectEditError((prev) => ({ ...prev, orderQuantities: false }));
+      }
+
+      // If user clears deliveryAddress field, display error.
+      if (!updateProjectData.deliveryAddress) {
+        setProjectEditError((prev) => ({ ...prev, deliveryAddress: true }));
+      } else {
+        setProjectEditError((prev) => ({ ...prev, deliveryAddress: false }));
+      }
+    }
+  }, [updateProjectData]);
 
   // Initialize project data for update purpose.
   const initializeUpdateProjectData = () => {
     const {
-      id,
+      id: projectId,
       name,
       deliveryAddress,
       deliveryDate,
       targetPrice,
       orderQuantities,
       components,
-    } = data!.getCustomerProject;
+    } = getProjectData!.getCustomerProject;
 
     const compsForUpdate: UpdateProjectComponentInput[] = [];
     for (let comp of components) {
-      const { id, name, componentSpec } = comp;
+      const { id: componentId, name, componentSpec } = comp;
       const {
         productName,
         dimension,
@@ -233,7 +232,7 @@ const CustomerProjectDetail = () => {
       } = componentSpec;
 
       compsForUpdate.push({
-        id,
+        componentId,
         name,
         componentSpec: {
           productName,
@@ -264,16 +263,22 @@ const CustomerProjectDetail = () => {
       });
     }
     setUpdateProjectData({
-      id,
+      projectId,
       name,
       deliveryDate,
       deliveryAddress,
       targetPrice,
       orderQuantities,
-      components: compsForUpdate,
     });
+    setUpdateProjectComponentData(compsForUpdate);
   };
 
+  // Reset error state when user cancels edit mode, else error state will persist when user clicks edit again.
+  const resetProjectEditErrors = () => {
+    setProjectEditError({} as EditProjectErrors);
+  };
+
+  // Switch tab for components detail section.
   const componentTabOnChange = (
     event: React.SyntheticEvent,
     newTab: number
@@ -282,12 +287,15 @@ const CustomerProjectDetail = () => {
   };
 
   const updateProject = async () => {
-    setProjectEditMode(false);
-    updateProjectMutation({
-      variables: {
-        data: updateProjectData,
-      },
-    });
+    try {
+      await updateProjectMutation({
+        variables: {
+          data: updateProjectData,
+        },
+      });
+    } finally {
+      setProjectEditMode(false);
+    }
   };
 
   const convertToDate = (timestamp: string) => {
@@ -298,7 +306,7 @@ const CustomerProjectDetail = () => {
     navigate(CUSTOMER_ROUTES.PROJECTS);
   };
 
-  const renderComponentSpecAccordionDetail = (spec: ProjectComponentSpec) => {
+  const renderComponentSpecDetail = (spec: ProjectComponentSpec) => {
     const {
       productName,
       dimension,
@@ -701,20 +709,303 @@ const CustomerProjectDetail = () => {
     );
   };
 
-  const isLoading = loading || updateLoading;
+  const renderEditableProjectField = (
+    isEditMode: boolean,
+    setData: React.Dispatch<React.SetStateAction<UpdateProjectInput | null>>,
+    projectAttribute: keyof UpdateProjectInput,
+    projectFieldData: string | number | number[]
+  ) => {
+    const addOrderQuantity = () => {
+      setData(
+        (prev) =>
+          ({
+            ...prev,
+            orderQuantities: [
+              ...prev!.orderQuantities,
+              parseInt(orderQuantity, 10),
+            ],
+          } as UpdateProjectInput)
+      );
+      setOrderQuantity("");
+    };
 
-  if (error) {
-    return (
-      <Container>
-        <Typography variant="subtitle2"></Typography>
-      </Container>
-    );
-  }
+    const removeOrderQuantity = (ind: number) => {
+      setData((prev) => {
+        const cur = [...prev!.orderQuantities];
+        cur.splice(ind, 1);
+        return {
+          ...prev,
+          orderQuantities: cur,
+        } as UpdateProjectInput;
+      });
+    };
 
-  const projectData = data?.getCustomerProject;
+    const renderTextField = () => {
+      return (
+        <TextField
+          error={!!projectEditError[projectAttribute]}
+          helperText={
+            !!projectEditError[projectAttribute] &&
+            intl.formatMessage({ id: "app.general.input.emptyError" })
+          }
+          onChange={onChange}
+          value={projectFieldData}
+          size="small"
+          sx={{
+            ml: 2,
+            "& .MuiInputBase-root": {
+              height: "2em",
+            },
+          }}
+          FormHelperTextProps={{
+            sx: {
+              margin: 0,
+              fontSize: "0.7em",
+            },
+          }}
+        />
+      );
+    };
+
+    const renderDatePicker = () => {
+      return (
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <DesktopDatePicker
+            disablePast
+            inputFormat="YYYY-MM-DD"
+            value={projectFieldData}
+            onChange={(v: any) => {
+              if (!v || !v._isValid) {
+                setProjectEditError((prev) => ({
+                  ...prev,
+                  deliveryDate: true,
+                }));
+                return;
+              }
+              setProjectEditError((prev) => ({ ...prev, deliveryDate: false }));
+              setData(
+                (prev) =>
+                  ({
+                    ...prev,
+                    deliveryDate: new Date(v._d).toISOString().split("T")[0],
+                  } as UpdateProjectInput)
+              );
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={!!projectEditError.deliveryDate}
+                helperText={
+                  !!projectEditError.deliveryDate &&
+                  intl.formatMessage({ id: "app.general.input.dateError" })
+                }
+                name="deliveryDate"
+                size="small"
+                sx={{
+                  ml: 2,
+                  "& .MuiInputBase-root": {
+                    height: "2em",
+                  },
+                }}
+              />
+            )}
+          />
+        </LocalizationProvider>
+      );
+    };
+
+    const renderGoogleMapInput = () => {
+      return (
+        <Box ml={2} width="100%">
+          <GoogleMaps
+            parentSetDataHandler={deliveryAddressOnChange}
+            height="2em"
+            defaultAddress={projectFieldData as string}
+            error={!!projectEditError.deliveryAddress}
+            errorHelperText={
+              !!projectEditError.deliveryAddress
+                ? intl.formatMessage({ id: "app.general.input.emptyError" })
+                : ""
+            }
+          />
+        </Box>
+      );
+    };
+
+    const renderOrderQuantities = () => {
+      return (
+        <>
+          <Box display="flex" flexDirection="row" ml={2}>
+            <Box>
+              <TextField
+                onChange={orderQuantityOnChange}
+                value={orderQuantity}
+                size="small"
+                sx={{
+                  "& .MuiInputBase-root": {
+                    height: "2em",
+                  },
+                }}
+                error={!!projectEditError.orderQuantities}
+                helperText={
+                  !!projectEditError.orderQuantities &&
+                  intl.formatMessage({
+                    id: "app.customer.projectDetail.error.orderQuantity.helperText",
+                  })
+                }
+                FormHelperTextProps={{
+                  sx: {
+                    margin: 0,
+                    fontSize: "0.7em",
+                  },
+                }}
+              />
+            </Box>
+            <Box>
+              <IconButton onClick={addOrderQuantity} disabled={!orderQuantity}>
+                <AddCircleIcon />
+              </IconButton>
+            </Box>
+          </Box>
+          {!!(projectFieldData as number[]).length &&
+            (projectFieldData as number[]).map((quantity, i) => {
+              return (
+                <ListItem>
+                  <Typography variant="caption">{quantity}</Typography>
+                  <IconButton onClick={() => removeOrderQuantity(i)}>
+                    <CancelIcon />
+                  </IconButton>
+                </ListItem>
+              );
+            })}
+        </>
+      );
+    };
+
+    const orderQuantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let val: string | number = e.target.value;
+      let isAllowed = false;
+
+      if (isValidInt(val)) {
+        isAllowed = true;
+      }
+
+      if (isAllowed) {
+        setOrderQuantity(val);
+      }
+    };
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let val: string | number = e.target.value;
+      let isAllowed = false;
+      switch (projectAttribute) {
+        case "name":
+          if (isValidAlphanumeric(val)) {
+            isAllowed = true;
+          }
+          break;
+        case "targetPrice":
+          if (isValidInt(val)) {
+            isAllowed = true;
+            val = parseInt(val, 10) || "";
+          }
+          break;
+
+        default:
+          break;
+      }
+      if (isAllowed) {
+        if (val === "") {
+          setProjectEditError((prev) => ({
+            ...prev,
+            [projectAttribute]: true,
+          }));
+        } else {
+          setProjectEditError((prev) => ({
+            ...prev,
+            [projectAttribute]: false,
+          }));
+        }
+        setData(
+          (prev) =>
+            ({
+              ...prev,
+              [projectAttribute]: val,
+            } as UpdateProjectInput)
+        );
+      }
+    };
+
+    const deliveryAddressOnChange = (deliveryAddress: string) => {
+      setData((prev) => ({
+        ...prev!,
+        deliveryAddress,
+      }));
+    };
+
+    let res: JSX.Element | null = null;
+    // TODO: handle empty input
+
+    switch (projectAttribute) {
+      case "name":
+      case "targetPrice":
+        res = renderTextField();
+        break;
+      case "deliveryDate":
+        res = renderDatePicker();
+        break;
+      case "deliveryAddress":
+        res = renderGoogleMapInput();
+        break;
+      case "orderQuantities":
+        res = renderOrderQuantities();
+        break;
+      default:
+        break;
+    }
+
+    if (isEditMode) {
+      return res;
+    }
+
+    if (Array.isArray(projectFieldData)) {
+      return (
+        <Typography variant="caption">{projectFieldData.join(", ")}</Typography>
+      );
+    }
+
+    return <Typography variant="caption">{projectFieldData}</Typography>;
+  };
+
+  const renderVendorBidOverview = (
+    bids: ProjectBid[],
+    projectComponents: ProjectComponent[]
+  ) => {
+    return bids.map((bid) => {
+      return (
+        <ListItem>
+          <VendorBidOverview bid={bid} projectComponents={projectComponents} />
+        </ListItem>
+      );
+    });
+  };
+
+  const renderAttributeTitle = (attr: string) => {
+    return <Typography variant="subtitle2">{attr}</Typography>;
+  };
+  const shouldDisableEditConfirmButton = () => {
+    for (let key in projectEditError) {
+      if (projectEditError[key as keyof UpdateProjectInput]) return true;
+    }
+    return false;
+  };
+
+  const isLoading = getProjectLoading || updateLoading;
+
+  const projectData = getProjectData?.getCustomerProject;
   const bids = projectData?.bids;
 
-  if (projectData && Object.keys(updateProjectData).length) {
+  if (projectData && updateProjectData) {
     return (
       <Container>
         {isLoading && <FullScreenLoading />}
@@ -723,6 +1014,7 @@ const CustomerProjectDetail = () => {
             <KeyboardBackspaceIcon />
           </IconButton>
         </Container>
+
         {/* BID SECTION */}
         <Grid container spacing={2}>
           <Grid item xs={4}>
@@ -734,24 +1026,11 @@ const CustomerProjectDetail = () => {
               </Typography>
             </Box>
             <List sx={{ maxHeight: 500, overflow: "scroll" }}>
-              {bids &&
-                bids.map((bid) => {
-                  return (
-                    <>
-                      <ListItem>
-                        <VendorBidOverview
-                          bid={bid as ProjectBid}
-                          projectComponents={
-                            projectData.components as ProjectComponent[]
-                          }
-                        />
-                      </ListItem>
-                    </>
-                  );
-                })}
+              {bids && renderVendorBidOverview(bids, projectData.components)}
             </List>
           </Grid>
           {/* PROJECT SECTION */}
+
           <Grid item xs={8}>
             <Box>
               <Typography variant="h6" textAlign="left">
@@ -774,10 +1053,10 @@ const CustomerProjectDetail = () => {
               </IconButton>
               <List>
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">
-                    {intl.formatMessage({ id: "app.project.attribute.name" })}
-                  </Typography>
-                  {EditableTypography(
+                  {renderAttributeTitle(
+                    intl.formatMessage({ id: "app.project.attribute.name" })
+                  )}
+                  {renderEditableProjectField(
                     projectEditMode,
                     setUpdateProjectData,
                     "name",
@@ -786,33 +1065,41 @@ const CustomerProjectDetail = () => {
                 </ProjectDetailListItem>
 
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">
-                    {intl.formatMessage({
+                  {renderAttributeTitle(
+                    intl.formatMessage({
                       id: "app.project.attribute.deliveryDate",
-                    })}
-                  </Typography>
-                  <Typography variant="caption">
-                    {updateProjectData.deliveryDate}
-                  </Typography>
+                    })
+                  )}
+
+                  {renderEditableProjectField(
+                    projectEditMode,
+                    setUpdateProjectData,
+                    "deliveryDate",
+                    updateProjectData.deliveryDate!
+                  )}
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">
-                    {intl.formatMessage({
+                  {renderAttributeTitle(
+                    intl.formatMessage({
                       id: "app.project.attribute.deliveryAddress",
-                    })}
-                  </Typography>
-                  <Typography variant="caption">
-                    {updateProjectData.deliveryAddress}
-                  </Typography>
+                    })
+                  )}
+
+                  {renderEditableProjectField(
+                    projectEditMode,
+                    setUpdateProjectData,
+                    "deliveryAddress",
+                    updateProjectData.deliveryAddress!
+                  )}
                 </ProjectDetailListItem>
 
                 {projectData.design && (
                   <ProjectDetailListItem>
-                    <Typography variant="subtitle2">
-                      {intl.formatMessage({
+                    {renderAttributeTitle(
+                      intl.formatMessage({
                         id: "app.project.attribute.design",
-                      })}
-                    </Typography>
+                      })
+                    )}
 
                     <Link
                       href={projectData.design.url}
@@ -824,12 +1111,12 @@ const CustomerProjectDetail = () => {
                   </ProjectDetailListItem>
                 )}
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">
-                    {intl.formatMessage({
+                  {renderAttributeTitle(
+                    intl.formatMessage({
                       id: "app.project.attribute.targetPrice",
-                    })}
-                  </Typography>
-                  {EditableTypography(
+                    })
+                  )}
+                  {renderEditableProjectField(
                     projectEditMode,
                     setUpdateProjectData,
                     "targetPrice",
@@ -837,23 +1124,36 @@ const CustomerProjectDetail = () => {
                   )}
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">
-                    {intl.formatMessage({
+                  {renderAttributeTitle(
+                    intl.formatMessage({
                       id: "app.project.attribute.orderQuantities",
-                    })}
-                  </Typography>
+                    })
+                  )}
+                  {renderEditableProjectField(
+                    projectEditMode,
+                    setUpdateProjectData,
+                    "orderQuantities",
+                    updateProjectData.orderQuantities!
+                  )}
+                </ProjectDetailListItem>
+                <ProjectDetailListItem>
+                  {renderAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.general.createdAt",
+                    })
+                  )}
                   <Typography variant="caption">
-                    {updateProjectData.orderQuantities!.join(", ")}
+                    {convertToDate(projectData.createdAt)}
                   </Typography>
                 </ProjectDetailListItem>
                 <ProjectDetailListItem>
-                  <Typography variant="subtitle2">
-                    {intl.formatMessage({
-                      id: "app.project.attribute.postedOn",
-                    })}
-                  </Typography>
+                  {renderAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.general.updatedAt",
+                    })
+                  )}
                   <Typography variant="caption">
-                    {convertToDate(projectData.createdAt)}
+                    {convertToDate(projectData.updatedAt)}
                   </Typography>
                 </ProjectDetailListItem>
               </List>
@@ -867,12 +1167,17 @@ const CustomerProjectDetail = () => {
                     variant="text"
                     onClick={() => {
                       initializeUpdateProjectData();
+                      resetProjectEditErrors();
                       setProjectEditMode(false);
                     }}
                   >
                     {intl.formatMessage({ id: "app.general.cancel" })}
                   </Button>
-                  <Button variant="outlined" onClick={() => updateProject()}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => updateProject()}
+                    disabled={shouldDisableEditConfirmButton()}
+                  >
                     {intl.formatMessage({ id: "app.general.confirm" })}
                   </Button>
                 </Stack>
@@ -898,7 +1203,7 @@ const CustomerProjectDetail = () => {
               {projectData.components.map((comp, i) => {
                 return (
                   <TabPanel value={currentTab} index={i}>
-                    {renderComponentSpecAccordionDetail(comp.componentSpec)}
+                    {renderComponentSpecDetail(comp.componentSpec)}
                   </TabPanel>
                 );
               })}

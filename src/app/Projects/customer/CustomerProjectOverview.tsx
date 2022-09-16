@@ -30,6 +30,8 @@ import {
   Exact,
   GetCustomerProjectsInput,
   InputMaybe,
+  ProjectPermission,
+  ProjectStatus,
 } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
@@ -100,20 +102,24 @@ const CustomerProjectOverview = ({
   };
 
   const canShare = () => {
-    return project.permission !== "VIEWER";
+    return project.permission !== ProjectPermission.Viewer;
   };
 
   const canDelete = () => {
-    return project.permission !== "VIEWER" && project.status === "OPEN";
+    return (
+      project.permission !== ProjectPermission.Viewer &&
+      project.status === ProjectStatus.Open
+    );
   };
 
+  // TODO: use intl for chip label
   const renderProjectStatusChip = () => {
     switch (project.status) {
-      case "OPEN":
+      case ProjectStatus.Open:
         return <Chip label="Open" color="primary" size="small" />;
-      case "IN_PROGRESS":
+      case ProjectStatus.InProgress:
         return <Chip label="In Progress" color="warning" size="small" />;
-      case "CLOSED":
+      case ProjectStatus.Completed:
         return <Chip label="Closed" color="success" size="small" />;
       default:
         return null;
@@ -227,7 +233,7 @@ const CustomerProjectOverview = ({
             <ProjectOverviewListItem>
               <Tooltip
                 title={intl.formatMessage({
-                  id: "app.project.attribute.postedOn",
+                  id: "app.general.createdAt",
                 })}
                 arrow
                 placement="top"

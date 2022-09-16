@@ -91,6 +91,7 @@ const VendorProjectDetail = () => {
         userId: user!.id,
       },
     },
+    fetchPolicy: "no-cache",
   });
 
   const {

@@ -54,6 +54,8 @@ const GET_CUSTOMER_PROJECT = gql`
         id
         userId
         companyId
+        projectId
+        comments
         components {
           id
           projectBidId

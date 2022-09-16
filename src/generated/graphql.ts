@@ -16,7 +16,9 @@ export type Scalars = {
 
 export enum BidStatus {
   Accepted = 'ACCEPTED',
+  Expired = 'EXPIRED',
   Open = 'OPEN',
+  Outdated = 'OUTDATED',
   Rejected = 'REJECTED'
 }
 
@@ -618,7 +620,6 @@ export type ProjectBid = {
   components: Array<ProjectBidComponent>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
-  project: Project;
   projectId: Scalars['String'];
   status: BidStatus;
   updatedAt: Scalars['String'];
@@ -627,22 +628,18 @@ export type ProjectBid = {
 
 export type ProjectBidComponent = {
   __typename?: 'ProjectBidComponent';
-  createdAt: Scalars['String'];
   id: Scalars['String'];
   projectBidId: Scalars['String'];
   projectComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPrice>;
-  updatedAt: Scalars['String'];
 };
 
 export type ProjectComponent = {
   __typename?: 'ProjectComponent';
   componentSpec: ProjectComponentSpec;
-  createdAt: Scalars['String'];
   id: Scalars['String'];
   name: Scalars['String'];
   projectId: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
 
 export type ProjectComponentSpec = {
@@ -698,8 +695,10 @@ export enum ProjectPermission {
 
 export enum ProjectStatus {
   Closed = 'CLOSED',
+  Completed = 'COMPLETED',
   InProgress = 'IN_PROGRESS',
-  Open = 'OPEN'
+  Open = 'OPEN',
+  Overdue = 'OVERDUE'
 }
 
 export type QuantityPrice = {
@@ -908,8 +907,8 @@ export type UpdateProjectBidPermissionsInputData = {
 };
 
 export type UpdateProjectComponentInput = {
+  componentId: Scalars['String'];
   componentSpec: UpdateProjectComponentSpecInput;
-  id: Scalars['String'];
   name: Scalars['String'];
 };
 
@@ -937,13 +936,12 @@ export type UpdateProjectComponentSpecInput = {
 };
 
 export type UpdateProjectInput = {
-  components?: InputMaybe<Array<UpdateProjectComponentInput>>;
-  deliveryAddress?: InputMaybe<Scalars['String']>;
-  deliveryDate?: InputMaybe<Scalars['String']>;
-  id: Scalars['String'];
-  name?: InputMaybe<Scalars['String']>;
-  orderQuantities?: InputMaybe<Array<Scalars['Int']>>;
-  targetPrice?: InputMaybe<Scalars['Int']>;
+  deliveryAddress: Scalars['String'];
+  deliveryDate: Scalars['String'];
+  name: Scalars['String'];
+  orderQuantities: Array<Scalars['Int']>;
+  projectId: Scalars['String'];
+  targetPrice: Scalars['Int'];
 };
 
 export type UpdateProjectPermissionsInput = {

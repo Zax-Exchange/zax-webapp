@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import {
+  Chip,
   Container,
   IconButton,
   List,
@@ -23,6 +24,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import BusinessIcon from "@mui/icons-material/Business";
 import {
+  BidStatus,
   Exact,
   GetVendorProjectsInput,
   InputMaybe,
@@ -101,6 +103,18 @@ const VendorProjectOverview = ({
     moreOnClose();
   };
 
+  const renderBidStatusChip = () => {
+    switch (project.bidInfo.status) {
+      case BidStatus.Open:
+        return <Chip label="Open" color="primary" size="small" />;
+      case BidStatus.Outdated:
+        return <Chip label="Out dated" color="warning" size="small" />;
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <Grid item xs={4} minHeight={300}>
       <Paper
@@ -148,6 +162,9 @@ const VendorProjectOverview = ({
           </Typography>
 
           <List>
+            <ProjectOverviewListItem>
+              {renderBidStatusChip()}
+            </ProjectOverviewListItem>
             <ProjectOverviewListItem>
               <Tooltip title="Customer" arrow placement="top">
                 <BusinessIcon />

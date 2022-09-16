@@ -31,6 +31,7 @@ import {
   VENDOR_ROUTES,
 } from "../constants/loggedInRoutes";
 import { useIntl } from "react-intl";
+import VendorNotification from "../Notification/VendorNotification";
 
 const query = gql`
   mutation reset($t: Int) {
@@ -250,6 +251,7 @@ const Nav = () => {
           {renderHamburger()}
           {renderLogo()}
           {renderSearchBar()}
+          <VendorNotification />
         </Toolbar>
       </>
     );

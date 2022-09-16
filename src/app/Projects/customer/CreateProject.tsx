@@ -594,7 +594,6 @@ const CreateProject = () => {
       </TableContainer>
     );
   };
-
   return (
     <>
       {loading && <FullScreenLoading />}
@@ -657,14 +656,19 @@ const CreateProject = () => {
                   inputFormat="YYYY-MM-DD"
                   value={projectData.deliveryDate}
                   onChange={(v: any) => {
-                    if (!v) return;
+                    if (!v || !v._isValid) return;
+
                     setProjectData({
                       ...projectData,
                       deliveryDate: new Date(v._d).toISOString().split("T")[0],
                     });
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} name="deliveryDate" />
+                    <TextField
+                      {...params}
+                      name="deliveryDate"
+                      value={projectData.deliveryDate}
+                    />
                   )}
                 />
               </LocalizationProvider>
@@ -673,6 +677,9 @@ const CreateProject = () => {
             <ListItem>
               <GoogleMapAutocomplete
                 parentSetDataHandler={handleAddressOnChange}
+                label={intl.formatMessage({
+                  id: "app.project.attribute.deliveryAddress",
+                })}
               />
             </ListItem>
 

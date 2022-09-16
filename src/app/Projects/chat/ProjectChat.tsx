@@ -28,6 +28,7 @@ import Messages from "./Messages";
 import CustomMessageInput from "./MessageInput";
 import React from "react";
 import "./Chat.scss";
+import { client } from "../../../ApolloClient/client";
 const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
 const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
 const filters = { type: "messaging", members: { $in: ["ancient-mountain-4"] } };
@@ -64,6 +65,7 @@ const ProjectChat = ({
   const [chatClient, setChatClient] = useState(null as any);
   const [channel, setChannel] = useState(null as any);
   const messagesRef = useRef<HTMLUListElement | null>(null);
+
   useEffect(() => {
     const initChat = async () => {
       const client = StreamChat.getInstance(streamApiKey);

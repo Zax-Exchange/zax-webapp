@@ -19,6 +19,7 @@ import FullScreenLoading from "../../Utils/Loading";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import ProjectChat from "../chat/ProjectChat";
 import {
+  BidStatus,
   ProjectBid,
   ProjectComponent,
   VendorDetail,
@@ -105,6 +106,35 @@ const VendorBidOverview = ({
     moreOnClose();
   };
 
+  const renderBidStatus = (status: BidStatus) => {
+    let res: string = "";
+
+    switch (status) {
+      case BidStatus.Open:
+        res = intl.formatMessage({ id: "app.bid.status.open" });
+        break;
+      case BidStatus.Outdated:
+        res = intl.formatMessage({ id: "app.bid.status.outdated" });
+        break;
+      case BidStatus.Accepted:
+        res = intl.formatMessage({ id: "app.bid.status.accepted" });
+        break;
+      case BidStatus.Rejected:
+        res = intl.formatMessage({ id: "app.bid.status.rejected" });
+        break;
+      case BidStatus.Expired:
+        res = intl.formatMessage({ id: "app.bid.status.expired" });
+        break;
+    }
+    if (res) {
+      return (
+        <Typography variant="overline">
+          <i>{res}</i>
+        </Typography>
+      );
+    }
+    return null;
+  };
   if (getVendorDetailLoading || getCompanyDetailLoading) {
     return <FullScreenLoading />;
   }
@@ -123,6 +153,7 @@ const VendorBidOverview = ({
           <CardActionArea onClick={() => setIsBidModalOpen(true)}>
             <CardContent>
               <List>
+                <ListItem>{renderBidStatus(bid.status)}</ListItem>
                 <ListItem>
                   <Typography variant="subtitle2">
                     {intl.formatMessage({ id: "app.general.vendor" })}:{" "}

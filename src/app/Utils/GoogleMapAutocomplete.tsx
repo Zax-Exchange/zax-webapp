@@ -43,8 +43,20 @@ interface PlaceType {
 
 export default function GoogleMaps({
   parentSetDataHandler,
+  defaultAddress = "",
+  width = "auto",
+  height = "auto",
+  label = "",
+  error = false,
+  errorHelperText = "",
 }: {
   parentSetDataHandler: (address: string) => void;
+  defaultAddress?: string;
+  width?: string | number;
+  height?: string | number;
+  label?: string;
+  error?: boolean;
+  errorHelperText?: string;
 }) {
   const intl = useIntl();
   const [value, setValue] = React.useState<PlaceType | null>(null);
@@ -122,7 +134,7 @@ export default function GoogleMaps({
   return (
     <Autocomplete
       id="google-map-demo"
-      // sx={{ width: 700 }}
+      sx={{ width }}
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
       }
@@ -132,6 +144,7 @@ export default function GoogleMaps({
       includeInputInList
       filterSelectedOptions
       value={value}
+      inputValue={inputValue}
       onChange={(event: any, newValue: PlaceType | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
         setValue(newValue);
@@ -143,14 +156,24 @@ export default function GoogleMaps({
       renderInput={(params) => (
         <TextField
           {...params}
-          label={intl.formatMessage({
-            id: "app.project.attribute.deliveryAddress",
-          })}
+          label={label}
+          error={error}
+          helperText={errorHelperText}
+          placeholder={defaultAddress}
           fullWidth
           InputLabelProps={{
             sx: {
               fontSize: 16,
               top: -7,
+              "& .MuiInputBase-root": {
+                height,
+              },
+            },
+          }}
+          FormHelperTextProps={{
+            sx: {
+              margin: 0,
+              fontSize: "0.7em",
             },
           }}
         />
@@ -165,9 +188,9 @@ export default function GoogleMaps({
             match.offset + match.length,
           ])
         );
-
+        console.log(option);
         return (
-          <li {...props}>
+          <li {...props} key={option.description}>
             <Grid container alignItems="center">
               <Grid item>
                 <Box
