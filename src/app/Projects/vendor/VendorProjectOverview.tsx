@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { Dialog, DialogContent } from "@mui/material";
 import { Card, CardActionArea, CardContent, Grid, Paper } from "@mui/material";
-import ProjectPermissionModal from "../ProjectPermissionModal";
+import ProjectPermissionModal from "../common/ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
@@ -35,6 +35,9 @@ import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
+import { useIntl } from "react-intl";
+
+type ProjectMenuOption = "view-detail" | "share";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -62,6 +65,7 @@ const VendorProjectOverview = ({
       | undefined
   ) => Promise<ApolloQueryResult<GetVendorProjectsQuery>>;
 }) => {
+  const intl = useIntl();
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [projectMenuAnchor, setProjectMenuAnchor] =
@@ -90,13 +94,11 @@ const VendorProjectOverview = ({
     return project.permission !== ProjectPermission.Viewer;
   };
 
-  const projectMenuOnClick = (
-    e: React.MouseEvent<HTMLLIElement, MouseEvent>
-  ) => {
-    if (e.currentTarget.innerText === "View detail") {
+  const projectMenuOnClick = (action: ProjectMenuOption) => {
+    if (action === "view-detail") {
       viewDetailHandler();
     }
-    if (e.currentTarget.innerText === "Share" && canShare()) {
+    if (action === "share" && canShare()) {
       setPermissionModalOpen(true);
     }
 
@@ -106,9 +108,21 @@ const VendorProjectOverview = ({
   const renderBidStatusChip = () => {
     switch (project.bidInfo.status) {
       case BidStatus.Open:
-        return <Chip label="Open" color="primary" size="small" />;
+        return (
+          <Chip
+            label={intl.formatMessage({ id: "app.bid.status.open" })}
+            color="primary"
+            size="small"
+          />
+        );
       case BidStatus.Outdated:
-        return <Chip label="Out dated" color="warning" size="small" />;
+        return (
+          <Chip
+            label={intl.formatMessage({ id: "app.bid.status.outdated" })}
+            color="warning"
+            size="small"
+          />
+        );
 
       default:
         return null;
@@ -145,10 +159,15 @@ const VendorProjectOverview = ({
           }}
         >
           <MenuList dense sx={{ padding: "4px 0 4px" }}>
-            <MenuItem onClick={projectMenuOnClick}>View detail</MenuItem>
+            <MenuItem onClick={() => projectMenuOnClick("view-detail")}>
+              {intl.formatMessage({ id: "app.general.viewDetail" })}
+            </MenuItem>
 
-            <MenuItem onClick={projectMenuOnClick} disabled={!canShare()}>
-              Share
+            <MenuItem
+              onClick={() => projectMenuOnClick("share")}
+              disabled={!canShare()}
+            >
+              {intl.formatMessage({ id: "app.general.share" })}
             </MenuItem>
           </MenuList>
         </Menu>
@@ -166,20 +185,38 @@ const VendorProjectOverview = ({
               {renderBidStatusChip()}
             </ProjectOverviewListItem>
             <ProjectOverviewListItem>
-              <Tooltip title="Customer" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.project.attribute.companyName",
+                })}
+                arrow
+                placement="top"
+              >
                 <BusinessIcon />
               </Tooltip>
               <Typography variant="caption">{project.companyName}</Typography>
             </ProjectOverviewListItem>
             <ProjectOverviewListItem>
-              <Tooltip title="Delivery date" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.project.attribute.deliveryDate",
+                })}
+                arrow
+                placement="top"
+              >
                 <LocalShippingOutlinedIcon />
               </Tooltip>
               <Typography variant="caption">{project.deliveryDate}</Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              <Tooltip title="Delivery address" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.project.attribute.deliveryAddress",
+                })}
+                arrow
+                placement="top"
+              >
                 <PlaceIcon />
               </Tooltip>
               <Typography variant="caption">
@@ -188,14 +225,26 @@ const VendorProjectOverview = ({
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              <Tooltip title="Target Price" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.project.attribute.targetPrice",
+                })}
+                arrow
+                placement="top"
+              >
                 <AttachMoneyIcon />
               </Tooltip>
               <Typography variant="caption">${project.targetPrice}</Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
-              <Tooltip title="Posted on" arrow placement="top">
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.general.createdAt",
+                })}
+                arrow
+                placement="top"
+              >
                 <CreateIcon />
               </Tooltip>
               <Typography variant="caption">{date}</Typography>

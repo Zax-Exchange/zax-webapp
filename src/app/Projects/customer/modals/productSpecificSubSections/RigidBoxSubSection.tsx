@@ -26,6 +26,7 @@ import MuiStack from "@mui/material/Stack";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
+import { TranslatableAttribute } from "../../../../../type/common";
 
 type RigidBoxPostProcessDetail = {
   postProcessName: string;
@@ -146,13 +147,13 @@ const RigidBoxSubSection = ({
       postProcessDetail;
 
     switch (postProcessName) {
-      case POST_PROCESS_PRINTING:
+      case POST_PROCESS_PRINTING.value:
         return `Printing of area size ${estimatedArea} with ${numberOfColors} colors.`;
-      case POST_PROCESS_EMBOSS:
+      case POST_PROCESS_EMBOSS.value:
         return `Emboss of area size ${estimatedArea} with font size of ${fontSize}.`;
-      case POST_PROCESS_DEBOSS:
+      case POST_PROCESS_DEBOSS.value:
         return `Deboss of area size ${estimatedArea} with font size of ${fontSize}.`;
-      case POST_PROCESS_FOIL_STAMP:
+      case POST_PROCESS_FOIL_STAMP.value:
         return `Foil Stamp of area size ${estimatedArea} with a color of ${color}`;
       default:
         return "";
@@ -161,7 +162,7 @@ const RigidBoxSubSection = ({
 
   const renderAutocompleteDropdown = useCallback(
     (
-      options: string[],
+      options: TranslatableAttribute[],
       componentSpecAttribute: keyof CreateProjectComponentSpecInput,
       label: string,
       helperText: string = "",
@@ -175,7 +176,7 @@ const RigidBoxSubSection = ({
           onChange={(e, v) => {
             setComponentSpec((spec) => ({
               ...spec,
-              [componentSpecAttribute]: v ? v : "",
+              [componentSpecAttribute]: v ? v.value : "",
             }));
           }}
           renderInput={(params) => (
@@ -214,17 +215,20 @@ const RigidBoxSubSection = ({
           sx={{ width: 250 }}
           options={RIGID_BOX_POST_PROCESSES}
           autoHighlight
-          value={postProcessDetail.postProcessName}
+          // value={postProcessDetail.postProcessName}
           onChange={(e, v) => {
+            if (!v) {
+              setPostProcessDetail({} as RigidBoxPostProcessDetail);
+              return;
+            }
             setPostProcessDetail((prev) => {
-              console.log(prev.postProcessName, v);
               // If user selects same post process, do nothing.
-              if (prev.postProcessName === v) {
+              if (prev.postProcessName === v.value) {
                 return prev;
               } else {
                 // If user selects a new post process, reset everything.
                 return {
-                  postProcessName: v ? v : "",
+                  postProcessName: v.value,
                 };
               }
             });
@@ -256,7 +260,7 @@ const RigidBoxSubSection = ({
     addPostProcess: () => void
   ) => {
     let subSection = null;
-    if (postProcessDetail.postProcessName === POST_PROCESS_PRINTING) {
+    if (postProcessDetail.postProcessName === POST_PROCESS_PRINTING.value) {
       subSection = (
         <>
           <ListItem>
@@ -287,7 +291,7 @@ const RigidBoxSubSection = ({
       );
     }
 
-    if (postProcessDetail.postProcessName === POST_PROCESS_EMBOSS) {
+    if (postProcessDetail.postProcessName === POST_PROCESS_EMBOSS.value) {
       subSection = (
         <>
           <ListItem>
@@ -318,7 +322,7 @@ const RigidBoxSubSection = ({
       );
     }
 
-    if (postProcessDetail.postProcessName === POST_PROCESS_DEBOSS) {
+    if (postProcessDetail.postProcessName === POST_PROCESS_DEBOSS.value) {
       subSection = (
         <>
           <ListItem>
@@ -349,7 +353,7 @@ const RigidBoxSubSection = ({
       );
     }
 
-    if (postProcessDetail.postProcessName === POST_PROCESS_FOIL_STAMP) {
+    if (postProcessDetail.postProcessName === POST_PROCESS_FOIL_STAMP.value) {
       subSection = (
         <>
           <ListItem>
@@ -408,7 +412,9 @@ const RigidBoxSubSection = ({
           <ListItem>
             <TextField
               autoComplete="new-password"
-              label="Dimension"
+              label={intl.formatMessage({
+                id: "app.component.attribute.dimension",
+              })}
               onChange={componentSpecOnChange}
               name="dimension"
               value={componentSpec.dimension}
@@ -417,7 +423,9 @@ const RigidBoxSubSection = ({
           <ListItem>
             <TextField
               autoComplete="new-password"
-              label="Thickness"
+              label={intl.formatMessage({
+                id: "app.component.attribute.thickness",
+              })}
               onChange={componentSpecOnChange}
               name="thickness"
               value={componentSpec.thickness}
@@ -466,7 +474,9 @@ const RigidBoxSubSection = ({
             {renderPostProcessSection(
               outsidePostProcessDetail,
               setOutsidePostProcessDetail,
-              "Outside Post Process"
+              intl.formatMessage({
+                id: "app.component.attribute.outsidePostProcess",
+              })
             )}
           </ListItem>
           {renderPostProcessDetailSection(

@@ -23,6 +23,7 @@ import { validate } from "email-validator";
 import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.generated";
 import { UpdateVendorInfoInput } from "../../../generated/graphql";
 import { PRODUCT_NAMES } from "../../constants/products";
+import { TranslatableAttribute } from "../../../type/common";
 
 const EditVendorProfile = () => {
   const { user } = useContext(AuthContext);
@@ -52,7 +53,6 @@ const EditVendorProfile = () => {
   const [vendorData, setVendorData] = useState<UpdateVendorInfoInput | null>(
     null
   );
-  const [product, setProduct] = useState("");
 
   useEffect(() => {
     if (getVendorDetailData && getVendorDetailData.getVendorDetail) {
@@ -134,12 +134,13 @@ const EditVendorProfile = () => {
     });
   };
 
-  const productOnChange = (e: any) => {
-    const val = e.target.value || "";
+  const productOnChange = (productsList: TranslatableAttribute[]) => {
+    const products = productsList.map((p) => p.value);
 
-    if (isValidAlphanumeric(val)) {
-      setProduct(val);
-    }
+    setVendorData({
+      ...vendorData!,
+      products,
+    });
   };
 
   const locationOnChange = (locations: { label: string }[]) => {
@@ -148,15 +149,6 @@ const EditVendorProfile = () => {
       ...vendorData!,
       locations: locationLabels,
     });
-  };
-
-  const addProduct = (product: string[]) => {
-    const products = [...product].map((v) => v.trim());
-    setVendorData({
-      ...vendorData!,
-      products,
-    });
-    setProduct("");
   };
 
   const renderCountryDropdown = () => {
@@ -254,19 +246,15 @@ const EditVendorProfile = () => {
           id="products-select"
           sx={{ width: 400 }}
           options={PRODUCT_NAMES}
+          getOptionLabel={(option) => option.label}
           autoHighlight
-          inputValue={product}
-          onInputChange={productOnChange}
-          onChange={(e, v) => addProduct(v)}
-          value={vendorData!.products}
+          defaultValue={[...getDefaultManufacturingProducts()]}
+          onChange={(e, v) => productOnChange(v)}
           multiple
-          freeSolo
           renderInput={(params) => (
             <TextField
               {...params}
               label="Manufacturing products"
-              value={product}
-              onChange={productOnChange}
               inputProps={{
                 ...params.inputProps,
                 autoComplete: "new-password",
@@ -284,6 +272,17 @@ const EditVendorProfile = () => {
       );
     };
 
+    const getDefaultManufacturingProducts = () => {
+      const res = [];
+      for (let p of PRODUCT_NAMES) {
+        for (let vendorProduct of vendorData!.products) {
+          if (p.value === vendorProduct) {
+            res.push(p);
+          }
+        }
+      }
+      return res;
+    };
     const getDefaultCompanyLocations = () => {
       const res = [];
       for (let country of countries) {
@@ -437,7 +436,11 @@ const EditVendorProfile = () => {
             {renderVendorUpdateForm()}
 
             <Container
-              sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: 2,
+              }}
               disableGutters
             >
               <Button

@@ -85,7 +85,7 @@ const CreateProjectComponentModal = ({
     );
   const [componentData, setComponentData] =
     useState<CreateProjectComponentInput>({} as CreateProjectComponentInput);
-  console.log(componentSpec);
+
   useEffect(() => {
     if (componentSpec.productName) {
       setComponentSpec({
@@ -93,23 +93,23 @@ const CreateProjectComponentModal = ({
       } as CreateProjectComponentSpecInput);
 
       switch (componentSpec.productName) {
-        case PRODUCT_NAME_RIGID_BOX:
-          setView(PRODUCT_NAME_RIGID_BOX);
+        case PRODUCT_NAME_RIGID_BOX.value:
+          setView(PRODUCT_NAME_RIGID_BOX.value);
           break;
-        case PRODUCT_NAME_FOLDING_CARTON:
-          setView(PRODUCT_NAME_FOLDING_CARTON);
+        case PRODUCT_NAME_FOLDING_CARTON.value:
+          setView(PRODUCT_NAME_FOLDING_CARTON.value);
           break;
-        case PRODUCT_NAME_SLEEVE:
-          setView(PRODUCT_NAME_SLEEVE);
+        case PRODUCT_NAME_SLEEVE.value:
+          setView(PRODUCT_NAME_SLEEVE.value);
           break;
-        case PRODUCT_NAME_CORRUGATE_BOX:
-          setView(PRODUCT_NAME_CORRUGATE_BOX);
+        case PRODUCT_NAME_CORRUGATE_BOX.value:
+          setView(PRODUCT_NAME_CORRUGATE_BOX.value);
           break;
-        case PRODUCT_NAME_MOLDED_FIBER:
-          setView(PRODUCT_NAME_MOLDED_FIBER);
+        case PRODUCT_NAME_MOLDED_FIBER.value:
+          setView(PRODUCT_NAME_MOLDED_FIBER.value);
           break;
-        case PRODUCT_NAME_PAPER_TUBE:
-          setView(PRODUCT_NAME_PAPER_TUBE);
+        case PRODUCT_NAME_PAPER_TUBE.value:
+          setView(PRODUCT_NAME_PAPER_TUBE.value);
           break;
         default:
           break;
@@ -197,13 +197,13 @@ const CreateProjectComponentModal = ({
           if (!v) return;
           setComponentSpec((spec) => {
             // If product name is same, do nothing.
-            if (v === componentSpec.productName) {
+            if (v.value === componentSpec.productName) {
               return spec;
             } else {
               // If product name is different, reset everything
               return {
                 ...spec,
-                productName: v,
+                productName: v.value,
               };
             }
           });
@@ -211,7 +211,9 @@ const CreateProjectComponentModal = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Product Type"
+            label={intl.formatMessage({
+              id: "app.component.attribute.product",
+            })}
             name=""
             inputProps={{
               ...params.inputProps,
@@ -263,42 +265,42 @@ const CreateProjectComponentModal = ({
               <ListItem>{renderProductsDropdown()}</ListItem>
             </Stack>
 
-            {view === PRODUCT_NAME_RIGID_BOX && (
+            {view === PRODUCT_NAME_RIGID_BOX.value && (
               <RigidBoxSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />
             )}
 
-            {view === PRODUCT_NAME_FOLDING_CARTON && (
+            {view === PRODUCT_NAME_FOLDING_CARTON.value && (
               <FoldingCartonSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />
             )}
 
-            {view === PRODUCT_NAME_SLEEVE && (
+            {view === PRODUCT_NAME_SLEEVE.value && (
               <SleeveSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />
             )}
 
-            {view === PRODUCT_NAME_CORRUGATE_BOX && (
+            {view === PRODUCT_NAME_CORRUGATE_BOX.value && (
               <CorrugateBoxSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />
             )}
 
-            {view === PRODUCT_NAME_MOLDED_FIBER && (
+            {view === PRODUCT_NAME_MOLDED_FIBER.value && (
               <MoldedFiberSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />
             )}
 
-            {view === PRODUCT_NAME_PAPER_TUBE && (
+            {view === PRODUCT_NAME_PAPER_TUBE.value && (
               <PaperTubeSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}

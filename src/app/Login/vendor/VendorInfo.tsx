@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
 import { useState } from "react";
+import { TranslatableAttribute } from "../../../type/common";
 import { countries } from "../../constants/countries";
 import { PRODUCT_NAMES } from "../../constants/products";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
@@ -41,8 +42,8 @@ const VendorInfo = ({
     }
   };
 
-  const addProduct = (value: string[]) => {
-    const products = [...value].map((v) => v.trim());
+  const addProduct = (value: TranslatableAttribute[]) => {
+    const products = [...value].map((v) => v.value);
     setValues({
       ...values,
       products,
@@ -128,9 +129,7 @@ const VendorInfo = ({
         inputValue={product}
         onInputChange={productOnChange}
         onChange={(e, v) => addProduct(v)}
-        value={values.products}
         multiple
-        freeSolo
         renderInput={(params) => (
           <TextField
             {...params}

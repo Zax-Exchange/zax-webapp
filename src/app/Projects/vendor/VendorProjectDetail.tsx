@@ -40,6 +40,8 @@ import { useGetCompanyDetailQuery } from "../../gql/get/company/company.generate
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import { useIntl } from "react-intl";
+import ComponentSpecDetail from "../common/ComponentSpecDetail";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -72,6 +74,7 @@ const ProjectListItem = styled(MuiListItem)(() => ({
 }));
 
 const VendorProjectDetail = () => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const theme = useTheme();
   const location = useLocation();
@@ -115,343 +118,9 @@ const VendorProjectDetail = () => {
     setCurrentTab(newTab);
   };
 
-  const renderComponentSpecDetailTable = (spec: ProjectComponentSpec) => {
-    const {
-      productName,
-      dimension,
-      thickness,
-      flute,
-      color,
-      manufacturingProcess,
-      material,
-      materialSource,
-      postProcess,
-      finish,
-      outsideMaterial,
-      outsideMaterialSource,
-      outsidePostProcess,
-      outsideFinish,
-      outsideColor,
-      insideMaterial,
-      insideMaterialSource,
-      insidePostProcess,
-      insideFinish,
-      insideColor,
-    } = spec;
-
-    const res: JSX.Element[] = [];
-
-    // for (let key in spec) {
-
-    if (productName) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Product</Typography>
-          </TableCell>
-          <TableCell>
-            <Typography variant="caption">{productName}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-    if (dimension) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Dimension</Typography>
-          </TableCell>
-          <TableCell>
-            <Typography variant="caption">{dimension}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-    if (thickness) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Thickness</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{thickness}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (flute) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Flute</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{flute}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (color) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Color</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{color}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (manufacturingProcess) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Manufacturing Process</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{manufacturingProcess}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (material) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Material</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{material}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (materialSource) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Material Source</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{materialSource}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (postProcess && postProcess.length) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Post Process</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Stack>
-              {postProcess.map((process) => {
-                return (
-                  <MuiListItem sx={{ padding: 0 }}>
-                    <Typography variant="caption">{process}</Typography>
-                  </MuiListItem>
-                );
-              })}
-            </Stack>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (finish) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Finish</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{finish}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsideMaterial) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Outside Material</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{outsideMaterial}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsideMaterialSource) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Outside Material Source</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{outsideMaterialSource}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsidePostProcess && outsidePostProcess.length) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Outside Post Process</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Stack>
-              {outsidePostProcess.map((process) => {
-                return (
-                  <MuiListItem sx={{ padding: 0 }}>
-                    <Typography variant="caption">{process}</Typography>
-                  </MuiListItem>
-                );
-              })}
-            </Stack>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsideFinish) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Outside Finish</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{outsideFinish}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsideColor) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Outside Color</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{outsideColor}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insideMaterial) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Inside Material</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{insideMaterial}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insideMaterialSource) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Inside Material Source</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{insideMaterialSource}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insidePostProcess && insidePostProcess.length) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Inside Post Process</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Stack>
-              {insidePostProcess.map((process) => {
-                return (
-                  <MuiListItem sx={{ padding: 0 }}>
-                    <Typography variant="caption">{process}</Typography>
-                  </MuiListItem>
-                );
-              })}
-            </Stack>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insideFinish) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Inside Finish</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{insideFinish}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insideColor) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">Inside Color</Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{insideColor}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    return (
-      <TableContainer>
-        <Table size="small">
-          <TableBody>{res}</TableBody>
-        </Table>
-      </TableContainer>
-    );
+  const renderProjectAttributeTitle = (value: string) => {
+    return <Typography variant="subtitle2">{value}</Typography>;
   };
-
   const renderProjectDetail = () => {
     if (!getVendorProjectData || !getVendorProjectData.getVendorProject)
       return null;
@@ -514,37 +183,62 @@ const VendorProjectDetail = () => {
               </IconButton>
               <Stack>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Customer Name</Typography>
+                  {renderProjectAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.vendor.project.attribute.customerName",
+                    })
+                  )}
+
                   <Typography variant="caption" component="p">
                     {customerName}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Project Name</Typography>
+                  {renderProjectAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.project.attribute.name",
+                    })
+                  )}
                   <Typography variant="caption" component="p">
                     {projectName}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Delivery Date</Typography>
+                  {renderProjectAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.project.attribute.deliveryDate",
+                    })
+                  )}
                   <Typography variant="caption" component="p">
                     {deliveryDate}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Delivery Address</Typography>
+                  {renderProjectAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.project.attribute.deliveryAddress",
+                    })
+                  )}
                   <Typography variant="caption" component="p">
                     {deliveryAddress}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Order Quantities</Typography>
+                  {renderProjectAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.project.attribute.orderQuantities",
+                    })
+                  )}
                   <Typography variant="caption" component="p">
                     {orderQuantities.join(", ")}
                   </Typography>
                 </ProjectListItem>
                 <ProjectListItem>
-                  <Typography variant="subtitle2">Target Price</Typography>
+                  {renderProjectAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.project.attribute.targetPrice",
+                    })
+                  )}
                   <Typography variant="caption" component="p">
                     {targetPrice}
                   </Typography>
@@ -552,7 +246,11 @@ const VendorProjectDetail = () => {
 
                 {design && (
                   <ProjectListItem>
-                    <Typography variant="subtitle2">Design File</Typography>
+                    {renderProjectAttributeTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.design",
+                      })
+                    )}
                     <Typography variant="caption" component="p">
                       <Link href={design.url} target="_blank" rel="noopener">
                         {design.fileName}
@@ -590,24 +288,36 @@ const VendorProjectDetail = () => {
                         <Box>
                           <Box>
                             <Typography variant="subtitle1" textAlign="left">
-                              Component Detail
+                              {intl.formatMessage({
+                                id: "app.vendor.projectDetail.componentsDetail",
+                              })}
                             </Typography>
                           </Box>
-                          {renderComponentSpecDetailTable(comp.componentSpec)}
+                          <ComponentSpecDetail spec={comp.componentSpec} />
                         </Box>
 
                         <Box mt={3}>
                           <Box>
                             <Typography variant="subtitle1" textAlign="left">
-                              Bid Detail
+                              {intl.formatMessage({
+                                id: "app.vendor.projectDetail.bidDetail",
+                              })}
                             </Typography>
                           </Box>
                           <TableContainer>
                             <Table size="small">
                               <TableHead>
                                 <TableRow>
-                                  <TableCell>Quantity</TableCell>
-                                  <TableCell>Price</TableCell>
+                                  <TableCell>
+                                    {intl.formatMessage({
+                                      id: "app.bid.attribute.quantity",
+                                    })}
+                                  </TableCell>
+                                  <TableCell>
+                                    {intl.formatMessage({
+                                      id: "app.bid.attribute.price",
+                                    })}
+                                  </TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>

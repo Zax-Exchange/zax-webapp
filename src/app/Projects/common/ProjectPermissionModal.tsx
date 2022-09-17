@@ -19,21 +19,21 @@ import {
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import {
   CustomerProject,
   ProjectPermission,
   UserProjectPermission,
   VendorProject,
-} from "../../generated/graphql";
-import useCustomSnackbar from "../Utils/CustomSnackbar";
-import { useUpdateProjectPermissionsMutation } from "../gql/update/project/project.generated";
-import { useUpdateProjectBidPermissionsMutation } from "../gql/update/bid/bid.generated";
-import { useDeleteProjectPermissionsMutation } from "../gql/delete/project/project.generated";
-import { useDeleteProjectBidPermissionsMutation } from "../gql/delete/bid/bid.generated";
-import { useGetProjectBidUsersLazyQuery } from "../gql/get/bid/bid.generated";
-import { useGetProjectUsersLazyQuery } from "../gql/get/project/project.generated";
-import { useGetAllUsersWithinCompanyQuery } from "../gql/get/company/company.generated";
+} from "../../../generated/graphql";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useUpdateProjectPermissionsMutation } from "../../gql/update/project/project.generated";
+import { useUpdateProjectBidPermissionsMutation } from "../../gql/update/bid/bid.generated";
+import { useDeleteProjectPermissionsMutation } from "../../gql/delete/project/project.generated";
+import { useDeleteProjectBidPermissionsMutation } from "../../gql/delete/bid/bid.generated";
+import { useGetProjectBidUsersLazyQuery } from "../../gql/get/bid/bid.generated";
+import { useGetProjectUsersLazyQuery } from "../../gql/get/project/project.generated";
+import { useGetAllUsersWithinCompanyQuery } from "../../gql/get/company/company.generated";
 
 const ProjectPermissionModal = ({
   project,

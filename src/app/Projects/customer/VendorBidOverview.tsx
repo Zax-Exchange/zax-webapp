@@ -128,7 +128,7 @@ const VendorBidOverview = ({
     }
     if (res) {
       return (
-        <Typography variant="overline">
+        <Typography sx={{ fontSize: "12px" }}>
           <i>{res}</i>
         </Typography>
       );
@@ -147,7 +147,7 @@ const VendorBidOverview = ({
     );
   }
   return (
-    <Card sx={{ width: "100%", position: "relative" }} variant="outlined">
+    <Card sx={{ width: "100%", position: "relative" }}>
       {vendorData && (
         <>
           <CardActionArea onClick={() => setIsBidModalOpen(true)}>

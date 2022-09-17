@@ -36,6 +36,7 @@ import {
 import { IntlProvider } from "react-intl";
 import en from "./translations/en.json";
 import zhCn from "./translations/zh-cn.json";
+
 const theme = createTheme({
   palette: {
     type: "light",
@@ -149,7 +150,7 @@ function App() {
   const { user } = useContext(AuthContext);
 
   return (
-    <IntlProvider locale="en" messages={en}>
+    <IntlProvider locale="en" messages={zhCn}>
       <ThemeProvider theme={theme}>
         <SnackbarContextProvider>
           <div className="App" style={{ minWidth: "960px" }}>

@@ -312,6 +312,11 @@ export type GetPlanInput = {
   planId: Scalars['String'];
 };
 
+export type GetProjectBidInput = {
+  companyId: Scalars['String'];
+  projectId: Scalars['String'];
+};
+
 export type GetProjectBidUsersInput = {
   projectBidId: Scalars['String'];
 };
@@ -724,6 +729,7 @@ export type Query = {
   getCustomerProject: CustomerProject;
   getCustomerProjects: Array<CustomerProject>;
   getPlan: Plan;
+  getProjectBid?: Maybe<ProjectBid>;
   getProjectBidUsers: Array<UserProjectPermission>;
   getProjectDetail: Project;
   getProjectUsers: Array<UserProjectPermission>;
@@ -784,6 +790,11 @@ export type QueryGetCustomerProjectsArgs = {
 
 export type QueryGetPlanArgs = {
   data: GetPlanInput;
+};
+
+
+export type QueryGetProjectBidArgs = {
+  data: GetProjectBidInput;
 };
 
 

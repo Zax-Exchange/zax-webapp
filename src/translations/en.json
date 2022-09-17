@@ -13,6 +13,9 @@
   "app.general.action.edit": "Edit",
   "app.general.createdAt": "Created On",
   "app.general.updatedAt": "Last Updated",
+  "app.general.viewDetail": "View Detail",
+  "app.general.share": "Share",
+
   "app.general.input.dateError": "Invalid date.",
   "app.general.input.invalidError": "Invalid input.",
   "app.general.input.emptyError": "Field cannot be empty.",
@@ -27,6 +30,50 @@
   "app.signup.pickAPlan": "Pick a plan for your company",
   "app.signup.completePayment": "Complete Payment Information",
   "app.signup.reviewCompany": "Review Company Info",
+
+  "app.product.flute.aFlute": "A Flute",
+  "app.product.flute.bFlute": "B Flute",
+  "app.product.flute.cFlute": "C Flute",
+  "app.product.flute.eFlute": "E Flute",
+  "app.product.flute.fFlute": "F Flute",
+
+  "app.product.printinMethod.digital": "Digital",
+  "app.product.printinMethod.silkScreen": "Silk Screen",
+  "app.product.printinMethod.litho": "Litho",
+  "app.product.printinMethod.flexo": "Flexo",
+
+  "app.product.manufacturingProcess.wetPress": "Wet Press",
+  "app.product.manufacturingProcess.dryPress": "Dry Press",
+  "app.product.manufacturingProcess.semiWetPress": "Semi Wet Press",
+
+  "app.product.material.sbs": "SBS",
+  "app.product.material.c1s": "C1S",
+  "app.product.material.c2s": "C2S",
+  "app.product.material.uncoatedPaper": "Uncoated Paper",
+
+  "app.product.materialSource.standard": "Standard",
+  "app.product.materialSource.recycled": "Recycled",
+  "app.product.materialSource.fsc": "FSC",
+
+  "app.product.postProcess.printing": "Printing",
+  "app.product.postProcess.emboss": "Emboss",
+  "app.product.postProcess.deboss": "Deboss",
+  "app.product.postProcess.foilStamp": "Foil Stamp",
+
+  "app.product.finish.matte": "Matte",
+  "app.product.finish.gloss": "Gloss",
+  "app.product.finish.uncoated": "Uncoated",
+
+  "app.product.name.rigidBox": "Rigid Box",
+  "app.product.name.foldingCarton": "Folding Carton",
+  "app.product.name.sleeve": "Sleeve",
+  "app.product.name.corrugateBox": "Corrugate Box",
+  "app.product.name.moldedFiber": "Molded Fiber",
+  "app.product.name.paperTube": "Paper Tube",
+  "app.product.name.sticker": "Sticker",
+  "app.product.name.printing": "Printing",
+
+
 
   "app.company.attribute.companyName": "Company Name",
   "app.company.attribute.contactEmail": "Contact Email",
@@ -134,6 +181,10 @@
   "app.vendor.project.attribute.customerName": "Customer Name",
   "app.vendor.project.attribute.products": "Products",
   "app.vendor.project.attribute.customer": "Customer",
+  "app.vendor.projectDetail.componentsDetail": "Components Detail",
+  "app.vendor.projectDetail.bidDetail": "Bid Detail",
+
+  "app.vendor.projects.yourBids": "Your Bids",
 
   "app.search.applyFilters": "Apply Filters",
   "app.search.clearFilters": "Clear Filters",

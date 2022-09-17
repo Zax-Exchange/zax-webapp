@@ -49,6 +49,8 @@ import { useCreateProjectBidMutation } from "../../gql/create/project/project.ge
 import { isValidInt } from "../../Utils/inputValidators";
 import { AuthContext } from "../../../context/AuthContext";
 import { useIntl } from "react-intl";
+import { useGetProjectBidLazyQuery } from "../../gql/get/bid/bid.generated";
+import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
 
 export type QuantityPriceData = {
   quantity: number;
@@ -114,6 +116,15 @@ const SearchProjectDetail = () => {
   >({});
 
   const [
+    getProjectBid,
+    {
+      data: getProjectBidData,
+      loading: getProjectBidLoading,
+      error: getProjectBidError,
+    },
+  ] = useGetProjectBidLazyQuery();
+
+  const [
     createProjectBid,
     { loading: createProjectBidLoading, error: createProjectBidError },
   ] = useCreateProjectBidMutation();
@@ -133,18 +144,31 @@ const SearchProjectDetail = () => {
         });
       });
       setComponentsQpData(qpData);
+      getProjectBid({
+        variables: {
+          data: {
+            companyId: user!.companyId,
+            projectId: getProjectDetailData.getProjectDetail.id,
+          },
+        },
+      });
     }
   }, [getProjectDetailData]);
 
   useEffect(() => {
-    if (getProjectDetailError) {
+    if (getProjectBidData && getProjectBidData.getProjectBid) {
+      console.log(getProjectBidData.getProjectBid);
+    }
+  }, [getProjectBidData]);
+  useEffect(() => {
+    if (getProjectDetailError || getProjectBidError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [getProjectDetailError]);
+  }, [getProjectDetailError, getProjectBidError]);
 
   const qpDataOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -234,7 +258,7 @@ const SearchProjectDetail = () => {
     } catch (error) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
     } finally {
       setProjectBidModalOpen(false);
@@ -242,408 +266,6 @@ const SearchProjectDetail = () => {
     }
   };
 
-  const renderComponentSpecAccordionDetail = (spec: ProjectComponentSpec) => {
-    const {
-      productName,
-      dimension,
-      thickness,
-      flute,
-      color,
-      manufacturingProcess,
-      material,
-      materialSource,
-      postProcess,
-      finish,
-      outsideMaterial,
-      outsideMaterialSource,
-      outsidePostProcess,
-      outsideFinish,
-      outsideColor,
-      insideMaterial,
-      insideMaterialSource,
-      insidePostProcess,
-      insideFinish,
-      insideColor,
-    } = spec;
-
-    const res: JSX.Element[] = [];
-
-    // for (let key in spec) {
-
-    if (productName) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.component.attribute.product" })}
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography variant="caption">{productName}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-    if (dimension) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.component.attribute.dimension" })}
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography variant="caption">{dimension}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-    if (thickness) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.component.attribute.thickness" })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{thickness}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (flute) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.component.attribute.flute" })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{flute}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (color) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.component.attribute.color" })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{color}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (manufacturingProcess) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.manufacturingProcess",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{manufacturingProcess}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (material) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.component.attribute.material" })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{material}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (materialSource) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.materialSource",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{materialSource}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (postProcess) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.postProcess",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Stack>
-              {postProcess.map((process) => {
-                return (
-                  <ListItem sx={{ padding: 0 }}>
-                    <Typography variant="caption">{process}</Typography>
-                  </ListItem>
-                );
-              })}
-            </Stack>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (finish) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.component.attribute.finish" })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{finish}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsideMaterial) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.outsideMaterial",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{outsideMaterial}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsideMaterialSource) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.outsideMaterialSource",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{outsideMaterialSource}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsidePostProcess) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.outsidePostProcess",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Stack>
-              {outsidePostProcess.map((process) => {
-                return (
-                  <ListItem sx={{ padding: 0 }}>
-                    <Typography variant="caption">{process}</Typography>
-                  </ListItem>
-                );
-              })}
-            </Stack>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsideFinish) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.outsideFinish",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{outsideFinish}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (outsideColor) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.outsideColor",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{outsideColor}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insideMaterial) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.insideMaterial",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{insideMaterial}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insideMaterialSource) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.insideMaterialSource",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{insideMaterialSource}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insidePostProcess && insidePostProcess.length) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.insidePostProcess",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Stack>
-              {insidePostProcess.map((process) => {
-                return (
-                  <ListItem sx={{ padding: 0 }}>
-                    <Typography variant="caption">{process}</Typography>
-                  </ListItem>
-                );
-              })}
-            </Stack>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insideFinish) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.insideFinish",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{insideFinish}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    if (insideColor) {
-      res.push(
-        <TableRow>
-          <TableCell>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.component.attribute.insideColor",
-              })}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant="caption">{insideColor}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-
-    return (
-      <TableContainer>
-        <Table size="small">
-          <TableBody>{res}</TableBody>
-        </Table>
-      </TableContainer>
-    );
-  };
   const renderProjectDetail = () => {
     if (
       !getProjectDetailData ||
@@ -783,7 +405,7 @@ const SearchProjectDetail = () => {
               {components.map((comp, i) => {
                 return (
                   <TabPanel value={currentComponentTab} index={i}>
-                    {renderComponentSpecAccordionDetail(comp.componentSpec)}
+                    <ComponentSpecDetail spec={comp.componentSpec} />
                   </TabPanel>
                 );
               })}

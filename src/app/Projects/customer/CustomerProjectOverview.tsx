@@ -15,7 +15,7 @@ import {
   Tooltip,
   AlertColor,
 } from "@mui/material";
-import ProjectPermissionModal from "../ProjectPermissionModal";
+import ProjectPermissionModal from "../common/ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import DeleteProjectModal from "./modals/DeleteProjectModal";

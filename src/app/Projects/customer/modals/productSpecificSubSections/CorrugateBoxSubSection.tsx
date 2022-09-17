@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Button,
   IconButton,
+  InputAdornment,
   ListItem,
   Stack,
   TextField,
@@ -26,6 +27,7 @@ import {
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
+import { TranslatableAttribute } from "../../../../../type/common";
 
 type CorrugatePostProcessDetail = {
   postProcessName: string;
@@ -127,11 +129,11 @@ const CorrugateBoxSubSection = ({
     } = postProcessDetail;
 
     switch (postProcessName) {
-      case POST_PROCESS_PRINTING:
+      case POST_PROCESS_PRINTING.value:
         return `${printingMethod} printing with ${numberOfColors} colors.`;
-      case POST_PROCESS_EMBOSS:
+      case POST_PROCESS_EMBOSS.value:
         return `Emboss of area size ${estimatedArea} with font size of ${fontSize}.`;
-      case POST_PROCESS_DEBOSS:
+      case POST_PROCESS_DEBOSS.value:
         return `Deboss of area size ${estimatedArea} with font size of ${fontSize}.`;
       default:
         return "";
@@ -152,17 +154,20 @@ const CorrugateBoxSubSection = ({
           sx={{ width: 250 }}
           options={CORRUGATE_BOX_POST_PROCESSES}
           autoHighlight
-          value={postProcessDetail.postProcessName}
+          getOptionLabel={(option) => option.label}
           onChange={(e, v) => {
+            if (!v) {
+              setPostProcessDetail({} as CorrugatePostProcessDetail);
+              return;
+            }
             setPostProcessDetail((prev) => {
-              console.log(prev.postProcessName, v);
               // If user selects same post process, do nothing.
-              if (prev.postProcessName === v) {
+              if (prev.postProcessName === v.value) {
                 return prev;
               } else {
                 // If user selects a new post process, reset everything.
                 return {
-                  postProcessName: v ? v : "",
+                  postProcessName: v.value,
                 };
               }
             });
@@ -199,7 +204,7 @@ const CorrugateBoxSubSection = ({
     >
   ) => {
     let subSection = null;
-    if (postProcessDetail.postProcessName === POST_PROCESS_PRINTING) {
+    if (postProcessDetail.postProcessName === POST_PROCESS_PRINTING.value) {
       subSection = (
         <>
           <ListItem>
@@ -210,7 +215,7 @@ const CorrugateBoxSubSection = ({
               onChange={(e, v) => {
                 setPostProcess({
                   ...postProcessDetail,
-                  printingMethod: v ? v : "",
+                  printingMethod: v ? v.value : "",
                 });
               }}
               renderInput={(params) => (
@@ -251,12 +256,12 @@ const CorrugateBoxSubSection = ({
       );
     }
 
-    if (postProcessDetail.postProcessName === POST_PROCESS_EMBOSS) {
+    if (postProcessDetail.postProcessName === POST_PROCESS_EMBOSS.value) {
       subSection = (
         <>
           <ListItem>
             <TextField
-              key="folding-carton-emboss-font-size"
+              key="corrugate-box-emboss-font-size"
               autoComplete="new-password"
               label={intl.formatMessage({
                 id: "app.component.postProcess.emboss.fontSize",
@@ -268,7 +273,7 @@ const CorrugateBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              key="folding-carton-emboss-estimated-area"
+              key="corrugate-box-emboss-estimated-area"
               autoComplete="new-password"
               label={intl.formatMessage({
                 id: "app.component.postProcess.emboss.estimatedArea",
@@ -282,12 +287,12 @@ const CorrugateBoxSubSection = ({
       );
     }
 
-    if (postProcessDetail.postProcessName === POST_PROCESS_DEBOSS) {
+    if (postProcessDetail.postProcessName === POST_PROCESS_DEBOSS.value) {
       subSection = (
         <>
           <ListItem>
             <TextField
-              key="folding-carton-deboss-font-size"
+              key="corrugate-box-deboss-font-size"
               autoComplete="new-password"
               label={intl.formatMessage({
                 id: "app.component.postProcess.deboss.fontSize",
@@ -299,7 +304,7 @@ const CorrugateBoxSubSection = ({
           </ListItem>
           <ListItem>
             <TextField
-              key="folding-carton-deboss-estimated-area"
+              key="corrugate-box-deboss-estimated-area"
               autoComplete="new-password"
               label={intl.formatMessage({
                 id: "app.component.postProcess.deboss.estimatedArea",
@@ -350,7 +355,7 @@ const CorrugateBoxSubSection = ({
   // For dropdowns other than post process
   const renderAutocompleteDropdown = useCallback(
     (
-      options: string[],
+      options: TranslatableAttribute[],
       componentSpecAttribute: keyof CreateProjectComponentSpecInput,
       label: string,
       key: string,
@@ -365,7 +370,7 @@ const CorrugateBoxSubSection = ({
           onChange={(e, v) => {
             setComponentSpec((spec) => ({
               ...spec,
-              [componentSpecAttribute]: v ? v : "",
+              [componentSpecAttribute]: v ? v.value : "",
             }));
           }}
           renderInput={(params) => (
@@ -406,7 +411,7 @@ const CorrugateBoxSubSection = ({
           <ListItem>
             <TextField
               sx={{ width: 250 }}
-              key="folding-carton-dimension"
+              key="corrugate-box-dimension"
               autoComplete="new-password"
               label={intl.formatMessage({
                 id: "app.component.attribute.dimension",
@@ -425,6 +430,11 @@ const CorrugateBoxSubSection = ({
               onChange={componentSpecOnChange}
               name="thickness"
               value={componentSpec.thickness}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">mm</InputAdornment>
+                ),
+              }}
             />
           </ListItem>
           <ListItem>

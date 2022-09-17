@@ -19,8 +19,10 @@ import { VendorProject } from "../../../generated/graphql";
 import VendorProjectOverview from "./VendorProjectOverview";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
+import { useIntl } from "react-intl";
 
 const VendorProjects = () => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isVendor = user!.isVendor;
@@ -61,7 +63,7 @@ const VendorProjects = () => {
   useEffect(() => {
     if (getVendorProjectsError) {
       setSnackbar({
-        message: "Could not load your projects. Try again later",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
@@ -120,14 +122,6 @@ const VendorProjects = () => {
     );
   }
 
-  if (getVendorProjectsError) {
-    return (
-      <Container>
-        <Typography variant="subtitle2">Something went wrong.</Typography>
-      </Container>
-    );
-  }
-
   if (getVendorProjectsData) {
     return (
       <Container
@@ -136,7 +130,9 @@ const VendorProjects = () => {
       >
         {isProjectPageLoading && <FullScreenLoading />}
         <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
-          <Typography variant="subtitle2">Your projects</Typography>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.vendor.projects.yourBids" })}
+          </Typography>
           <IconButton onClick={sortOnClick}>
             <SortIcon />
           </IconButton>
