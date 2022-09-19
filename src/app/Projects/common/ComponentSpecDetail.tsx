@@ -25,6 +25,7 @@ export default function ComponentSpecDetail({
 
   const {
     productName,
+    boxStyle,
     dimension,
     thickness,
     flute,
@@ -74,6 +75,20 @@ export default function ComponentSpecDetail({
         </TableCell>
         <TableCell>
           <Typography variant="caption">{dimension}</Typography>
+        </TableCell>
+      </TableRow>
+    );
+  }
+  if (boxStyle) {
+    res.push(
+      <TableRow>
+        <TableCell>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.component.attribute.boxStyle" })}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="caption">{boxStyle}</Typography>
         </TableCell>
       </TableRow>
     );

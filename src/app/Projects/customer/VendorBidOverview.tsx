@@ -186,30 +186,30 @@ const VendorBidOverview = ({
             <MenuList dense sx={{ padding: "4px 0 4px" }}>
               <MenuItem onClick={vendorBidMenuOnClick} data-type="view-profile">
                 {intl.formatMessage({
-                  id: "app.customer.createProject.menu.viewVendorProfile",
+                  id: "app.customer.projectDetail.menu.viewVendorProfile",
                 })}
               </MenuItem>
               <MenuItem onClick={vendorBidMenuOnClick} data-type="conversation">
                 {intl.formatMessage({
-                  id: "app.customer.createProject.menu.openConversation",
+                  id: "app.customer.projectDetail.menu.openConversation",
                 })}
               </MenuItem>
 
               <MenuItem onClick={vendorBidMenuOnClick}>
                 {intl.formatMessage({
-                  id: "app.customer.createProject.menu.exportToPdf",
+                  id: "app.customer.projectDetail.menu.exportToPdf",
                 })}
               </MenuItem>
 
               <MenuItem onClick={vendorBidMenuOnClick}>
                 {intl.formatMessage({
-                  id: "app.customer.createProject.menu.acceptBid",
+                  id: "app.customer.projectDetail.menu.acceptBid",
                 })}
               </MenuItem>
 
               <MenuItem onClick={vendorBidMenuOnClick}>
                 {intl.formatMessage({
-                  id: "app.customer.createProject.menu.rejectBid",
+                  id: "app.customer.projectDetail.menu.rejectBid",
                 })}
               </MenuItem>
             </MenuList>

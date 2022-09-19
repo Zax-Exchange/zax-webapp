@@ -35,6 +35,7 @@ import { useGetProjectBidUsersLazyQuery } from "../../gql/get/bid/bid.generated"
 import { useGetProjectUsersLazyQuery } from "../../gql/get/project/project.generated";
 import { useGetAllUsersWithinCompanyQuery } from "../../gql/get/company/company.generated";
 
+// TODO: rework whole thing, should not pass in whole project object. Should just use projectId and userId to fetch for necessary info.
 const ProjectPermissionModal = ({
   project,
   setPermissionModalOpen,

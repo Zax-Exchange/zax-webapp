@@ -32,6 +32,7 @@ import {
 } from "../constants/loggedInRoutes";
 import { useIntl } from "react-intl";
 import VendorNotification from "../Notification/VendorNotification";
+import CustomerNav from "./customer/CustomerNav";
 
 const query = gql`
   mutation reset($t: Int) {
@@ -153,9 +154,6 @@ const Nav = () => {
     navigate(`/${page}`);
   };
 
-  const navigateToCreateProject = () => {
-    navigate(CUSTOMER_ROUTES.CREATE_PROJECT);
-  };
   const renderHamburger = () => {
     return (
       <IconButton
@@ -184,34 +182,6 @@ const Nav = () => {
 
   const renderSearchBar = () => {
     return <SearchBar />;
-  };
-  const renderCustomerNav = () => {
-    return (
-      <>
-        <Toolbar>
-          {renderHamburger()}
-
-          {renderLogo()}
-
-          {renderSearchBar()}
-
-          <Box display="flex" flexGrow={1} justifyContent="flex-end">
-            <Button
-              onClick={navigateToCreateProject}
-              variant="contained"
-              sx={{ borderRadius: 40 }}
-            >
-              {intl.formatMessage({
-                id: "app.routes.loggedIn.newProject",
-              })}
-            </Button>
-          </Box>
-
-          <CustomerNotification />
-        </Toolbar>
-        {renderSideNav()}
-      </>
-    );
   };
 
   const renderLoggedOutNav = () => {
@@ -294,7 +264,7 @@ const Nav = () => {
         >
           {!user && renderLoggedOutNav()}
           {user && user.isVendor && renderVendorNav()}
-          {user && !user.isVendor && renderCustomerNav()}
+          {user && !user.isVendor && <CustomerNav />}
           {/* <Button onClick={resetData}>RESET</Button> */}
         </AppBar>
       </Box>

@@ -21,7 +21,7 @@ import ErrorFallback from "./app/ErrorBoundary/ErrorBoundary";
 import CustomerSignup from "./app/Login/customer/CustomerSignup";
 import VendorProjectDetail from "./app/Projects/vendor/VendorProjectDetail";
 import { ThemeProvider } from "@mui/system";
-import CreateProject from "./app/Projects/customer/CreateProject";
+import AdvancedCreateProject from "./app/Projects/customer/createProject/advanced/AdvancedCreateProject";
 import useCustomSnackbar from "./app/Utils/CustomSnackbar";
 import CustomerProjects from "./app/Projects/customer/CustomerProjects";
 import VendorProjects from "./app/Projects/vendor/VendorProjects";
@@ -36,6 +36,7 @@ import {
 import { IntlProvider } from "react-intl";
 import en from "./translations/en.json";
 import zhCn from "./translations/zh-cn.json";
+import GuidedCreateProject from "./app/Projects/customer/createProject/guided/GuidedCreateProject";
 
 const theme = createTheme({
   palette: {
@@ -150,7 +151,7 @@ function App() {
   const { user } = useContext(AuthContext);
 
   return (
-    <IntlProvider locale="en" messages={zhCn}>
+    <IntlProvider locale="en" messages={en}>
       <ThemeProvider theme={theme}>
         <SnackbarContextProvider>
           <div className="App" style={{ minWidth: "960px" }}>
@@ -222,10 +223,18 @@ function App() {
                     }
                   />
                   <Route
-                    path={CUSTOMER_ROUTES.CREATE_PROJECT}
+                    path={CUSTOMER_ROUTES.GUIDED_CREATE_PROJECT}
                     element={
                       <RequireAuth isAllowed={!user?.isVendor}>
-                        <CreateProject />
+                        <GuidedCreateProject />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path={CUSTOMER_ROUTES.ADVANCED_CREATE_PROJECT}
+                    element={
+                      <RequireAuth isAllowed={!user?.isVendor}>
+                        <AdvancedCreateProject />
                       </RequireAuth>
                     }
                   />

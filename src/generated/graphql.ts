@@ -119,6 +119,7 @@ export type CreateProjectComponentInput = {
 };
 
 export type CreateProjectComponentSpecInput = {
+  boxStyle?: InputMaybe<Scalars['String']>;
   color?: InputMaybe<Scalars['String']>;
   dimension: Scalars['String'];
   finish?: InputMaybe<Scalars['String']>;
@@ -142,6 +143,7 @@ export type CreateProjectComponentSpecInput = {
 };
 
 export type CreateProjectInput = {
+  category: Scalars['String'];
   comments: Scalars['String'];
   components: Array<CreateProjectComponentInput>;
   deliveryAddress: Scalars['String'];
@@ -150,6 +152,7 @@ export type CreateProjectInput = {
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;
   targetPrice: Scalars['Int'];
+  totalWeight: Scalars['String'];
   userId: Scalars['String'];
 };
 
@@ -216,6 +219,7 @@ export type CustomerOverview = {
 export type CustomerProject = {
   __typename?: 'CustomerProject';
   bids?: Maybe<Array<ProjectBid>>;
+  category: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
@@ -229,6 +233,24 @@ export type CustomerProject = {
   permission: ProjectPermission;
   status: Scalars['String'];
   targetPrice: Scalars['Int'];
+  totalWeight: Scalars['String'];
+  updatedAt: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type CustomerProjectOverview = {
+  __typename?: 'CustomerProjectOverview';
+  category: Scalars['String'];
+  createdAt: Scalars['String'];
+  deliveryAddress: Scalars['String'];
+  deliveryDate: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  orderQuantities: Array<Scalars['Int']>;
+  permission: ProjectPermission;
+  status: Scalars['String'];
+  targetPrice: Scalars['Int'];
+  totalWeight: Scalars['String'];
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
 };
@@ -249,17 +271,6 @@ export type DeleteProjectInput = {
 export type DeleteProjectPermissionsInput = {
   projectId: Scalars['String'];
   userIds: Array<Scalars['String']>;
-};
-
-export type EditableCustomerDetail = {
-  __typename?: 'EditableCustomerDetail';
-  companyUrl?: Maybe<Scalars['String']>;
-  contactEmail: Scalars['String'];
-  country: Scalars['String'];
-  fax?: Maybe<Scalars['String']>;
-  logo?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-  phone: Scalars['String'];
 };
 
 export type File = {
@@ -602,6 +613,8 @@ export type Pricings = {
 
 export type Project = {
   __typename?: 'Project';
+  category: Scalars['String'];
+  comments: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
@@ -614,6 +627,7 @@ export type Project = {
   orderQuantities: Array<Scalars['Int']>;
   status: Scalars['String'];
   targetPrice: Scalars['Int'];
+  totalWeight: Scalars['String'];
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
 };
@@ -649,6 +663,7 @@ export type ProjectComponent = {
 
 export type ProjectComponentSpec = {
   __typename?: 'ProjectComponentSpec';
+  boxStyle?: Maybe<Scalars['String']>;
   color?: Maybe<Scalars['String']>;
   dimension: Scalars['String'];
   finish?: Maybe<Scalars['String']>;
@@ -680,6 +695,7 @@ export type ProjectDesign = {
 
 export type ProjectOverview = {
   __typename?: 'ProjectOverview';
+  category: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   createdAt: Scalars['String'];
@@ -727,7 +743,7 @@ export type Query = {
   getCompanyPlanDetail: CompanyPlanDetail;
   getCustomerDetail: CustomerDetail;
   getCustomerProject: CustomerProject;
-  getCustomerProjects: Array<CustomerProject>;
+  getCustomerProjects: Array<CustomerProjectOverview>;
   getPlan: Plan;
   getProjectBid?: Maybe<ProjectBid>;
   getProjectBidUsers: Array<UserProjectPermission>;
@@ -924,6 +940,7 @@ export type UpdateProjectComponentInput = {
 };
 
 export type UpdateProjectComponentSpecInput = {
+  boxStyle?: InputMaybe<Scalars['String']>;
   color?: InputMaybe<Scalars['String']>;
   dimension: Scalars['String'];
   finish?: InputMaybe<Scalars['String']>;
@@ -947,12 +964,14 @@ export type UpdateProjectComponentSpecInput = {
 };
 
 export type UpdateProjectInput = {
+  category: Scalars['String'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;
   projectId: Scalars['String'];
   targetPrice: Scalars['Int'];
+  totalWeight: Scalars['String'];
 };
 
 export type UpdateProjectPermissionsInput = {
@@ -1060,6 +1079,7 @@ export type VendorOverview = {
 export type VendorProject = {
   __typename?: 'VendorProject';
   bidInfo: PermissionedProjectBid;
+  category: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
@@ -1073,6 +1093,7 @@ export type VendorProject = {
   permission: ProjectPermission;
   status: Scalars['String'];
   targetPrice: Scalars['Int'];
+  totalWeight: Scalars['String'];
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
 };

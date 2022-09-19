@@ -477,7 +477,7 @@ const MoldedFiberSubSection = ({
           <ListItem>
             <Typography variant="subtitle2">
               {intl.formatMessage({
-                id: "app.component.insidePostProcess",
+                id: "app.component.insideSpecs",
               })}
             </Typography>
           </ListItem>

@@ -27,6 +27,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import {
   CustomerProject,
+  CustomerProjectOverview,
   Exact,
   GetCustomerProjectsInput,
   InputMaybe,
@@ -51,11 +52,11 @@ export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   },
 }));
 
-const CustomerProjectOverview = ({
+const CustomerProjectOverviewCard = ({
   project,
   setIsProjectPageLoading,
 }: {
-  project: CustomerProject;
+  project: CustomerProjectOverview;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const intl = useIntl();
@@ -263,14 +264,14 @@ const CustomerProjectOverview = ({
         fullWidth={true}
       >
         <DialogContent>
-          <ProjectPermissionModal
+          {/* <ProjectPermissionModal
             project={project}
             setPermissionModalOpen={setPermissionModalOpen}
-          />
+          /> */}
         </DialogContent>
       </Dialog>
     </Grid>
   );
 };
 
-export default CustomerProjectOverview;
+export default CustomerProjectOverviewCard;

@@ -3,7 +3,7 @@ import React from "react";
 import { useState } from "react";
 import { TranslatableAttribute } from "../../../type/common";
 import { countries } from "../../constants/countries";
-import { PRODUCT_NAMES } from "../../constants/products";
+import { ALL_PRODUCT_NAMES } from "../../constants/products";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import { Country } from "../customer/CustomerSignup";
 import { MoqDetail, VendorSignupData } from "./VendorSignup";
@@ -124,7 +124,7 @@ const VendorInfo = ({
       <Autocomplete
         id="products-select"
         sx={{ width: 400 }}
-        options={PRODUCT_NAMES}
+        options={ALL_PRODUCT_NAMES}
         autoHighlight
         inputValue={product}
         onInputChange={productOnChange}

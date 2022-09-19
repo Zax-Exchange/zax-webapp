@@ -22,7 +22,7 @@ import FullScreenLoading from "../../Utils/Loading";
 import { validate } from "email-validator";
 import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.generated";
 import { UpdateVendorInfoInput } from "../../../generated/graphql";
-import { PRODUCT_NAMES } from "../../constants/products";
+import { ALL_PRODUCT_NAMES } from "../../constants/products";
 import { TranslatableAttribute } from "../../../type/common";
 
 const EditVendorProfile = () => {
@@ -245,7 +245,7 @@ const EditVendorProfile = () => {
         <Autocomplete
           id="products-select"
           sx={{ width: 400 }}
-          options={PRODUCT_NAMES}
+          options={ALL_PRODUCT_NAMES}
           getOptionLabel={(option) => option.label}
           autoHighlight
           defaultValue={[...getDefaultManufacturingProducts()]}
@@ -274,7 +274,7 @@ const EditVendorProfile = () => {
 
     const getDefaultManufacturingProducts = () => {
       const res = [];
-      for (let p of PRODUCT_NAMES) {
+      for (let p of ALL_PRODUCT_NAMES) {
         for (let vendorProduct of vendorData!.products) {
           if (p.value === vendorProduct) {
             res.push(p);

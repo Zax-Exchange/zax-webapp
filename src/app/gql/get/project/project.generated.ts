@@ -23,7 +23,7 @@ export type SearchCustomerProjectsQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, products: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, createdAt: string }> };
+export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, category: string, products: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, createdAt: string }> };
 
 
 export const GetProjectUsersDocument = gql`
@@ -149,6 +149,7 @@ export const SearchCustomerProjectsDocument = gql`
   searchCustomerProjects(data: $data) {
     name
     companyName
+    category
     products
     id
     companyId

@@ -20,36 +20,40 @@ import {
   TableRow,
   TableCell,
   IconButton,
+  InputAdornment,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../../../../context/AuthContext";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useLocation, useNavigate } from "react-router-dom";
-import FullScreenLoading from "../../Utils/Loading";
-import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
-import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
-import UploadDesign from "./UploadDesign";
+import FullScreenLoading from "../../../../Utils/Loading";
+import {
+  isValidAlphanumeric,
+  isValidInt,
+} from "../../../../Utils/inputValidators";
+import GoogleMapAutocomplete from "../../../../Utils/GoogleMapAutocomplete";
+import UploadDesign from "../../UploadDesign";
 import React from "react";
 
-import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
-import { useCreateProjectMutation } from "../../gql/create/project/project.generated";
-import { useGetCustomerProjectsLazyQuery } from "../../gql/get/customer/customer.generated";
+import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
+import { CUSTOMER_ROUTES } from "../../../../constants/loggedInRoutes";
+import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
+import { useGetCustomerProjectsLazyQuery } from "../../../../gql/get/customer/customer.generated";
 import {
   CreateProjectComponentSpecInput,
   CreateProjectInput,
-} from "../../../generated/graphql";
-import CreateProjectComponentModal from "./modals/CreateProjectComponentModal";
+} from "../../../../../generated/graphql";
+import CreateProjectComponentModal from "../../modals/CreateProjectComponentModal";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useIntl } from "react-intl";
-import ComponentSpecDetail from "../common/ComponentSpecDetail";
+import ComponentSpecDetail from "../../../common/ComponentSpecDetail";
 
-const CreateProject = () => {
+const AdvancedCreateProject = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -63,6 +67,8 @@ const CreateProject = () => {
     userId: user!.id,
     name: "",
     deliveryAddress: "",
+    category: "",
+    totalWeight: "",
     deliveryDate: new Date().toISOString().split("T")[0],
     targetPrice: 0,
     orderQuantities: [],
@@ -94,6 +100,13 @@ const CreateProject = () => {
     });
   };
 
+  const orderQuantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value;
+    if (isValidInt(val)) {
+      setOrderQuantity(val);
+    }
+  };
+
   const removeComponent = (i: number) => {
     const comps = [...projectData.components];
     comps.splice(i, 1);
@@ -107,12 +120,6 @@ const CreateProject = () => {
     setComponentModalOpen(true);
   };
 
-  const orderQuantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
-    if (isValidInt(val)) {
-      setOrderQuantity(val);
-    }
-  };
   const projectInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val: string | number = e.target.value;
     let isAllowed = true;
@@ -164,7 +171,10 @@ const CreateProject = () => {
     try {
       await createProjectMutation({
         variables: {
-          data: projectData,
+          data: {
+            ...projectData,
+            totalWeight: projectData.totalWeight + " g",
+          },
         },
       });
 
@@ -241,6 +251,33 @@ const CreateProject = () => {
                 onChange={projectInputOnChange}
                 name="name"
                 value={projectData.name}
+              />
+            </ListItem>
+            <ListItem>
+              <TextField
+                autoComplete="new-password"
+                label={intl.formatMessage({
+                  id: "app.project.attribute.category",
+                })}
+                onChange={projectInputOnChange}
+                name="category"
+                value={projectData.category}
+              />
+            </ListItem>
+            <ListItem>
+              <TextField
+                autoComplete="new-password"
+                label={intl.formatMessage({
+                  id: "app.project.attribute.totalWeight",
+                })}
+                onChange={projectInputOnChange}
+                name="totalWeight"
+                value={projectData.totalWeight}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">g</InputAdornment>
+                  ),
+                }}
               />
             </ListItem>
             <ListItem>
@@ -374,4 +411,4 @@ const CreateProject = () => {
   );
 };
 
-export default CreateProject;
+export default AdvancedCreateProject;

@@ -20,7 +20,6 @@ import { AuthContext } from "../../../context/AuthContext";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import {
   CustomerDetail,
-  EditableCustomerDetail,
   UpdateCustomerInfoInput,
 } from "../../../generated/graphql";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";

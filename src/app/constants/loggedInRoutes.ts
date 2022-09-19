@@ -8,8 +8,8 @@ export enum GENERAL_ROUTES {
 export enum CUSTOMER_ROUTES {
   PROJECTS = "/customer-projects",
   SEARCH_RESULTS = "/customer-search-results",
-  CREATE_PROJECT = "/create-project",
-
+  GUIDED_CREATE_PROJECT = "/guided-create-project",
+  ADVANCED_CREATE_PROJECT = "/advanced-create-project",
   // do not use directly when using navigate() since it contains variable
   PROJECT_DETAIL = "/customer-project-detail/:projectId"
 }

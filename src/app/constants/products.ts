@@ -6,8 +6,8 @@ import { TranslatableAttribute } from '../../type/common';
 const cache = createIntlCache()
 
 const intl = createIntl({
-  locale: 'zh',
-  messages: zh
+  locale: 'en',
+  messages: en
 }, cache)
 
 /* For corrugate box only */
@@ -54,10 +54,7 @@ export const MANUFACTURING_PROCESS_WET_PRESS: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.manufacturingProcess.wetPress"}),
   value: "Wet Press"
 }
-export const MANUFACTURING_PROCESS_SEMI_WET_PRESS: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.manufacturingProcess.semiWetPress"}),
-  value: "Semi Wet Press"
-}
+
 export const MANUFACTURING_PROCESS_DRY_PRESS: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.manufacturingProcess.dryPress"}),
   value: "Dry Press"
@@ -145,10 +142,6 @@ export const PRODUCT_NAME_CORRUGATE_BOX: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.name.corrugateBox"}),
   value: "Corrugate Box"
 }
-export const PRODUCT_NAME_MOLDED_FIBER: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.moldedFiber"}),
-  value: "Molded Fiber"
-}
 export const PRODUCT_NAME_PAPER_TUBE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.name.paperTube"}),
   value: "Paper Tube"
@@ -161,17 +154,68 @@ export const PRODUCT_NAME_PRINTING: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.name.printing"}),
   value: "Printing"
 }
+export const PRODUCT_NAME_MOLDED_FIBER_TRAY: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.moldedFiberTray"}),
+  value: "Molded Fiber Tray"
+}
+export const PRODUCT_NAME_PLASTIC_TRAY: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.plasticTray"}),
+  value: "Plastic Tray"
+}
+export const PRODUCT_NAME_PAPER_TRAY: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.paperTray"}),
+  value: "Paper Tray"
+}
+export const PRODUCT_NAME_CORRUGATE_TRAY: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.corrugateTray"}),
+  value: "Corrugate Tray"
+}
 
-/** For add component modal dropdown */
-export const PRODUCT_NAMES = [
+export const ALL_PRODUCT_NAMES = [
   PRODUCT_NAME_RIGID_BOX,
   PRODUCT_NAME_FOLDING_CARTON,
   PRODUCT_NAME_SLEEVE,
   PRODUCT_NAME_CORRUGATE_BOX,
-  PRODUCT_NAME_MOLDED_FIBER,
   PRODUCT_NAME_PAPER_TUBE,
+  PRODUCT_NAME_MOLDED_FIBER_TRAY,
+  PRODUCT_NAME_PLASTIC_TRAY,
+  PRODUCT_NAME_PAPER_TRAY,
+  PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_STICKER,
-  PRODUCT_NAME_PRINTING
+  PRODUCT_NAME_PRINTING,
+]
+
+// Guided Project Creation data
+export const GUIDED_PROJECT_OUTSIDE_PRODUCTS = [
+  PRODUCT_NAME_RIGID_BOX,
+  PRODUCT_NAME_FOLDING_CARTON,
+  PRODUCT_NAME_CORRUGATE_BOX,
+  PRODUCT_NAME_PAPER_TUBE,
+]
+
+export const GUIDED_PROJECT_INSIDE_PRODUCTS = [
+  PRODUCT_NAME_MOLDED_FIBER_TRAY,
+  PRODUCT_NAME_PLASTIC_TRAY,
+  PRODUCT_NAME_PAPER_TRAY,
+  PRODUCT_NAME_CORRUGATE_TRAY,
+]
+
+export const GUIDED_PROJECT_ALL_POST_PROCESS = [
+  POST_PROCESS_DEBOSS,
+  POST_PROCESS_EMBOSS,
+  POST_PROCESS_FOIL_STAMP,
+  POST_PROCESS_PRINTING
+]
+
+export const GUIDED_PROJECT_PAPER_POST_PROCESS = [
+    POST_PROCESS_FOIL_STAMP,
+  POST_PROCESS_PRINTING
+]
+
+export const GUIDED_PROJECT_FINISH = [
+  FINISH_GLOSS,
+  FINISH_MATTE,
+  FINISH_UNCOATED
 ]
 
 /** RIGID BOX DATA */
@@ -287,7 +331,6 @@ export const CORRUGATE_BOX_PRINTING_METHODS = [
 /** MOLDED FIBER DATA */
 export const MOLDED_FIBER_MANUFACTURING_PROCESSES = [
   MANUFACTURING_PROCESS_DRY_PRESS,
-  MANUFACTURING_PROCESS_SEMI_WET_PRESS,
   MANUFACTURING_PROCESS_WET_PRESS
 ]
 
@@ -331,6 +374,34 @@ export const PAPER_TUBE_FINISHES = [
   FINISH_UNCOATED
 ]
 
+// Plastic Tray Data
+export const PLASTIC_TRAY_POST_PROCESS = [
+  POST_PROCESS_EMBOSS,
+  POST_PROCESS_DEBOSS
+]
+
+// Paper Tray Data
+export const PAPER_TRAY_POST_PROCESS = [
+    POST_PROCESS_EMBOSS,
+  POST_PROCESS_DEBOSS,
+  POST_PROCESS_PRINTING,
+  POST_PROCESS_FOIL_STAMP
+]
+
+// Molded Fiber Tray Data
+export const MOLDED_FIBER_TRAY_POST_PROCESS = [
+    POST_PROCESS_EMBOSS,
+  POST_PROCESS_DEBOSS,
+
+]
+
+// Corrugate Tray Data
+export const CORRUGATE_TRAY_POST_PROCESS = [
+    POST_PROCESS_EMBOSS,
+  POST_PROCESS_DEBOSS,
+  POST_PROCESS_PRINTING,
+  POST_PROCESS_FOIL_STAMP
+]
 
 export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [A_FLUTE.value]: A_FLUTE,
@@ -345,7 +416,6 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [PRINTING_METHOD_FLEXO.value]: PRINTING_METHOD_FLEXO,
   
   [MANUFACTURING_PROCESS_WET_PRESS.value]: MANUFACTURING_PROCESS_WET_PRESS,
-  [MANUFACTURING_PROCESS_SEMI_WET_PRESS.value]: MANUFACTURING_PROCESS_SEMI_WET_PRESS,
   [MANUFACTURING_PROCESS_DRY_PRESS.value]: MANUFACTURING_PROCESS_DRY_PRESS,
 
   [MATERIAL_SBS.value]: MATERIAL_SBS,
@@ -370,8 +440,11 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [PRODUCT_NAME_FOLDING_CARTON.value]: PRODUCT_NAME_FOLDING_CARTON,
   [PRODUCT_NAME_SLEEVE.value]: PRODUCT_NAME_SLEEVE,
   [PRODUCT_NAME_CORRUGATE_BOX.value]: PRODUCT_NAME_CORRUGATE_BOX,
-  [PRODUCT_NAME_MOLDED_FIBER.value]: PRODUCT_NAME_MOLDED_FIBER,
   [PRODUCT_NAME_PAPER_TUBE.value]: PRODUCT_NAME_PAPER_TUBE,
   [PRODUCT_NAME_STICKER.value]: PRODUCT_NAME_STICKER,
   [PRODUCT_NAME_PRINTING.value]: PRODUCT_NAME_PRINTING,
+  [PRODUCT_NAME_MOLDED_FIBER_TRAY.value]: PRODUCT_NAME_MOLDED_FIBER_TRAY,
+  [PRODUCT_NAME_PAPER_TRAY.value]: PRODUCT_NAME_PAPER_TRAY,
+  [PRODUCT_NAME_PLASTIC_TRAY.value]: PRODUCT_NAME_PLASTIC_TRAY,
+  [PRODUCT_NAME_CORRUGATE_TRAY.value]: PRODUCT_NAME_CORRUGATE_TRAY,
 }

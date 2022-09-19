@@ -70,6 +70,7 @@ const SEARCH_CUSTOMER_PROJECTS = gql`
     searchCustomerProjects(data: $data) {
       name
       companyName
+      category
       products
       id
       companyId

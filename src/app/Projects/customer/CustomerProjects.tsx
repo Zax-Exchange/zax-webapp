@@ -14,12 +14,13 @@ import React, { useContext, useEffect, useState } from "react";
 // import CustomSnackbar from "../Utils/CustomSnackbar";
 import SortIcon from "@mui/icons-material/Sort";
 import { AuthContext } from "../../../context/AuthContext";
-import { CustomerProject } from "../../../generated/graphql";
-import CustomerProjectOverview from "./CustomerProjectOverview";
+
+import CustomerProjectOverviewCard from "./CustomerProjectOverviewCard";
 import FullScreenLoading from "../../Utils/Loading";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import { useIntl } from "react-intl";
+import { CustomerProjectOverview } from "../../../generated/graphql";
 
 const CustomerProjects = () => {
   const intl = useIntl();
@@ -47,7 +48,7 @@ const CustomerProjects = () => {
   const [sortMenuAnchor, setSortMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
   const sortMenuOpen = !!sortMenuAnchor;
-  const [projects, setProjects] = useState<CustomerProject[]>([]);
+  const [projects, setProjects] = useState<CustomerProjectOverview[]>([]);
 
   useEffect(() => {
     if (
@@ -55,7 +56,7 @@ const CustomerProjects = () => {
       getCustomerProjectsData.getCustomerProjects
     ) {
       setProjects(
-        getCustomerProjectsData.getCustomerProjects as CustomerProject[]
+        getCustomerProjectsData.getCustomerProjects as CustomerProjectOverview[]
       );
     }
   }, [getCustomerProjectsData]);
@@ -177,7 +178,7 @@ const CustomerProjects = () => {
             {projects.map((project, i) => {
               return (
                 <>
-                  <CustomerProjectOverview
+                  <CustomerProjectOverviewCard
                     key={i}
                     project={project}
                     setIsProjectPageLoading={setIsProjectPageLoading}

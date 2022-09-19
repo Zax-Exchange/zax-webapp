@@ -21,7 +21,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   PRODUCT_NAME_CORRUGATE_BOX,
-  PRODUCT_NAMES,
+  ALL_PRODUCT_NAMES,
   PRODUCT_NAME_RIGID_BOX,
   RIGID_BOX_MATERIALS,
   RIGID_BOX_POST_PROCESSES,
@@ -33,16 +33,16 @@ import {
   POST_PROCESS_FOIL_STAMP,
   PRODUCT_NAME_FOLDING_CARTON,
   PRODUCT_NAME_SLEEVE,
-  PRODUCT_NAME_MOLDED_FIBER,
+  PRODUCT_NAME_MOLDED_FIBER_TRAY,
   PRODUCT_NAME_PAPER_TUBE,
 } from "../../../constants/products";
 import { isValidAlphanumeric } from "../../../Utils/inputValidators";
-import CorrugateBoxSubSection from "./productSpecificSubSections/CorrugateBoxSubSection";
-import FoldingCartonSubSection from "./productSpecificSubSections/FoldingCartonSubSection";
-import MoldedFiberSubSection from "./productSpecificSubSections/MoldedFiberSubSection";
-import PaperTubeSubSection from "./productSpecificSubSections/PaperTubeSubSection";
-import RigidBoxSubSection from "./productSpecificSubSections/RigidBoxSubSection";
-import SleeveSubSection from "./productSpecificSubSections/SleeveSubSection";
+import CorrugateBoxSubSection from "./componentModalSubSection/CorrugateBoxSubSection";
+import FoldingCartonSubSection from "./componentModalSubSection/FoldingCartonSubSection";
+import MoldedFiberSubSection from "./componentModalSubSection/MoldedFiberSubSection";
+import PaperTubeSubSection from "./componentModalSubSection/PaperTubeSubSection";
+import RigidBoxSubSection from "./componentModalSubSection/RigidBoxSubSection";
+import SleeveSubSection from "./componentModalSubSection/SleeveSubSection";
 
 // const componentSpecInitialState: CreateProjectComponentSpecInput = {
 // productName: "",
@@ -105,8 +105,8 @@ const CreateProjectComponentModal = ({
         case PRODUCT_NAME_CORRUGATE_BOX.value:
           setView(PRODUCT_NAME_CORRUGATE_BOX.value);
           break;
-        case PRODUCT_NAME_MOLDED_FIBER.value:
-          setView(PRODUCT_NAME_MOLDED_FIBER.value);
+        case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
+          setView(PRODUCT_NAME_MOLDED_FIBER_TRAY.value);
           break;
         case PRODUCT_NAME_PAPER_TUBE.value:
           setView(PRODUCT_NAME_PAPER_TUBE.value);
@@ -191,10 +191,13 @@ const CreateProjectComponentModal = ({
     return (
       <Autocomplete
         sx={{ width: 200 }}
-        options={PRODUCT_NAMES}
+        options={ALL_PRODUCT_NAMES}
         autoHighlight
         onChange={(e, v) => {
-          if (!v) return;
+          if (!v) {
+            setComponentSpec({} as CreateProjectComponentSpecInput);
+            return;
+          }
           setComponentSpec((spec) => {
             // If product name is same, do nothing.
             if (v.value === componentSpec.productName) {
@@ -202,9 +205,8 @@ const CreateProjectComponentModal = ({
             } else {
               // If product name is different, reset everything
               return {
-                ...spec,
                 productName: v.value,
-              };
+              } as CreateProjectComponentSpecInput;
             }
           });
         }}
@@ -293,7 +295,7 @@ const CreateProjectComponentModal = ({
               />
             )}
 
-            {view === PRODUCT_NAME_MOLDED_FIBER.value && (
+            {view === PRODUCT_NAME_MOLDED_FIBER_TRAY.value && (
               <MoldedFiberSubSection
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}

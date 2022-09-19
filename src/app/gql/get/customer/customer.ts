@@ -7,6 +7,8 @@ const GET_CUSTOMER_PROJECT = gql`
       userId
       companyId
       name
+      category
+      totalWeight
       deliveryDate
       deliveryAddress
       design {
@@ -78,68 +80,15 @@ const GET_CUSTOMER_PROJECTS = gql`
     getCustomerProjects(data: $data) {
       id
       userId
-      companyId
       name
       deliveryDate
       deliveryAddress
-      design {
-        fileName
-        url
-      }
       targetPrice
       orderQuantities
       status
       permission
       createdAt
       updatedAt
-      # components {
-      #   id
-      #   projectId
-      #   name
-      #   componentSpec {
-      #     id
-      #     productName
-      #     dimension
-      #     productName
-      #     dimension
-      #     thickness
-      #     flute
-      #     color
-      #     manufacturingProcess
-      #     material
-      #     materialSource
-      #     postProcess
-      #     finish
-      #     outsideMaterial
-      #     outsideMaterialSource
-      #     outsidePostProcess
-      #     outsideFinish
-      #     outsideColor
-      #     insideMaterial
-      #     insideMaterialSource
-      #     insidePostProcess
-      #     insideFinish
-      #     insideColor
-      #   }
-      # }
-
-    #   bids {
-    #     id
-    #     userId
-    #     companyId
-    #     components {
-    #       id
-    #       projectBidId
-    #       projectComponentId
-    #       quantityPrices {
-    #         quantity
-    #         price
-    #       }
-    #     }
-    #     createdAt
-    #     updatedAt
-    #   }
-    # }
   }
   }
 `;

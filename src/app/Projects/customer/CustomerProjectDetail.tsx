@@ -24,6 +24,9 @@ import {
   useTheme,
   TextField,
   ButtonGroup,
+  InputAdornment,
+  InputProps,
+  Autocomplete,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -31,7 +34,7 @@ import VendorBidOverview from "./VendorBidOverview";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
-import { ProjectOverviewListItem } from "./CustomerProjectOverview";
+import { ProjectOverviewListItem } from "./CustomerProjectOverviewCard";
 import styled from "@emotion/styled";
 import {
   CreateProjectComponentSpecInput,
@@ -103,6 +106,9 @@ const CustomerProjectDetail = () => {
     {} as EditProjectErrors
   );
 
+  // const [totalWeightUnit, setTotalWeightUnit] = useState("g");
+
+  // state object to hold data to be updated, will be initialized once projectData fetched
   const [updateProjectData, setUpdateProjectData] =
     useState<UpdateProjectInput | null>(null);
 
@@ -195,6 +201,8 @@ const CustomerProjectDetail = () => {
     const {
       id: projectId,
       name,
+      category,
+      totalWeight,
       deliveryAddress,
       deliveryDate,
       targetPrice,
@@ -263,14 +271,19 @@ const CustomerProjectDetail = () => {
         },
       });
     }
+    const [weight, unit] = totalWeight.split(" ");
+
     setUpdateProjectData({
       projectId,
       name,
+      category,
+      totalWeight: weight,
       deliveryDate,
       deliveryAddress,
       targetPrice,
       orderQuantities,
     });
+
     setUpdateProjectComponentData(compsForUpdate);
   };
 
@@ -291,7 +304,10 @@ const CustomerProjectDetail = () => {
     try {
       await updateProjectMutation({
         variables: {
-          data: updateProjectData,
+          data: {
+            ...updateProjectData!,
+            totalWeight: updateProjectData!.totalWeight + " g",
+          },
         },
       });
     } finally {
@@ -307,6 +323,7 @@ const CustomerProjectDetail = () => {
     navigate(CUSTOMER_ROUTES.PROJECTS);
   };
 
+  // Render project field based on isEditMode flag.
   const renderEditableProjectField = (
     isEditMode: boolean,
     setData: React.Dispatch<React.SetStateAction<UpdateProjectInput | null>>,
@@ -338,7 +355,17 @@ const CustomerProjectDetail = () => {
       });
     };
 
-    const renderTextField = () => {
+    // TODO: put the conversion map to constants file
+    const map: any = {
+      makeups: { label: "makeups", value: "makeups" },
+      electronics: { label: "electronics", value: "electronics" },
+      "consumer goods": { label: "consumer goods", value: "consumer goods" },
+    };
+    const getCategoryTranslatableAttribute = (category: any) => {
+      return map[category];
+    };
+    // Used for direct text input including projectName targetPrice, totalWeight
+    const renderTextField = (InputProps?: Partial<InputProps>) => {
       return (
         <TextField
           error={!!projectEditError[projectAttribute]}
@@ -361,6 +388,68 @@ const CustomerProjectDetail = () => {
               fontSize: "0.7em",
             },
           }}
+          InputProps={InputProps}
+        />
+      );
+    };
+
+    const renderCategoryDropdown = () => {
+      // We use defaultValue here since it is an uncontrolled dropdown. If we use value here, it will never changed since it's uncontrolled.
+      return (
+        <Autocomplete
+          sx={{ width: 200 }}
+          options={[
+            { label: "electronics", value: "electronics" },
+            { label: "makeups", value: "makeups" },
+            { label: "consumer goods", value: "consumer goods" },
+          ]}
+          defaultValue={getCategoryTranslatableAttribute(
+            projectFieldData as string
+          )}
+          autoHighlight
+          onChange={(e, v) => {
+            if (!v) {
+              setProjectEditError((prev) => ({
+                ...prev,
+                category: true,
+              }));
+              return;
+            }
+            setProjectEditError((prev) => ({
+              ...prev,
+              category: false,
+            }));
+            setData(
+              (prev) =>
+                ({
+                  ...prev,
+                  category: v.value,
+                } as UpdateProjectInput)
+            );
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              sx={{
+                ml: 2,
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+              error={!!projectEditError[projectAttribute]}
+              helperText={
+                !!projectEditError[projectAttribute] &&
+                intl.formatMessage({ id: "app.general.input.emptyError" })
+              }
+            />
+          )}
         />
       );
     };
@@ -465,17 +554,20 @@ const CustomerProjectDetail = () => {
               </IconButton>
             </Box>
           </Box>
-          {!!(projectFieldData as number[]).length &&
-            (projectFieldData as number[]).map((quantity, i) => {
-              return (
-                <ListItem>
-                  <Typography variant="caption">{quantity}</Typography>
-                  <IconButton onClick={() => removeOrderQuantity(i)}>
-                    <CancelIcon />
-                  </IconButton>
-                </ListItem>
-              );
-            })}
+          {!!(projectFieldData as number[]).length && (
+            <List>
+              {(projectFieldData as number[]).map((quantity, i) => {
+                return (
+                  <ListItem>
+                    <Typography variant="caption">{quantity}</Typography>
+                    <IconButton onClick={() => removeOrderQuantity(i)}>
+                      <CancelIcon />
+                    </IconButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          )}
         </>
       );
     };
@@ -499,6 +591,11 @@ const CustomerProjectDetail = () => {
       switch (projectAttribute) {
         case "name":
           if (isValidAlphanumeric(val)) {
+            isAllowed = true;
+          }
+          break;
+        case "totalWeight":
+          if (isValidInt(val)) {
             isAllowed = true;
           }
           break;
@@ -549,6 +646,14 @@ const CustomerProjectDetail = () => {
       case "targetPrice":
         res = renderTextField();
         break;
+      case "category":
+        res = renderCategoryDropdown();
+        break;
+      case "totalWeight":
+        res = renderTextField({
+          endAdornment: <InputAdornment position="end">g</InputAdornment>,
+        });
+        break;
       case "deliveryDate":
         res = renderDatePicker();
         break;
@@ -572,7 +677,11 @@ const CustomerProjectDetail = () => {
       );
     }
 
-    return <Typography variant="caption">{projectFieldData}</Typography>;
+    let fieldString = projectFieldData;
+    if (projectAttribute === "totalWeight") {
+      fieldString += " g";
+    }
+    return <Typography variant="caption">{fieldString}</Typography>;
   };
 
   const renderVendorBidOverview = (
@@ -659,6 +768,32 @@ const CustomerProjectDetail = () => {
                     setUpdateProjectData,
                     "name",
                     updateProjectData.name!
+                  )}
+                </ProjectDetailListItem>
+
+                <ProjectDetailListItem>
+                  {renderAttributeTitle(
+                    intl.formatMessage({ id: "app.project.attribute.category" })
+                  )}
+                  {renderEditableProjectField(
+                    projectEditMode,
+                    setUpdateProjectData,
+                    "category",
+                    updateProjectData.category!
+                  )}
+                </ProjectDetailListItem>
+
+                <ProjectDetailListItem>
+                  {renderAttributeTitle(
+                    intl.formatMessage({
+                      id: "app.project.attribute.totalWeight",
+                    })
+                  )}
+                  {renderEditableProjectField(
+                    projectEditMode,
+                    setUpdateProjectData,
+                    "totalWeight",
+                    updateProjectData.totalWeight!
                   )}
                 </ProjectDetailListItem>
 

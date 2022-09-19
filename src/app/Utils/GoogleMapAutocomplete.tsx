@@ -188,7 +188,6 @@ export default function GoogleMaps({
             match.offset + match.length,
           ])
         );
-        console.log(option);
         return (
           <li {...props} key={option.description}>
             <Grid container alignItems="center">

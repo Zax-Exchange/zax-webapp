@@ -29,6 +29,8 @@ const GET_VENDOR_PROJECT = gql`
       companyName
       companyId
       name
+      category
+      totalWeight
       deliveryDate
       deliveryAddress
       targetPrice
