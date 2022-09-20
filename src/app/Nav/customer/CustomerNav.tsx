@@ -69,7 +69,7 @@ export default function CustomerNav() {
         <Box display="flex" flexGrow={1} justifyContent="flex-end">
           <Button
             onClick={() => setProjectCreationModalOpen(true)}
-            variant="contained"
+            variant="outlined"
             sx={{ borderRadius: 40 }}
           >
             {intl.formatMessage({
@@ -87,6 +87,7 @@ export default function CustomerNav() {
       <Dialog
         open={projectCreationModalOpen}
         onClose={() => setProjectCreationModalOpen(false)}
+        maxWidth="md"
       >
         <DialogTitle>
           {intl.formatMessage({
@@ -95,7 +96,7 @@ export default function CustomerNav() {
         </DialogTitle>
         <DialogContent>
           <Box>
-            <Box>
+            <Box display="flex" justifyContent="space-around">
               <Button
                 variant="outlined"
                 onClick={() =>
@@ -108,6 +109,7 @@ export default function CustomerNav() {
                   id: "app.customer.createProject.guidedCreate",
                 })}
               </Button>
+
               <Button
                 variant="outlined"
                 onClick={() =>

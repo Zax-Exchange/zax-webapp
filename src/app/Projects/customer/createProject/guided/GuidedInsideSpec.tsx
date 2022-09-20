@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import {
   CreateProjectComponentInput,
@@ -17,6 +17,7 @@ import {
 import {
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
+  productValueToLabelMap,
   PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_PAPER_TRAY,
 } from "../../../../constants/products";
@@ -35,10 +36,17 @@ const GuidedInsideSpec = ({
 }) => {
   const intl = useIntl();
   const [componentSpec, setComponentSpec] =
-    useState<CreateProjectComponentSpecInput>(
-      {} as CreateProjectComponentSpecInput
-    );
-
+    useState<CreateProjectComponentSpecInput>({
+      productName: "",
+      dimension: "",
+      color: "",
+      postProcess: [],
+    } as CreateProjectComponentSpecInput);
+  useEffect(() => {
+    if (projectData.components[1]) {
+      setComponentSpec(projectData.components[1].componentSpec);
+    }
+  }, []);
   const [
     shouldDisplayPostProcessDropdown,
     setShouldDisplayPostProcessDropdown,
@@ -64,12 +72,19 @@ const GuidedInsideSpec = ({
     }
   };
 
-  const renderBoxTypeDropdown = () => {
+  const renderInsideTrayDropdown = () => {
+    const getDefaultInsideTray = () => {
+      if (componentSpec.productName) {
+        return productValueToLabelMap[componentSpec.productName];
+      }
+      return null;
+    };
     return (
       <Autocomplete
         sx={{ width: 200 }}
         options={GUIDED_PROJECT_INSIDE_PRODUCTS}
         autoHighlight
+        value={getDefaultInsideTray()}
         onChange={(e, v) => {
           setComponentSpec((spec) => {
             if (!v) {
@@ -120,12 +135,20 @@ const GuidedInsideSpec = ({
     return GUIDED_PROJECT_ALL_POST_PROCESS;
   };
   const renderPostProcessDropdown = () => {
+    const getDefaultPostProcess = () => {
+      if (componentSpec.postProcess) {
+        const postProcess = componentSpec.postProcess[0];
+        return productValueToLabelMap[postProcess];
+      }
+      return null;
+    };
     const renderPostProcess = () => {
       return (
         <Autocomplete
           sx={{ width: 200 }}
           options={getPostProcessOptions()}
           autoHighlight
+          value={getDefaultPostProcess()}
           onChange={(e, v) => {
             setComponentSpec((spec) => {
               if (!v) {
@@ -171,7 +194,10 @@ const GuidedInsideSpec = ({
       );
     };
 
-    if (!shouldDisplayPostProcessDropdown) {
+    if (
+      !shouldDisplayPostProcessDropdown &&
+      !componentSpec.postProcess?.length
+    ) {
       return (
         <Button
           onClick={() => setShouldDisplayPostProcessDropdown(true)}
@@ -206,6 +232,19 @@ const GuidedInsideSpec = ({
   };
 
   const shouldDisableNextButton = () => {
+    let res = false;
+    for (let key in componentSpec) {
+      const attribute = key as keyof CreateProjectComponentSpecInput;
+
+      // These four are required for outside spec
+      switch (attribute) {
+        case "productName":
+        case "dimension":
+        case "color":
+          if (!componentSpec[attribute]) return true;
+      }
+    }
+
     return false;
   };
 
@@ -215,33 +254,30 @@ const GuidedInsideSpec = ({
       componentSpec,
     };
 
-    setProjectData((prev) => ({
-      ...prev,
-      components: [...prev.components, compData],
-    }));
+    setProjectData((prev) => {
+      return {
+        ...prev,
+        components: [prev.components[0], compData],
+      };
+    });
     setActiveStep((step) => step + 1);
   };
 
   const handleBack = () => {
-    setProjectData((prev) => {
-      // If there are 2 components that means user coming from review page, and trying to go back even more.
-      // In that case we should remove the current last component so we don't add more than two if user decides to
-      // come back again and add component
-      if (prev.components.length === 2) {
-        const prevComponents = [...prev.components];
-        prevComponents.pop();
-        return {
-          ...prev,
-          components: prevComponents,
-        };
-      }
-      return prev;
-    });
     setActiveStep((step) => step - 1);
   };
 
   // If user chooses no tray option, we skip
   const skipToNext = () => {
+    setProjectData((prev) => {
+      if (prev.components.length === 2) {
+        return {
+          ...prev,
+          components: [prev.components[0]],
+        };
+      }
+      return prev;
+    });
     setActiveStep((step) => step + 1);
   };
 
@@ -254,8 +290,8 @@ const GuidedInsideSpec = ({
           })}
         </Typography>
       </Box>
-      <Stack>
-        <ListItem>{renderBoxTypeDropdown()}</ListItem>
+      <Stack mt={2} mb={2} spacing={2}>
+        <ListItem>{renderInsideTrayDropdown()}</ListItem>
         <ListItem>
           <TextField
             autoComplete="new-password"
@@ -281,16 +317,16 @@ const GuidedInsideSpec = ({
         <ListItem>{renderPostProcessDropdown()}</ListItem>
       </Stack>
       <Box>
-        <Button variant="text" onClick={handleBack}>
+        <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
           {intl.formatMessage({ id: "app.general.back" })}
         </Button>
-        <Button variant="text" onClick={skipToNext}>
+        <Button variant="text" onClick={skipToNext} style={{ marginRight: 8 }}>
           {intl.formatMessage({
             id: "app.customer.createProject.guidedCreate.noTray",
           })}
         </Button>
         <Button
-          variant="text"
+          variant="contained"
           onClick={handleNext}
           disabled={shouldDisableNextButton()}
         >

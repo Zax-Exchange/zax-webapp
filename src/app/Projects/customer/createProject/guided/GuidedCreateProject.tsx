@@ -88,19 +88,6 @@ export default function GuidedCreateProject() {
     }
   }, [activeStep]);
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  // Determines whether we should disable next button based on current view. User will need to finish all fields before proceeding.
-  const shouldDisableNextButton = () => {
-    return false;
-  };
-
   const renderCurrentView = () => {
     if (currentView === GuidedView.GENERAL_SPEC) {
       return (
@@ -144,7 +131,7 @@ export default function GuidedCreateProject() {
     }
   };
   return (
-    <Container>
+    <Container maxWidth="md">
       <Stepper activeStep={activeStep}>
         {GUIDED_CREATE_PROJECT_STEPS.map((label, index) => {
           return (
@@ -155,7 +142,7 @@ export default function GuidedCreateProject() {
         })}
       </Stepper>
       <Box mt={3}>
-        <Paper sx={{ padding: 8 }}>
+        <Paper sx={{ padding: 8, pb: 4 }}>
           <Container maxWidth="md">{renderCurrentView()}</Container>
         </Paper>
       </Box>

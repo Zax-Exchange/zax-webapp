@@ -100,7 +100,6 @@ export default function GuidedGeneralSpec({
 
   // TODO: finish
   const shouldDisableNextButton = () => {
-    let res = false;
     for (let key in projectData) {
       const attribute = key as keyof CreateProjectInput;
       switch (attribute) {
@@ -121,6 +120,7 @@ export default function GuidedGeneralSpec({
   };
 
   const renderCategoryDropdown = () => {};
+
   return (
     <>
       <Box>
@@ -133,7 +133,7 @@ export default function GuidedGeneralSpec({
       <Stack
         spacing={2}
         textAlign="left"
-        sx={{ "& .MuiListItem-root div": { flexGrow: 2 } }}
+        sx={{ "& .MuiListItem-root div": { flexGrow: 2 }, mt: 2, mb: 2 }}
       >
         <ListItem>
           <TextField
@@ -269,7 +269,7 @@ export default function GuidedGeneralSpec({
           {intl.formatMessage({ id: "app.general.back" })}
         </Button> */}
         <Button
-          variant="text"
+          variant="contained"
           onClick={() => setActiveStep((step) => step + 1)}
           disabled={shouldDisableNextButton()}
         >

@@ -397,7 +397,7 @@ const CustomerProjectDetail = () => {
       // We use defaultValue here since it is an uncontrolled dropdown. If we use value here, it will never changed since it's uncontrolled.
       return (
         <Autocomplete
-          sx={{ width: 200 }}
+          sx={{ width: 300 }}
           options={[
             { label: "electronics", value: "electronics" },
             { label: "makeups", value: "makeups" },
@@ -722,8 +722,8 @@ const CustomerProjectDetail = () => {
           </IconButton>
         </Container>
 
-        {/* BID SECTION */}
         <Grid container spacing={2}>
+          {/* BID SECTION */}
           <Grid item xs={4}>
             <Box>
               <Typography variant="h6" textAlign="left">
@@ -736,8 +736,8 @@ const CustomerProjectDetail = () => {
               {bids && renderVendorBidOverview(bids, projectData.components)}
             </List>
           </Grid>
-          {/* PROJECT SECTION */}
 
+          {/* PROJECT SECTION */}
           <Grid item xs={8}>
             <Box>
               <Typography variant="h6" textAlign="left">

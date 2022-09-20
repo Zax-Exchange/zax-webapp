@@ -171,6 +171,16 @@ export const PRODUCT_NAME_CORRUGATE_TRAY: TranslatableAttribute = {
   value: "Corrugate Tray"
 }
 
+export const BOX_STYLE_SHOULDER: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.shoulder"}),
+  value: "Shoulder Style"
+}
+
+export const BOX_STYLE_BOOK: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.book"}),
+  value: "Book Style"
+}
+
 export const ALL_PRODUCT_NAMES = [
   PRODUCT_NAME_RIGID_BOX,
   PRODUCT_NAME_FOLDING_CARTON,
@@ -243,6 +253,11 @@ export const RIGID_BOX_FINISHES = [
   FINISH_GLOSS,
   FINISH_MATTE,
   FINISH_UNCOATED
+]
+
+export const RIGID_BOX_STYLES = [
+  BOX_STYLE_SHOULDER,
+  BOX_STYLE_BOOK
 ]
 
 /** FOLDING CARTON DATA */
@@ -403,6 +418,8 @@ export const CORRUGATE_TRAY_POST_PROCESS = [
   POST_PROCESS_FOIL_STAMP
 ]
 
+// This converts from value of a particular product/component attribute to a TranslatableAttribute
+// so that we can translate project/component attribute when retrieved from backend
 export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [A_FLUTE.value]: A_FLUTE,
   [B_FLUTE.value]: B_FLUTE,
@@ -447,4 +464,7 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [PRODUCT_NAME_PAPER_TRAY.value]: PRODUCT_NAME_PAPER_TRAY,
   [PRODUCT_NAME_PLASTIC_TRAY.value]: PRODUCT_NAME_PLASTIC_TRAY,
   [PRODUCT_NAME_CORRUGATE_TRAY.value]: PRODUCT_NAME_CORRUGATE_TRAY,
+
+  [BOX_STYLE_SHOULDER.value]: BOX_STYLE_SHOULDER,
+  [BOX_STYLE_BOOK.value]: BOX_STYLE_BOOK
 }
