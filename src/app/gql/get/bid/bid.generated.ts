@@ -16,7 +16,7 @@ export type GetProjectBidQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectBidQuery = { __typename?: 'Query', getProjectBid?: { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, comments: string, status: Types.BidStatus, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null };
+export type GetProjectBidQuery = { __typename?: 'Query', getProjectBid?: { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, comments: string, status: Types.BidStatus, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } | null };
 
 
 export const GetProjectBidUsersDocument = gql`
@@ -69,6 +69,7 @@ export const GetProjectBidDocument = gql`
       id
       projectBidId
       projectComponentId
+      samplingFee
       quantityPrices {
         quantity
         price

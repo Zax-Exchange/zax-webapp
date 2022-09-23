@@ -14,6 +14,10 @@ const CREATE_PROJECT = gql`
 
 const UPLOAD_PROJECT_DESIGN = gql`
   mutation uploadProjectDesign($file: Upload!) {
-    uploadProjectDesign(file: $file)
+    uploadProjectDesign(file: $file) {
+      filename
+      designId
+      url
+    }
   }
 `;

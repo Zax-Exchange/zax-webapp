@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import { Dialog, DialogContent } from "@mui/material";
 import { Card, CardActionArea, CardContent, Grid, Paper } from "@mui/material";
-import ProjectPermissionModal from "../common/ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
@@ -30,12 +29,14 @@ import {
   InputMaybe,
   ProjectPermission,
   VendorProject,
+  VendorProjectOverview,
 } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
+import VendorPermissionModal from "./modals/VendorPermissionModal";
 
 type ProjectMenuOption = "view-detail" | "share";
 
@@ -48,12 +49,12 @@ const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   },
 }));
 
-const VendorProjectOverview = ({
+const VendorProjectOverviewCard = ({
   project,
   setIsProjectPageLoading,
   getVendorProjectsRefetch,
 }: {
-  project: VendorProject;
+  project: VendorProjectOverview;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
   getVendorProjectsRefetch: (
     variables?:
@@ -106,7 +107,7 @@ const VendorProjectOverview = ({
   };
 
   const renderBidStatusChip = () => {
-    switch (project.bidInfo.status) {
+    switch (project.bidStatus) {
       case BidStatus.Open:
         return (
           <Chip
@@ -260,7 +261,7 @@ const VendorProjectOverview = ({
         fullWidth={true}
       >
         <DialogContent>
-          <ProjectPermissionModal
+          <VendorPermissionModal
             project={project}
             setPermissionModalOpen={setPermissionModalOpen}
           />
@@ -270,4 +271,4 @@ const VendorProjectOverview = ({
   );
 };
 
-export default VendorProjectOverview;
+export default VendorProjectOverviewCard;

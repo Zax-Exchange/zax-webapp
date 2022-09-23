@@ -62,6 +62,7 @@ const GET_CUSTOMER_PROJECT = gql`
           id
           projectBidId
           projectComponentId
+          samplingFee
           quantityPrices {
             quantity
             price

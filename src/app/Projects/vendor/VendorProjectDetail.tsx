@@ -263,82 +263,77 @@ const VendorProjectDetail = () => {
           </Grid>
 
           <Grid item xs={6.5}>
-            {components.map((comp, i) => {
-              if (!bids[comp.id]) return null;
-              return (
-                <Paper>
-                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                    <Tabs
-                      value={currentTab}
-                      onChange={componentTabOnChange}
-                      variant="scrollable"
-                      scrollButtons="auto"
-                    >
-                      {components.map((comp, i) => {
-                        if (!bids[comp.id]) return null;
-                        return <Tab label={comp.name} key={i} />;
-                      })}
-                    </Tabs>
-                  </Box>
-
+            <Paper>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={currentTab}
+                  onChange={componentTabOnChange}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                >
                   {components.map((comp, i) => {
                     if (!bids[comp.id]) return null;
-                    return (
-                      <TabPanel value={currentTab} index={i}>
-                        <Box>
-                          <Box>
-                            <Typography variant="subtitle1" textAlign="left">
-                              {intl.formatMessage({
-                                id: "app.vendor.projectDetail.componentsDetail",
-                              })}
-                            </Typography>
-                          </Box>
-                          <ComponentSpecDetail spec={comp.componentSpec} />
-                        </Box>
-
-                        <Box mt={3}>
-                          <Box>
-                            <Typography variant="subtitle1" textAlign="left">
-                              {intl.formatMessage({
-                                id: "app.vendor.projectDetail.bidDetail",
-                              })}
-                            </Typography>
-                          </Box>
-                          <TableContainer>
-                            <Table size="small">
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell>
-                                    {intl.formatMessage({
-                                      id: "app.bid.attribute.quantity",
-                                    })}
-                                  </TableCell>
-                                  <TableCell>
-                                    {intl.formatMessage({
-                                      id: "app.bid.attribute.price",
-                                    })}
-                                  </TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {bids[comp.id].map((qp, i) => {
-                                  return (
-                                    <TableRow>
-                                      <TableCell>{qp.quantity}</TableCell>
-                                      <TableCell>{qp.price}</TableCell>
-                                    </TableRow>
-                                  );
-                                })}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </Box>
-                      </TabPanel>
-                    );
+                    return <Tab label={comp.name} key={i} />;
                   })}
-                </Paper>
-              );
-            })}
+                </Tabs>
+              </Box>
+
+              {components.map((comp, i) => {
+                if (!bids[comp.id]) return null;
+                return (
+                  <TabPanel value={currentTab} index={i}>
+                    <Box>
+                      <Box>
+                        <Typography variant="subtitle1" textAlign="left">
+                          {intl.formatMessage({
+                            id: "app.vendor.projectDetail.componentsDetail",
+                          })}
+                        </Typography>
+                      </Box>
+                      <ComponentSpecDetail spec={comp.componentSpec} />
+                    </Box>
+
+                    <Box mt={3}>
+                      <Box>
+                        <Typography variant="subtitle1" textAlign="left">
+                          {intl.formatMessage({
+                            id: "app.vendor.projectDetail.bidDetail",
+                          })}
+                        </Typography>
+                      </Box>
+                      <TableContainer>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>
+                                {intl.formatMessage({
+                                  id: "app.bid.attribute.quantity",
+                                })}
+                              </TableCell>
+                              <TableCell>
+                                {intl.formatMessage({
+                                  id: "app.bid.attribute.price",
+                                })}
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {bids[comp.id].map((qp, i) => {
+                              return (
+                                <TableRow>
+                                  <TableCell>{qp.quantity}</TableCell>
+                                  <TableCell>{qp.price}</TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Box>
+                  </TabPanel>
+                );
+              })}
+            </Paper>
           </Grid>
         </Grid>
       </>

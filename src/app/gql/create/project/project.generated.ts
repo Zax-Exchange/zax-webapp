@@ -23,7 +23,7 @@ export type UploadProjectDesignMutationVariables = Types.Exact<{
 }>;
 
 
-export type UploadProjectDesignMutation = { __typename?: 'Mutation', uploadProjectDesign: string };
+export type UploadProjectDesignMutation = { __typename?: 'Mutation', uploadProjectDesign: { __typename?: 'UploadProjectDesignResponse', filename: string, designId: string, url: string } };
 
 
 export const CreateProjectBidDocument = gql`
@@ -90,7 +90,11 @@ export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMut
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const UploadProjectDesignDocument = gql`
     mutation uploadProjectDesign($file: Upload!) {
-  uploadProjectDesign(file: $file)
+  uploadProjectDesign(file: $file) {
+    filename
+    designId
+    url
+  }
 }
     `;
 export type UploadProjectDesignMutationFn = Apollo.MutationFunction<UploadProjectDesignMutation, UploadProjectDesignMutationVariables>;

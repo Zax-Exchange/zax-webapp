@@ -15,7 +15,6 @@ import {
   Tooltip,
   AlertColor,
 } from "@mui/material";
-import ProjectPermissionModal from "../common/ProjectPermissionModal";
 import { useNavigate } from "react-router-dom";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import DeleteProjectModal from "./modals/DeleteProjectModal";
@@ -40,6 +39,7 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import { useIntl } from "react-intl";
+import CustomerPermissionModal from "./modals/CustomerPermissionModal";
 
 type ProjectOverviewMenuOption = "view-detail" | "share" | "delete";
 
@@ -264,10 +264,10 @@ const CustomerProjectOverviewCard = ({
         fullWidth={true}
       >
         <DialogContent>
-          {/* <ProjectPermissionModal
+          <CustomerPermissionModal
             project={project}
             setPermissionModalOpen={setPermissionModalOpen}
-          /> */}
+          />
         </DialogContent>
       </Dialog>
     </Grid>

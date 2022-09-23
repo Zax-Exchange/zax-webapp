@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+  Box,
   Button,
   CircularProgress,
   IconButton,
+  Link,
   Typography,
 } from "@mui/material";
 import { gql, useMutation } from "@apollo/client";
@@ -64,7 +66,7 @@ export default function UploadDesign({
       }).then((data) => {
         setProjectData((projectData) => ({
           ...projectData,
-          designId: data.data!.uploadProjectDesign!,
+          designId: data.data!.uploadProjectDesign!.designId,
         }));
       });
     } else {
@@ -79,16 +81,32 @@ export default function UploadDesign({
     }
   };
 
+  const renderFileDetail = () => {
+    return (
+      <Box>
+        <Link
+          href={data?.uploadProjectDesign.url}
+          target="_blank"
+          rel="noopener"
+        >
+          {data?.uploadProjectDesign.filename}
+        </Link>
+      </Box>
+    );
+  };
   return (
-    <IconButton component="label" sx={{ borderRadius: 40 }} color="primary">
-      <input hidden type="file" onChange={onUpload} accept=".pdf" />
-      {loading && <CircularProgress />}
-      {!loading && <CloudUploadIcon />}
-      <Typography>
-        {intl.formatMessage({
-          id: "app.customer.createProject.uploadDesign",
-        })}
-      </Typography>
-    </IconButton>
+    <>
+      {renderFileDetail()}
+      <IconButton component="label" sx={{ borderRadius: 40 }} color="primary">
+        <input hidden type="file" onChange={onUpload} accept=".pdf" />
+        {loading && <CircularProgress />}
+        {!loading && <CloudUploadIcon />}
+        <Typography>
+          {intl.formatMessage({
+            id: "app.customer.createProject.uploadDesign",
+          })}
+        </Typography>
+      </IconButton>
+    </>
   );
 }

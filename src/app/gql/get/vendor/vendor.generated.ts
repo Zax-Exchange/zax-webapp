@@ -23,7 +23,7 @@ export type GetVendorProjectsQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, status: Types.BidStatus, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } }> };
+export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProjectOverview', id: string, userId: string, bidId: string, bidStatus: Types.BidStatus, companyName: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, totalWeight: string, category: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string }> };
 
 export type SearchVendorCompaniesQueryVariables = Types.Exact<{
   data: Types.SearchVendorCompanyInput;
@@ -180,24 +180,10 @@ export type GetVendorProjectQueryResult = Apollo.QueryResult<GetVendorProjectQue
 export const GetVendorProjectsDocument = gql`
     query getVendorProjects($data: GetVendorProjectsInput!) {
   getVendorProjects(data: $data) {
-    bidInfo {
-      id
-      companyId
-      permission
-      status
-      components {
-        projectComponentId
-        quantityPrices {
-          quantity
-          price
-        }
-      }
-      createdAt
-      updatedAt
-    }
     id
     userId
-    companyId
+    bidId
+    bidStatus
     companyName
     name
     deliveryDate
@@ -205,6 +191,8 @@ export const GetVendorProjectsDocument = gql`
     targetPrice
     orderQuantities
     status
+    totalWeight
+    category
     permission
     createdAt
     updatedAt

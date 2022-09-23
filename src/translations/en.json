@@ -126,6 +126,7 @@
   "app.component.outsideSpecs": "Outside Specs",
   "app.component.insideSpecs": "Inside Specs",
   "app.component.attribute.name": "Component Name",
+  "app.component.attribute.samplingFee": "Sampling Fee",  
   "app.component.attribute.boxStyle": "Box Style",
   "app.component.attribute.product": "Product",
   "app.component.attribute.dimension": "Dimension",

@@ -24,6 +24,7 @@ import {
   CreateProjectInput,
   UpdateProjectInput,
 } from "../../../../../generated/graphql";
+import UploadDesign from "../../UploadDesign";
 
 export default function GuidedGeneralSpec({
   projectData,
@@ -268,6 +269,7 @@ export default function GuidedGeneralSpec({
         >
           {intl.formatMessage({ id: "app.general.back" })}
         </Button> */}
+        <UploadDesign setProjectData={setProjectData} />
         <Button
           variant="contained"
           onClick={() => setActiveStep((step) => step + 1)}

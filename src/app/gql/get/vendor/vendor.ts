@@ -94,65 +94,19 @@ const GET_VENDOR_PROJECT = gql`
 const GET_VENDOR_PROJECTS = gql`
   query getVendorProjects($data: GetVendorProjectsInput!) {
     getVendorProjects(data: $data) {
-      bidInfo {
-        id
-        companyId
-        permission
-        status
-        components {
-          projectComponentId
-          quantityPrices {
-            quantity
-            price
-          }
-        }
-        createdAt
-        updatedAt
-      }
-      # components {
-      #   id
-      #   projectId
-      #   name
-      #   componentSpec {
-      #     id
-      #     productName
-      #     dimension
-      #     productName
-      #     dimension
-      #     thickness
-      #     flute
-      #     color
-      #     manufacturingProcess
-      #     material
-      #     materialSource
-      #     postProcess
-      #     finish
-      #     outsideMaterial
-      #     outsideMaterialSource
-      #     outsidePostProcess
-      #     outsideFinish
-      #     outsideColor
-      #     insideMaterial
-      #     insideMaterialSource
-      #     insidePostProcess
-      #     insideFinish
-      #     insideColor
-      #   }
-      # }
       id
       userId
-      companyId
+      bidId
+      bidStatus
       companyName
       name
       deliveryDate
       deliveryAddress
       targetPrice
       orderQuantities
-      # design {
-      #   fileName
-      #   url
-      # }
       status
+      totalWeight
+      category
       permission
       createdAt
       updatedAt

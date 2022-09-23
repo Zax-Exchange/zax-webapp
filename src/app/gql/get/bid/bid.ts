@@ -23,6 +23,7 @@ const GET_PROJECT_BID = gql`
         id
         projectBidId
         projectComponentId
+        samplingFee
         quantityPrices {
           quantity
           price

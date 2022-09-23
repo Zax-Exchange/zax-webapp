@@ -15,8 +15,11 @@ import React, { useContext, useEffect, useState } from "react";
 import SortIcon from "@mui/icons-material/Sort";
 import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
-import { VendorProject } from "../../../generated/graphql";
-import VendorProjectOverview from "./VendorProjectOverview";
+import {
+  VendorProject,
+  VendorProjectOverview,
+} from "../../../generated/graphql";
+import VendorProjectOverviewCard from "./VendorProjectOverviewCard";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
@@ -42,21 +45,17 @@ const VendorProjects = () => {
     },
     fetchPolicy: "cache-and-network",
   });
-  console.log({
-    getVendorProjectsData,
-    getVendorProjectsLoading,
-    getVendorProjectsError,
-  });
+
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
 
   const [sortMenuAnchor, setSortMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
   const sortMenuOpen = !!sortMenuAnchor;
-  const [projects, setProjects] = useState<VendorProject[]>([]);
+  const [projects, setProjects] = useState<VendorProjectOverview[]>([]);
 
   useEffect(() => {
     if (getVendorProjectsData && getVendorProjectsData.getVendorProjects) {
-      setProjects(getVendorProjectsData.getVendorProjects as VendorProject[]);
+      setProjects(getVendorProjectsData.getVendorProjects);
     }
   }, [getVendorProjectsData]);
 
@@ -169,7 +168,7 @@ const VendorProjects = () => {
             {projects.map((project, i) => {
               return (
                 <>
-                  <VendorProjectOverview
+                  <VendorProjectOverviewCard
                     key={i}
                     project={project}
                     getVendorProjectsRefetch={getVendorProjectsRefetch}
