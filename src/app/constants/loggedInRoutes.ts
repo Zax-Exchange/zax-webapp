@@ -11,7 +11,8 @@ export enum CUSTOMER_ROUTES {
   GUIDED_CREATE_PROJECT = "/guided-create-project",
   ADVANCED_CREATE_PROJECT = "/advanced-create-project",
   // do not use directly when using navigate() since it contains variable
-  PROJECT_DETAIL = "/customer-project-detail/:projectId"
+  PROJECT_DETAIL = "/customer-project-detail/:projectId",
+  VENDOR_PROFILE = "/vendor-profile/:companyId"
 }
 
 export enum VENDOR_ROUTES {
@@ -20,5 +21,5 @@ export enum VENDOR_ROUTES {
 
   // do not use directly when using navigate() since it contains variable
   SEARCH_PROJECT_DETAIL = "/search-project-detail/:projectId",
-  PROJECT_DETAIL = "/vendor-project-detail/:projectId"
+  PROJECT_DETAIL = "/vendor-project-detail/:projectId",
 }

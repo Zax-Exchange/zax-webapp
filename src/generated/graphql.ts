@@ -752,8 +752,8 @@ export type Query = {
   getProjectDetail?: Maybe<Project>;
   getProjectUsers: Array<UserProjectPermission>;
   getUser: User;
-  getVendorDetail: VendorDetail;
-  getVendorProject: VendorProject;
+  getVendorDetail?: Maybe<VendorDetail>;
+  getVendorProject?: Maybe<VendorProject>;
   getVendorProjects: Array<VendorProjectOverview>;
   login: LoggedInUser;
   searchCustomerProjects: Array<ProjectOverview>;

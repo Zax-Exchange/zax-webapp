@@ -55,6 +55,7 @@ import { useIntl } from "react-intl";
 import { useGetProjectBidLazyQuery } from "../../gql/get/bid/bid.generated";
 import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
 import MuiTextField, { TextFieldProps } from "@mui/material/TextField";
+
 export type QuantityPriceData = {
   quantity: number;
   price: number;
@@ -118,6 +119,7 @@ const BidInputPriceTextField = styled((props: TextFieldProps) => {
     />
   );
 })(() => ({}));
+
 const SearchProjectDetail = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
@@ -140,12 +142,6 @@ const SearchProjectDetail = () => {
   });
 
   const navigate = useNavigate();
-  const [projectBidModalOpen, setProjectBidModalOpen] = useState(false);
-  const [biddingComponent, setBiddingComponent] =
-    useState<ProjectComponent | null>(null);
-  const [componentsQpData, setComponentsQpData] = useState<
-    Record<string, QuantityPriceData[]>
-  >({});
 
   const [bidInput, setBidInput] = useState<CreateProjectBidInput>({
     userId: user!.id,
@@ -171,7 +167,6 @@ const SearchProjectDetail = () => {
   // initialize componentsQpData with componentIds
   useEffect(() => {
     if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
-      const qpData: Record<string, QuantityPriceData[]> = {};
       const { components, orderQuantities } =
         getProjectDetailData.getProjectDetail;
 
@@ -226,6 +221,7 @@ const SearchProjectDetail = () => {
     if (!isValidInt(val)) return;
     const components = [...bidInput.components];
     const curComponent = bidInput.components[componentInd];
+    console.log(curComponent, componentInd);
     const curQp = curComponent.quantityPrices[componentQpInd];
     curQp.price = parseInt(val, 10);
     components.splice(componentInd, 1, curComponent);
@@ -264,50 +260,41 @@ const SearchProjectDetail = () => {
     setCurrentBidTab(newTab);
   };
 
-  const openModal = () => {
-    setProjectBidModalOpen(true);
+  const isValidComponentBid = (comp: CreateProjectBidComponentInput) => {
+    // If any of the qp price is invalid, the component bid is invalid
+    for (let qp of comp.quantityPrices) {
+      if (!qp.price) return false;
+    }
+    // If qp prices are all valid and there is a samplingFee present, the component bid is valid
+    if (comp.samplingFee) return true;
+
+    return false;
   };
-
-  const afterOpenModal = () => {};
-
-  const addBidsOnClick = (comp: ProjectComponent) => {
-    setBiddingComponent(comp);
-    setProjectBidModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setProjectBidModalOpen(false);
-  };
-
-  const bidProjectHandler = () => {
-    setProjectBidModalOpen(true);
-  };
-  const backHandler = () => {
-    navigate(-1);
-  };
-
-  const getComponentName = (id: string) => {
-    if (!getProjectDetailData || !getProjectDetailData.getProjectDetail)
-      return "";
-
-    return getProjectDetailData.getProjectDetail.components.find(
-      (comp) => comp.id === id
-    )!.name;
-  };
-
   const shouldDisableSubmitBidButton = () => {
     for (let comp of bidInput.components) {
-      // If theres at least one qp bid && sampling fee for any component, we let user submit
-      if (comp.quantityPrices.length && comp.samplingFee) return false;
+      if (isValidComponentBid(comp)) return false;
     }
     return true;
+  };
+
+  const filterBids = () => {
+    const { components } = bidInput;
+    const res: CreateProjectBidComponentInput[] = [];
+    components.forEach((comp) => {
+      if (isValidComponentBid(comp)) res.push(comp);
+    });
+
+    return res;
   };
 
   const submitBid = async () => {
     try {
       await createProjectBid({
         variables: {
-          data: bidInput,
+          data: {
+            ...bidInput,
+            components: filterBids(),
+          },
         },
       });
       setSnackbar({
@@ -321,7 +308,6 @@ const SearchProjectDetail = () => {
         message: intl.formatMessage({ id: "app.general.network.error" }),
       });
     } finally {
-      setProjectBidModalOpen(false);
       setSnackbarOpen(true);
     }
   };
@@ -671,37 +657,39 @@ const SearchProjectDetail = () => {
             </Paper>
           </Grid>
 
-          <Grid item xs={5}>
-            <Container>
-              <Box display="flex" justifyContent="space-between" mb={1.5}>
-                <Box>
-                  <Typography variant="subtitle1" textAlign="left">
-                    {intl.formatMessage({
-                      id: "app.vendor.search.bidsDetail",
-                    })}
-                  </Typography>
-                </Box>
-                {!existingBid && (
+          {!getProjectBidLoading && (
+            <Grid item xs={5}>
+              <Container>
+                <Box display="flex" justifyContent="space-between" mb={1.5}>
                   <Box>
-                    <Button
-                      onClick={submitBid}
-                      variant="contained"
-                      disabled={shouldDisableSubmitBidButton()}
-                    >
+                    <Typography variant="subtitle1" textAlign="left">
                       {intl.formatMessage({
-                        id: "app.vendor.search.submitBids",
+                        id: "app.vendor.search.bidsDetail",
                       })}
-                    </Button>
+                    </Typography>
                   </Box>
-                )}
-              </Box>
-              <Paper sx={{ mt: 1 }}>
-                {!!existingBid
-                  ? renderExistingBidDetail(components)
-                  : renderBidInputSection(components)}
-              </Paper>
-            </Container>
-          </Grid>
+                  {!existingBid && (
+                    <Box>
+                      <Button
+                        onClick={submitBid}
+                        variant="contained"
+                        disabled={shouldDisableSubmitBidButton()}
+                      >
+                        {intl.formatMessage({
+                          id: "app.vendor.search.submitBids",
+                        })}
+                      </Button>
+                    </Box>
+                  )}
+                </Box>
+                <Paper sx={{ mt: 1 }}>
+                  {!!existingBid
+                    ? renderExistingBidDetail(components)
+                    : renderBidInputSection(components)}
+                </Paper>
+              </Container>
+            </Grid>
+          )}
         </Grid>
       </Container>
     );

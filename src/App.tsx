@@ -37,6 +37,7 @@ import { IntlProvider } from "react-intl";
 import en from "./translations/en.json";
 import zhCn from "./translations/zh-cn.json";
 import GuidedCreateProject from "./app/Projects/customer/createProject/guided/GuidedCreateProject";
+import VendorProfile from "./app/Profile/vendor/VendorProfile";
 
 const theme = createTheme({
   palette: {
@@ -80,6 +81,7 @@ const theme = createTheme({
     },
     caption: {
       fontSize: "0.9rem",
+      color: "rgba(0,0,0,0.65)",
     },
     h6: {
       fontWeight: 500,
@@ -235,6 +237,14 @@ function App() {
                     element={
                       <RequireAuth isAllowed={!user?.isVendor}>
                         <AdvancedCreateProject />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path={CUSTOMER_ROUTES.VENDOR_PROFILE}
+                    element={
+                      <RequireAuth isAllowed={!user?.isVendor}>
+                        <VendorProfile />
                       </RequireAuth>
                     }
                   />

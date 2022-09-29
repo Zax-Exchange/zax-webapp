@@ -79,8 +79,6 @@
   "app.product.name.plasticTray": "Plastic Tray",
   "app.product.name.corrugateTray": "Corrugate Tray",
 
-
-
   "app.company.attribute.companyName": "Company Name",
   "app.company.attribute.contactEmail": "Contact Email",
   "app.company.attribute.billingEmail": "Billing Email",
@@ -89,7 +87,7 @@
   "app.company.attribute.fax": "Fax",
   "app.company.attribute.country": "Country/Region",
   "app.company.attribute.verified": "Verified",
-  "app.company.attribute.url": "Company website",
+  "app.company.attribute.companyUrl": "Company website",
   "app.company.attribute.memberSince": "Member since",
 
   "app.vendor.attribute.moq": "Minimum Order Quantity",
@@ -204,12 +202,16 @@
   "app.customer.projectDetail.menu.rejectBid": "Reject",
   "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
 
+  "app.vendorProfile.tab.companyInfo": "Company Info",
+  "app.vendorProfile.tab.certifications": "Certifications & Rewards",
+  "app.vendorProfile.tab.productShowcase": "Product Showcase",
+
   "app.vendor.search.projectDetail": "Project Detail",
   "app.vendor.search.componentsDetail": "Components Detail",
   "app.vendor.search.submitBids": "Submit Bids",
   "app.vendor.search.bidsDetail": "Bids Detail",
   "app.vendor.project.attribute.customerName": "Customer Name",
-  "app.vendor.project.attribute.products": "Products",
+  "app.vendor.project.attribute.products": "Component Products",
   "app.vendor.project.attribute.customer": "Customer",
   "app.vendor.projectDetail.componentsDetail": "Components Detail",
   "app.vendor.projectDetail.bidDetail": "Bid Detail",

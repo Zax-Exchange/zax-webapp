@@ -33,6 +33,7 @@ import {
 import { useIntl } from "react-intl";
 import VendorNotification from "../Notification/VendorNotification";
 import CustomerNav from "./customer/CustomerNav";
+import VendorNav from "./vendor/VendorNav";
 
 const query = gql`
   mutation reset($t: Int) {
@@ -64,108 +65,8 @@ const Nav = () => {
     }
   };
 
-  const renderSideNav = () => {
-    return (
-      <Drawer
-        anchor="left"
-        open={sideNavOpen}
-        onClose={() => setSideNavOpen(false)}
-      >
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={() => setSideNavOpen(false)}
-          onKeyDown={() => setSideNavOpen(false)}
-        >
-          <List>
-            <ListItem onClick={() => handleSideNavOnClick(GENERAL_ROUTES.HOME)}>
-              <ListItemButton>
-                <ListItemIcon>
-                  <Home />
-                </ListItemIcon>
-                <ListItemText
-                  primary={intl.formatMessage({
-                    id: "app.routes.loggedIn.home",
-                  })}
-                  primaryTypographyProps={{ variant: "subtitle1" }}
-                ></ListItemText>
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem onClick={() => handleSideNavOnClick("projects")}>
-              <ListItemButton>
-                <ListItemIcon>
-                  <TextSnippet />
-                </ListItemIcon>
-                <ListItemText
-                  primary={intl.formatMessage({
-                    id: "app.routes.loggedIn.projects",
-                  })}
-                  primaryTypographyProps={{ variant: "subtitle1" }}
-                ></ListItemText>
-              </ListItemButton>
-            </ListItem>
-
-            {/* <ListItem onClick={() => handleSideNavOnClick("profile")}>
-            <ListItemButton>
-              <ListItemIcon>
-                <AccountBox />
-              </ListItemIcon>
-              <ListItemText primary="Profile"></ListItemText>
-            </ListItemButton>
-          </ListItem> */}
-
-            <ListItem
-              onClick={() => handleSideNavOnClick(GENERAL_ROUTES.SETTINGS)}
-            >
-              <ListItemButton>
-                <ListItemIcon>
-                  <Settings />
-                </ListItemIcon>
-                <ListItemText
-                  primary={intl.formatMessage({
-                    id: "app.routes.loggedIn.settings",
-                  })}
-                  primaryTypographyProps={{ variant: "subtitle1" }}
-                ></ListItemText>
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem onClick={logout}>
-              <ListItemButton>
-                <ListItemIcon>
-                  <Logout />
-                </ListItemIcon>
-                <ListItemText
-                  primary={intl.formatMessage({
-                    id: "app.general.logout",
-                  })}
-                  primaryTypographyProps={{ variant: "subtitle1" }}
-                ></ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Box>
-      </Drawer>
-    );
-  };
-
   const handleLoggedOutOnClick = (page: string) => {
     navigate(`/${page}`);
-  };
-
-  const renderHamburger = () => {
-    return (
-      <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
-        sx={{ color: "gray" }}
-        onClick={() => setSideNavOpen(true)}
-      >
-        <Menu />
-      </IconButton>
-    );
   };
 
   const renderLogo = () => {
@@ -177,53 +78,6 @@ const Nav = () => {
         onClick={() => navigate(GENERAL_ROUTES.HOME)}
         alt="logo"
       />
-    );
-  };
-
-  const renderSearchBar = () => {
-    return <SearchBar />;
-  };
-
-  const renderLoggedOutNav = () => {
-    return (
-      <>
-        <Toolbar>
-          {renderLogo()}
-
-          <Box display="flex" flexGrow={1} justifyContent="flex-end">
-            <Button
-              sx={{ color: "#4c5678", mr: 2 }}
-              variant="outlined"
-              onClick={() => handleLoggedOutOnClick("login")}
-            >
-              {intl.formatMessage({
-                id: "app.general.logout",
-              })}
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleLoggedOutOnClick("company-signup")}
-            >
-              {intl.formatMessage({
-                id: "app.routes.loggedOut.getStarted",
-              })}
-            </Button>
-          </Box>
-        </Toolbar>
-      </>
-    );
-  };
-
-  const renderVendorNav = () => {
-    return (
-      <>
-        <Toolbar>
-          {renderHamburger()}
-          {renderLogo()}
-          {renderSearchBar()}
-          <VendorNotification />
-        </Toolbar>
-      </>
     );
   };
 
@@ -241,6 +95,36 @@ const Nav = () => {
       });
       setSnackbarOpen(true);
     }
+  };
+
+  const renderLoggedOutNav = () => {
+    return (
+      <>
+        <Toolbar>
+          {renderLogo()}
+
+          <Box display="flex" flexGrow={1} justifyContent="flex-end">
+            <Button
+              sx={{ color: "#4c5678", mr: 2 }}
+              variant="outlined"
+              onClick={() => handleLoggedOutOnClick("login")}
+            >
+              {intl.formatMessage({
+                id: "app.general.login",
+              })}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleLoggedOutOnClick("company-signup")}
+            >
+              {intl.formatMessage({
+                id: "app.routes.loggedOut.getStarted",
+              })}
+            </Button>
+          </Box>
+        </Toolbar>
+      </>
+    );
   };
 
   return (
@@ -263,12 +147,11 @@ const Nav = () => {
           }}
         >
           {!user && renderLoggedOutNav()}
-          {user && user.isVendor && renderVendorNav()}
+          {user && user.isVendor && <VendorNav />}
           {user && !user.isVendor && <CustomerNav />}
           {/* <Button onClick={resetData}>RESET</Button> */}
         </AppBar>
       </Box>
-      {renderSideNav()}
     </>
   );
 };

@@ -52,6 +52,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../../../common/ComponentSpecDetail";
+import ProjectCategoryDropdown from "../../../../Utils/ProjectCategoryDropdown";
 
 const AdvancedCreateProject = () => {
   const intl = useIntl();
@@ -254,14 +255,14 @@ const AdvancedCreateProject = () => {
               />
             </ListItem>
             <ListItem>
-              <TextField
-                autoComplete="new-password"
+              <ProjectCategoryDropdown
+                defaultCategory={projectData.category}
+                parentSetDataCallback={(category: string) => {
+                  setProjectData((prev) => ({ ...prev, category }));
+                }}
                 label={intl.formatMessage({
                   id: "app.project.attribute.category",
                 })}
-                onChange={projectInputOnChange}
-                name="category"
-                value={projectData.category}
               />
             </ListItem>
             <ListItem>

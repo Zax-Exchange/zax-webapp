@@ -66,6 +66,10 @@ const ProjectChat = ({
   const [channel, setChannel] = useState(null as any);
   const messagesRef = useRef<HTMLUListElement | null>(null);
 
+  const logo = user!.isVendor
+    ? "https://media-exp1.licdn.com/dms/image/C4D0BAQEzcg7Ylvut8Q/company-logo_200_200/0/1635533510850?e=1672272000&v=beta&t=8oOG0AKF493XcvDhA2LmmOSkwsoe-qwyCAwYzJSj3Sk"
+    : "https://media-exp1.licdn.com/dms/image/C4D0BAQHiNSL4Or29cg/company-logo_200_200/0/1519856215226?e=1672272000&v=beta&t=uDarHkbAqGPqXXIxMHqwHMuYnp7Qj69d6__4V0lDM5c";
+
   useEffect(() => {
     const initChat = async () => {
       const client = StreamChat.getInstance(streamApiKey);
@@ -74,8 +78,7 @@ const ProjectChat = ({
         {
           id: user!.companyId,
           name: user!.isVendor ? vendorName : customerName,
-          // image:
-          //   "https://getstream.io/random_png/?id=ancient-mountain-4&name=ancient-mountain-4",
+          image: logo,
         },
         user!.chatToken
       );
@@ -83,7 +86,6 @@ const ProjectChat = ({
         name: `Channel for ${customerName} & ${vendorName}`,
       });
 
-      // Here, 'travel' will be the channel ID
       channel.addMembers([user!.companyId]);
       const data = await channel.watch();
 

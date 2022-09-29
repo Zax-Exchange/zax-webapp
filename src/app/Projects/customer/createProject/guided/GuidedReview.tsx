@@ -12,13 +12,14 @@ import {
   Typography,
 } from "@mui/material";
 import { TypographyProps } from "@mui/system";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
 import { CreateProjectInput } from "../../../../../generated/graphql";
 import { CUSTOMER_ROUTES } from "../../../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
+import FullScreenLoading from "../../../../Utils/Loading";
 import ComponentSpecDetail from "../../../common/ComponentSpecDetail";
 import { ProjectOverviewListItem } from "../../CustomerProjectOverviewCard";
 
@@ -77,9 +78,22 @@ const GuidedReview = ({
   const intl = useIntl();
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [createProjectMutation, { loading }] = useCreateProjectMutation();
+  const [
+    createProjectMutation,
+    { loading: createProjectLoading, error: createProjectError },
+  ] = useCreateProjectMutation();
 
   const [currentTab, setCurrentTab] = useState(0);
+
+  useEffect(() => {
+    if (createProjectError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [createProjectError]);
 
   const componentTabOnChange = (
     event: React.SyntheticEvent,
@@ -260,8 +274,10 @@ const GuidedReview = ({
       </>
     );
   };
+
   return (
     <>
+      {createProjectLoading && <FullScreenLoading />}
       <Box>
         <Typography variant="h6" textAlign="left">
           {intl.formatMessage({

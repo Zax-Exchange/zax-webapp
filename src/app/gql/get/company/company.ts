@@ -26,29 +26,6 @@ const GET_COMPANY_PLAN_DETAIL= gql`
   }
 `;
 
-const GET_COMPANY_DETAIL = gql`
-  query getCompanyDetail($data: GetCompanyDetailInput!) {
-    getCompanyDetail(data: $data) {
-      id
-      name
-      contactEmail
-      logo
-      phone
-      fax
-      country
-      isActive
-      isVendor
-      isVerified
-      companyUrl
-
-      locations
-      products
-      moq
-      leadTime
-    }
-  }
-`;
-
 
 const GET_ALL_PLANS = gql`
   query getAllPlans($data: GetAllPlansInput!) {

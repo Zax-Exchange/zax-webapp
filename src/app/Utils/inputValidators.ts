@@ -13,3 +13,8 @@ export const isValidInt = (val: string) => {
   const intOnlyRegEx = /^[0-9\b]+$/;
   return (intOnlyRegEx.test(val) || val === "") && val !== " " && val !== "0";
 };
+
+export const isValidFloat = (val: string) => {
+  const floatOnlyRegEx = /^\d{0,4}(\.\d{0,4})?$/;
+  return (floatOnlyRegEx.test(val) || val === "") && val !== " " && val !== "0";
+}

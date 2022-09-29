@@ -18,13 +18,6 @@ export type GetCompanyPlanDetailQueryVariables = Types.Exact<{
 
 export type GetCompanyPlanDetailQuery = { __typename?: 'Query', getCompanyPlanDetail: { __typename?: 'CompanyPlanDetail', tier: Types.PlanTier, price: number, billingFrequency: string, memberSince: string, subscriptionStartDate: string, subscriptionEndDate: string, trialStartDate?: string | null, trialEndDate?: string | null } };
 
-export type GetCompanyDetailQueryVariables = Types.Exact<{
-  data: Types.GetCompanyDetailInput;
-}>;
-
-
-export type GetCompanyDetailQuery = { __typename?: 'Query', getCompanyDetail?: { __typename?: 'CompanyDetail', id: string, name: string, contactEmail: string, logo?: string | null, phone: string, fax?: string | null, country: string, isActive: boolean, isVendor: boolean, isVerified: boolean, companyUrl?: string | null, locations?: Array<string> | null, products?: Array<string> | null, moq?: string | null, leadTime?: number | null } | null };
-
 export type GetAllPlansQueryVariables = Types.Exact<{
   data: Types.GetAllPlansInput;
 }>;
@@ -112,55 +105,6 @@ export function useGetCompanyPlanDetailLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetCompanyPlanDetailQueryHookResult = ReturnType<typeof useGetCompanyPlanDetailQuery>;
 export type GetCompanyPlanDetailLazyQueryHookResult = ReturnType<typeof useGetCompanyPlanDetailLazyQuery>;
 export type GetCompanyPlanDetailQueryResult = Apollo.QueryResult<GetCompanyPlanDetailQuery, GetCompanyPlanDetailQueryVariables>;
-export const GetCompanyDetailDocument = gql`
-    query getCompanyDetail($data: GetCompanyDetailInput!) {
-  getCompanyDetail(data: $data) {
-    id
-    name
-    contactEmail
-    logo
-    phone
-    fax
-    country
-    isActive
-    isVendor
-    isVerified
-    companyUrl
-    locations
-    products
-    moq
-    leadTime
-  }
-}
-    `;
-
-/**
- * __useGetCompanyDetailQuery__
- *
- * To run a query within a React component, call `useGetCompanyDetailQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCompanyDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCompanyDetailQuery({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useGetCompanyDetailQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>(GetCompanyDetailDocument, options);
-      }
-export function useGetCompanyDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>(GetCompanyDetailDocument, options);
-        }
-export type GetCompanyDetailQueryHookResult = ReturnType<typeof useGetCompanyDetailQuery>;
-export type GetCompanyDetailLazyQueryHookResult = ReturnType<typeof useGetCompanyDetailLazyQuery>;
-export type GetCompanyDetailQueryResult = Apollo.QueryResult<GetCompanyDetailQuery, GetCompanyDetailQueryVariables>;
 export const GetAllPlansDocument = gql`
     query getAllPlans($data: GetAllPlansInput!) {
   getAllPlans(data: $data) {

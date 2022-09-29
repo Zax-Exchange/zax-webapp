@@ -33,11 +33,7 @@ export default function CustomerSideNav({
     if (page === "home") {
       navigate(GENERAL_ROUTES.HOME);
     } else if (page === "projects") {
-      if (user!.isVendor) {
-        navigate(VENDOR_ROUTES.PROJECTS);
-      } else {
-        navigate(CUSTOMER_ROUTES.PROJECTS);
-      }
+      navigate(CUSTOMER_ROUTES.PROJECTS);
     } else {
       navigate(`${page}`);
     }

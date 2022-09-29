@@ -26,9 +26,18 @@ import {
 } from "../../../generated/graphql";
 import { AuthContext } from "../../../context/AuthContext";
 import React from "react";
-import { useGetCompanyDetailQuery } from "../../gql/get/company/company.generated";
 import { useGetVendorDetailQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
+import { useGetCustomerDetailQuery } from "../../gql/get/customer/customer.generated";
+import { useNavigate } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+
+type VendorBidOverviewMenuSelection =
+  | "view-profile"
+  | "open-conversation"
+  | "export-to-pdf"
+  | "accept"
+  | "reject";
 
 /**
  * Bid overview card displayed in CustomerProjectDetail
@@ -42,6 +51,7 @@ const VendorBidOverview = ({
   bid: ProjectBid;
   projectComponents: ProjectComponent[];
 }) => {
+  const navigate = useNavigate();
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
@@ -49,16 +59,17 @@ const VendorBidOverview = ({
   const [chatOpen, setChatOpen] = useState(false);
 
   const {
-    data: getCompanyDetailData,
-    error: getCompanyDetailError,
-    loading: getCompanyDetailLoading,
-  } = useGetCompanyDetailQuery({
+    data: getCustomerDetailData,
+    error: getCustomerDetailError,
+    loading: getCustomerDetailLoading,
+  } = useGetCustomerDetailQuery({
     variables: {
       data: {
         companyId: user!.companyId,
       },
     },
   });
+
   const {
     loading: getVendorDetailLoading,
     error: getVendorDetailError,
@@ -93,12 +104,19 @@ const VendorBidOverview = ({
     setVendorBidMenuAnchor(null);
   };
 
-  const vendorBidMenuOnClick = (
-    e: React.MouseEvent<HTMLLIElement, MouseEvent>
-  ) => {
-    switch (e.currentTarget.dataset.type) {
-      case "conversation":
+  const viewVendorProfile = () => {
+    const dest = CUSTOMER_ROUTES.VENDOR_PROFILE.split(":");
+    dest[1] = bid.companyId;
+
+    navigate(`${dest.join("")}`);
+  };
+  const vendorBidMenuOnClick = (type: VendorBidOverviewMenuSelection) => {
+    switch (type) {
+      case "open-conversation":
         setChatOpen(true);
+        break;
+      case "view-profile":
+        viewVendorProfile();
         break;
       default:
         break;
@@ -135,11 +153,11 @@ const VendorBidOverview = ({
     }
     return null;
   };
-  if (getVendorDetailLoading || getCompanyDetailLoading) {
+  if (getVendorDetailLoading || getCustomerDetailLoading) {
     return <FullScreenLoading />;
   }
 
-  if (getVendorDetailError || getCompanyDetailError) {
+  if (getVendorDetailError || getCustomerDetailError) {
     return (
       <Typography>
         {intl.formatMessage({ id: "app.general.network.error" })}
@@ -184,30 +202,32 @@ const VendorBidOverview = ({
             sx={{ padding: 0 }}
           >
             <MenuList dense sx={{ padding: "4px 0 4px" }}>
-              <MenuItem onClick={vendorBidMenuOnClick} data-type="view-profile">
+              <MenuItem onClick={() => vendorBidMenuOnClick("view-profile")}>
                 {intl.formatMessage({
                   id: "app.customer.projectDetail.menu.viewVendorProfile",
                 })}
               </MenuItem>
-              <MenuItem onClick={vendorBidMenuOnClick} data-type="conversation">
+              <MenuItem
+                onClick={() => vendorBidMenuOnClick("open-conversation")}
+              >
                 {intl.formatMessage({
                   id: "app.customer.projectDetail.menu.openConversation",
                 })}
               </MenuItem>
 
-              <MenuItem onClick={vendorBidMenuOnClick}>
+              <MenuItem onClick={() => vendorBidMenuOnClick("export-to-pdf")}>
                 {intl.formatMessage({
                   id: "app.customer.projectDetail.menu.exportToPdf",
                 })}
               </MenuItem>
 
-              <MenuItem onClick={vendorBidMenuOnClick}>
+              <MenuItem onClick={() => vendorBidMenuOnClick("accept")}>
                 {intl.formatMessage({
                   id: "app.customer.projectDetail.menu.acceptBid",
                 })}
               </MenuItem>
 
-              <MenuItem onClick={vendorBidMenuOnClick}>
+              <MenuItem onClick={() => vendorBidMenuOnClick("reject")}>
                 {intl.formatMessage({
                   id: "app.customer.projectDetail.menu.rejectBid",
                 })}
@@ -235,7 +255,7 @@ const VendorBidOverview = ({
             chatOpen={chatOpen}
             setChatOpen={setChatOpen}
             projectBidId={bid.id}
-            customerName={getCompanyDetailData!.getCompanyDetail!.name}
+            customerName={getCustomerDetailData!.getCustomerDetail.name}
             vendorName={vendorData.name}
           />
         </>

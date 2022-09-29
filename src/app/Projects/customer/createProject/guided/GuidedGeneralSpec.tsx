@@ -1,8 +1,10 @@
 import {
+  Autocomplete,
   Box,
   Button,
   IconButton,
   InputAdornment,
+  List,
   ListItem,
   Stack,
   TextField,
@@ -14,10 +16,11 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import GoogleMapAutocomplete from "../../../../Utils/GoogleMapAutocomplete";
 import AddCircle from "@mui/icons-material/AddCircle";
 import Cancel from "@mui/icons-material/Cancel";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, ReactElement, SetStateAction, useState } from "react";
 import { useIntl } from "react-intl";
 import {
   isValidAlphanumeric,
+  isValidFloat,
   isValidInt,
 } from "../../../../Utils/inputValidators";
 import {
@@ -25,6 +28,7 @@ import {
   UpdateProjectInput,
 } from "../../../../../generated/graphql";
 import UploadDesign from "../../UploadDesign";
+import ProjectCategoryDropdown from "../../../../Utils/ProjectCategoryDropdown";
 
 export default function GuidedGeneralSpec({
   projectData,
@@ -49,9 +53,12 @@ export default function GuidedGeneralSpec({
       case "comments":
         isAllowed = isValidAlphanumeric(val);
         break;
-      case "targetPrice":
       case "orderQuantities":
         isAllowed = isValidInt(val);
+        val = parseInt(val, 10);
+        break;
+      case "targetPrice":
+        isAllowed = isValidFloat(val);
         val = parseInt(val, 10);
         break;
       default:
@@ -120,8 +127,6 @@ export default function GuidedGeneralSpec({
     return false;
   };
 
-  const renderCategoryDropdown = () => {};
-
   return (
     <>
       <Box>
@@ -148,7 +153,16 @@ export default function GuidedGeneralSpec({
           />
         </ListItem>
         <ListItem>
-          <TextField
+          <ProjectCategoryDropdown
+            defaultCategory={projectData.category}
+            parentSetDataCallback={(category: string) => {
+              setProjectData((prev) => ({ ...prev, category }));
+            }}
+            label={intl.formatMessage({
+              id: "app.project.attribute.category",
+            })}
+          />
+          {/* <TextField
             autoComplete="new-password"
             label={intl.formatMessage({
               id: "app.project.attribute.category",
@@ -156,7 +170,7 @@ export default function GuidedGeneralSpec({
             onChange={projectInputOnChange}
             name="category"
             value={projectData.category}
-          />
+          /> */}
         </ListItem>
         <ListItem>
           <TextField

@@ -38,6 +38,7 @@ import { ProjectOverviewListItem } from "./CustomerProjectOverviewCard";
 import styled from "@emotion/styled";
 import {
   CreateProjectComponentSpecInput,
+  CreateProjectInput,
   Project,
   ProjectBid,
   ProjectComponent,
@@ -61,6 +62,7 @@ import GoogleMaps from "../../Utils/GoogleMapAutocomplete";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
+import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -192,6 +194,13 @@ const CustomerProjectDetail = () => {
         setProjectEditError((prev) => ({ ...prev, deliveryAddress: true }));
       } else {
         setProjectEditError((prev) => ({ ...prev, deliveryAddress: false }));
+      }
+
+      // If user clears category field, display error.
+      if (!updateProjectData.category) {
+        setProjectEditError((prev) => ({ ...prev, category: true }));
+      } else {
+        setProjectEditError((prev) => ({ ...prev, category: false }));
       }
     }
   }, [updateProjectData]);
@@ -355,15 +364,6 @@ const CustomerProjectDetail = () => {
       });
     };
 
-    // TODO: put the conversion map to constants file
-    const map: any = {
-      makeups: { label: "makeups", value: "makeups" },
-      electronics: { label: "electronics", value: "electronics" },
-      "consumer goods": { label: "consumer goods", value: "consumer goods" },
-    };
-    const getCategoryTranslatableAttribute = (category: any) => {
-      return map[category];
-    };
     // Used for direct text input including projectName targetPrice, totalWeight
     const renderTextField = (InputProps?: Partial<InputProps>) => {
       return (
@@ -394,63 +394,24 @@ const CustomerProjectDetail = () => {
     };
 
     const renderCategoryDropdown = () => {
+      if (!updateProjectData) return null;
+
       // We use defaultValue here since it is an uncontrolled dropdown. If we use value here, it will never changed since it's uncontrolled.
       return (
-        <Autocomplete
-          sx={{ width: 300 }}
-          options={[
-            { label: "electronics", value: "electronics" },
-            { label: "makeups", value: "makeups" },
-            { label: "consumer goods", value: "consumer goods" },
-          ]}
-          defaultValue={getCategoryTranslatableAttribute(
-            projectFieldData as string
-          )}
-          autoHighlight
-          onChange={(e, v) => {
-            if (!v) {
-              setProjectEditError((prev) => ({
-                ...prev,
-                category: true,
-              }));
-              return;
+        <Box ml={2} width="100%">
+          <ProjectCategoryDropdown
+            defaultCategory={updateProjectData!.category}
+            parentSetDataCallback={(category: string) => {
+              setData((prev) => ({ ...prev!, category }));
+            }}
+            error={!!projectEditError.category}
+            errorHelperText={
+              !!projectEditError.category
+                ? intl.formatMessage({ id: "app.general.input.emptyError" })
+                : ""
             }
-            setProjectEditError((prev) => ({
-              ...prev,
-              category: false,
-            }));
-            setData(
-              (prev) =>
-                ({
-                  ...prev,
-                  category: v.value,
-                } as UpdateProjectInput)
-            );
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password",
-              }}
-              sx={{
-                ml: 2,
-              }}
-              InputLabelProps={{
-                sx: {
-                  fontSize: 16,
-                  top: -7,
-                },
-              }}
-              error={!!projectEditError[projectAttribute]}
-              helperText={
-                !!projectEditError[projectAttribute] &&
-                intl.formatMessage({ id: "app.general.input.emptyError" })
-              }
-            />
-          )}
-        />
+          />
+        </Box>
       );
     };
 
@@ -469,6 +430,7 @@ const CustomerProjectDetail = () => {
                 }));
                 return;
               }
+
               setProjectEditError((prev) => ({ ...prev, deliveryDate: false }));
               setData(
                 (prev) =>
@@ -558,7 +520,7 @@ const CustomerProjectDetail = () => {
             <List>
               {(projectFieldData as number[]).map((quantity, i) => {
                 return (
-                  <ListItem>
+                  <ListItem key={i}>
                     <Typography variant="caption">{quantity}</Typography>
                     <IconButton onClick={() => removeOrderQuantity(i)}>
                       <CancelIcon />
@@ -688,9 +650,9 @@ const CustomerProjectDetail = () => {
     bids: ProjectBid[],
     projectComponents: ProjectComponent[]
   ) => {
-    return bids.map((bid) => {
+    return bids.map((bid, i) => {
       return (
-        <ListItem sx={{ pl: 0 }}>
+        <ListItem sx={{ pl: 0 }} key={i}>
           <VendorBidOverview bid={bid} projectComponents={projectComponents} />
         </ListItem>
       );
@@ -709,6 +671,8 @@ const CustomerProjectDetail = () => {
 
   const isLoading = getProjectLoading || updateLoading;
 
+  if (isLoading) return <FullScreenLoading />;
+
   const projectData = getProjectData?.getCustomerProject;
   const bids = projectData?.bids;
 
@@ -723,32 +687,18 @@ const CustomerProjectDetail = () => {
         </Container>
 
         <Grid container spacing={2}>
-          {/* BID SECTION */}
-          <Grid item xs={4}>
-            <Box>
-              <Typography variant="h6" textAlign="left">
-                {intl.formatMessage({
-                  id: "app.customer.projects.vendorBids",
-                })}
-              </Typography>
-            </Box>
-            <List sx={{ maxHeight: 500, overflow: "scroll" }}>
-              {bids && renderVendorBidOverview(bids, projectData.components)}
-            </List>
-          </Grid>
-
           {/* PROJECT SECTION */}
           <Grid item xs={8}>
-            <Box>
-              <Typography variant="h6" textAlign="left">
-                {intl.formatMessage({
-                  id: "app.customer.projects.projectDetail",
-                })}
-              </Typography>
-            </Box>
             <Paper sx={{ padding: 3, position: "relative" }} elevation={1}>
+              <Box>
+                <Typography variant="h6" textAlign="left">
+                  {intl.formatMessage({
+                    id: "app.customer.projects.projectDetail",
+                  })}
+                </Typography>
+              </Box>
               <IconButton
-                sx={{ position: "absolute", top: 10, right: 10, zIndex: 9 }}
+                sx={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
                 onClick={() => setProjectEditMode(true)}
               >
                 <Tooltip
@@ -758,138 +708,167 @@ const CustomerProjectDetail = () => {
                   <EditIcon color="action" />
                 </Tooltip>
               </IconButton>
-              <List>
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({ id: "app.project.attribute.name" })
-                  )}
-                  {renderEditableProjectField(
-                    projectEditMode,
-                    setUpdateProjectData,
-                    "name",
-                    updateProjectData.name!
-                  )}
-                </ProjectDetailListItem>
+              <Box display="flex">
+                <List sx={{ mr: 3 }}>
+                  <ProjectDetailListItem>
+                    {renderAttributeTitle(
+                      intl.formatMessage({ id: "app.project.attribute.name" })
+                    )}
+                    {renderEditableProjectField(
+                      projectEditMode,
+                      setUpdateProjectData,
+                      "name",
+                      updateProjectData.name!
+                    )}
+                  </ProjectDetailListItem>
 
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({ id: "app.project.attribute.category" })
-                  )}
-                  {renderEditableProjectField(
-                    projectEditMode,
-                    setUpdateProjectData,
-                    "category",
-                    updateProjectData.category!
-                  )}
-                </ProjectDetailListItem>
-
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.totalWeight",
-                    })
-                  )}
-                  {renderEditableProjectField(
-                    projectEditMode,
-                    setUpdateProjectData,
-                    "totalWeight",
-                    updateProjectData.totalWeight!
-                  )}
-                </ProjectDetailListItem>
-
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.deliveryDate",
-                    })
-                  )}
-
-                  {renderEditableProjectField(
-                    projectEditMode,
-                    setUpdateProjectData,
-                    "deliveryDate",
-                    updateProjectData.deliveryDate!
-                  )}
-                </ProjectDetailListItem>
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.deliveryAddress",
-                    })
-                  )}
-
-                  {renderEditableProjectField(
-                    projectEditMode,
-                    setUpdateProjectData,
-                    "deliveryAddress",
-                    updateProjectData.deliveryAddress!
-                  )}
-                </ProjectDetailListItem>
-
-                {projectData.design && (
                   <ProjectDetailListItem>
                     {renderAttributeTitle(
                       intl.formatMessage({
-                        id: "app.project.attribute.design",
+                        id: "app.project.attribute.category",
+                      })
+                    )}
+                    {renderEditableProjectField(
+                      projectEditMode,
+                      setUpdateProjectData,
+                      "category",
+                      updateProjectData.category!
+                    )}
+                  </ProjectDetailListItem>
+
+                  <ProjectDetailListItem>
+                    {renderAttributeTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.totalWeight",
+                      })
+                    )}
+                    {renderEditableProjectField(
+                      projectEditMode,
+                      setUpdateProjectData,
+                      "totalWeight",
+                      updateProjectData.totalWeight!
+                    )}
+                  </ProjectDetailListItem>
+
+                  <ProjectDetailListItem>
+                    {renderAttributeTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.deliveryDate",
                       })
                     )}
 
-                    <Link
-                      href={projectData.design.url}
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      {projectData.design.fileName}
-                    </Link>
+                    {renderEditableProjectField(
+                      projectEditMode,
+                      setUpdateProjectData,
+                      "deliveryDate",
+                      updateProjectData.deliveryDate!
+                    )}
                   </ProjectDetailListItem>
-                )}
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.targetPrice",
-                    })
+                  <ProjectDetailListItem>
+                    {renderAttributeTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.deliveryAddress",
+                      })
+                    )}
+
+                    {renderEditableProjectField(
+                      projectEditMode,
+                      setUpdateProjectData,
+                      "deliveryAddress",
+                      updateProjectData.deliveryAddress!
+                    )}
+                  </ProjectDetailListItem>
+                </List>
+                <List>
+                  {projectData.design && (
+                    <ProjectDetailListItem>
+                      {renderAttributeTitle(
+                        intl.formatMessage({
+                          id: "app.project.attribute.design",
+                        })
+                      )}
+
+                      <Link
+                        href={projectData.design.url}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        {projectData.design.fileName}
+                      </Link>
+                    </ProjectDetailListItem>
                   )}
-                  {renderEditableProjectField(
-                    projectEditMode,
-                    setUpdateProjectData,
-                    "targetPrice",
-                    updateProjectData.targetPrice!
-                  )}
-                </ProjectDetailListItem>
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.orderQuantities",
-                    })
-                  )}
-                  {renderEditableProjectField(
-                    projectEditMode,
-                    setUpdateProjectData,
-                    "orderQuantities",
-                    updateProjectData.orderQuantities!
-                  )}
-                </ProjectDetailListItem>
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.general.createdAt",
-                    })
-                  )}
-                  <Typography variant="caption">
-                    {convertToDate(projectData.createdAt)}
-                  </Typography>
-                </ProjectDetailListItem>
-                <ProjectDetailListItem>
-                  {renderAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.general.updatedAt",
-                    })
-                  )}
-                  <Typography variant="caption">
-                    {convertToDate(projectData.updatedAt)}
-                  </Typography>
-                </ProjectDetailListItem>
-              </List>
+                  <ProjectDetailListItem>
+                    {renderAttributeTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.targetPrice",
+                      })
+                    )}
+                    {renderEditableProjectField(
+                      projectEditMode,
+                      setUpdateProjectData,
+                      "targetPrice",
+                      updateProjectData.targetPrice!
+                    )}
+                  </ProjectDetailListItem>
+                  <ProjectDetailListItem>
+                    {renderAttributeTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.orderQuantities",
+                      })
+                    )}
+                    {renderEditableProjectField(
+                      projectEditMode,
+                      setUpdateProjectData,
+                      "orderQuantities",
+                      updateProjectData.orderQuantities!
+                    )}
+                  </ProjectDetailListItem>
+                  <ProjectDetailListItem>
+                    {renderAttributeTitle(
+                      intl.formatMessage({
+                        id: "app.general.createdAt",
+                      })
+                    )}
+                    <Typography variant="caption">
+                      {convertToDate(projectData.createdAt)}
+                    </Typography>
+                  </ProjectDetailListItem>
+                  <ProjectDetailListItem>
+                    {renderAttributeTitle(
+                      intl.formatMessage({
+                        id: "app.general.updatedAt",
+                      })
+                    )}
+                    <Typography variant="caption">
+                      {convertToDate(projectData.updatedAt)}
+                    </Typography>
+                  </ProjectDetailListItem>
+                </List>
+              </Box>
+              {/* COMPONENTS SECTION */}
+              <Box mt={5}>
+                <Typography variant="h6" textAlign="left">
+                  {intl.formatMessage({
+                    id: "app.customer.projects.componentsDetail",
+                  })}
+                </Typography>
+              </Box>
+
+              {/* <Paper sx={{ mt: 1 }}> */}
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs value={currentTab} onChange={componentTabOnChange}>
+                  {projectData.components.map((comp, i) => {
+                    return <Tab label={comp.name} key={i} />;
+                  })}
+                </Tabs>
+              </Box>
+              {projectData.components.map((comp, i) => {
+                return (
+                  <TabPanel value={currentTab} index={i} key={i}>
+                    <ComponentSpecDetail spec={comp.componentSpec} />
+                  </TabPanel>
+                );
+              })}
               {projectEditMode && (
                 <Stack
                   sx={{ position: "absolute", bottom: 10, right: 10 }}
@@ -916,31 +895,20 @@ const CustomerProjectDetail = () => {
                 </Stack>
               )}
             </Paper>
+          </Grid>
 
-            {/* COMPONENTS SECTION */}
-            <Box mt={5}>
+          {/* BID SECTION */}
+          <Grid item xs={3}>
+            <Box>
               <Typography variant="h6" textAlign="left">
                 {intl.formatMessage({
-                  id: "app.customer.projects.componentsDetail",
+                  id: "app.customer.projects.vendorBids",
                 })}
               </Typography>
             </Box>
-            <Paper sx={{ mt: 1 }}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs value={currentTab} onChange={componentTabOnChange}>
-                  {projectData.components.map((comp, i) => {
-                    return <Tab label={comp.name} key={i} />;
-                  })}
-                </Tabs>
-              </Box>
-              {projectData.components.map((comp, i) => {
-                return (
-                  <TabPanel value={currentTab} index={i}>
-                    <ComponentSpecDetail spec={comp.componentSpec} />
-                  </TabPanel>
-                );
-              })}
-            </Paper>
+            <List sx={{ maxHeight: 500, overflow: "scroll" }}>
+              {bids && renderVendorBidOverview(bids, projectData.components)}
+            </List>
           </Grid>
         </Grid>
       </Container>

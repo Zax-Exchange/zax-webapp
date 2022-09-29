@@ -83,6 +83,20 @@ const SearchProjectOverview = ({
                 <ProjectOverviewListItem>
                   <Tooltip
                     title={intl.formatMessage({
+                      id: "app.project.attribute.category",
+                    })}
+                    arrow
+                    placement="top"
+                  >
+                    <CategoryIcon />
+                  </Tooltip>
+                  <Typography variant="caption">
+                    {projectData.category}
+                  </Typography>
+                </ProjectOverviewListItem>
+                <ProjectOverviewListItem>
+                  <Tooltip
+                    title={intl.formatMessage({
                       id: "app.vendor.project.attribute.customer",
                     })}
                     arrow

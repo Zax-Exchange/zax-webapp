@@ -299,7 +299,7 @@ const VendorNotification = () => {
     );
   };
   return (
-    <Box position="relative">
+    <Box position="relative" ml="auto">
       <IconButton size="large" color="primary" onClick={notiOnClick}>
         <Badge badgeContent={notiCount} color="error">
           <NotificationsNoneIcon />

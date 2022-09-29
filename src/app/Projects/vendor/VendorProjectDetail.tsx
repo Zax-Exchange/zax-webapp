@@ -35,8 +35,10 @@ import {
   ProjectComponentSpec,
   QuantityPrice,
 } from "../../../generated/graphql";
-import { useGetVendorProjectQuery } from "../../gql/get/vendor/vendor.generated";
-import { useGetCompanyDetailQuery } from "../../gql/get/company/company.generated";
+import {
+  useGetVendorDetailQuery,
+  useGetVendorProjectQuery,
+} from "../../gql/get/vendor/vendor.generated";
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
@@ -73,6 +75,7 @@ const ProjectListItem = styled(MuiListItem)(() => ({
   },
 }));
 
+// TODO: handle null projectDetail
 const VendorProjectDetail = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
@@ -98,10 +101,10 @@ const VendorProjectDetail = () => {
   });
 
   const {
-    data: getCompanyDetailData,
-    error: getCompanyDetailError,
-    loading: getCompanyDetailLoading,
-  } = useGetCompanyDetailQuery({
+    data: getVendorDetailData,
+    error: getVendorDetailError,
+    loading: getVendorDetailLoading,
+  } = useGetVendorDetailQuery({
     variables: {
       data: {
         companyId: user!.companyId,
@@ -145,11 +148,11 @@ const VendorProjectDetail = () => {
       bids[comp.projectComponentId] = comp.quantityPrices;
     });
 
-    if (getVendorProjectLoading || getCompanyDetailLoading) {
+    if (getVendorProjectLoading || getVendorDetailLoading) {
       return <FullScreenLoading />;
     }
 
-    if (getVendorProjectError || getCompanyDetailError) {
+    if (getVendorProjectError || getVendorDetailError) {
       return <Typography>Error</Typography>;
     }
 
@@ -159,7 +162,7 @@ const VendorProjectDetail = () => {
           setChatOpen={setChatOpen}
           projectBidId={bidInfo.id}
           customerName={customerName}
-          vendorName={getCompanyDetailData!.getCompanyDetail!.name}
+          vendorName={getVendorDetailData!.getVendorDetail!.name}
           chatOpen={chatOpen}
         />
         <Grid container spacing={2}>

@@ -19,6 +19,8 @@ import CategoryIcon from "@mui/icons-material/Category";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import styled from "@emotion/styled";
 import TimelineIcon from "@mui/icons-material/Timeline";
+import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+import { useNavigate } from "react-router-dom";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -34,7 +36,13 @@ const SearchCompanyOverview = ({
 }: {
   companyData: VendorOverview;
 }) => {
-  const openVendorDetail = () => {};
+  const navigate = useNavigate();
+  const openVendorDetail = () => {
+    const dest = CUSTOMER_ROUTES.VENDOR_PROFILE.split(":");
+    dest[1] = companyData.id;
+
+    navigate(`${dest.join("")}`);
+  };
 
   return (
     <Container style={{ marginBottom: "10px" }}>

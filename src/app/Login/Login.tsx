@@ -37,6 +37,7 @@ const Login = () => {
     });
   };
 
+  // TODO: differentiate between server error/input error
   useEffect(() => {
     if (data) {
       login(data.login as LoggedInUser);

@@ -505,7 +505,7 @@ const CustomerSearchResults = () => {
           {!!searchVendorsData.searchVendorCompanies.length && (
             <Stack direction="column">
               {searchVendorsData.searchVendorCompanies.map((result, i) => {
-                return <SearchCompanyOverview companyData={result} />;
+                return <SearchCompanyOverview companyData={result} key={i} />;
               })}
             </Stack>
           )}

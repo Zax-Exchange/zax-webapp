@@ -42,6 +42,7 @@ function Message({
   message: StreamMessage<DefaultStreamChatGenerics>;
   scrollToBottom: () => void;
 }) {
+  console.log(message);
   return (
     <ListItem
       disableGutters
@@ -56,7 +57,11 @@ function Message({
       <Box pl={3} pr={3}>
         {message && (
           <Box display="flex" sx={{ alignItems: "center" }}>
-            <Typography variant="subtitle2" sx={{ marginRight: "8px" }}>
+            <img src={message.user?.image} height={35} width={35} alt="logo" />
+            <Typography
+              variant="subtitle2"
+              sx={{ marginRight: "8px", marginLeft: "8px" }}
+            >
               {message.user!.name}
             </Typography>
             <Typography
@@ -77,9 +82,11 @@ function Message({
             }
 
             return (
-              <Typography key={pKey} variant="body2">
-                {m}
-              </Typography>
+              <Box ml="43px">
+                <Typography key={pKey} variant="body2">
+                  {m}
+                </Typography>
+              </Box>
             );
           })}
       </Box>
