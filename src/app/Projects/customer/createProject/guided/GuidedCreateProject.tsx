@@ -16,7 +16,10 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { AuthContext } from "../../../../../context/AuthContext";
-import { CreateProjectInput } from "../../../../../generated/graphql";
+import {
+  CreateProjectInput,
+  ProjectCreationMode,
+} from "../../../../../generated/graphql";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
 import {
@@ -59,6 +62,7 @@ export default function GuidedCreateProject() {
 
   const [projectData, setProjectData] = useState<CreateProjectInput>({
     userId: user!.id,
+    creationMode: ProjectCreationMode.Guided,
     name: "",
     deliveryAddress: "",
     category: "",

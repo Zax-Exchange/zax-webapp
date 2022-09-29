@@ -6,6 +6,7 @@ const GET_CUSTOMER_PROJECT = gql`
       id
       userId
       companyId
+      creationMode
       name
       category
       totalWeight

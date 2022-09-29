@@ -46,6 +46,7 @@ import { useGetCustomerProjectsLazyQuery } from "../../../../gql/get/customer/cu
 import {
   CreateProjectComponentSpecInput,
   CreateProjectInput,
+  ProjectCreationMode,
 } from "../../../../../generated/graphql";
 import CreateProjectComponentModal from "../../modals/CreateProjectComponentModal";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -66,6 +67,7 @@ const AdvancedCreateProject = () => {
 
   const [projectData, setProjectData] = useState<CreateProjectInput>({
     userId: user!.id,
+    creationMode: ProjectCreationMode.Advanced,
     name: "",
     deliveryAddress: "",
     category: "",
