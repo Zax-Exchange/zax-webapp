@@ -42,8 +42,12 @@ import React from "react";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES } from "../../../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
-import { useGetCustomerProjectsLazyQuery } from "../../../../gql/get/customer/customer.generated";
 import {
+  useGetCustomerProjectLazyQuery,
+  useGetCustomerProjectsLazyQuery,
+} from "../../../../gql/get/customer/customer.generated";
+import {
+  CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
   ProjectCreationMode,
@@ -61,9 +65,17 @@ const AdvancedCreateProject = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [createProjectMutation, { loading }] = useCreateProjectMutation();
+  const [createProjectMutation, { loading: createProjectLoading }] =
+    useCreateProjectMutation();
 
-  const [getCustomerProjects] = useGetCustomerProjectsLazyQuery();
+  const [
+    getCustomerProject,
+    {
+      data: getCustomerProjectData,
+      loading: getCustomerProjectLoading,
+      error: getCustomerProjectError,
+    },
+  ] = useGetCustomerProjectLazyQuery();
 
   const [projectData, setProjectData] = useState<CreateProjectInput>({
     userId: user!.id,
@@ -82,6 +94,67 @@ const AdvancedCreateProject = () => {
 
   const [orderQuantity, setOrderQuantity] = useState("");
   const [componentModalOpen, setComponentModalOpen] = useState(false);
+
+  // get project data if user chooses to import
+  useEffect(() => {
+    const projectId: string | undefined = (location.state as any)?.projectId;
+    if (projectId) {
+      getCustomerProject({
+        variables: {
+          data: {
+            projectId,
+            userId: user!.id,
+          },
+        },
+      });
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (getCustomerProjectData && getCustomerProjectData.getCustomerProject) {
+      const {
+        name,
+        deliveryAddress,
+        category,
+        totalWeight,
+        targetPrice,
+        deliveryDate,
+        design,
+        orderQuantities,
+        components,
+      } = getCustomerProjectData.getCustomerProject;
+
+      const sanitizedComponents: CreateProjectComponentInput[] = components.map(
+        (comp) => {
+          const copySpec: any = Object.assign({}, comp.componentSpec);
+          const copyComp: any = Object.assign({}, comp);
+
+          // get rid of ids and typenames so data between getProjectData and createProjectData is uniform
+          delete copyComp.__typename;
+          delete copyComp.id;
+          delete copyComp.projectId;
+          delete copySpec.id;
+          delete copySpec.__typename;
+
+          return {
+            ...copyComp,
+            componentSpec: copySpec,
+          };
+        }
+      );
+      setProjectData((prev) => ({
+        ...prev,
+        name,
+        deliveryAddress,
+        category,
+        totalWeight: totalWeight.split(" ")[0],
+        deliveryDate,
+        targetPrice,
+        orderQuantities,
+        components: sanitizedComponents,
+      }));
+    }
+  }, [getCustomerProjectData]);
 
   const addOrderQuantity = () => {
     setProjectData({
@@ -204,9 +277,10 @@ const AdvancedCreateProject = () => {
     });
   };
 
+  const isLoading = createProjectLoading || getCustomerProjectLoading;
   return (
     <>
-      {loading && <FullScreenLoading />}
+      {isLoading && <FullScreenLoading />}
       <Paper sx={{ padding: 5 }}>
         <Box display="flex" mb={4}>
           <Typography variant="h6" textAlign="left" flexGrow={1}>
@@ -228,7 +302,7 @@ const AdvancedCreateProject = () => {
             </ListItem>
             <ListItem>
               <Button
-                variant="outlined"
+                variant="contained"
                 disabled={shouldDisableCreateProjectButton()}
                 onClick={createProject}
               >
@@ -317,6 +391,7 @@ const AdvancedCreateProject = () => {
                 label={intl.formatMessage({
                   id: "app.project.attribute.deliveryAddress",
                 })}
+                defaultAddress={projectData.deliveryAddress}
               />
             </ListItem>
 

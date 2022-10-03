@@ -616,9 +616,13 @@ const SearchProjectDetail = () => {
                       })}
                     </Typography>
                     <Typography variant="caption" component="p">
-                      <Link href={design.url} target="_blank" rel="noopener">
-                        {design.fileName}
-                      </Link>
+                      {design.map((file) => {
+                        return (
+                          <Link href={file.url} target="_blank" rel="noopener">
+                            {file.fileName}
+                          </Link>
+                        );
+                      })}
                     </Typography>
                   </ProjectListItem>
                 )}

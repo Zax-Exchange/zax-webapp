@@ -19,12 +19,13 @@ import {
   CUSTOMER_ROUTES,
   GENERAL_ROUTES,
 } from "../../constants/loggedInRoutes";
+import CreateProjectSelectionModal from "./CreateProjectSelectionModal";
 
 export default function CustomerNav() {
   const intl = useIntl();
   const navigate = useNavigate();
   const [sideNavOpen, setSideNavOpen] = useState(false);
-  const [projectCreationModalOpen, setProjectCreationModalOpen] =
+  const [createProjectSelectionModalOpen, setCreateProjectSelectionModalOpen] =
     useState(false);
 
   const renderHamburger = () => {
@@ -52,14 +53,6 @@ export default function CustomerNav() {
     );
   };
 
-  const navigateToProjectCreationPage = (
-    route:
-      | CUSTOMER_ROUTES.ADVANCED_CREATE_PROJECT
-      | CUSTOMER_ROUTES.GUIDED_CREATE_PROJECT
-  ) => {
-    navigate(route);
-    setProjectCreationModalOpen(false);
-  };
   return (
     <>
       <Toolbar>
@@ -68,7 +61,7 @@ export default function CustomerNav() {
         <SearchBar />
         <Box display="flex" flexGrow={1} justifyContent="flex-end">
           <Button
-            onClick={() => setProjectCreationModalOpen(true)}
+            onClick={() => setCreateProjectSelectionModalOpen(true)}
             variant="outlined"
             sx={{ borderRadius: 40 }}
           >
@@ -85,46 +78,16 @@ export default function CustomerNav() {
       />
 
       <Dialog
-        open={projectCreationModalOpen}
-        onClose={() => setProjectCreationModalOpen(false)}
+        open={createProjectSelectionModalOpen}
+        onClose={() => setCreateProjectSelectionModalOpen(false)}
         maxWidth="md"
       >
-        <DialogTitle>
-          {intl.formatMessage({
-            id: "app.customer.createProject.creationModeModalTitle",
-          })}
-        </DialogTitle>
-        <DialogContent>
-          <Box>
-            <Box display="flex" justifyContent="space-around">
-              <Button
-                variant="outlined"
-                onClick={() =>
-                  navigateToProjectCreationPage(
-                    CUSTOMER_ROUTES.GUIDED_CREATE_PROJECT
-                  )
-                }
-              >
-                {intl.formatMessage({
-                  id: "app.customer.createProject.guidedCreate",
-                })}
-              </Button>
-
-              <Button
-                variant="outlined"
-                onClick={() =>
-                  navigateToProjectCreationPage(
-                    CUSTOMER_ROUTES.ADVANCED_CREATE_PROJECT
-                  )
-                }
-              >
-                {intl.formatMessage({
-                  id: "app.customer.createProject.advancedCreate",
-                })}
-              </Button>
-            </Box>
-          </Box>
-        </DialogContent>
+        <CreateProjectSelectionModal
+          setCreateProjectSelectionModalOpen={
+            setCreateProjectSelectionModalOpen
+          }
+          createProjectSelectionModalOpen={createProjectSelectionModalOpen}
+        />
       </Dialog>
     </>
   );

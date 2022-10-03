@@ -788,13 +788,13 @@ const CustomerProjectDetail = () => {
                         })
                       )}
 
-                      <Link
-                        href={projectData.design.url}
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        {projectData.design.fileName}
-                      </Link>
+                      {projectData.design.map((file) => {
+                        return (
+                          <Link href={file.url} target="_blank" rel="noopener">
+                            {file.fileName}
+                          </Link>
+                        );
+                      })}
                     </ProjectDetailListItem>
                   )}
                   <ProjectDetailListItem>

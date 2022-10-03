@@ -74,7 +74,7 @@ const theme = createTheme({
     },
     subtitle1: {
       fontSize: "1.1rem",
-      fontWeight: 500,
+      fontWeight: 600,
     },
     subtitle2: {
       fontSize: "1rem",
@@ -84,7 +84,7 @@ const theme = createTheme({
       color: "rgba(0,0,0,0.65)",
     },
     h6: {
-      fontWeight: 500,
+      fontWeight: 600,
     },
     button: {
       lineHeight: 1.48,

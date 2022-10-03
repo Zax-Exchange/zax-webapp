@@ -1,9 +1,7 @@
-import Add from "@mui/icons-material/Add";
 import {
   Autocomplete,
   Box,
   Button,
-  IconButton,
   ListItem,
   Stack,
   TextField,
@@ -16,22 +14,23 @@ import {
   CreateProjectComponentSpecInput,
   CreateProjectInput,
 } from "../../../../../generated/graphql";
-import { TranslatableAttribute } from "../../../../../type/common";
 import {
-  GUIDED_PROJECT_FINISH,
-  GUIDED_PROJECT_OUTSIDE_PRODUCTS,
   GUIDED_PROJECT_ALL_POST_PROCESS,
+  GUIDED_PROJECT_INSIDE_PRODUCTS,
   productValueToLabelMap,
+  PRODUCT_NAME_CORRUGATE_TRAY,
+  PRODUCT_NAME_PAPER_TRAY,
 } from "../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
-import { GuidedComponentConfigViews } from "./GuidedCreateProject";
 
-const GuidedOutsideSpec = ({
+const GuidedOther = ({
+  isRequired,
   componentData,
   setComponentData,
   setActiveStep,
   activeStep,
 }: {
+  isRequired: boolean;
   componentData: CreateProjectComponentInput | null;
   setComponentData: (data: CreateProjectComponentInput | null) => void;
   activeStep: number;
@@ -42,22 +41,19 @@ const GuidedOutsideSpec = ({
     useState<CreateProjectComponentSpecInput>({
       productName: "",
       dimension: "",
-      finish: "",
-      boxStyle: "",
+      color: "",
       postProcess: [],
     } as CreateProjectComponentSpecInput);
-
-  const [
-    shouldDisplayPostProcessDropdown,
-    setShouldDisplayPostProcessDropdown,
-  ] = useState(false);
-
-  // inject existing comp data if there is any
   useEffect(() => {
     if (componentData) {
       setComponentSpec(componentData.componentSpec);
     }
   }, [componentData]);
+  const [
+    shouldDisplayPostProcessDropdown,
+    setShouldDisplayPostProcessDropdown,
+  ] = useState(false);
+
   const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     let isAllowed = true;
@@ -71,15 +67,15 @@ const GuidedOutsideSpec = ({
     }
 
     if (isAllowed) {
-      setComponentSpec((prev) => ({
-        ...prev,
+      setComponentSpec({
+        ...componentSpec,
         [e.target.name]: e.target.value,
-      }));
+      });
     }
   };
 
-  const renderBoxTypeDropdown = () => {
-    const getDefaultBoxType = () => {
+  const renderInsideTrayDropdown = () => {
+    const getDefaultInsideTray = () => {
       if (componentSpec.productName) {
         return productValueToLabelMap[componentSpec.productName];
       }
@@ -88,9 +84,9 @@ const GuidedOutsideSpec = ({
     return (
       <Autocomplete
         sx={{ width: 200 }}
-        options={GUIDED_PROJECT_OUTSIDE_PRODUCTS}
+        options={GUIDED_PROJECT_INSIDE_PRODUCTS}
         autoHighlight
-        value={getDefaultBoxType()}
+        value={getDefaultInsideTray()}
         onChange={(e, v) => {
           setComponentSpec((spec) => {
             if (!v) {
@@ -113,7 +109,7 @@ const GuidedOutsideSpec = ({
           <TextField
             {...params}
             label={intl.formatMessage({
-              id: "app.customer.createProject.guidedCreate.boxType",
+              id: "app.customer.createProject.guidedCreate.tray",
             })}
             inputProps={{
               ...params.inputProps,
@@ -131,49 +127,15 @@ const GuidedOutsideSpec = ({
     );
   };
 
-  const renderBoxStyleDropdown = () => {
-    return (
-      <Autocomplete
-        sx={{ width: 200 }}
-        options={GUIDED_PROJECT_ALL_POST_PROCESS}
-        autoHighlight
-        // isOptionEqualToValue={(option, value) => option.label === value
-        onChange={(e, v) => {
-          setComponentSpec((spec) => {
-            if (!v) {
-              return {
-                ...spec,
-                boxStyle: undefined,
-              };
-            }
-            return {
-              ...spec,
-              boxStyle: v.value,
-            };
-          });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={intl.formatMessage({
-              id: "app.component.attribute.boxStyle",
-            })}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
-    );
+  const getPostProcessOptions = () => {
+    if (
+      componentSpec.productName === PRODUCT_NAME_CORRUGATE_TRAY.value ||
+      componentSpec.productName === PRODUCT_NAME_PAPER_TRAY.value
+    ) {
+      return GUIDED_PROJECT_ALL_POST_PROCESS;
+    }
+    return GUIDED_PROJECT_ALL_POST_PROCESS;
   };
-
   const renderPostProcessDropdown = () => {
     const getDefaultPostProcess = () => {
       if (componentSpec.postProcess) {
@@ -186,10 +148,9 @@ const GuidedOutsideSpec = ({
       return (
         <Autocomplete
           sx={{ width: 200 }}
-          options={GUIDED_PROJECT_ALL_POST_PROCESS}
+          options={getPostProcessOptions()}
           autoHighlight
           value={getDefaultPostProcess()}
-          // isOptionEqualToValue={(option, value) => option.label === value}
           onChange={(e, v) => {
             setComponentSpec((spec) => {
               if (!v) {
@@ -197,6 +158,15 @@ const GuidedOutsideSpec = ({
                   ...spec,
                   postProcess: undefined,
                 };
+              }
+              // only if user selects the same postProcess do we do nothing.
+              if (
+                componentSpec.postProcess &&
+                componentSpec.postProcess.length
+              ) {
+                if (v.value === componentSpec.postProcess[0]) {
+                  return spec;
+                }
               }
               return {
                 ...spec,
@@ -263,58 +233,7 @@ const GuidedOutsideSpec = ({
     );
   };
 
-  const renderFinishDropdown = () => {
-    const getDefaultFinish = () => {
-      if (componentSpec.finish) {
-        return productValueToLabelMap[componentSpec.finish];
-      }
-      return null;
-    };
-    return (
-      <Autocomplete
-        sx={{ width: 200 }}
-        options={GUIDED_PROJECT_FINISH}
-        autoHighlight
-        value={getDefaultFinish()}
-        onChange={(e, v) => {
-          setComponentSpec((spec) => {
-            if (!v) {
-              return {
-                ...spec,
-                finish: undefined,
-              };
-            }
-
-            return {
-              ...spec,
-              finish: v.value,
-            };
-          });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={intl.formatMessage({
-              id: "app.customer.createProject.guidedCreate.finish",
-            })}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
-    );
-  };
-
   const shouldDisableNextButton = () => {
-    let res = false;
     for (let key in componentSpec) {
       const attribute = key as keyof CreateProjectComponentSpecInput;
 
@@ -322,8 +241,7 @@ const GuidedOutsideSpec = ({
       switch (attribute) {
         case "productName":
         case "dimension":
-        case "boxStyle":
-        case "finish":
+        case "color":
           if (!componentSpec[attribute]) return true;
       }
     }
@@ -331,12 +249,12 @@ const GuidedOutsideSpec = ({
     return false;
   };
 
-  // Go to next page and add/update current component to projectData
   const handleNext = () => {
     const compData = {
-      name: "Outer Box",
+      name: "Inner Tray",
       componentSpec,
     };
+
     setComponentData(compData);
     setActiveStep((step) => step + 1);
   };
@@ -345,22 +263,23 @@ const GuidedOutsideSpec = ({
     setActiveStep((step) => step - 1);
   };
 
-  // Go to next page and empty out outerBox comp data
+  // If user chooses no tray option, we skip
   const skipToNext = () => {
     setComponentData(null);
     setActiveStep((step) => step + 1);
   };
+
   return (
     <>
       <Box>
         <Typography variant="h6" textAlign="left">
           {intl.formatMessage({
-            id: "app.customer.createProject.guidedCreate.outsideSpec.title",
+            id: "app.customer.createProject.guidedCreate.insideSpec.title",
           })}
         </Typography>
       </Box>
       <Stack mt={2} mb={2} spacing={2}>
-        <ListItem>{renderBoxTypeDropdown()}</ListItem>
+        <ListItem>{renderInsideTrayDropdown()}</ListItem>
         <ListItem>
           <TextField
             autoComplete="new-password"
@@ -372,20 +291,29 @@ const GuidedOutsideSpec = ({
             value={componentSpec.dimension}
           />
         </ListItem>
-        <ListItem>{renderBoxStyleDropdown()}</ListItem>
-        <ListItem>{renderFinishDropdown()}</ListItem>
+        <ListItem>
+          <TextField
+            autoComplete="new-password"
+            label={intl.formatMessage({
+              id: "app.component.attribute.color",
+            })}
+            onChange={componentSpecOnChange}
+            name="color"
+            value={componentSpec.color}
+          />
+        </ListItem>
         <ListItem>{renderPostProcessDropdown()}</ListItem>
       </Stack>
       <Box>
-        <Button
-          variant="text"
-          onClick={handleBack}
-          disabled={activeStep === 0}
-          style={{ marginRight: 8 }}
-        >
+        <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
           {intl.formatMessage({ id: "app.general.back" })}
         </Button>
-        <Button variant="text" onClick={skipToNext} style={{ marginRight: 8 }}>
+        <Button
+          variant="text"
+          onClick={skipToNext}
+          style={{ marginRight: 8 }}
+          disabled={!isRequired}
+        >
           {intl.formatMessage({
             id: "app.customer.createProject.guidedCreate.skip",
           })}
@@ -402,4 +330,4 @@ const GuidedOutsideSpec = ({
   );
 };
 
-export default GuidedOutsideSpec;
+export default GuidedOther;

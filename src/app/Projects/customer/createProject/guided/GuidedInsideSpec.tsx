@@ -24,13 +24,13 @@ import {
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 
 const GuidedInsideSpec = ({
-  projectData,
-  setProjectData,
+  componentData,
+  setComponentData,
   setActiveStep,
   activeStep,
 }: {
-  projectData: CreateProjectInput;
-  setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
+  componentData: CreateProjectComponentInput | null;
+  setComponentData: (data: CreateProjectComponentInput | null) => void;
   activeStep: number;
   setActiveStep: Dispatch<SetStateAction<number>>;
 }) => {
@@ -43,10 +43,10 @@ const GuidedInsideSpec = ({
       postProcess: [],
     } as CreateProjectComponentSpecInput);
   useEffect(() => {
-    if (projectData.components[1]) {
-      setComponentSpec(projectData.components[1].componentSpec);
+    if (componentData) {
+      setComponentSpec(componentData.componentSpec);
     }
-  }, []);
+  }, [componentData]);
   const [
     shouldDisplayPostProcessDropdown,
     setShouldDisplayPostProcessDropdown,
@@ -250,16 +250,11 @@ const GuidedInsideSpec = ({
 
   const handleNext = () => {
     const compData = {
-      name: componentSpec.productName,
+      name: "Inner Tray",
       componentSpec,
     };
 
-    setProjectData((prev) => {
-      return {
-        ...prev,
-        components: [prev.components[0], compData],
-      };
-    });
+    setComponentData(compData);
     setActiveStep((step) => step + 1);
   };
 
@@ -267,17 +262,9 @@ const GuidedInsideSpec = ({
     setActiveStep((step) => step - 1);
   };
 
-  // If user chooses no tray option, we skip
+  // skip and set comp data to null
   const skipToNext = () => {
-    setProjectData((prev) => {
-      if (prev.components.length === 2) {
-        return {
-          ...prev,
-          components: [prev.components[0]],
-        };
-      }
-      return prev;
-    });
+    setComponentData(null);
     setActiveStep((step) => step + 1);
   };
 
@@ -322,7 +309,7 @@ const GuidedInsideSpec = ({
         </Button>
         <Button variant="text" onClick={skipToNext} style={{ marginRight: 8 }}>
           {intl.formatMessage({
-            id: "app.customer.createProject.guidedCreate.noTray",
+            id: "app.customer.createProject.guidedCreate.skip",
           })}
         </Button>
         <Button

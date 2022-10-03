@@ -229,7 +229,7 @@ export type CustomerProject = {
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
-  design?: Maybe<ProjectDesign>;
+  design?: Maybe<Array<ProjectDesign>>;
   id: Scalars['String'];
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;
@@ -624,7 +624,7 @@ export type Project = {
   createdAt: Scalars['String'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
-  design?: Maybe<ProjectDesign>;
+  design?: Maybe<Array<ProjectDesign>>;
   id: Scalars['String'];
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;
@@ -1102,7 +1102,7 @@ export type VendorProject = {
   createdAt: Scalars['String'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
-  design?: Maybe<ProjectDesign>;
+  design?: Maybe<Array<ProjectDesign>>;
   id: Scalars['String'];
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;

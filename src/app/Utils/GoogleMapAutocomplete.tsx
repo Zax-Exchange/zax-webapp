@@ -142,7 +142,7 @@ export default function GoogleMaps({
       autoComplete
       includeInputInList
       filterSelectedOptions
-      value={value}
+      value={value ? value : defaultAddress ? (defaultAddress as any) : null}
       inputValue={inputValue}
       onChange={(event: any, newValue: PlaceType | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
@@ -158,7 +158,6 @@ export default function GoogleMaps({
           label={label}
           error={error}
           helperText={errorHelperText}
-          placeholder={defaultAddress}
           fullWidth
           InputLabelProps={{
             sx: {
