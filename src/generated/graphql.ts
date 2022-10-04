@@ -150,7 +150,7 @@ export type CreateProjectInput = {
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
-  designId?: InputMaybe<Scalars['String']>;
+  designIds: Array<Scalars['String']>;
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;
   targetPrice: Scalars['Int'];

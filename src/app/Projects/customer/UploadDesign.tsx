@@ -10,8 +10,14 @@ import {
 import { gql, useMutation } from "@apollo/client";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { useUploadProjectDesignMutation } from "../../gql/create/project/project.generated";
-import { CreateProjectInput } from "../../../generated/graphql";
+import {
+  UploadProjectDesignMutation,
+  useUploadProjectDesignMutation,
+} from "../../gql/create/project/project.generated";
+import {
+  CreateProjectInput,
+  UploadProjectDesignResponse,
+} from "../../../generated/graphql";
 import { useIntl } from "react-intl";
 
 export type File = {
@@ -32,7 +38,9 @@ export default function UploadDesign({
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [mutate, { error, loading, data }] = useUploadProjectDesignMutation();
-
+  const [uploadedFiles, setUploadedFiles] = useState<
+    UploadProjectDesignResponse[]
+  >([]);
   useEffect(() => {
     // server error
     if (error) {
@@ -66,8 +74,12 @@ export default function UploadDesign({
       }).then((data) => {
         setProjectData((projectData) => ({
           ...projectData,
-          designId: data.data!.uploadProjectDesign!.designId,
+          designIds: [
+            ...projectData.designIds,
+            data.data!.uploadProjectDesign!.designId,
+          ],
         }));
+        setUploadedFiles([...uploadedFiles, data.data!.uploadProjectDesign]);
       });
     } else {
       // invalid file type
@@ -84,13 +96,13 @@ export default function UploadDesign({
   const renderFileDetail = () => {
     return (
       <Box>
-        <Link
-          href={data?.uploadProjectDesign.url}
-          target="_blank"
-          rel="noopener"
-        >
-          {data?.uploadProjectDesign.filename}
-        </Link>
+        {uploadedFiles.map((file) => {
+          return (
+            <Link href={file.url} target="_blank" rel="noopener">
+              {file.filename}
+            </Link>
+          );
+        })}
       </Box>
     );
   };

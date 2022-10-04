@@ -30,6 +30,7 @@ const GuidedOther = ({
   setActiveStep,
   activeStep,
 }: {
+  // If there are no outerBox spec and insideTray spec added, this one is required
   isRequired: boolean;
   componentData: CreateProjectComponentInput | null;
   setComponentData: (data: CreateProjectComponentInput | null) => void;
