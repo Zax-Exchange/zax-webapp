@@ -45,6 +45,7 @@ const GuidedOther = ({
       color: "",
       postProcess: [],
     } as CreateProjectComponentSpecInput);
+
   useEffect(() => {
     if (componentData) {
       setComponentSpec(componentData.componentSpec);
@@ -252,7 +253,7 @@ const GuidedOther = ({
 
   const handleNext = () => {
     const compData = {
-      name: "Inner Tray",
+      name: "Other",
       componentSpec,
     };
 
@@ -313,7 +314,7 @@ const GuidedOther = ({
           variant="text"
           onClick={skipToNext}
           style={{ marginRight: 8 }}
-          disabled={!isRequired}
+          disabled={isRequired}
         >
           {intl.formatMessage({
             id: "app.customer.createProject.guidedCreate.skip",

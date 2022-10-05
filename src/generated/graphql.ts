@@ -267,6 +267,10 @@ export type DeleteProjectBidPermissionsInput = {
   userIds: Array<Scalars['String']>;
 };
 
+export type DeleteProjectDesignInput = {
+  designId: Scalars['String'];
+};
+
 export type DeleteProjectInput = {
   projectId: Scalars['String'];
 };
@@ -392,6 +396,7 @@ export type Mutation = {
   deactivateUser: Scalars['Boolean'];
   deleteProject: Scalars['Boolean'];
   deleteProjectBidPermissions: Scalars['Boolean'];
+  deleteProjectDesign: Scalars['Boolean'];
   deleteProjectPermissions: Scalars['Boolean'];
   inviteUser: Scalars['Boolean'];
   reset: Scalars['Boolean'];
@@ -469,6 +474,11 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteProjectBidPermissionsArgs = {
   data: DeleteProjectBidPermissionsInput;
+};
+
+
+export type MutationDeleteProjectDesignArgs = {
+  data: DeleteProjectDesignInput;
 };
 
 

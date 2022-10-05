@@ -13,6 +13,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
+  UploadProjectDesignResponse,
 } from "../../../../../generated/graphql";
 import {
   GUIDED_PROJECT_ALL_POST_PROCESS,
@@ -21,18 +22,26 @@ import {
   PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_PAPER_TRAY,
 } from "../../../../constants/products";
+import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
+import UploadDesign from "../../UploadDesign";
 
 const GuidedInsideSpec = ({
-  componentData,
   setComponentData,
+  setProjectData,
+  setComponentDesign,
   setActiveStep,
+  componentData,
+  componentDesign,
   activeStep,
 }: {
-  componentData: CreateProjectComponentInput | null;
   setComponentData: (data: CreateProjectComponentInput | null) => void;
-  activeStep: number;
+  setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
+  setComponentDesign: (data: UploadProjectDesignResponse | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
+  componentData: CreateProjectComponentInput | null;
+  componentDesign: UploadProjectDesignResponse | null;
+  activeStep: number;
 }) => {
   const intl = useIntl();
   const [componentSpec, setComponentSpec] =
@@ -47,6 +56,12 @@ const GuidedInsideSpec = ({
       setComponentSpec(componentData.componentSpec);
     }
   }, [componentData]);
+
+  const [
+    deleteProjectDesign,
+    { error: deleteProjectDesignError, data: deleteProjectDesignData },
+  ] = useDeleteProjectDesignMutation();
+
   const [
     shouldDisplayPostProcessDropdown,
     setShouldDisplayPostProcessDropdown,
@@ -266,6 +281,16 @@ const GuidedInsideSpec = ({
   const skipToNext = () => {
     setComponentData(null);
     setActiveStep((step) => step + 1);
+    if (componentDesign) {
+      deleteProjectDesign({
+        variables: {
+          data: {
+            designId: componentDesign.designId,
+          },
+        },
+      });
+      setComponentDesign(null);
+    }
   };
 
   return (
@@ -304,6 +329,11 @@ const GuidedInsideSpec = ({
         <ListItem>{renderPostProcessDropdown()}</ListItem>
       </Stack>
       <Box>
+        <UploadDesign
+          setProjectData={setProjectData}
+          existingDesigns={componentDesign ? [componentDesign] : undefined}
+          parentSetDesign={setComponentDesign}
+        />
         <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
           {intl.formatMessage({ id: "app.general.back" })}
         </Button>

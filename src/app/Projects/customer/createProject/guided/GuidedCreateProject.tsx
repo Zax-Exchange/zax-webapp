@@ -20,6 +20,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectInput,
   ProjectCreationMode,
+  UploadProjectDesignResponse,
 } from "../../../../../generated/graphql";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
@@ -43,16 +44,17 @@ export enum GuidedView {
   REVIEW = "REVIEW",
 }
 
-// data container to hold component data in each guided view including outerBox, insideTray and other
 export type GuidedComponentConfigViews =
   | GuidedView.OUTER_BOX
   | GuidedView.INSIDE_TRAY
   | GuidedView.OTHER;
 
+// data container to hold component data in each guided view including outerBox, insideTray and other
 export type GuidedCreateComponentsDataContainer = Record<
   GuidedComponentConfigViews,
   CreateProjectComponentInput | null
 >;
+
 export default function GuidedCreateProject() {
   const intl = useIntl();
   const GUIDED_CREATE_PROJECT_STEPS = [
@@ -98,6 +100,16 @@ export default function GuidedCreateProject() {
       [GuidedView.OTHER]: null,
     });
 
+  // Though designs are binded to project, here in guided create we are separating them out on the UI to let customer
+  // upload designs per component
+  const [componentsDesign, setComponentsDesign] = useState<
+    Record<GuidedComponentConfigViews, UploadProjectDesignResponse | null>
+  >({
+    [GuidedView.OUTER_BOX]: null,
+    [GuidedView.INSIDE_TRAY]: null,
+    [GuidedView.OTHER]: null,
+  });
+
   useEffect(() => {
     switch (activeStep) {
       case 0:
@@ -119,7 +131,7 @@ export default function GuidedCreateProject() {
   }, [activeStep]);
 
   // setComponentsData with injected view value
-  const setComponentDataCallback =
+  const withViewSetComponentData =
     (view: GuidedComponentConfigViews) =>
     (data: CreateProjectComponentInput | null) => {
       setComponentsData((prev) => ({
@@ -128,14 +140,21 @@ export default function GuidedCreateProject() {
       }));
     };
 
-  console.log(componentsData);
+  const withViewSetCompoentDesign =
+    (view: GuidedComponentConfigViews) =>
+    (data: UploadProjectDesignResponse | null) => {
+      setComponentsDesign((prev) => ({
+        ...prev,
+        [view]: data,
+      }));
+    };
   const renderCurrentView = () => {
     if (currentView === GuidedView.GENERAL_SPEC) {
       return (
         <GuidedGeneralSpec
           setProjectData={setProjectData}
-          projectData={projectData}
           setActiveStep={setActiveStep}
+          projectData={projectData}
           activeStep={activeStep}
         />
       );
@@ -143,9 +162,12 @@ export default function GuidedCreateProject() {
     if (currentView === GuidedView.OUTER_BOX) {
       return (
         <GuidedOutsideSpec
-          componentData={componentsData[GuidedView.OUTER_BOX]}
-          setComponentData={setComponentDataCallback(GuidedView.OUTER_BOX)}
+          setComponentData={withViewSetComponentData(GuidedView.OUTER_BOX)}
+          setProjectData={setProjectData}
+          setComponentDesign={withViewSetCompoentDesign(GuidedView.OUTER_BOX)}
           setActiveStep={setActiveStep}
+          componentData={componentsData[GuidedView.OUTER_BOX]}
+          componentDesign={componentsDesign[GuidedView.OUTER_BOX]}
           activeStep={activeStep}
         />
       );
@@ -153,9 +175,12 @@ export default function GuidedCreateProject() {
     if (currentView === GuidedView.INSIDE_TRAY) {
       return (
         <GuidedInsideSpec
-          componentData={componentsData[GuidedView.INSIDE_TRAY]}
-          setComponentData={setComponentDataCallback(GuidedView.INSIDE_TRAY)}
+          setComponentData={withViewSetComponentData(GuidedView.INSIDE_TRAY)}
+          setProjectData={setProjectData}
+          setComponentDesign={withViewSetCompoentDesign(GuidedView.INSIDE_TRAY)}
           setActiveStep={setActiveStep}
+          componentDesign={componentsDesign[GuidedView.INSIDE_TRAY]}
+          componentData={componentsData[GuidedView.INSIDE_TRAY]}
           activeStep={activeStep}
         />
       );
@@ -167,10 +192,10 @@ export default function GuidedCreateProject() {
             !componentsData[GuidedView.OUTER_BOX] &&
             !componentsData[GuidedView.INSIDE_TRAY]
           }
-          componentData={componentsData[GuidedView.OTHER]}
-          setComponentData={setComponentDataCallback(GuidedView.OTHER)}
+          setComponentData={withViewSetComponentData(GuidedView.OTHER)}
           setActiveStep={setActiveStep}
           activeStep={activeStep}
+          componentData={componentsData[GuidedView.OTHER]}
         />
       );
     }
@@ -178,9 +203,11 @@ export default function GuidedCreateProject() {
       return (
         <GuidedReview
           setProjectData={setProjectData}
-          projectData={projectData}
           setActiveStep={setActiveStep}
           activeStep={activeStep}
+          projectData={projectData}
+          componentsDesign={Object.values(componentsDesign)}
+          componentsData={Object.values(componentsData)}
         />
       );
     }

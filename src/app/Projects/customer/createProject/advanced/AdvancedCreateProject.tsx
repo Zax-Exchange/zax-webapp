@@ -291,7 +291,10 @@ const AdvancedCreateProject = () => {
 
           <Stack direction="row">
             <ListItem>
-              <UploadDesign setProjectData={setProjectData} />
+              <UploadDesign
+                setProjectData={setProjectData}
+                allowMultiple={true}
+              />
             </ListItem>
             <ListItem>
               <Button onClick={openComponentModal} variant="text">

@@ -19,6 +19,7 @@ import {
   UploadProjectDesignResponse,
 } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
+import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 
 export type File = {
   uri: string;
@@ -32,15 +33,32 @@ type Target = {
 };
 export default function UploadDesign({
   setProjectData,
+  existingDesigns,
+  parentSetDesign,
+  allowMultiple = false,
 }: {
   setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
+  existingDesigns?: UploadProjectDesignResponse[];
+  parentSetDesign?: (data: UploadProjectDesignResponse | null) => void;
+  allowMultiple?: boolean;
 }) {
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [mutate, { error, loading, data }] = useUploadProjectDesignMutation();
+  const [
+    deleteProjectDesign,
+    { error: deleteProjectDesignError, data: deleteProjectDesignData },
+  ] = useDeleteProjectDesignMutation();
+
   const [uploadedFiles, setUploadedFiles] = useState<
     UploadProjectDesignResponse[]
   >([]);
+
+  useEffect(() => {
+    if (existingDesigns) {
+      setUploadedFiles(existingDesigns);
+    }
+  }, [existingDesigns]);
   useEffect(() => {
     // server error
     if (error) {
@@ -79,7 +97,26 @@ export default function UploadDesign({
             data.data!.uploadProjectDesign!.designId,
           ],
         }));
-        setUploadedFiles([...uploadedFiles, data.data!.uploadProjectDesign]);
+        if (parentSetDesign) {
+          parentSetDesign(data.data!.uploadProjectDesign);
+        }
+
+        if (allowMultiple) {
+          setUploadedFiles([...uploadedFiles, data.data!.uploadProjectDesign]);
+        } else {
+          // If there is already an existing uploaded file
+          if (uploadedFiles.length) {
+            // do this in the background
+            deleteProjectDesign({
+              variables: {
+                data: {
+                  designId: uploadedFiles[0].designId,
+                },
+              },
+            });
+          }
+          setUploadedFiles([data.data!.uploadProjectDesign]);
+        }
       });
     } else {
       // invalid file type

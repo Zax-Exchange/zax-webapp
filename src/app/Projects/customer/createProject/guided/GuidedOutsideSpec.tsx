@@ -15,6 +15,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
+  UploadProjectDesignResponse,
 } from "../../../../../generated/graphql";
 import { TranslatableAttribute } from "../../../../../type/common";
 import {
@@ -23,26 +24,33 @@ import {
   GUIDED_PROJECT_ALL_POST_PROCESS,
   productValueToLabelMap,
 } from "../../../../constants/products";
+import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
+import UploadDesign from "../../UploadDesign";
 import { GuidedComponentConfigViews } from "./GuidedCreateProject";
 
 const GuidedOutsideSpec = ({
-  componentData,
   setComponentData,
+  setProjectData,
+  setComponentDesign,
   setActiveStep,
+  componentData,
+  componentDesign,
   activeStep,
 }: {
-  componentData: CreateProjectComponentInput | null;
   setComponentData: (data: CreateProjectComponentInput | null) => void;
-  activeStep: number;
+  setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
+  setComponentDesign: (data: UploadProjectDesignResponse | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
+  componentData: CreateProjectComponentInput | null;
+  componentDesign: UploadProjectDesignResponse | null;
+  activeStep: number;
 }) => {
   const intl = useIntl();
   const [componentSpec, setComponentSpec] =
     useState<CreateProjectComponentSpecInput>({
       productName: "",
       dimension: "",
-      finish: "",
       boxStyle: "",
       postProcess: [],
     } as CreateProjectComponentSpecInput);
@@ -58,6 +66,12 @@ const GuidedOutsideSpec = ({
       setComponentSpec(componentData.componentSpec);
     }
   }, [componentData]);
+
+  const [
+    deleteProjectDesign,
+    { error: deleteProjectDesignError, data: deleteProjectDesignData },
+  ] = useDeleteProjectDesignMutation();
+
   const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     let isAllowed = true;
@@ -263,6 +277,7 @@ const GuidedOutsideSpec = ({
     );
   };
 
+  // Not needed right now.
   const renderFinishDropdown = () => {
     const getDefaultFinish = () => {
       if (componentSpec.finish) {
@@ -323,7 +338,6 @@ const GuidedOutsideSpec = ({
         case "productName":
         case "dimension":
         case "boxStyle":
-        case "finish":
           if (!componentSpec[attribute]) return true;
       }
     }
@@ -345,10 +359,20 @@ const GuidedOutsideSpec = ({
     setActiveStep((step) => step - 1);
   };
 
-  // Go to next page and empty out outerBox comp data
+  // Go to next page and empty out all outerBox related data
   const skipToNext = () => {
     setComponentData(null);
     setActiveStep((step) => step + 1);
+    if (componentDesign) {
+      deleteProjectDesign({
+        variables: {
+          data: {
+            designId: componentDesign.designId,
+          },
+        },
+      });
+      setComponentDesign(null);
+    }
   };
   return (
     <>
@@ -373,10 +397,14 @@ const GuidedOutsideSpec = ({
           />
         </ListItem>
         <ListItem>{renderBoxStyleDropdown()}</ListItem>
-        <ListItem>{renderFinishDropdown()}</ListItem>
         <ListItem>{renderPostProcessDropdown()}</ListItem>
       </Stack>
       <Box>
+        <UploadDesign
+          setProjectData={setProjectData}
+          existingDesigns={componentDesign ? [componentDesign] : undefined}
+          parentSetDesign={setComponentDesign}
+        />
         <Button
           variant="text"
           onClick={handleBack}

@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   IconButton,
+  Link,
   List,
   ListItem,
   Stack,
@@ -15,13 +16,18 @@ import { TypographyProps } from "@mui/system";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
-import { CreateProjectInput } from "../../../../../generated/graphql";
+import {
+  CreateProjectComponentInput,
+  CreateProjectInput,
+  UploadProjectDesignResponse,
+} from "../../../../../generated/graphql";
 import { CUSTOMER_ROUTES } from "../../../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../../../Utils/Loading";
 import ComponentSpecDetail from "../../../common/ComponentSpecDetail";
 import { ProjectOverviewListItem } from "../../CustomerProjectOverviewCard";
+import { GuidedCreateComponentsDataContainer } from "./GuidedCreateProject";
 
 type TypographyVariant =
   | "button"
@@ -65,15 +71,19 @@ const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
 }));
 
 const GuidedReview = ({
-  projectData,
   setProjectData,
-  activeStep,
   setActiveStep,
+  componentsData,
+  projectData,
+  componentsDesign,
+  activeStep,
 }: {
-  projectData: CreateProjectInput;
-  setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
-  activeStep: number;
   setActiveStep: Dispatch<SetStateAction<number>>;
+  setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
+  componentsData: (CreateProjectComponentInput | null)[];
+  projectData: CreateProjectInput;
+  componentsDesign: (UploadProjectDesignResponse | null)[];
+  activeStep: number;
 }) => {
   const intl = useIntl();
   const navigate = useNavigate();
@@ -101,8 +111,25 @@ const GuidedReview = ({
   ) => {
     setCurrentTab(newTab);
   };
+
   const handleBack = () => {
     setActiveStep((step) => step - 1);
+  };
+
+  const extractComponentsData = () => {
+    return Object.values(componentsData).filter(
+      (data) => !!data
+    ) as CreateProjectComponentInput[];
+  };
+
+  const extractProjectDesigns = () => {
+    return Object.values(componentsDesign)
+      .filter((design) => !!design)
+      .map((design) => design!.designId);
+  };
+
+  const hasDesigns = () => {
+    return componentsDesign.some((d) => !!d);
   };
 
   const createProject = async () => {
@@ -112,6 +139,8 @@ const GuidedReview = ({
           data: {
             ...projectData,
             totalWeight: projectData.totalWeight + " g",
+            components: extractComponentsData(),
+            designIds: extractProjectDesigns(),
           },
         },
       });
@@ -206,23 +235,24 @@ const GuidedReview = ({
               })}
             </ProjectDetailListItem>
 
-            {/* {projectData.designId && (
+            {hasDesigns() && (
               <ProjectDetailListItem>
-                {renderAttributeTitle(
+                {renderTypography(
                   intl.formatMessage({
                     id: "app.project.attribute.design",
-                  })
+                  }),
+                  { variant: "subtitle2" }
                 )}
-
-                <Link
-                  href={projectData.design.url}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  {projectData.design.fileName}
-                </Link>
+                {componentsDesign.map((design) => {
+                  if (!design) return null;
+                  return (
+                    <Link href={design.url} target="_blank" rel="noopener">
+                      {design.filename}
+                    </Link>
+                  );
+                })}
               </ProjectDetailListItem>
-            )} */}
+            )}
 
             <ProjectDetailListItem>
               {renderTypography(
@@ -258,12 +288,14 @@ const GuidedReview = ({
         <Box>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs value={currentTab} onChange={componentTabOnChange}>
-              {projectData.components.map((comp, i) => {
+              {componentsData.map((comp, i) => {
+                if (!comp) return null;
                 return <Tab label={comp.name} key={i} />;
               })}
             </Tabs>
           </Box>
-          {projectData.components.map((comp, i) => {
+          {componentsData.map((comp, i) => {
+            if (!comp) return null;
             return (
               <TabPanel value={currentTab} index={i}>
                 <ComponentSpecDetail spec={comp.componentSpec} />
