@@ -16,8 +16,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-// import vendor from "../../static/vendor.svg";
-// import customer from "../../static/customer.svg";
+import vendor from "../../static/vendor.svg";
+import customer from "../../static/customer.svg";
 import React from "react";
 
 const CompanySignup = () => {
@@ -37,7 +37,12 @@ const CompanySignup = () => {
         <Fade in={true}>
           <Card elevation={4}>
             <CardActionArea onClick={() => signupHandler("vendor-signup")}>
-              <CardMedia component="img" height="250" width="150" src={""} />
+              <CardMedia
+                component="img"
+                height="250"
+                width="150"
+                src={vendor}
+              />
               <CardContent>
                 <Typography
                   variant="overline"
@@ -54,7 +59,7 @@ const CompanySignup = () => {
         <Fade in={true}>
           <Card elevation={4}>
             <CardActionArea onClick={() => signupHandler("customer-signup")}>
-              <CardMedia component="img" height="250" src={""} />
+              <CardMedia component="img" height="250" src={customer} />
               <CardContent>
                 <Typography
                   variant="overline"

@@ -13,7 +13,9 @@ import {
 import React from "react";
 import { Plan } from "../../../generated/graphql";
 import { SubscriptionInfo } from "./CustomerSignup";
-
+import singlePlan from "../../../static/singlePlan.svg";
+import groupPlan from "../../../static/groupPlan.svg";
+import businessPlan from "../../../static/businessPlan.svg";
 
 const PlanListItem = styled(ListItem)(() => ({
   flexDirection: "column",
@@ -42,7 +44,11 @@ const CustomerPlanSelection = ({
 
   const { perUser } = pricings;
 
-  const planOnClick = (priceId: string, price: number, billingFrequency: string) => {
+  const planOnClick = (
+    priceId: string,
+    price: number,
+    billingFrequency: string
+  ) => {
     setSubscriptionInfo({
       price,
       priceId,
@@ -54,8 +60,8 @@ const CustomerPlanSelection = ({
 
   let svg;
 
-  // if (tier === "PREMIUM") svg = groupPlan;
-  // if (tier === "BUSINESS") svg = businessPlan;
+  if (tier === "PREMIUM") svg = groupPlan;
+  if (tier === "BUSINESS") svg = businessPlan;
 
   return (
     <Card

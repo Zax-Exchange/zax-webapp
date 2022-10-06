@@ -177,6 +177,7 @@
   "app.customer.createProject.upload.fileTypeError": "File type is not supported. Please upload pdf only.",
   "app.customer.createProject.create.success": "Project created",  
   "app.customer.createProject.creationModeModalTitle": "Please select below how you would like to configure your project.",
+  "app.customer.createProject.selectBoxStyle": "Select Box Style",
   "app.customer.createProject.guidedCreate": "Guided",
   "app.customer.createProject.guidedCreate.helperText": "We will guide you through the process and help you decide what you need for your project. Vendors will use their best judgement to come up with price estimations.",
   "app.customer.createProject.guidedCreate.step.generalSpec": "General Spec",

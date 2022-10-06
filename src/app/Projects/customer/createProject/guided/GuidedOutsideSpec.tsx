@@ -3,6 +3,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Dialog,
   IconButton,
   ListItem,
   Stack,
@@ -28,6 +29,7 @@ import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/p
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
 import { GuidedComponentConfigViews } from "./GuidedCreateProject";
+import GuidedCreateBoxStyleSelection from "./modals/GuidedCreateBoxStyleSelection";
 
 const GuidedOutsideSpec = ({
   setComponentData,
@@ -54,6 +56,7 @@ const GuidedOutsideSpec = ({
       boxStyle: "",
       postProcess: [],
     } as CreateProjectComponentSpecInput);
+  const [boxStyleModalOpen, setBoxStyleModalOpen] = useState(false);
 
   const [
     shouldDisplayPostProcessDropdown,
@@ -111,6 +114,7 @@ const GuidedOutsideSpec = ({
               return {
                 ...spec,
                 productName: "",
+                boxStyle: "",
               };
             }
             if (v.value === componentSpec.productName) {
@@ -118,6 +122,7 @@ const GuidedOutsideSpec = ({
             } else {
               return {
                 ...spec,
+                boxStyle: "",
                 productName: v.value,
               };
             }
@@ -145,46 +150,27 @@ const GuidedOutsideSpec = ({
     );
   };
 
-  const renderBoxStyleDropdown = () => {
+  const renderBoxStyle = () => {
     return (
-      <Autocomplete
-        sx={{ width: 200 }}
-        options={GUIDED_PROJECT_ALL_POST_PROCESS}
-        autoHighlight
-        // isOptionEqualToValue={(option, value) => option.label === value
-        onChange={(e, v) => {
-          setComponentSpec((spec) => {
-            if (!v) {
-              return {
-                ...spec,
-                boxStyle: undefined,
-              };
-            }
-            return {
-              ...spec,
-              boxStyle: v.value,
-            };
-          });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={intl.formatMessage({
-              id: "app.component.attribute.boxStyle",
-            })}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({ id: "app.component.attribute.boxStyle" })}
+        </Typography>
+        <Typography>
+          {componentSpec.boxStyle
+            ? productValueToLabelMap[componentSpec.boxStyle].label
+            : "Please select a boxy style"}
+        </Typography>
+        <Button
+          variant="outlined"
+          onClick={() => setBoxStyleModalOpen(true)}
+          disabled={!componentSpec.productName}
+        >
+          {intl.formatMessage({
+            id: "app.customer.createProject.selectBoxStyle",
+          })}
+        </Button>
+      </Box>
     );
   };
 
@@ -333,7 +319,7 @@ const GuidedOutsideSpec = ({
     for (let key in componentSpec) {
       const attribute = key as keyof CreateProjectComponentSpecInput;
 
-      // These four are required for outside spec
+      // These three are required
       switch (attribute) {
         case "productName":
         case "dimension":
@@ -374,6 +360,7 @@ const GuidedOutsideSpec = ({
       setComponentDesign(null);
     }
   };
+
   return (
     <>
       <Box>
@@ -383,22 +370,26 @@ const GuidedOutsideSpec = ({
           })}
         </Typography>
       </Box>
-      <Stack mt={2} mb={2} spacing={2}>
-        <ListItem>{renderBoxTypeDropdown()}</ListItem>
-        <ListItem>
-          <TextField
-            autoComplete="new-password"
-            label={intl.formatMessage({
-              id: "app.component.attribute.dimension",
-            })}
-            onChange={componentSpecOnChange}
-            name="dimension"
-            value={componentSpec.dimension}
-          />
-        </ListItem>
-        <ListItem>{renderBoxStyleDropdown()}</ListItem>
-        <ListItem>{renderPostProcessDropdown()}</ListItem>
-      </Stack>
+      <Box display="flex" flexDirection="row">
+        <Stack mt={2} mb={2} spacing={2}>
+          <ListItem>{renderBoxTypeDropdown()}</ListItem>
+          <ListItem>
+            <TextField
+              autoComplete="new-password"
+              label={intl.formatMessage({
+                id: "app.component.attribute.dimension",
+              })}
+              onChange={componentSpecOnChange}
+              name="dimension"
+              value={componentSpec.dimension}
+            />
+          </ListItem>
+          <ListItem>{renderBoxStyle()}</ListItem>
+        </Stack>
+        <Stack mt={2} mb={2} spacing={2}>
+          <ListItem>{renderPostProcessDropdown()}</ListItem>
+        </Stack>
+      </Box>
       <Box>
         <UploadDesign
           setProjectData={setProjectData}
@@ -426,6 +417,17 @@ const GuidedOutsideSpec = ({
           {intl.formatMessage({ id: "app.general.next" })}
         </Button>
       </Box>
+      <Dialog
+        open={boxStyleModalOpen}
+        onClose={() => setBoxStyleModalOpen(false)}
+        maxWidth="md"
+      >
+        <GuidedCreateBoxStyleSelection
+          productName={componentSpec.productName}
+          setComponentSpec={setComponentSpec}
+          setBoxStyleModalOpen={setBoxStyleModalOpen}
+        />
+      </Dialog>
     </>
   );
 };

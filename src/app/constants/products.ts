@@ -171,15 +171,151 @@ export const PRODUCT_NAME_CORRUGATE_TRAY: TranslatableAttribute = {
   value: "Corrugate Tray"
 }
 
-// export const BOX_STYLE_SHOULDER: TranslatableAttribute = {
-//   label: intl.formatMessage({id: "app.boxStyle.shoulder"}),
-//   value: "Shoulder Style"
-// }
+/** Box styles */
+export const BOX_STYLE_FOLDING_CARTON_RTE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.rte"}),
+  value: "Reverse Tuck End"
+}
 
-// export const BOX_STYLE_BOOK: TranslatableAttribute = {
-//   label: intl.formatMessage({id: "app.boxStyle.book"}),
-//   value: "Book Style"
-// }
+export const BOX_STYLE_FOLDING_CARTON_STE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.ste"}),
+  value: "Straight Tuck End"
+}
+
+export const BOX_STYLE_FOLDING_CARTON_SEB: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.sealEndBox"}),
+  value: "Seal End Box"
+}
+
+export const BOX_STYLE_FOLDING_CARTON_BOX_SLEEVE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.boxSleeve"}),
+  value: "Box Sleeve"
+}
+
+export const BOX_STYLE_FOLDING_CARTON_STE_HANG: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.steWithHang"}),
+  value: "Straight Tuck End with Hang Tab"
+}
+
+export const BOX_STYLE_FOLDING_CARTON_STE_SIDE_HANG: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.steWithSideHang"}),
+  value: "Straight Tuck End with Side Hang Tab"
+}
+
+export const BOX_STYLE_FOLDING_CARTON_BEER_TRAY: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.beerTray"}),
+  value: "Beer Tray with Lid"
+}
+
+export const BOX_STYLE_FOLDING_CARTON_RTE_FOLDER: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.rteFolder"}),
+  value: "Reverse Tuck End Folder Box"
+}
+
+export const BOX_STYLE_RIGID_BOX_PARTIAL_TELESCOPE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.partialTelescope"}),
+  value: "Partial Telescope"
+}
+
+export const BOX_STYLE_RIGID_BOX_SHOEBOX: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.shoebox"}),
+  value: "Classic Shoebox"
+}
+
+export const BOX_STYLE_RIGID_BOX_FULL_TELESCOPE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.fullTelescope"}),
+  value: "Full Telescope"
+}
+
+export const BOX_STYLE_RIGID_BOX_CIGAR: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.cigar"}),
+  value: "Cigar Box"
+}
+
+export const BOX_STYLE_RIGID_BOX_BOOK: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.book"}),
+  value: "Book Style"
+}
+
+export const BOX_STYLE_RIGID_BOX_BOOK_MAGNETIC: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.bookMagnetic"}),
+  value: "Book Style with Magnetic Closure"
+}
+
+export const BOX_STYLE_RIGID_BOX_NECK: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.neck"}),
+  value: "Neck Box"
+}
+
+export const BOX_STYLE_RIGID_BOX_NECK_HINGE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.neckHinge"}),
+  value: "Neck Box with Hinge Cover"
+}
+
+export const BOX_STYLE_RIGID_BOX_THREE_SIDE_HINGE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.threeSideHinge"}),
+  value: "Three Sided Hinge Cover"
+}
+
+export const BOX_STYLE_RIGID_BOX_BRIEF_JOINT: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.briefJoint"}),
+  value: "Briefcase Style with Joint Cover"
+}
+
+export const BOX_STYLE_RIGID_BOX_BRIEF_NECK: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.briefNeck"}),
+  value: "Briefcase Style with Neck Box"
+}
+
+export const BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.trayWithSleeve"}),
+  value: "Tray with Sleeve"
+}
+
+export const BOX_STYLE_CORRUGATE_RSC: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.rsc"}),
+  value: "Regular Slotted Container"
+}
+
+export const BOX_STYLE_CORRUGATE_SNAP_TOP_TUCK: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.snapTopTuck"}),
+  value: "Snack Lock (1-2-3 Bottom with Top Tuck)"
+}
+
+export const BOX_STYLE_CORRUGATE_SNAP_RSC: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.snapRSC"}),
+  value: "Snack Lock (1-2-3 Bottom with RSC Top)"
+}
+
+export const BOX_STYLE_CORRUGATE_FULL_TELESCOPE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.fsd"}),
+  value: "Full Telescope Design"
+}
+
+export const BOX_STYLE_CORRUGATE_ONE_PIECE_FOLDER: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.onePieceFolder"}),
+  value: "One Piece Folder"
+}
+
+export const BOX_STYLE_CORRUGATE_FIVE_PANEL: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.fivePanel"}),
+  value: "Five Panel Folder"
+}
+
+export const BOX_STYLE_CORRUGATE_REFT: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.reft"}),
+  value: "REFT"
+}
+
+export const BOX_STYLE_CORRUGATE_RETT: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.rett"}),
+  value: "RETT"
+}
+
+export const BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.boxStyle.customerTubeShape"}),
+  value: "Customer Tube Shape"
+}
 
 export const ALL_PRODUCT_NAMES = [
   PRODUCT_NAME_RIGID_BOX,
@@ -214,7 +350,6 @@ export const GUIDED_PROJECT_ALL_POST_PROCESS = [
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
-  POST_PROCESS_PRINTING
 ]
 
 export const GUIDED_PROJECT_PAPER_POST_PROCESS = [
@@ -255,10 +390,20 @@ export const RIGID_BOX_FINISHES = [
   FINISH_UNCOATED
 ]
 
-// export const RIGID_BOX_STYLES = [
-//   BOX_STYLE_SHOULDER,
-//   BOX_STYLE_BOOK
-// ]
+export const RIGID_BOX_BOX_STYLES = [
+  BOX_STYLE_RIGID_BOX_BOOK,
+  BOX_STYLE_RIGID_BOX_BOOK_MAGNETIC,
+  BOX_STYLE_RIGID_BOX_BRIEF_JOINT,
+  BOX_STYLE_RIGID_BOX_BRIEF_NECK,
+  BOX_STYLE_RIGID_BOX_CIGAR,
+  BOX_STYLE_RIGID_BOX_FULL_TELESCOPE,
+  BOX_STYLE_RIGID_BOX_NECK,
+  BOX_STYLE_RIGID_BOX_NECK_HINGE,
+  BOX_STYLE_RIGID_BOX_PARTIAL_TELESCOPE,
+  BOX_STYLE_RIGID_BOX_SHOEBOX,
+  BOX_STYLE_RIGID_BOX_THREE_SIDE_HINGE,
+  BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE
+]
 
 /** FOLDING CARTON DATA */
 export const FOLDING_CARTON_MATERIALS = [
@@ -287,6 +432,16 @@ export const FOLDING_CARTON_FINISHES = [
   FINISH_UNCOATED
 ]
 
+export const FOLDING_CARTON_BOX_STYLES = [
+  BOX_STYLE_FOLDING_CARTON_BEER_TRAY,
+  BOX_STYLE_FOLDING_CARTON_BOX_SLEEVE,
+  BOX_STYLE_FOLDING_CARTON_RTE,
+  BOX_STYLE_FOLDING_CARTON_RTE_FOLDER,
+  BOX_STYLE_FOLDING_CARTON_SEB,
+  BOX_STYLE_FOLDING_CARTON_STE,
+  BOX_STYLE_FOLDING_CARTON_STE_HANG,
+  BOX_STYLE_FOLDING_CARTON_STE_SIDE_HANG
+]
 /** SLEEVE DATA */
 
 export const SLEEVE_MATERIALS = [
@@ -343,6 +498,17 @@ export const CORRUGATE_BOX_PRINTING_METHODS = [
   PRINTING_METHOD_SILK_SCREEN
 ]
 
+export const CORRUGATE_BOX_BOX_STYLES = [
+  BOX_STYLE_CORRUGATE_FIVE_PANEL,
+  BOX_STYLE_CORRUGATE_FULL_TELESCOPE,
+  BOX_STYLE_CORRUGATE_ONE_PIECE_FOLDER,
+  BOX_STYLE_CORRUGATE_REFT,
+  BOX_STYLE_CORRUGATE_RETT,
+  BOX_STYLE_CORRUGATE_RSC,
+  BOX_STYLE_CORRUGATE_SNAP_RSC,
+  BOX_STYLE_CORRUGATE_SNAP_TOP_TUCK
+]
+
 /** MOLDED FIBER DATA */
 export const MOLDED_FIBER_MANUFACTURING_PROCESSES = [
   MANUFACTURING_PROCESS_DRY_PRESS,
@@ -389,6 +555,9 @@ export const PAPER_TUBE_FINISHES = [
   FINISH_UNCOATED
 ]
 
+export const PAPER_TUBE_BOX_STYLES = [
+  BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE
+]
 // Plastic Tray Data
 export const PLASTIC_TRAY_POST_PROCESS = [
   POST_PROCESS_EMBOSS,
@@ -465,6 +634,33 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [PRODUCT_NAME_PLASTIC_TRAY.value]: PRODUCT_NAME_PLASTIC_TRAY,
   [PRODUCT_NAME_CORRUGATE_TRAY.value]: PRODUCT_NAME_CORRUGATE_TRAY,
 
-  // [BOX_STYLE_SHOULDER.value]: BOX_STYLE_SHOULDER,
-  // [BOX_STYLE_BOOK.value]: BOX_STYLE_BOOK
+  [BOX_STYLE_CORRUGATE_FIVE_PANEL.value]: BOX_STYLE_CORRUGATE_FIVE_PANEL,
+  [BOX_STYLE_CORRUGATE_FULL_TELESCOPE.value]: BOX_STYLE_CORRUGATE_FULL_TELESCOPE,
+  [BOX_STYLE_CORRUGATE_ONE_PIECE_FOLDER.value]: BOX_STYLE_CORRUGATE_ONE_PIECE_FOLDER,
+  [BOX_STYLE_CORRUGATE_REFT.value]: BOX_STYLE_CORRUGATE_REFT,
+  [BOX_STYLE_CORRUGATE_RETT.value]: BOX_STYLE_CORRUGATE_RETT,
+  [BOX_STYLE_CORRUGATE_RSC.value]: BOX_STYLE_CORRUGATE_RSC,
+  [BOX_STYLE_CORRUGATE_SNAP_RSC.value]: BOX_STYLE_CORRUGATE_SNAP_RSC,
+  [BOX_STYLE_CORRUGATE_SNAP_TOP_TUCK.value]: BOX_STYLE_CORRUGATE_SNAP_TOP_TUCK,
+  [BOX_STYLE_FOLDING_CARTON_BOX_SLEEVE.value]: BOX_STYLE_FOLDING_CARTON_BOX_SLEEVE,
+  [BOX_STYLE_FOLDING_CARTON_RTE.value]: BOX_STYLE_FOLDING_CARTON_RTE,
+  [BOX_STYLE_FOLDING_CARTON_RTE_FOLDER.value]: BOX_STYLE_FOLDING_CARTON_RTE_FOLDER,
+  [BOX_STYLE_FOLDING_CARTON_SEB.value]: BOX_STYLE_FOLDING_CARTON_SEB,
+  [BOX_STYLE_FOLDING_CARTON_STE.value]: BOX_STYLE_FOLDING_CARTON_STE,
+  [BOX_STYLE_FOLDING_CARTON_BEER_TRAY.value]: BOX_STYLE_FOLDING_CARTON_BEER_TRAY,
+  [BOX_STYLE_FOLDING_CARTON_STE_HANG.value]: BOX_STYLE_FOLDING_CARTON_STE_HANG,
+  [BOX_STYLE_FOLDING_CARTON_STE_SIDE_HANG.value]: BOX_STYLE_FOLDING_CARTON_STE_SIDE_HANG,
+  [BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE.value]: BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE,
+  [BOX_STYLE_RIGID_BOX_BOOK.value]: BOX_STYLE_RIGID_BOX_BOOK,
+  [BOX_STYLE_RIGID_BOX_BOOK_MAGNETIC.value]: BOX_STYLE_RIGID_BOX_BOOK_MAGNETIC,
+  [BOX_STYLE_RIGID_BOX_BRIEF_JOINT.value]: BOX_STYLE_RIGID_BOX_BRIEF_JOINT,
+  [BOX_STYLE_RIGID_BOX_BRIEF_NECK.value]: BOX_STYLE_RIGID_BOX_BRIEF_NECK,
+  [BOX_STYLE_RIGID_BOX_CIGAR.value]: BOX_STYLE_RIGID_BOX_CIGAR,
+  [BOX_STYLE_RIGID_BOX_FULL_TELESCOPE.value]: BOX_STYLE_RIGID_BOX_FULL_TELESCOPE,
+  [BOX_STYLE_RIGID_BOX_NECK.value]: BOX_STYLE_RIGID_BOX_NECK,
+  [BOX_STYLE_RIGID_BOX_NECK_HINGE.value]: BOX_STYLE_RIGID_BOX_NECK_HINGE,
+  [BOX_STYLE_RIGID_BOX_PARTIAL_TELESCOPE.value]: BOX_STYLE_RIGID_BOX_PARTIAL_TELESCOPE,
+  [BOX_STYLE_RIGID_BOX_SHOEBOX.value]: BOX_STYLE_RIGID_BOX_SHOEBOX,
+  [BOX_STYLE_RIGID_BOX_THREE_SIDE_HINGE.value]: BOX_STYLE_RIGID_BOX_THREE_SIDE_HINGE,
+  [BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE.value]: BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE
 }
