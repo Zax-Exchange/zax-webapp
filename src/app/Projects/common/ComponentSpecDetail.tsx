@@ -22,7 +22,7 @@ export default function ComponentSpecDetail({
   spec: ProjectComponentSpec | CreateProjectComponentSpecInput;
 }) {
   const intl = useIntl();
-
+  console.log(spec);
   const {
     productName,
     boxStyle,

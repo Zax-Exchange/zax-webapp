@@ -12,6 +12,7 @@ import React from "react";
 import { useCallback, useState } from "react";
 import { CreateProjectComponentSpecInput } from "../../../../../generated/graphql";
 import {
+  CORRUGATE_BOX_BOX_STYLES,
   CORRUGATE_BOX_FINISHES,
   CORRUGATE_BOX_FLUTES,
   CORRUGATE_BOX_POST_PROCESSES,
@@ -420,6 +421,16 @@ const CorrugateBoxSubSection = ({
               name="dimension"
               value={componentSpec.dimension}
             />
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              CORRUGATE_BOX_BOX_STYLES,
+              "boxStyle",
+              intl.formatMessage({
+                id: "app.component.attribute.boxStyle",
+              }),
+              "corrugate-box-style"
+            )}
           </ListItem>
           <ListItem>
             <TextField

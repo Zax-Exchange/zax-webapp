@@ -30,6 +30,7 @@ const GET_CUSTOMER_PROJECT = gql`
           id
           productName
           dimension
+          boxStyle
           productName
           dimension
           thickness

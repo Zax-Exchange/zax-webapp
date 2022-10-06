@@ -5,6 +5,7 @@ import {
   Button,
   Dialog,
   IconButton,
+  List,
   ListItem,
   Stack,
   TextField,
@@ -58,10 +59,9 @@ const GuidedOutsideSpec = ({
     } as CreateProjectComponentSpecInput);
   const [boxStyleModalOpen, setBoxStyleModalOpen] = useState(false);
 
-  const [
-    shouldDisplayPostProcessDropdown,
-    setShouldDisplayPostProcessDropdown,
-  ] = useState(false);
+  const [selectedPostProcess, setSelectedPostProcess] = useState<string | null>(
+    null
+  );
 
   // inject existing comp data if there is any
   useEffect(() => {
@@ -175,34 +175,27 @@ const GuidedOutsideSpec = ({
   };
 
   const renderPostProcessDropdown = () => {
-    const getDefaultPostProcess = () => {
-      if (componentSpec.postProcess) {
-        const postProcess = componentSpec.postProcess[0];
-        return productValueToLabelMap[postProcess];
-      }
-      return null;
-    };
-    const renderPostProcess = () => {
-      return (
+    return (
+      <Box display="flex">
         <Autocomplete
           sx={{ width: 200 }}
           options={GUIDED_PROJECT_ALL_POST_PROCESS}
           autoHighlight
-          value={getDefaultPostProcess()}
-          // isOptionEqualToValue={(option, value) => option.label === value}
+          multiple
+          value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
+            return componentSpec.postProcess?.includes(p.value);
+          })}
+          isOptionEqualToValue={(option, value) => {
+            if (typeof value === "string") {
+              return option.value === value;
+            }
+            return option.value === value.value;
+          }}
           onChange={(e, v) => {
-            setComponentSpec((spec) => {
-              if (!v) {
-                return {
-                  ...spec,
-                  postProcess: undefined,
-                };
-              }
-              return {
-                ...spec,
-                postProcess: [v.value],
-              };
-            });
+            setComponentSpec((prev) => ({
+              ...prev,
+              postProcess: v.map((p) => p.value),
+            }));
           }}
           renderInput={(params) => (
             <TextField
@@ -223,42 +216,6 @@ const GuidedOutsideSpec = ({
             />
           )}
         />
-      );
-    };
-
-    if (
-      !shouldDisplayPostProcessDropdown &&
-      !componentSpec.postProcess?.length
-    ) {
-      return (
-        <Button
-          onClick={() => setShouldDisplayPostProcessDropdown(true)}
-          variant="text"
-        >
-          {intl.formatMessage({
-            id: "app.component.postProcess.add",
-          })}
-        </Button>
-      );
-    }
-
-    return (
-      <Box display="flex">
-        {renderPostProcess()}
-        <Button
-          onClick={() => {
-            setComponentSpec((spec) => ({
-              ...spec,
-              postProcess: undefined,
-            }));
-            setShouldDisplayPostProcessDropdown(false);
-          }}
-          variant="text"
-        >
-          {intl.formatMessage({
-            id: "app.general.cancel",
-          })}
-        </Button>
       </Box>
     );
   };
@@ -385,8 +342,6 @@ const GuidedOutsideSpec = ({
             />
           </ListItem>
           <ListItem>{renderBoxStyle()}</ListItem>
-        </Stack>
-        <Stack mt={2} mb={2} spacing={2}>
           <ListItem>{renderPostProcessDropdown()}</ListItem>
         </Stack>
       </Box>

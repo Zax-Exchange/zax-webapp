@@ -15,6 +15,7 @@ import {
   FOLDING_CARTON_MATERIALS,
   FOLDING_CARTON_MATERIAL_SOURCES,
   FOLDING_CARTON_POST_PROCESSES,
+  PAPER_TUBE_BOX_STYLES,
   PAPER_TUBE_FINISHES,
   PAPER_TUBE_MATERIALS,
   PAPER_TUBE_MATERIAL_SOURCES,
@@ -407,6 +408,16 @@ const PaperTubeSubSection = ({
                 id: "app.component.generalSpecs",
               })}
             </Typography>
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              PAPER_TUBE_BOX_STYLES,
+              "boxStyle",
+              intl.formatMessage({
+                id: "app.component.attribute.boxStyle",
+              }),
+              "paper-tube-box-style"
+            )}
           </ListItem>
           <ListItem>
             <TextField

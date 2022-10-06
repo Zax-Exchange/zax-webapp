@@ -13,10 +13,12 @@ import React from "react";
 import { useCallback, useState } from "react";
 import { CreateProjectComponentSpecInput } from "../../../../../generated/graphql";
 import {
+  FOLDING_CARTON_BOX_STYLES,
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING,
+  RIGID_BOX_BOX_STYLES,
   RIGID_BOX_FINISHES,
   RIGID_BOX_MATERIALS,
   RIGID_BOX_MATERIAL_SOURCES,
@@ -408,6 +410,15 @@ const RigidBoxSubSection = ({
                 id: "app.component.generalSpecs",
               })}
             </Typography>
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              RIGID_BOX_BOX_STYLES,
+              "boxStyle",
+              intl.formatMessage({
+                id: "app.component.attribute.boxStyle",
+              })
+            )}
           </ListItem>
           <ListItem>
             <TextField

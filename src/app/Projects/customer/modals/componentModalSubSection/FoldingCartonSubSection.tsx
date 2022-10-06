@@ -11,6 +11,7 @@ import React from "react";
 import { useCallback, useState } from "react";
 import { CreateProjectComponentSpecInput } from "../../../../../generated/graphql";
 import {
+  FOLDING_CARTON_BOX_STYLES,
   FOLDING_CARTON_FINISHES,
   FOLDING_CARTON_MATERIALS,
   FOLDING_CARTON_MATERIAL_SOURCES,
@@ -428,6 +429,16 @@ const FoldingCartonSubSection = ({
               name="thickness"
               value={componentSpec.thickness}
             />
+          </ListItem>
+          <ListItem>
+            {renderAutocompleteDropdown(
+              FOLDING_CARTON_BOX_STYLES,
+              "boxStyle",
+              intl.formatMessage({
+                id: "app.component.attribute.boxStyle",
+              }),
+              "folding-carton-box-style"
+            )}
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
