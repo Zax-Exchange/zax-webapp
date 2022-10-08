@@ -2,11 +2,14 @@ import {
   Box,
   Card,
   CardActionArea,
+  CardMedia,
   DialogContent,
   List,
   ListItem,
+  Stack,
+  Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { CreateProjectComponentSpecInput } from "../../../../../../generated/graphql";
 import {
@@ -19,6 +22,8 @@ import {
   PRODUCT_NAME_RIGID_BOX,
   RIGID_BOX_BOX_STYLES,
 } from "../../../../../constants/products";
+
+const cdn = process.env.REACT_APP_CLOUDFRONT_URL;
 
 const GuidedCreateBoxStyleSelection = ({
   productName,
@@ -54,7 +59,7 @@ const GuidedCreateBoxStyleSelection = ({
   return (
     <DialogContent>
       <Box>
-        <List>
+        <Stack display="flex">
           {getBoxStyles()?.map((boxStyle) => {
             return (
               <ListItem>
@@ -62,13 +67,21 @@ const GuidedCreateBoxStyleSelection = ({
                   <CardActionArea
                     onClick={() => selectBoxStyle(boxStyle.value)}
                   >
-                    {boxStyle.value}
+                    <CardMedia
+                      component="img"
+                      height="250"
+                      width="280"
+                      src={`${cdn}/${boxStyle.code}.png`}
+                    />
+                    <Typography variant="subtitle2" textAlign="center">
+                      {boxStyle.value}
+                    </Typography>
                   </CardActionArea>
                 </Card>
               </ListItem>
             );
           })}
-        </List>
+        </Stack>
       </Box>
     </DialogContent>
   );

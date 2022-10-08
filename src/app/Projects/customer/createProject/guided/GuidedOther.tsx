@@ -15,9 +15,12 @@ import {
   CreateProjectInput,
 } from "../../../../../generated/graphql";
 import {
+  BOOKLET_STYLES,
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
+  GUIDED_PROJECT_OTHER_PRODUCTS,
   productValueToLabelMap,
+  PRODUCT_NAME_BOOKLET,
   PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_PAPER_TRAY,
 } from "../../../../constants/products";
@@ -42,7 +45,7 @@ const GuidedOther = ({
     useState<CreateProjectComponentSpecInput>({
       productName: "",
       dimension: "",
-      color: "",
+      style: "",
       postProcess: [],
     } as CreateProjectComponentSpecInput);
 
@@ -76,8 +79,8 @@ const GuidedOther = ({
     }
   };
 
-  const renderInsideTrayDropdown = () => {
-    const getDefaultInsideTray = () => {
+  const renderProductsDropdown = () => {
+    const getDefaultProduct = () => {
       if (componentSpec.productName) {
         return productValueToLabelMap[componentSpec.productName];
       }
@@ -86,15 +89,17 @@ const GuidedOther = ({
     return (
       <Autocomplete
         sx={{ width: 200 }}
-        options={GUIDED_PROJECT_INSIDE_PRODUCTS}
+        options={GUIDED_PROJECT_OTHER_PRODUCTS}
         autoHighlight
-        value={getDefaultInsideTray()}
+        value={getDefaultProduct()}
         onChange={(e, v) => {
           setComponentSpec((spec) => {
             if (!v) {
               return {
-                ...spec,
                 productName: "",
+                dimension: "",
+                style: "",
+                postProcess: [],
               };
             }
             if (v.value === componentSpec.productName) {
@@ -111,7 +116,7 @@ const GuidedOther = ({
           <TextField
             {...params}
             label={intl.formatMessage({
-              id: "app.customer.createProject.guidedCreate.tray",
+              id: "app.customer.createProject.guidedCreate.otherPrintingAndPackaging",
             })}
             inputProps={{
               ...params.inputProps,
@@ -138,6 +143,7 @@ const GuidedOther = ({
     }
     return GUIDED_PROJECT_ALL_POST_PROCESS;
   };
+
   const renderPostProcessDropdown = () => {
     const getDefaultPostProcess = () => {
       if (componentSpec.postProcess) {
@@ -235,6 +241,65 @@ const GuidedOther = ({
     );
   };
 
+  // Only render if user selects booklet
+  const renderStyleDropdown = () => {
+    if (componentSpec.productName === PRODUCT_NAME_BOOKLET.value) {
+      const getBookletStyle = () => {
+        if (componentSpec.style) {
+          return productValueToLabelMap[componentSpec.style];
+        }
+        return null;
+      };
+      return (
+        <ListItem>
+          <Autocomplete
+            sx={{ width: 200 }}
+            options={BOOKLET_STYLES}
+            autoHighlight
+            value={getBookletStyle()}
+            onChange={(e, v) => {
+              setComponentSpec((spec) => {
+                if (!v) {
+                  return {
+                    ...spec,
+                    style: "",
+                  };
+                }
+                if (v.value === componentSpec.style) {
+                  return spec;
+                } else {
+                  return {
+                    ...spec,
+                    style: v.value,
+                  };
+                }
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={intl.formatMessage({
+                  id: "app.customer.createProject.guidedCreate.boxType",
+                })}
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: "new-password",
+                }}
+                InputLabelProps={{
+                  sx: {
+                    fontSize: 16,
+                    top: -7,
+                  },
+                }}
+              />
+            )}
+          />
+        </ListItem>
+      );
+    }
+    return null;
+  };
+
   const shouldDisableNextButton = () => {
     for (let key in componentSpec) {
       const attribute = key as keyof CreateProjectComponentSpecInput;
@@ -276,12 +341,13 @@ const GuidedOther = ({
       <Box>
         <Typography variant="h6" textAlign="left">
           {intl.formatMessage({
-            id: "app.customer.createProject.guidedCreate.insideSpec.title",
+            id: "app.customer.createProject.guidedCreate.other.title",
           })}
         </Typography>
       </Box>
       <Stack mt={2} mb={2} spacing={2}>
-        <ListItem>{renderInsideTrayDropdown()}</ListItem>
+        <ListItem>{renderProductsDropdown()}</ListItem>
+        {renderStyleDropdown()}
         <ListItem>
           <TextField
             autoComplete="new-password"

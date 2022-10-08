@@ -22,9 +22,10 @@ export default function ComponentSpecDetail({
   spec: ProjectComponentSpec | CreateProjectComponentSpecInput;
 }) {
   const intl = useIntl();
-  console.log(spec);
+
   const {
     productName,
+    style,
     boxStyle,
     dimension,
     thickness,
@@ -89,6 +90,20 @@ export default function ComponentSpecDetail({
         </TableCell>
         <TableCell>
           <Typography variant="caption">{boxStyle}</Typography>
+        </TableCell>
+      </TableRow>
+    );
+  }
+  if (style) {
+    res.push(
+      <TableRow>
+        <TableCell>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.component.attribute.style" })}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="caption">{style}</Typography>
         </TableCell>
       </TableRow>
     );

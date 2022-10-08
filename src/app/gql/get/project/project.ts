@@ -37,6 +37,7 @@ const GET_PROJECT_DETAIL = gql`
           id
           productName
           boxStyle
+          style
           dimension
           productName
           dimension

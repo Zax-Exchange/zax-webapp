@@ -9,8 +9,6 @@ import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
 import { useIntl } from "react-intl";
 
-// This key was created specifically for the demo in mui.com.
-// You need to create a new one for your application.
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
 
 function loadScript(src: string, position: HTMLElement | null, id: string) {

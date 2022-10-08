@@ -150,15 +150,16 @@ const GuidedOutsideSpec = ({
     );
   };
 
+  // TODO: change .value to .label
   const renderBoxStyle = () => {
     return (
-      <Box>
+      <Box display="flex" flexDirection="column">
         <Typography variant="subtitle2">
           {intl.formatMessage({ id: "app.component.attribute.boxStyle" })}
         </Typography>
-        <Typography>
+        <Typography variant="caption">
           {componentSpec.boxStyle
-            ? productValueToLabelMap[componentSpec.boxStyle].label
+            ? productValueToLabelMap[componentSpec.boxStyle].value
             : "Please select a boxy style"}
         </Typography>
         <Button

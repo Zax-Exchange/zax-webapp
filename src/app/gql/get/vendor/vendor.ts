@@ -49,6 +49,7 @@ const GET_VENDOR_PROJECT = gql`
           productName
           dimension
           boxStyle
+          style
           productName
           dimension
           thickness

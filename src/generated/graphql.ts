@@ -140,6 +140,7 @@ export type CreateProjectComponentSpecInput = {
   outsidePostProcess?: InputMaybe<Array<Scalars['String']>>;
   postProcess?: InputMaybe<Array<Scalars['String']>>;
   productName: Scalars['String'];
+  style?: InputMaybe<Scalars['String']>;
   thickness?: InputMaybe<Scalars['String']>;
 };
 
@@ -698,6 +699,7 @@ export type ProjectComponentSpec = {
   outsidePostProcess?: Maybe<Array<Scalars['String']>>;
   postProcess?: Maybe<Array<Scalars['String']>>;
   productName: Scalars['String'];
+  style?: Maybe<Scalars['String']>;
   thickness?: Maybe<Scalars['String']>;
 };
 
@@ -979,6 +981,7 @@ export type UpdateProjectComponentSpecInput = {
   outsidePostProcess?: InputMaybe<Array<Scalars['String']>>;
   postProcess?: InputMaybe<Array<Scalars['String']>>;
   productName: Scalars['String'];
+  style?: InputMaybe<Scalars['String']>;
   thickness?: InputMaybe<Scalars['String']>;
 };
 

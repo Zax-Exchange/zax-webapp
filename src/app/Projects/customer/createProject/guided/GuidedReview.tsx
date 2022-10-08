@@ -94,7 +94,7 @@ const GuidedReview = ({
   ] = useCreateProjectMutation();
 
   const [currentTab, setCurrentTab] = useState(0);
-
+  console.log(projectData, componentsData);
   useEffect(() => {
     if (createProjectError) {
       setSnackbar({
@@ -294,14 +294,15 @@ const GuidedReview = ({
               })}
             </Tabs>
           </Box>
-          {componentsData.map((comp, i) => {
-            if (!comp) return null;
-            return (
-              <TabPanel value={currentTab} index={i}>
-                <ComponentSpecDetail spec={comp.componentSpec} />
-              </TabPanel>
-            );
-          })}
+          {componentsData
+            .filter((comp) => !!comp)
+            .map((comp, i) => {
+              return (
+                <TabPanel value={currentTab} index={i}>
+                  <ComponentSpecDetail spec={comp!.componentSpec} />
+                </TabPanel>
+              );
+            })}
         </Box>
       </>
     );

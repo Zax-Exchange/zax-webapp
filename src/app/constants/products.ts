@@ -171,150 +171,210 @@ export const PRODUCT_NAME_CORRUGATE_TRAY: TranslatableAttribute = {
   value: "Corrugate Tray"
 }
 
+export const PRODUCT_NAME_BOOKLET: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.booklet"}),
+  value: "Booklet"
+}
+
+/** Booklet styles */
+export const BOOKLET_STYLE_SADDLE_STITCH: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.bookletStyle.saddleStitch"}),
+  value: "Saddle Stitch",
+  code: "saddle-stitch"
+}
+
+export const BOOKLET_STYLE_SEWN_BOUND: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.bookletStyle.sewnBound"}),
+  value: "Sewn Bound",
+  code: "sewn-bound"
+}
+
+export const BOOKLET_STYLE_SPIRAL_BOUND: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.bookletStyle.spiralBound"}),
+  value: "Spiral Bound",
+  code: "spiral-bound"
+}
+
+export const BOOKLET_STYLE_PERFECT_BOUND: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.bookletStyle.perfectBound"}),
+  value: "Perfect Bound",
+  code: "perfect-bound"
+}
+
+
 /** Box styles */
 export const BOX_STYLE_FOLDING_CARTON_RTE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.rte"}),
-  value: "Reverse Tuck End"
+  value: "Reverse Tuck End",
+  code: "rte"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_STE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.ste"}),
-  value: "Straight Tuck End"
+  value: "Straight Tuck End",
+  code: "ste"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_SEB: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.sealEndBox"}),
-  value: "Seal End Box"
+  value: "Seal End Box",
+  code: "seal-end"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_BOX_SLEEVE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.boxSleeve"}),
-  value: "Box Sleeve"
+  value: "Box Sleeve",
+  code: "box-sleeve"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_STE_HANG: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.steWithHang"}),
-  value: "Straight Tuck End with Hang Tab"
+  value: "Straight Tuck End with Hang Tab",
+  code: "ste-hang"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_STE_SIDE_HANG: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.steWithSideHang"}),
-  value: "Straight Tuck End with Side Hang Tab"
+  value: "Straight Tuck End with Side Hang Tab",
+  code: "ste-side-hang"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_BEER_TRAY: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.beerTray"}),
-  value: "Beer Tray with Lid"
+  value: "Beer Tray with Lid",
+  code: "beer-tray"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_RTE_FOLDER: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.rteFolder"}),
-  value: "Reverse Tuck End Folder Box"
+  value: "Reverse Tuck End Folder Box",
+  code: "rte-folder"
 }
 
 export const BOX_STYLE_RIGID_BOX_PARTIAL_TELESCOPE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.partialTelescope"}),
-  value: "Partial Telescope"
+  value: "Partial Telescope",
+  code: "p-telescope"
 }
 
 export const BOX_STYLE_RIGID_BOX_SHOEBOX: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.shoebox"}),
-  value: "Classic Shoebox"
+  value: "Classic Shoebox",
+  code: "shoebox"
 }
 
 export const BOX_STYLE_RIGID_BOX_FULL_TELESCOPE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.fullTelescope"}),
-  value: "Full Telescope"
+  value: "Full Telescope",
+  code: "f-telescope"
 }
 
 export const BOX_STYLE_RIGID_BOX_CIGAR: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.cigar"}),
-  value: "Cigar Box"
+  value: "Cigar Box",
+  code: "cigar"
 }
 
 export const BOX_STYLE_RIGID_BOX_BOOK: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.book"}),
-  value: "Book Style"
+  value: "Book Style",
+  code: "book"
 }
 
 export const BOX_STYLE_RIGID_BOX_BOOK_MAGNETIC: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.bookMagnetic"}),
-  value: "Book Style with Magnetic Closure"
+  value: "Book Style with Magnetic Closure",
+  code: "book-magnetic"
 }
 
 export const BOX_STYLE_RIGID_BOX_NECK: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.neck"}),
-  value: "Neck Box"
+  value: "Neck Box",
+  code: "neck"
 }
 
 export const BOX_STYLE_RIGID_BOX_NECK_HINGE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.neckHinge"}),
-  value: "Neck Box with Hinge Cover"
+  value: "Neck Box with Hinge Cover",
+  code: "neck-hinge"
 }
 
 export const BOX_STYLE_RIGID_BOX_THREE_SIDE_HINGE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.threeSideHinge"}),
-  value: "Three Sided Hinge Cover"
+  value: "Three Sided Hinge Cover",
+  code: "three-sided"
 }
 
 export const BOX_STYLE_RIGID_BOX_BRIEF_JOINT: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.briefJoint"}),
-  value: "Briefcase Style with Joint Cover"
+  value: "Briefcase Style with Joint Cover",
+  code: "briefcase-joint"
 }
 
 export const BOX_STYLE_RIGID_BOX_BRIEF_NECK: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.briefNeck"}),
-  value: "Briefcase Style with Neck Box"
+  value: "Briefcase Style with Neck Box",
+  code: "briefcase-neck"
 }
 
 export const BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.trayWithSleeve"}),
-  value: "Tray with Sleeve"
+  value: "Tray with Sleeve",
+  code: "tray-sleeve"
 }
 
 export const BOX_STYLE_CORRUGATE_RSC: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.rsc"}),
-  value: "Regular Slotted Container"
+  value: "Regular Slotted Container",
+  code: "slotted-container"
 }
 
 export const BOX_STYLE_CORRUGATE_SNAP_TOP_TUCK: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.snapTopTuck"}),
-  value: "Snack Lock (1-2-3 Bottom with Top Tuck)"
+  value: "Snap Lock (1-2-3 Bottom with Top Tuck)",
+  code: "snap-tuck"
 }
 
 export const BOX_STYLE_CORRUGATE_SNAP_RSC: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.snapRSC"}),
-  value: "Snack Lock (1-2-3 Bottom with RSC Top)"
+  value: "Snap Lock (1-2-3 Bottom with RSC Top)",
+  code: "snap-rsc"
 }
 
 export const BOX_STYLE_CORRUGATE_FULL_TELESCOPE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.fsd"}),
-  value: "Full Telescope Design"
+  value: "Full Telescope Design",
+  code: "fsd"
 }
 
 export const BOX_STYLE_CORRUGATE_ONE_PIECE_FOLDER: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.onePieceFolder"}),
-  value: "One Piece Folder"
+  value: "One Piece Folder",
+  code: "opf"
 }
 
 export const BOX_STYLE_CORRUGATE_FIVE_PANEL: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.fivePanel"}),
-  value: "Five Panel Folder"
+  value: "Five Panel Folder",
+  code: "fpf"
 }
 
 export const BOX_STYLE_CORRUGATE_REFT: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.reft"}),
-  value: "REFT"
+  value: "REFT",
+  code: "reft"
 }
 
 export const BOX_STYLE_CORRUGATE_RETT: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.boxStyle.rett"}),
-  value: "RETT"
+  value: "RETT",
+  code: "rett"
 }
 
 export const BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.customerTubeShape"}),
-  value: "Customer Tube Shape"
+  label: intl.formatMessage({id: "app.boxStyle.customTubeShape"}),
+  value: "Custom Tube Shape",
+  code: "custom-tube"
 }
 
 export const ALL_PRODUCT_NAMES = [
@@ -346,6 +406,11 @@ export const GUIDED_PROJECT_INSIDE_PRODUCTS = [
   PRODUCT_NAME_CORRUGATE_TRAY,
 ]
 
+export const GUIDED_PROJECT_OTHER_PRODUCTS = [
+  PRODUCT_NAME_BOOKLET,
+  PRODUCT_NAME_STICKER
+]
+
 export const GUIDED_PROJECT_ALL_POST_PROCESS = [
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
@@ -361,6 +426,14 @@ export const GUIDED_PROJECT_FINISH = [
   FINISH_GLOSS,
   FINISH_MATTE,
   FINISH_UNCOATED
+]
+
+/** BOOKLET DATA */
+export const BOOKLET_STYLES = [
+  BOOKLET_STYLE_PERFECT_BOUND,
+  BOOKLET_STYLE_SADDLE_STITCH,
+  BOOKLET_STYLE_SEWN_BOUND,
+  BOOKLET_STYLE_SPIRAL_BOUND
 ]
 
 /** RIGID BOX DATA */
@@ -633,6 +706,8 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [PRODUCT_NAME_PAPER_TRAY.value]: PRODUCT_NAME_PAPER_TRAY,
   [PRODUCT_NAME_PLASTIC_TRAY.value]: PRODUCT_NAME_PLASTIC_TRAY,
   [PRODUCT_NAME_CORRUGATE_TRAY.value]: PRODUCT_NAME_CORRUGATE_TRAY,
+  [PRODUCT_NAME_BOOKLET.value]: PRODUCT_NAME_BOOKLET,
+
 
   [BOX_STYLE_CORRUGATE_FIVE_PANEL.value]: BOX_STYLE_CORRUGATE_FIVE_PANEL,
   [BOX_STYLE_CORRUGATE_FULL_TELESCOPE.value]: BOX_STYLE_CORRUGATE_FULL_TELESCOPE,
@@ -662,5 +737,10 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [BOX_STYLE_RIGID_BOX_PARTIAL_TELESCOPE.value]: BOX_STYLE_RIGID_BOX_PARTIAL_TELESCOPE,
   [BOX_STYLE_RIGID_BOX_SHOEBOX.value]: BOX_STYLE_RIGID_BOX_SHOEBOX,
   [BOX_STYLE_RIGID_BOX_THREE_SIDE_HINGE.value]: BOX_STYLE_RIGID_BOX_THREE_SIDE_HINGE,
-  [BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE.value]: BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE
+  [BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE.value]: BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE,
+
+  [BOOKLET_STYLE_PERFECT_BOUND.value]: BOOKLET_STYLE_PERFECT_BOUND,
+  [BOOKLET_STYLE_SADDLE_STITCH.value]: BOOKLET_STYLE_SADDLE_STITCH,
+  [BOOKLET_STYLE_SEWN_BOUND.value]: BOOKLET_STYLE_SEWN_BOUND,
+  [BOOKLET_STYLE_SPIRAL_BOUND.value]: BOOKLET_STYLE_SPIRAL_BOUND
 }
