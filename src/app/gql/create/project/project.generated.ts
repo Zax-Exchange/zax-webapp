@@ -23,7 +23,7 @@ export type UploadProjectDesignMutationVariables = Types.Exact<{
 }>;
 
 
-export type UploadProjectDesignMutation = { __typename?: 'Mutation', uploadProjectDesign: { __typename?: 'UploadProjectDesignResponse', filename: string, designId: string, url: string } };
+export type UploadProjectDesignMutation = { __typename?: 'Mutation', uploadProjectDesign: { __typename?: 'ProjectDesign', filename: string, designId: string, url: string } };
 
 
 export const CreateProjectBidDocument = gql`

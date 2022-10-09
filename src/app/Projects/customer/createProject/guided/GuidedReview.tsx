@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import {
   CreateProjectComponentInput,
   CreateProjectInput,
-  UploadProjectDesignResponse,
+  ProjectDesign,
 } from "../../../../../generated/graphql";
 import { CUSTOMER_ROUTES } from "../../../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
@@ -75,16 +75,17 @@ const GuidedReview = ({
   setActiveStep,
   componentsData,
   projectData,
-  componentsDesign,
+  componentsDesigns,
   activeStep,
 }: {
   setActiveStep: Dispatch<SetStateAction<number>>;
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
   componentsData: (CreateProjectComponentInput | null)[];
   projectData: CreateProjectInput;
-  componentsDesign: (UploadProjectDesignResponse | null)[];
+  componentsDesigns: (ProjectDesign[] | null)[];
   activeStep: number;
 }) => {
+  console.log(componentsData);
   const intl = useIntl();
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
@@ -94,7 +95,7 @@ const GuidedReview = ({
   ] = useCreateProjectMutation();
 
   const [currentTab, setCurrentTab] = useState(0);
-  console.log(projectData, componentsData);
+
   useEffect(() => {
     if (createProjectError) {
       setSnackbar({
@@ -122,16 +123,6 @@ const GuidedReview = ({
     ) as CreateProjectComponentInput[];
   };
 
-  const extractProjectDesigns = () => {
-    return Object.values(componentsDesign)
-      .filter((design) => !!design)
-      .map((design) => design!.designId);
-  };
-
-  const hasDesigns = () => {
-    return componentsDesign.some((d) => !!d);
-  };
-
   const createProject = async () => {
     try {
       await createProjectMutation({
@@ -140,7 +131,6 @@ const GuidedReview = ({
             ...projectData,
             totalWeight: projectData.totalWeight + " g",
             components: extractComponentsData(),
-            designIds: extractProjectDesigns(),
           },
         },
       });
@@ -235,25 +225,6 @@ const GuidedReview = ({
               })}
             </ProjectDetailListItem>
 
-            {hasDesigns() && (
-              <ProjectDetailListItem>
-                {renderTypography(
-                  intl.formatMessage({
-                    id: "app.project.attribute.design",
-                  }),
-                  { variant: "subtitle2" }
-                )}
-                {componentsDesign.map((design) => {
-                  if (!design) return null;
-                  return (
-                    <Link href={design.url} target="_blank" rel="noopener">
-                      {design.filename}
-                    </Link>
-                  );
-                })}
-              </ProjectDetailListItem>
-            )}
-
             <ProjectDetailListItem>
               {renderTypography(
                 intl.formatMessage({ id: "app.project.attribute.targetPrice" }),
@@ -299,7 +270,10 @@ const GuidedReview = ({
             .map((comp, i) => {
               return (
                 <TabPanel value={currentTab} index={i}>
-                  <ComponentSpecDetail spec={comp!.componentSpec} />
+                  <ComponentSpecDetail
+                    spec={comp!.componentSpec}
+                    designs={componentsDesigns[i] as ProjectDesign[]}
+                  />
                 </TabPanel>
               );
             })}

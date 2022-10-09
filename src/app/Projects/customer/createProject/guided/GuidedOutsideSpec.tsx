@@ -5,6 +5,7 @@ import {
   Button,
   Dialog,
   IconButton,
+  Link,
   List,
   ListItem,
   Stack,
@@ -17,7 +18,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
-  UploadProjectDesignResponse,
+  ProjectDesign,
 } from "../../../../../generated/graphql";
 import { TranslatableAttribute } from "../../../../../type/common";
 import {
@@ -29,24 +30,24 @@ import {
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
-import { GuidedComponentConfigViews } from "./GuidedCreateProject";
+import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedCreateBoxStyleSelection from "./modals/GuidedCreateBoxStyleSelection";
 
 const GuidedOutsideSpec = ({
   setComponentData,
   setProjectData,
-  setComponentDesign,
+  setComponentDesigns,
   setActiveStep,
   componentData,
-  componentDesign,
+  componentDesigns,
   activeStep,
 }: {
-  setComponentData: (data: CreateProjectComponentInput | null) => void;
+  setComponentData: GuidedCreateSetComponentData;
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
-  setComponentDesign: (data: UploadProjectDesignResponse | null) => void;
+  setComponentDesigns: (data: ProjectDesign | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
   componentData: CreateProjectComponentInput | null;
-  componentDesign: UploadProjectDesignResponse | null;
+  componentDesigns: ProjectDesign[] | null;
   activeStep: number;
 }) => {
   const intl = useIntl();
@@ -65,7 +66,9 @@ const GuidedOutsideSpec = ({
 
   // inject existing comp data if there is any
   useEffect(() => {
-    if (componentData) {
+    // checking for componentSpec too here since user could upload files first and componentData
+    // only has designIds array
+    if (componentData && componentData.componentSpec) {
       setComponentSpec(componentData.componentSpec);
     }
   }, [componentData]);
@@ -289,17 +292,22 @@ const GuidedOutsideSpec = ({
     return false;
   };
 
-  // Go to next page and add/update current component to projectData
-  const handleNext = () => {
+  const saveComponentData = () => {
     const compData = {
       name: "Outer Box",
+      designIds: componentDesigns?.map((d) => d.designId),
       componentSpec,
-    };
+    } as CreateProjectComponentInput;
     setComponentData(compData);
+  };
+  // Go to next page and add/update current component to projectData
+  const handleNext = () => {
+    saveComponentData();
     setActiveStep((step) => step + 1);
   };
 
   const handleBack = () => {
+    saveComponentData();
     setActiveStep((step) => step - 1);
   };
 
@@ -307,15 +315,19 @@ const GuidedOutsideSpec = ({
   const skipToNext = () => {
     setComponentData(null);
     setActiveStep((step) => step + 1);
-    if (componentDesign) {
-      deleteProjectDesign({
-        variables: {
-          data: {
-            designId: componentDesign.designId,
-          },
-        },
-      });
-      setComponentDesign(null);
+    if (componentDesigns && componentDesigns.length) {
+      Promise.all(
+        componentDesigns.map((design) => {
+          return deleteProjectDesign({
+            variables: {
+              data: {
+                designId: design.designId,
+              },
+            },
+          });
+        })
+      );
+      setComponentDesigns(null);
     }
   };
 
@@ -344,13 +356,28 @@ const GuidedOutsideSpec = ({
           </ListItem>
           <ListItem>{renderBoxStyle()}</ListItem>
           <ListItem>{renderPostProcessDropdown()}</ListItem>
+          {!!componentDesigns && (
+            <ListItem>
+              <Typography variant="subtitle2">
+                {intl.formatMessage({
+                  id: "app.component.attribute.designs",
+                })}
+              </Typography>
+              {componentDesigns.map((file) => {
+                return (
+                  <Link href={file.url} target="_blank" rel="noopener">
+                    {file.filename}
+                  </Link>
+                );
+              })}
+            </ListItem>
+          )}
         </Stack>
       </Box>
       <Box>
         <UploadDesign
-          setProjectData={setProjectData}
-          existingDesigns={componentDesign ? [componentDesign] : undefined}
-          parentSetDesign={setComponentDesign}
+          setComponentData={setComponentData}
+          parentSetDesign={setComponentDesigns}
         />
         <Button
           variant="text"

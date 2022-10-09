@@ -702,7 +702,7 @@ const CustomerProjectDetail = () => {
                 onClick={() => setProjectEditMode(true)}
               >
                 <Tooltip
-                  title={intl.formatMessage({ id: "app.general.action.edit" })}
+                  title={intl.formatMessage({ id: "app.general.edit" })}
                   placement="left"
                 >
                   <EditIcon color="action" />
@@ -780,23 +780,6 @@ const CustomerProjectDetail = () => {
                   </ProjectDetailListItem>
                 </List>
                 <List>
-                  {projectData.design && (
-                    <ProjectDetailListItem>
-                      {renderAttributeTitle(
-                        intl.formatMessage({
-                          id: "app.project.attribute.design",
-                        })
-                      )}
-
-                      {projectData.design.map((file) => {
-                        return (
-                          <Link href={file.url} target="_blank" rel="noopener">
-                            {file.fileName}
-                          </Link>
-                        );
-                      })}
-                    </ProjectDetailListItem>
-                  )}
                   <ProjectDetailListItem>
                     {renderAttributeTitle(
                       intl.formatMessage({
@@ -865,7 +848,10 @@ const CustomerProjectDetail = () => {
               {projectData.components.map((comp, i) => {
                 return (
                   <TabPanel value={currentTab} index={i} key={i}>
-                    <ComponentSpecDetail spec={comp.componentSpec} />
+                    <ComponentSpecDetail
+                      spec={comp.componentSpec}
+                      designs={comp.designs}
+                    />
                   </TabPanel>
                 );
               })}

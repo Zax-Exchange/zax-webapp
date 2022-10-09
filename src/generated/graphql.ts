@@ -11,6 +11,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  JSON: any;
   Upload: any;
 };
 
@@ -116,6 +117,7 @@ export type CreateProjectBidInput = {
 
 export type CreateProjectComponentInput = {
   componentSpec: CreateProjectComponentSpecInput;
+  designIds?: InputMaybe<Array<Scalars['String']>>;
   name: Scalars['String'];
 };
 
@@ -151,7 +153,6 @@ export type CreateProjectInput = {
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
-  designIds: Array<Scalars['String']>;
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;
   targetPrice: Scalars['Int'];
@@ -230,7 +231,6 @@ export type CustomerProject = {
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
-  design?: Maybe<Array<ProjectDesign>>;
   id: Scalars['String'];
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;
@@ -340,6 +340,14 @@ export type GetProjectBidUsersInput = {
   projectBidId: Scalars['String'];
 };
 
+export type GetProjectChangelogInput = {
+  projectId: Scalars['String'];
+};
+
+export type GetProjectComponentChangelogInput = {
+  projectComponentId: Scalars['String'];
+};
+
 export type GetProjectDetailInput = {
   projectId: Scalars['String'];
 };
@@ -407,13 +415,14 @@ export type Mutation = {
   updateCustomerInfo: Scalars['Boolean'];
   updateProject?: Maybe<Scalars['Boolean']>;
   updateProjectBidPermissions: Scalars['Boolean'];
+  updateProjectComponent?: Maybe<Scalars['Boolean']>;
   updateProjectPermissions: Scalars['Boolean'];
   updateStripeSubscription: Scalars['Boolean'];
   updateUserInfo: Scalars['Boolean'];
   updateUserPassword: Scalars['Boolean'];
   updateUserPower: Scalars['Boolean'];
   updateVendorInfo: Scalars['Boolean'];
-  uploadProjectDesign: UploadProjectDesignResponse;
+  uploadProjectDesign: ProjectDesign;
 };
 
 
@@ -528,6 +537,11 @@ export type MutationUpdateProjectBidPermissionsArgs = {
 };
 
 
+export type MutationUpdateProjectComponentArgs = {
+  data?: InputMaybe<UpdateProjectComponentInput>;
+};
+
+
 export type MutationUpdateProjectPermissionsArgs = {
   data: UpdateProjectPermissionsInput;
 };
@@ -635,7 +649,6 @@ export type Project = {
   createdAt: Scalars['String'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
-  design?: Maybe<Array<ProjectDesign>>;
   id: Scalars['String'];
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;
@@ -668,12 +681,35 @@ export type ProjectBidComponent = {
   samplingFee: Scalars['Int'];
 };
 
+export type ProjectChangelog = {
+  __typename?: 'ProjectChangelog';
+  changedAt: Scalars['String'];
+  changes: Array<ProjectPropertyChange>;
+  projectId: Scalars['String'];
+};
+
 export type ProjectComponent = {
   __typename?: 'ProjectComponent';
   componentSpec: ProjectComponentSpec;
+  designs?: Maybe<Array<ProjectDesign>>;
   id: Scalars['String'];
   name: Scalars['String'];
   projectId: Scalars['String'];
+};
+
+export type ProjectComponentChangelog = {
+  __typename?: 'ProjectComponentChangelog';
+  changedAt: Scalars['String'];
+  changes: Array<ProjectComponentPropertyChange>;
+  projectComponentId: Scalars['String'];
+};
+
+export type ProjectComponentPropertyChange = {
+  __typename?: 'ProjectComponentPropertyChange';
+  newValue?: Maybe<Scalars['JSON']>;
+  oldValue?: Maybe<Scalars['JSON']>;
+  projectComponentSpecId?: Maybe<Scalars['String']>;
+  propertyName: Scalars['String'];
 };
 
 export type ProjectComponentSpec = {
@@ -710,7 +746,8 @@ export enum ProjectCreationMode {
 
 export type ProjectDesign = {
   __typename?: 'ProjectDesign';
-  fileName: Scalars['String'];
+  designId: Scalars['String'];
+  filename: Scalars['String'];
   url: Scalars['String'];
 };
 
@@ -734,6 +771,13 @@ export enum ProjectPermission {
   Owner = 'OWNER',
   Viewer = 'VIEWER'
 }
+
+export type ProjectPropertyChange = {
+  __typename?: 'ProjectPropertyChange';
+  newValue?: Maybe<Scalars['JSON']>;
+  oldValue?: Maybe<Scalars['JSON']>;
+  propertyName: Scalars['String'];
+};
 
 export enum ProjectStatus {
   Closed = 'CLOSED',
@@ -768,6 +812,8 @@ export type Query = {
   getPlan: Plan;
   getProjectBid?: Maybe<ProjectBid>;
   getProjectBidUsers: Array<UserProjectPermission>;
+  getProjectChangelog: Array<ProjectChangelog>;
+  getProjectComponentChangelog: Array<ProjectComponentChangelog>;
   getProjectDetail?: Maybe<Project>;
   getProjectUsers: Array<UserProjectPermission>;
   getUser: User;
@@ -837,6 +883,16 @@ export type QueryGetProjectBidArgs = {
 
 export type QueryGetProjectBidUsersArgs = {
   data: GetProjectBidUsersInput;
+};
+
+
+export type QueryGetProjectChangelogArgs = {
+  data: GetProjectChangelogInput;
+};
+
+
+export type QueryGetProjectComponentChangelogArgs = {
+  data: GetProjectComponentChangelogInput;
 };
 
 
@@ -1042,13 +1098,6 @@ export type UpdateVendorInfoInput = {
   products: Array<Scalars['String']>;
 };
 
-export type UploadProjectDesignResponse = {
-  __typename?: 'UploadProjectDesignResponse';
-  designId: Scalars['String'];
-  filename: Scalars['String'];
-  url: Scalars['String'];
-};
-
 export type User = {
   __typename?: 'User';
   companyId: Scalars['String'];
@@ -1115,7 +1164,6 @@ export type VendorProject = {
   createdAt: Scalars['String'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
-  design?: Maybe<Array<ProjectDesign>>;
   id: Scalars['String'];
   name: Scalars['String'];
   orderQuantities: Array<Scalars['Int']>;

@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Link,
   ListItem,
   Stack,
   TextField,
@@ -13,7 +14,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
-  UploadProjectDesignResponse,
+  ProjectDesign,
 } from "../../../../../generated/graphql";
 import {
   GUIDED_PROJECT_ALL_POST_PROCESS,
@@ -26,22 +27,23 @@ import {
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
+import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 
 const GuidedInsideSpec = ({
   setComponentData,
   setProjectData,
-  setComponentDesign,
+  setComponentDesigns,
   setActiveStep,
   componentData,
-  componentDesign,
+  componentDesigns,
   activeStep,
 }: {
-  setComponentData: (data: CreateProjectComponentInput | null) => void;
+  setComponentData: GuidedCreateSetComponentData;
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
-  setComponentDesign: (data: UploadProjectDesignResponse | null) => void;
+  setComponentDesigns: (data: ProjectDesign | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
   componentData: CreateProjectComponentInput | null;
-  componentDesign: UploadProjectDesignResponse | null;
+  componentDesigns: ProjectDesign[] | null;
   activeStep: number;
 }) => {
   const intl = useIntl();
@@ -53,7 +55,7 @@ const GuidedInsideSpec = ({
       postProcess: [],
     } as CreateProjectComponentSpecInput);
   useEffect(() => {
-    if (componentData) {
+    if (componentData && componentData.componentSpec) {
       setComponentSpec(componentData.componentSpec);
     }
   }, [componentData]);
@@ -156,7 +158,7 @@ const GuidedInsideSpec = ({
       <Box display="flex">
         <Autocomplete
           sx={{ width: 200 }}
-          options={GUIDED_PROJECT_PAPER_POST_PROCESS}
+          options={GUIDED_PROJECT_ALL_POST_PROCESS}
           autoHighlight
           multiple
           value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
@@ -214,17 +216,22 @@ const GuidedInsideSpec = ({
     return false;
   };
 
-  const handleNext = () => {
+  const saveComponentData = () => {
     const compData = {
       name: "Inner Tray",
+      designIds: componentDesigns?.map((d) => d.designId),
       componentSpec,
-    };
-
+    } as CreateProjectComponentInput;
     setComponentData(compData);
+  };
+
+  const handleNext = () => {
+    saveComponentData();
     setActiveStep((step) => step + 1);
   };
 
   const handleBack = () => {
+    saveComponentData();
     setActiveStep((step) => step - 1);
   };
 
@@ -232,15 +239,19 @@ const GuidedInsideSpec = ({
   const skipToNext = () => {
     setComponentData(null);
     setActiveStep((step) => step + 1);
-    if (componentDesign) {
-      deleteProjectDesign({
-        variables: {
-          data: {
-            designId: componentDesign.designId,
-          },
-        },
-      });
-      setComponentDesign(null);
+    if (componentDesigns) {
+      Promise.all(
+        componentDesigns.map((design) => {
+          return deleteProjectDesign({
+            variables: {
+              data: {
+                designId: design.designId,
+              },
+            },
+          });
+        })
+      );
+      setComponentDesigns(null);
     }
   };
 
@@ -278,12 +289,27 @@ const GuidedInsideSpec = ({
           />
         </ListItem>
         <ListItem>{renderPostProcessDropdown()}</ListItem>
+        {!!componentDesigns && (
+          <ListItem>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.designs",
+              })}
+            </Typography>
+            {componentDesigns.map((file) => {
+              return (
+                <Link href={file.url} target="_blank" rel="noopener">
+                  {file.filename}
+                </Link>
+              );
+            })}
+          </ListItem>
+        )}
       </Stack>
       <Box>
         <UploadDesign
-          setProjectData={setProjectData}
-          existingDesigns={componentDesign ? [componentDesign] : undefined}
-          parentSetDesign={setComponentDesign}
+          setComponentData={setComponentData}
+          parentSetDesign={setComponentDesigns}
         />
         <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
           {intl.formatMessage({ id: "app.general.back" })}

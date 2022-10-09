@@ -525,7 +525,6 @@ const SearchProjectDetail = () => {
       deliveryAddress,
       targetPrice,
       orderQuantities,
-      design,
       status,
       components,
     } = getProjectDetailData.getProjectDetail as Project;
@@ -607,25 +606,6 @@ const SearchProjectDetail = () => {
                     {targetPrice}
                   </Typography>
                 </ProjectListItem>
-
-                {design && (
-                  <ProjectListItem>
-                    <Typography variant="subtitle2">
-                      {intl.formatMessage({
-                        id: "app.project.attribute.design",
-                      })}
-                    </Typography>
-                    <Typography variant="caption" component="p">
-                      {design.map((file) => {
-                        return (
-                          <Link href={file.url} target="_blank" rel="noopener">
-                            {file.fileName}
-                          </Link>
-                        );
-                      })}
-                    </Typography>
-                  </ProjectListItem>
-                )}
               </Stack>
             </Paper>
 

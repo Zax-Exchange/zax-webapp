@@ -24,15 +24,16 @@ const GET_PROJECT_DETAIL = gql`
       deliveryAddress
       targetPrice
       orderQuantities
-      design {
-        fileName
-        url
-      }
       status
       components {
         id
         projectId
         name
+        designs {
+          designId
+          filename
+          url
+        }
         componentSpec {
           id
           productName

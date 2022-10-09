@@ -5,6 +5,7 @@ import {
   CircularProgress,
   IconButton,
   Link,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { gql, useMutation } from "@apollo/client";
@@ -15,11 +16,13 @@ import {
   useUploadProjectDesignMutation,
 } from "../../gql/create/project/project.generated";
 import {
+  CreateProjectComponentInput,
   CreateProjectInput,
-  UploadProjectDesignResponse,
+  ProjectDesign,
 } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
+import { GuidedCreateSetComponentData } from "./createProject/guided/GuidedCreateProject";
 
 export type File = {
   uri: string;
@@ -30,17 +33,16 @@ export type File = {
 };
 type Target = {
   files: FileList | null;
+  value: any;
 };
 export default function UploadDesign({
-  setProjectData,
-  existingDesigns,
+  setComponentData,
   parentSetDesign,
-  allowMultiple = false,
 }: {
-  setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
-  existingDesigns?: UploadProjectDesignResponse[];
-  parentSetDesign?: (data: UploadProjectDesignResponse | null) => void;
-  allowMultiple?: boolean;
+  setComponentData:
+    | GuidedCreateSetComponentData
+    | React.Dispatch<React.SetStateAction<CreateProjectComponentInput>>;
+  parentSetDesign: (data: ProjectDesign | null) => void;
 }) {
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
@@ -50,15 +52,6 @@ export default function UploadDesign({
     { error: deleteProjectDesignError, data: deleteProjectDesignData },
   ] = useDeleteProjectDesignMutation();
 
-  const [uploadedFiles, setUploadedFiles] = useState<
-    UploadProjectDesignResponse[]
-  >([]);
-
-  useEffect(() => {
-    if (existingDesigns) {
-      setUploadedFiles(existingDesigns);
-    }
-  }, [existingDesigns]);
   useEffect(() => {
     // server error
     if (error) {
@@ -84,38 +77,33 @@ export default function UploadDesign({
     if (!target.files) return;
 
     const file = target.files[0];
+    target.value = "";
 
     if (file.type === "application/pdf") {
       mutate({
         variables: { file },
         fetchPolicy: "no-cache",
       }).then((data) => {
-        setProjectData((projectData) => ({
-          ...projectData,
-          designIds: [
-            ...projectData.designIds,
-            data.data!.uploadProjectDesign!.designId,
-          ],
-        }));
-        if (parentSetDesign) {
-          parentSetDesign(data.data!.uploadProjectDesign);
-        }
-
-        if (allowMultiple) {
-          setUploadedFiles([...uploadedFiles, data.data!.uploadProjectDesign]);
-        } else {
-          // If there is already an existing uploaded file
-          if (uploadedFiles.length) {
-            // do this in the background
-            deleteProjectDesign({
-              variables: {
-                data: {
-                  designId: uploadedFiles[0].designId,
-                },
-              },
-            });
+        (setComponentData as GuidedCreateSetComponentData)((prev) => {
+          let prevDesigns: string[] = [];
+          if (prev && prev.designIds) {
+            prevDesigns = prev.designIds;
           }
-          setUploadedFiles([data.data!.uploadProjectDesign]);
+          return {
+            ...prev,
+            designIds: [
+              ...prevDesigns,
+              data.data!.uploadProjectDesign!.designId,
+            ],
+          } as CreateProjectComponentInput;
+        });
+
+        if (parentSetDesign) {
+          console.log(
+            "parent set design called with: ",
+            data.data!.uploadProjectDesign
+          );
+          parentSetDesign(data.data!.uploadProjectDesign);
         }
       });
     } else {
@@ -130,32 +118,21 @@ export default function UploadDesign({
     }
   };
 
-  const renderFileDetail = () => {
-    return (
-      <Box>
-        {uploadedFiles.map((file) => {
-          return (
-            <Link href={file.url} target="_blank" rel="noopener">
-              {file.filename}
-            </Link>
-          );
-        })}
-      </Box>
-    );
-  };
   return (
-    <>
-      {renderFileDetail()}
+    <Tooltip
+      placement="top"
+      arrow
+      title={intl.formatMessage({
+        id: "app.customer.createProject.uploadDesign",
+      })}
+    >
       <IconButton component="label" sx={{ borderRadius: 40 }} color="primary">
-        <input hidden type="file" onChange={onUpload} accept=".pdf" />
-        {loading && <CircularProgress />}
+        {!loading && (
+          <input hidden type="file" onChange={onUpload} accept=".pdf" />
+        )}
+        {loading && <CircularProgress size={24} />}
         {!loading && <CloudUploadIcon />}
-        <Typography>
-          {intl.formatMessage({
-            id: "app.customer.createProject.uploadDesign",
-          })}
-        </Typography>
       </IconButton>
-    </>
+    </Tooltip>
   );
 }

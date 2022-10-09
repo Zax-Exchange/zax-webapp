@@ -36,14 +36,15 @@ const GET_VENDOR_PROJECT = gql`
       targetPrice
       orderQuantities
       status
-      design {
-        fileName
-        url
-      }
       components {
         id
         projectId
         name
+        designs {
+          designId
+          filename
+          url
+        }
         componentSpec {
           id
           productName

@@ -1,4 +1,6 @@
 import {
+  Link,
+  List,
   ListItem,
   Stack,
   Table,
@@ -11,15 +13,20 @@ import {
 import React from "react";
 import { useIntl } from "react-intl";
 import {
+  CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
+  ProjectComponent,
   ProjectComponentSpec,
+  ProjectDesign,
 } from "../../../generated/graphql";
 import { productValueToLabelMap } from "../../constants/products";
 
 export default function ComponentSpecDetail({
   spec,
+  designs,
 }: {
   spec: ProjectComponentSpec | CreateProjectComponentSpecInput;
+  designs?: ProjectDesign[] | null | undefined;
 }) {
   const intl = useIntl();
 
@@ -50,6 +57,36 @@ export default function ComponentSpecDetail({
 
   const res: JSX.Element[] = [];
 
+  if (designs && designs.length) {
+    res.push(
+      <TableRow>
+        <TableCell>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.component.attribute.designs" })}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          {designs.map((design) => {
+            return (
+              <Link
+                href={design.url}
+                target="_blank"
+                rel="noopener"
+                sx={{
+                  ":first-child": {
+                    ml: 0,
+                  },
+                  ml: 1,
+                }}
+              >
+                {design.filename}
+              </Link>
+            );
+          })}
+        </TableCell>
+      </TableRow>
+    );
+  }
   if (productName) {
     res.push(
       <TableRow>

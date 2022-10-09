@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Link,
   ListItem,
   Stack,
   TextField,
@@ -13,6 +14,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
+  ProjectDesign,
 } from "../../../../../generated/graphql";
 import {
   BOOKLET_STYLES,
@@ -25,20 +27,25 @@ import {
   PRODUCT_NAME_PAPER_TRAY,
 } from "../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
+import UploadDesign from "../../UploadDesign";
+import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 
 const GuidedOther = ({
-  isRequired,
-  componentData,
   setComponentData,
+  setComponentDesigns,
   setActiveStep,
+  componentDesigns,
+  componentData,
+  isRequired,
   activeStep,
 }: {
-  // If there are no outerBox spec and insideTray spec added, this one is required
-  isRequired: boolean;
-  componentData: CreateProjectComponentInput | null;
-  setComponentData: (data: CreateProjectComponentInput | null) => void;
-  activeStep: number;
+  setComponentData: GuidedCreateSetComponentData;
+  setComponentDesigns: (data: ProjectDesign | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
+  componentDesigns: ProjectDesign[] | null;
+  componentData: CreateProjectComponentInput | null;
+  isRequired: boolean; // If there are no outerBox spec and insideTray spec added, this one is required
+  activeStep: number;
 }) => {
   const intl = useIntl();
   const [componentSpec, setComponentSpec] =
@@ -50,7 +57,7 @@ const GuidedOther = ({
     } as CreateProjectComponentSpecInput);
 
   useEffect(() => {
-    if (componentData) {
+    if (componentData && componentData.componentSpec) {
       setComponentSpec(componentData.componentSpec);
     }
   }, [componentData]);
@@ -316,17 +323,22 @@ const GuidedOther = ({
     return false;
   };
 
-  const handleNext = () => {
+  const saveComponentData = () => {
     const compData = {
-      name: "Other",
+      name: "Other Printing & Packaging",
+      designIds: componentDesigns?.map((d) => d.designId),
       componentSpec,
-    };
-
+    } as CreateProjectComponentInput;
     setComponentData(compData);
+  };
+
+  const handleNext = () => {
+    saveComponentData();
     setActiveStep((step) => step + 1);
   };
 
   const handleBack = () => {
+    saveComponentData();
     setActiveStep((step) => step - 1);
   };
 
@@ -371,8 +383,28 @@ const GuidedOther = ({
           />
         </ListItem>
         <ListItem>{renderPostProcessDropdown()}</ListItem>
+        {!!componentDesigns && (
+          <ListItem>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.designs",
+              })}
+            </Typography>
+            {componentDesigns.map((file) => {
+              return (
+                <Link href={file.url} target="_blank" rel="noopener">
+                  {file.filename}
+                </Link>
+              );
+            })}
+          </ListItem>
+        )}
       </Stack>
       <Box>
+        <UploadDesign
+          setComponentData={setComponentData}
+          parentSetDesign={setComponentDesigns}
+        />
         <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
           {intl.formatMessage({ id: "app.general.back" })}
         </Button>

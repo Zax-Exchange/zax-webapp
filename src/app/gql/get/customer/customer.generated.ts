@@ -9,7 +9,7 @@ export type GetCustomerProjectQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetCustomerProjectQuery = { __typename?: 'Query', getCustomerProject: { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, creationMode: Types.ProjectCreationMode, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, design?: Array<{ __typename?: 'ProjectDesign', fileName: string, url: string }> | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, dimension: string, boxStyle?: string | null, style?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null } }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, comments: string, status: Types.BidStatus, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }> | null } };
+export type GetCustomerProjectQuery = { __typename?: 'Query', getCustomerProject: { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, creationMode: Types.ProjectCreationMode, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, dimension: string, boxStyle?: string | null, style?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null } }>, bids?: Array<{ __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, comments: string, status: Types.BidStatus, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> }> | null } };
 
 export type GetCustomerProjectsQueryVariables = Types.Exact<{
   data: Types.GetCustomerProjectsInput;
@@ -38,10 +38,6 @@ export const GetCustomerProjectDocument = gql`
     totalWeight
     deliveryDate
     deliveryAddress
-    design {
-      fileName
-      url
-    }
     targetPrice
     orderQuantities
     status
@@ -52,6 +48,11 @@ export const GetCustomerProjectDocument = gql`
       id
       projectId
       name
+      designs {
+        designId
+        filename
+        url
+      }
       componentSpec {
         id
         productName

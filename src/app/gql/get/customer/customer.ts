@@ -12,10 +12,6 @@ const GET_CUSTOMER_PROJECT = gql`
       totalWeight
       deliveryDate
       deliveryAddress
-      design {
-        fileName
-        url
-      }
       targetPrice
       orderQuantities
       status
@@ -26,6 +22,11 @@ const GET_CUSTOMER_PROJECT = gql`
         id
         projectId
         name
+        designs {
+          designId
+          filename
+          url
+        }
         componentSpec {
           id
           productName

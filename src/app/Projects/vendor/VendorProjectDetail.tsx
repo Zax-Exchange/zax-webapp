@@ -134,7 +134,6 @@ const VendorProjectDetail = () => {
       deliveryAddress,
       targetPrice,
       orderQuantities,
-      design,
       status,
       components,
       companyId,
@@ -246,25 +245,6 @@ const VendorProjectDetail = () => {
                     {targetPrice}
                   </Typography>
                 </ProjectListItem>
-
-                {design && (
-                  <ProjectListItem>
-                    {renderProjectAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.design",
-                      })
-                    )}
-                    <Typography variant="caption" component="p">
-                      {design.map((file) => {
-                        return (
-                          <Link href={file.url} target="_blank" rel="noopener">
-                            {file.fileName}
-                          </Link>
-                        );
-                      })}
-                    </Typography>
-                  </ProjectListItem>
-                )}
               </Stack>
             </Paper>
           </Grid>

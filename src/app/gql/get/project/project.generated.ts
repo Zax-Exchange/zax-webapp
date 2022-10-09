@@ -16,7 +16,7 @@ export type GetProjectDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, createdAt: string, updatedAt: string, design?: Array<{ __typename?: 'ProjectDesign', fileName: string, url: string }> | null, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, dimension: string, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null } }> } | null };
+export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, dimension: string, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null } }> } | null };
 
 export type SearchCustomerProjectsQueryVariables = Types.Exact<{
   data: Types.SearchCustomerProjectInput;
@@ -76,15 +76,16 @@ export const GetProjectDetailDocument = gql`
     deliveryAddress
     targetPrice
     orderQuantities
-    design {
-      fileName
-      url
-    }
     status
     components {
       id
       projectId
       name
+      designs {
+        designId
+        filename
+        url
+      }
       componentSpec {
         id
         productName

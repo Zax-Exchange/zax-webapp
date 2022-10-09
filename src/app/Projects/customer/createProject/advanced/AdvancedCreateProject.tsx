@@ -21,6 +21,12 @@ import {
   TableCell,
   IconButton,
   InputAdornment,
+  Drawer,
+  ClickAwayListener,
+  Tabs,
+  Tab,
+  CSSObject,
+  Tooltip,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../../../context/AuthContext";
@@ -51,6 +57,7 @@ import {
   CreateProjectComponentSpecInput,
   CreateProjectInput,
   ProjectCreationMode,
+  ProjectDesign,
 } from "../../../../../generated/graphql";
 import CreateProjectComponentModal from "../../modals/CreateProjectComponentModal";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -58,6 +65,31 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../../../common/ComponentSpecDetail";
 import ProjectCategoryDropdown from "../../../../Utils/ProjectCategoryDropdown";
+import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
+import { v4 as uuidv4 } from "uuid";
+import Edit from "@mui/icons-material/Edit";
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+  style: React.CSSProperties;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`component-tabpanel-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
 
 const AdvancedCreateProject = () => {
   const intl = useIntl();
@@ -77,6 +109,9 @@ const AdvancedCreateProject = () => {
     },
   ] = useGetCustomerProjectLazyQuery();
 
+  const [deleteDesign, { error: deleteDesignError }] =
+    useDeleteProjectDesignMutation();
+
   const [projectData, setProjectData] = useState<CreateProjectInput>({
     userId: user!.id,
     creationMode: ProjectCreationMode.Advanced,
@@ -87,13 +122,32 @@ const AdvancedCreateProject = () => {
     deliveryDate: new Date().toISOString().split("T")[0],
     targetPrice: 0,
     orderQuantities: [],
-    designIds: [],
     comments: "",
     components: [],
   });
 
+  // index of component if use clicks edit button on one of the component detail
+  // we will use this to pass into createComponentModal to inject existing data to the fields
+  const [componentIndexToEdit, setComponentIndexToEdit] = useState<
+    number | null
+  >(null);
+
+  // For project component section.
+  const [currentTab, setCurrentTab] = useState(0);
+
   const [orderQuantity, setOrderQuantity] = useState("");
   const [componentModalOpen, setComponentModalOpen] = useState(false);
+
+  // record designs for added components
+  const [componentsDesigns, setComponentsDesigns] = useState<ProjectDesign[][]>(
+    []
+  );
+
+  // record temporary designs in case user closes this modal we need to cleanup the design files in backend
+  // this array will store for at most 1 component's designs
+  const [temporaryDesigns, setTemporaryDesigns] = useState<
+    ProjectDesign[] | null
+  >([]);
 
   // get project data if user chooses to import
   useEffect(() => {
@@ -110,6 +164,7 @@ const AdvancedCreateProject = () => {
     }
   }, [location.state]);
 
+  // initialize import-able fields if user chooses to import
   useEffect(() => {
     if (getCustomerProjectData && getCustomerProjectData.getCustomerProject) {
       const {
@@ -119,7 +174,6 @@ const AdvancedCreateProject = () => {
         totalWeight,
         targetPrice,
         deliveryDate,
-        design,
         orderQuantities,
         components,
       } = getCustomerProjectData.getCustomerProject;
@@ -135,13 +189,15 @@ const AdvancedCreateProject = () => {
           delete copyComp.projectId;
           delete copySpec.id;
           delete copySpec.__typename;
+          delete copyComp.designs;
 
           return {
             ...copyComp,
             componentSpec: copySpec,
-          };
+          } as CreateProjectComponentInput;
         }
       );
+
       setProjectData((prev) => ({
         ...prev,
         name,
@@ -153,8 +209,19 @@ const AdvancedCreateProject = () => {
         orderQuantities,
         components: sanitizedComponents,
       }));
+
+      // initialize empty design arrays for each component
+      setComponentsDesigns(new Array(components.length));
     }
   }, [getCustomerProjectData]);
+
+  // Switch tab for components detail section.
+  const componentTabOnChange = (
+    event: React.SyntheticEvent,
+    newTab: number
+  ) => {
+    setCurrentTab(newTab);
+  };
 
   const addOrderQuantity = () => {
     setProjectData({
@@ -183,19 +250,70 @@ const AdvancedCreateProject = () => {
     }
   };
 
+  const deleteDesignFiles = async (id: string) => {
+    deleteDesign({
+      variables: {
+        data: {
+          designId: id,
+        },
+      },
+    });
+  };
   const removeComponent = (i: number) => {
     const comps = [...projectData.components];
     comps.splice(i, 1);
 
+    // handles the case where currentTab is first/last and removing the component would left the currentTab in limbo
+    if (i === currentTab) {
+      const newTab = i - 1 >= 0 ? i - 1 : 0;
+      setCurrentTab(newTab);
+    }
     setProjectData({
       ...projectData,
       components: comps,
     });
+
+    if (componentsDesigns[i].length) {
+      Promise.all(
+        componentsDesigns[i].map((d) => {
+          return deleteDesignFiles(d.designId);
+        })
+      );
+      setComponentsDesigns((prev) => {
+        const prevFiles = [...prev];
+        prevFiles.splice(i, 1);
+        return prevFiles;
+      });
+    }
   };
   const openComponentModal = () => {
     setComponentModalOpen(true);
   };
 
+  const componentModalOnClose = () => {
+    if (temporaryDesigns) {
+      Promise.all(
+        temporaryDesigns.map((design) => {
+          return deleteDesign({
+            variables: {
+              data: {
+                designId: design.designId,
+              },
+            },
+          });
+        })
+      );
+    }
+    // when user closes modal, we will reset this to null so user can start clean if they click "create component"
+    setComponentIndexToEdit(null);
+
+    setComponentModalOpen(false);
+  };
+
+  const editComponent = (ind: number) => {
+    setComponentIndexToEdit(ind);
+    setComponentModalOpen(true);
+  };
   const projectInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val: string | number = e.target.value;
     let isAllowed = true;
@@ -290,12 +408,6 @@ const AdvancedCreateProject = () => {
           </Typography>
 
           <Stack direction="row">
-            <ListItem>
-              <UploadDesign
-                setProjectData={setProjectData}
-                allowMultiple={true}
-              />
-            </ListItem>
             <ListItem>
               <Button onClick={openComponentModal} variant="text">
                 {intl.formatMessage({
@@ -451,43 +563,95 @@ const AdvancedCreateProject = () => {
           </Stack>
         </Container>
       </Paper>
+
       {!!projectData.components.length && (
-        <Stack sx={{ marginTop: 4 }}>
+        <Paper sx={{ mt: 1 }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs value={currentTab} onChange={componentTabOnChange}>
+              {projectData.components.map((comp, i) => {
+                return <Tab label={comp.name} key={i} />;
+              })}
+            </Tabs>
+          </Box>
           {projectData.components.map((comp, i) => {
             return (
-              <ListItem sx={{ padding: 0, mb: 2 }}>
-                <Accordion sx={{ flexGrow: 2 }}>
-                  <AccordionSummary
-                    key={i}
-                    expandIcon={<ExpandMoreIcon />}
-                    id={`component-summary-${i}`}
+              <TabPanel
+                value={currentTab}
+                index={i}
+                key={i}
+                style={{
+                  position: "relative",
+                }}
+              >
+                <Box sx={{ position: "absolute", top: 4, right: 8 }}>
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.general.edit",
+                    })}
+                    placement="top"
+                    arrow
                   >
-                    <Typography variant="subtitle2">{comp.name}</Typography>
-                  </AccordionSummary>
-
-                  <AccordionDetails>
-                    <ComponentSpecDetail spec={comp.componentSpec} />
-                  </AccordionDetails>
-                </Accordion>
-                <IconButton onClick={() => removeComponent(i)}>
-                  <CancelIcon />
-                </IconButton>
-              </ListItem>
+                    <IconButton onClick={() => editComponent(i)}>
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.customer.createProject.removeComponent",
+                    })}
+                    placement="top"
+                    arrow
+                  >
+                    <IconButton onClick={() => removeComponent(i)}>
+                      <CancelIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                <ComponentSpecDetail
+                  spec={comp.componentSpec}
+                  designs={componentsDesigns[i]}
+                />
+              </TabPanel>
             );
           })}
-        </Stack>
+        </Paper>
       )}
-      <Dialog
+
+      <Drawer
+        anchor="right"
         open={componentModalOpen}
-        onClose={() => setComponentModalOpen(false)}
-        maxWidth="xl"
+        onClose={componentModalOnClose}
+        PaperProps={{
+          sx: {
+            borderRadius: "4px",
+          },
+        }}
+        ModalProps={{
+          componentsProps: {
+            backdrop: {
+              style: {
+                backgroundColor: "rgb(135 135 135 / 50%)",
+              },
+            },
+          },
+        }}
       >
         <CreateProjectComponentModal
+          setComponentsDesigns={setComponentsDesigns}
           projectData={projectData}
           setProjectData={setProjectData}
           setComponentModalOpen={setComponentModalOpen}
+          setTemporaryDesigns={setTemporaryDesigns}
+          defaultComponentIndex={
+            componentIndexToEdit !== null ? componentIndexToEdit : undefined
+          }
+          existingDesigns={
+            componentIndexToEdit !== null
+              ? componentsDesigns[componentIndexToEdit]
+              : undefined
+          }
         />
-      </Dialog>
+      </Drawer>
     </>
   );
 };
