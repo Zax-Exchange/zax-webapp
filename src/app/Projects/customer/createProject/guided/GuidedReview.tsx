@@ -27,7 +27,10 @@ import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../../../Utils/Loading";
 import ComponentSpecDetail from "../../../common/ComponentSpecDetail";
 import { ProjectOverviewListItem } from "../../CustomerProjectOverviewCard";
-import { GuidedCreateComponentsDataContainer } from "./GuidedCreateProject";
+import {
+  GuidedComponentConfigView,
+  GuidedCreateComponentsDataContainer,
+} from "./GuidedCreateProject";
 
 type TypographyVariant =
   | "button"
@@ -80,9 +83,9 @@ const GuidedReview = ({
 }: {
   setActiveStep: Dispatch<SetStateAction<number>>;
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
-  componentsData: (CreateProjectComponentInput | null)[];
+  componentsData: GuidedCreateComponentsDataContainer;
   projectData: CreateProjectInput;
-  componentsDesigns: (ProjectDesign[] | null)[];
+  componentsDesigns: Record<GuidedComponentConfigView, ProjectDesign[] | null>;
   activeStep: number;
 }) => {
   console.log(componentsData);
@@ -259,20 +262,23 @@ const GuidedReview = ({
         <Box>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs value={currentTab} onChange={componentTabOnChange}>
-              {componentsData.map((comp, i) => {
-                if (!comp) return null;
-                return <Tab label={comp.name} key={i} />;
-              })}
+              {Object.values(componentsData)
+                .filter((comp) => !!comp)
+                .map((comp, i) => {
+                  return <Tab label={comp!.name} key={i} />;
+                })}
             </Tabs>
           </Box>
-          {componentsData
-            .filter((comp) => !!comp)
-            .map((comp, i) => {
+          {Object.entries(componentsData)
+            .filter((comp) => !!comp[1])
+            .map(([view, comp], i) => {
               return (
                 <TabPanel value={currentTab} index={i}>
                   <ComponentSpecDetail
                     spec={comp!.componentSpec}
-                    designs={componentsDesigns[i] as ProjectDesign[]}
+                    designs={
+                      componentsDesigns[view as GuidedComponentConfigView]
+                    }
                   />
                 </TabPanel>
               );

@@ -366,7 +366,7 @@ const SleeveSubSection = ({
           onChange={(e, v) => {
             setComponentSpec((spec) => ({
               ...spec,
-              [componentSpecAttribute]: v ? v : "",
+              [componentSpecAttribute]: v ? v.value : "",
             }));
           }}
           renderInput={(params) => (

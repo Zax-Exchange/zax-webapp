@@ -45,6 +45,7 @@ import {
   productValueToLabelMap,
 } from "../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../gql/delete/project/project.generated";
+import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 import { isValidAlphanumeric } from "../../../Utils/inputValidators";
 import UploadDesign from "../UploadDesign";
 import CorrugateBoxSubSection from "./componentModalSubSection/CorrugateBoxSubSection";
@@ -75,6 +76,7 @@ const CreateProjectComponentModal = ({
 }) => {
   const theme = useTheme();
   const intl = useIntl();
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [view, setView] = useState("");
   const [
     deleteDesignMutation,
@@ -91,33 +93,18 @@ const CreateProjectComponentModal = ({
   const [componentDesigns, setComponentDesigns] = useState<ProjectDesign[]>([]);
 
   useEffect(() => {
-    if (componentSpec.productName) {
-      setComponentSpec({
-        productName: componentSpec.productName,
-      } as CreateProjectComponentSpecInput);
+    if (deleteDesignError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [deleteDesignError]);
 
-      switch (componentSpec.productName) {
-        case PRODUCT_NAME_RIGID_BOX.value:
-          setView(PRODUCT_NAME_RIGID_BOX.value);
-          break;
-        case PRODUCT_NAME_FOLDING_CARTON.value:
-          setView(PRODUCT_NAME_FOLDING_CARTON.value);
-          break;
-        case PRODUCT_NAME_SLEEVE.value:
-          setView(PRODUCT_NAME_SLEEVE.value);
-          break;
-        case PRODUCT_NAME_CORRUGATE_BOX.value:
-          setView(PRODUCT_NAME_CORRUGATE_BOX.value);
-          break;
-        case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
-          setView(PRODUCT_NAME_MOLDED_FIBER_TRAY.value);
-          break;
-        case PRODUCT_NAME_PAPER_TUBE.value:
-          setView(PRODUCT_NAME_PAPER_TUBE.value);
-          break;
-        default:
-          break;
-      }
+  useEffect(() => {
+    if (componentSpec.productName) {
+      setView(productValueToLabelMap[componentSpec.productName].value);
     }
   }, [componentSpec.productName]);
 
@@ -129,10 +116,21 @@ const CreateProjectComponentModal = ({
       setComponentDesigns(existingDesigns ? existingDesigns : []);
     }
   }, [defaultComponentIndex]);
-  // record these temporary designs in case user closes this modal we need to cleanup the design files in backend
-  useEffect(() => {
-    setTemporaryDesigns(componentDesigns);
-  }, [componentDesigns]);
+
+  // // record these temporary designs in case user closes this modal we need to cleanup the design files in backend
+  // useEffect(() => {
+  //   if (existingDesigns) {
+  //     // only add to temporary designs array if the design is a newly uploaded one
+  //     // so when cleaning up we don't delete existing designs
+  //     const temporaryDesigns = componentDesigns.filter((design) => {
+  //       return !!existingDesigns.find(
+  //         (existingDesign) => existingDesign.designId === design.designId
+  //       );
+  //     });
+
+  //     setTemporaryDesigns(temporaryDesigns);
+  //   }
+  // }, [componentDesigns]);
 
   const addComponent = () => {
     // construct CreateProjectComponentInput
@@ -159,6 +157,7 @@ const CreateProjectComponentModal = ({
       setComponentsDesigns((prev) => [...prev, []]);
     }
 
+    setTemporaryDesigns([]);
     // close component modal
     setComponentModalOpen(false);
   };
@@ -194,6 +193,7 @@ const CreateProjectComponentModal = ({
       });
     }
 
+    setTemporaryDesigns([]);
     // close component modal
     setComponentModalOpen(false);
   };
@@ -307,16 +307,20 @@ const CreateProjectComponentModal = ({
     );
   };
 
+  // callback passed into UploadDesign component to add/empty the local designs array
   const setDesigns = (file: ProjectDesign | null) => {
     if (!file) {
       setComponentDesigns([]);
-    } else if (componentDesigns) {
-      setComponentDesigns([...componentDesigns, file]);
     } else {
-      setComponentDesigns([file]);
+      setComponentDesigns([...componentDesigns, file]);
     }
   };
 
+  const setTempDesign = (file: ProjectDesign | null) => {
+    if (file) {
+      setTemporaryDesigns((prev) => [...(prev ? prev : []), file]);
+    }
+  };
   const deleteDesign = async (id: string, ind: number) => {
     try {
       await deleteDesignMutation({
@@ -331,6 +335,20 @@ const CreateProjectComponentModal = ({
         prevDesigns.splice(ind, 1);
         return prevDesigns;
       });
+
+      // if the design is an existing design, we want to delete it in parent as well
+      if (defaultComponentIndex !== undefined) {
+        setComponentsDesigns((prev) => {
+          const allExistingDesigns = [...prev];
+          const currentComponentExistingDesigns = [
+            ...allExistingDesigns[defaultComponentIndex],
+          ];
+          currentComponentExistingDesigns.splice(ind, 1);
+          allExistingDesigns[defaultComponentIndex] =
+            currentComponentExistingDesigns;
+          return allExistingDesigns;
+        });
+      }
     } catch (error) {}
   };
 
@@ -394,7 +412,7 @@ const CreateProjectComponentModal = ({
           </Box>
         </Box>
         <Divider />
-        <Stack spacing={5}>
+        <Stack spacing={5} mt={2}>
           <Stack>
             <ListItem>
               <Typography variant="subtitle2">
@@ -426,7 +444,7 @@ const CreateProjectComponentModal = ({
               </Typography>
               <UploadDesign
                 setComponentData={setComponentData}
-                parentSetDesign={setDesigns}
+                parentSetDesigns={[setDesigns, setTempDesign]}
               />
             </ListItem>
             {renderDesignFiles()}

@@ -403,7 +403,7 @@ const GuidedOther = ({
       <Box>
         <UploadDesign
           setComponentData={setComponentData}
-          parentSetDesign={setComponentDesigns}
+          parentSetDesigns={[setComponentDesigns]}
         />
         <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
           {intl.formatMessage({ id: "app.general.back" })}

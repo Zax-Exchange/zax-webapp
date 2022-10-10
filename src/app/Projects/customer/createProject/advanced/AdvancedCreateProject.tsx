@@ -211,9 +211,27 @@ const AdvancedCreateProject = () => {
       }));
 
       // initialize empty design arrays for each component
-      setComponentsDesigns(new Array(components.length));
+      setComponentsDesigns([...Array(components.length)].map(() => []));
     }
   }, [getCustomerProjectData]);
+
+  // if there are temporary design files uploaded but user closes the modal already, we clean up/delete the files
+  useEffect(() => {
+    if (temporaryDesigns && temporaryDesigns.length && !componentModalOpen) {
+      Promise.all(
+        temporaryDesigns.map((design) => {
+          return deleteDesign({
+            variables: {
+              data: {
+                designId: design.designId,
+              },
+            },
+          });
+        })
+      );
+      setTemporaryDesigns([]);
+    }
+  }, [temporaryDesigns, componentModalOpen]);
 
   // Switch tab for components detail section.
   const componentTabOnChange = (
@@ -259,6 +277,7 @@ const AdvancedCreateProject = () => {
       },
     });
   };
+
   const removeComponent = (i: number) => {
     const comps = [...projectData.components];
     comps.splice(i, 1);
@@ -273,37 +292,26 @@ const AdvancedCreateProject = () => {
       components: comps,
     });
 
-    if (componentsDesigns[i].length) {
+    if (componentsDesigns[i]) {
       Promise.all(
         componentsDesigns[i].map((d) => {
           return deleteDesignFiles(d.designId);
         })
       );
-      setComponentsDesigns((prev) => {
-        const prevFiles = [...prev];
-        prevFiles.splice(i, 1);
-        return prevFiles;
-      });
     }
+    setComponentsDesigns((prev) => {
+      const prevFiles = [...prev];
+      prevFiles.splice(i, 1);
+      return prevFiles;
+    });
   };
+
   const openComponentModal = () => {
     setComponentModalOpen(true);
   };
 
+  // fires when user closes drawer by clicking outside of it
   const componentModalOnClose = () => {
-    if (temporaryDesigns) {
-      Promise.all(
-        temporaryDesigns.map((design) => {
-          return deleteDesign({
-            variables: {
-              data: {
-                designId: design.designId,
-              },
-            },
-          });
-        })
-      );
-    }
     // when user closes modal, we will reset this to null so user can start clean if they click "create component"
     setComponentIndexToEdit(null);
 
@@ -396,6 +404,7 @@ const AdvancedCreateProject = () => {
   };
 
   const isLoading = createProjectLoading || getCustomerProjectLoading;
+
   return (
     <>
       {isLoading && <FullScreenLoading />}
@@ -623,7 +632,8 @@ const AdvancedCreateProject = () => {
         onClose={componentModalOnClose}
         PaperProps={{
           sx: {
-            borderRadius: "4px",
+            borderTopLeftRadius: "4px",
+            borderBottomLeftRadius: "4px",
           },
         }}
         ModalProps={{

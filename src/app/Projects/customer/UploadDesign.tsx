@@ -23,6 +23,7 @@ import {
 import { useIntl } from "react-intl";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 import { GuidedCreateSetComponentData } from "./createProject/guided/GuidedCreateProject";
+import FullScreenLoading from "../../Utils/Loading";
 
 export type File = {
   uri: string;
@@ -37,12 +38,12 @@ type Target = {
 };
 export default function UploadDesign({
   setComponentData,
-  parentSetDesign,
+  parentSetDesigns,
 }: {
   setComponentData:
     | GuidedCreateSetComponentData
     | React.Dispatch<React.SetStateAction<CreateProjectComponentInput>>;
-  parentSetDesign: (data: ProjectDesign | null) => void;
+  parentSetDesigns: ((data: ProjectDesign | null) => void)[];
 }) {
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
@@ -80,7 +81,7 @@ export default function UploadDesign({
     target.value = "";
 
     if (file.type === "application/pdf") {
-      mutate({
+      await mutate({
         variables: { file },
         fetchPolicy: "no-cache",
       }).then((data) => {
@@ -98,12 +99,10 @@ export default function UploadDesign({
           } as CreateProjectComponentInput;
         });
 
-        if (parentSetDesign) {
-          console.log(
-            "parent set design called with: ",
-            data.data!.uploadProjectDesign
-          );
-          parentSetDesign(data.data!.uploadProjectDesign);
+        if (parentSetDesigns.length) {
+          for (let cb of parentSetDesigns) {
+            cb(data.data!.uploadProjectDesign);
+          }
         }
       });
     } else {

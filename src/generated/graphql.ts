@@ -1013,6 +1013,7 @@ export type UpdateProjectBidPermissionsInputData = {
 export type UpdateProjectComponentInput = {
   componentId: Scalars['String'];
   componentSpec: UpdateProjectComponentSpecInput;
+  designIds?: InputMaybe<Array<Scalars['String']>>;
   name: Scalars['String'];
 };
 

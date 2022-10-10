@@ -634,7 +634,10 @@ const SearchProjectDetail = () => {
               {components.map((comp, i) => {
                 return (
                   <TabPanel value={currentComponentTab} index={i}>
-                    <ComponentSpecDetail spec={comp.componentSpec} />
+                    <ComponentSpecDetail
+                      spec={comp.componentSpec}
+                      designs={comp.designs}
+                    />
                   </TabPanel>
                 );
               })}

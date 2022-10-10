@@ -158,10 +158,7 @@ export const PRODUCT_NAME_MOLDED_FIBER_TRAY: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.name.moldedFiberTray"}),
   value: "Molded Fiber Tray"
 }
-export const PRODUCT_NAME_PLASTIC_TRAY: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.plasticTray"}),
-  value: "Plastic Tray"
-}
+
 export const PRODUCT_NAME_PAPER_TRAY: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.name.paperTray"}),
   value: "Paper Tray"
@@ -384,7 +381,6 @@ export const ALL_PRODUCT_NAMES = [
   PRODUCT_NAME_CORRUGATE_BOX,
   PRODUCT_NAME_PAPER_TUBE,
   PRODUCT_NAME_MOLDED_FIBER_TRAY,
-  PRODUCT_NAME_PLASTIC_TRAY,
   PRODUCT_NAME_PAPER_TRAY,
   PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_STICKER,
@@ -401,7 +397,6 @@ export const GUIDED_PROJECT_OUTSIDE_PRODUCTS = [
 
 export const GUIDED_PROJECT_INSIDE_PRODUCTS = [
   PRODUCT_NAME_MOLDED_FIBER_TRAY,
-  PRODUCT_NAME_PLASTIC_TRAY,
   PRODUCT_NAME_PAPER_TRAY,
   PRODUCT_NAME_CORRUGATE_TRAY,
 ]
@@ -631,11 +626,6 @@ export const PAPER_TUBE_FINISHES = [
 export const PAPER_TUBE_BOX_STYLES = [
   BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE
 ]
-// Plastic Tray Data
-export const PLASTIC_TRAY_POST_PROCESS = [
-  POST_PROCESS_EMBOSS,
-  POST_PROCESS_DEBOSS
-]
 
 // Paper Tray Data
 export const PAPER_TRAY_POST_PROCESS = [
@@ -704,7 +694,6 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [PRODUCT_NAME_PRINTING.value]: PRODUCT_NAME_PRINTING,
   [PRODUCT_NAME_MOLDED_FIBER_TRAY.value]: PRODUCT_NAME_MOLDED_FIBER_TRAY,
   [PRODUCT_NAME_PAPER_TRAY.value]: PRODUCT_NAME_PAPER_TRAY,
-  [PRODUCT_NAME_PLASTIC_TRAY.value]: PRODUCT_NAME_PLASTIC_TRAY,
   [PRODUCT_NAME_CORRUGATE_TRAY.value]: PRODUCT_NAME_CORRUGATE_TRAY,
   [PRODUCT_NAME_BOOKLET.value]: PRODUCT_NAME_BOOKLET,
 

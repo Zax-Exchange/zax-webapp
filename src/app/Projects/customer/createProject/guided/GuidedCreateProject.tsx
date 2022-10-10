@@ -233,8 +233,8 @@ export default function GuidedCreateProject() {
           setActiveStep={setActiveStep}
           activeStep={activeStep}
           projectData={projectData}
-          componentsDesigns={Object.values(componentsDesigns)}
-          componentsData={Object.values(componentsData)}
+          componentsDesigns={componentsDesigns}
+          componentsData={componentsData}
         />
       );
     }

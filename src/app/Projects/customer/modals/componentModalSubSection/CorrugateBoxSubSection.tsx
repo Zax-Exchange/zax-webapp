@@ -24,6 +24,7 @@ import {
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING,
+  productValueToLabelMap,
 } from "../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -101,7 +102,6 @@ const CorrugateBoxSubSection = ({
     const postProcess = componentSpec.outsidePostProcess;
     postProcess?.splice(i, 1);
 
-    console.log(postProcess);
     setComponentSpec({
       ...componentSpec,
       outsidePostProcess: postProcess,
@@ -363,16 +363,40 @@ const CorrugateBoxSubSection = ({
       helperText: string = "",
       width: number = 250
     ) => {
+      const getDefaultValue = () => {
+        if (
+          componentSpec[componentSpecAttribute] &&
+          typeof componentSpec[componentSpecAttribute] === "string"
+        )
+          if (
+            productValueToLabelMap[
+              componentSpec[componentSpecAttribute] as string
+            ]
+          ) {
+            return productValueToLabelMap[
+              componentSpec[componentSpecAttribute] as string
+            ];
+          }
+        return null;
+      };
       return (
         <Autocomplete
           sx={{ width }}
           options={options}
           autoHighlight
+          value={getDefaultValue()}
           onChange={(e, v) => {
-            setComponentSpec((spec) => ({
-              ...spec,
-              [componentSpecAttribute]: v ? v.value : "",
-            }));
+            if (!v) {
+              setComponentSpec((spec) => ({
+                ...spec,
+                [componentSpecAttribute]: null,
+              }));
+            } else {
+              setComponentSpec((spec) => ({
+                ...spec,
+                [componentSpecAttribute]: v ? v.value : "",
+              }));
+            }
           }}
           renderInput={(params) => (
             <TextField

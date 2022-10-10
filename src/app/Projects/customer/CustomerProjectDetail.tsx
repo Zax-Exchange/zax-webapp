@@ -221,7 +221,7 @@ const CustomerProjectDetail = () => {
 
     const compsForUpdate: UpdateProjectComponentInput[] = [];
     for (let comp of components) {
-      const { id: componentId, name, componentSpec } = comp;
+      const { id: componentId, name, componentSpec, designs } = comp;
       const {
         productName,
         dimension,
@@ -252,6 +252,7 @@ const CustomerProjectDetail = () => {
       compsForUpdate.push({
         componentId,
         name,
+
         componentSpec: {
           productName,
           dimension,

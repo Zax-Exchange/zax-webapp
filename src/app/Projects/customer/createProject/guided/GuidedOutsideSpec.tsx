@@ -377,7 +377,7 @@ const GuidedOutsideSpec = ({
       <Box>
         <UploadDesign
           setComponentData={setComponentData}
-          parentSetDesign={setComponentDesigns}
+          parentSetDesigns={[setComponentDesigns]}
         />
         <Button
           variant="text"
