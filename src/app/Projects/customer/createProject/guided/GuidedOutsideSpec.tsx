@@ -28,8 +28,12 @@ import {
   productValueToLabelMap,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
-import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
+import {
+  isValidAlphanumeric,
+  isValidFloat,
+} from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
+import DimensionsInput from "../common/DimensionsInput";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedCreateBoxStyleSelection from "./modals/GuidedCreateBoxStyleSelection";
 
@@ -54,10 +58,15 @@ const GuidedOutsideSpec = ({
   const [componentSpec, setComponentSpec] =
     useState<CreateProjectComponentSpecInput>({
       productName: "",
-      dimension: "",
+      dimension: {
+        x: "",
+        y: "",
+        z: "",
+      },
       boxStyle: "",
       postProcess: [],
     } as CreateProjectComponentSpecInput);
+
   const [boxStyleModalOpen, setBoxStyleModalOpen] = useState(false);
 
   const [selectedPostProcess, setSelectedPostProcess] = useState<string | null>(
@@ -83,9 +92,6 @@ const GuidedOutsideSpec = ({
     let isAllowed = true;
 
     switch (e.target.name) {
-      case "dimension":
-        isAllowed = isValidAlphanumeric(val);
-        break;
       default:
         break;
     }
@@ -277,13 +283,19 @@ const GuidedOutsideSpec = ({
 
   const shouldDisableNextButton = () => {
     let res = false;
+    if (
+      !componentSpec.dimension.x ||
+      !componentSpec.dimension.y ||
+      !componentSpec.dimension.z
+    )
+      return true;
+
     for (let key in componentSpec) {
       const attribute = key as keyof CreateProjectComponentSpecInput;
 
       // These three are required
       switch (attribute) {
         case "productName":
-        case "dimension":
         case "boxStyle":
           if (!componentSpec[attribute]) return true;
       }
@@ -298,6 +310,7 @@ const GuidedOutsideSpec = ({
       designIds: componentDesigns?.map((d) => d.designId),
       componentSpec,
     } as CreateProjectComponentInput;
+
     setComponentData(compData);
   };
   // Go to next page and add/update current component to projectData
@@ -344,15 +357,17 @@ const GuidedOutsideSpec = ({
         <Stack mt={2} mb={2} spacing={2}>
           <ListItem>{renderBoxTypeDropdown()}</ListItem>
           <ListItem>
-            <TextField
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.dimension",
-              })}
-              onChange={componentSpecOnChange}
-              name="dimension"
-              value={componentSpec.dimension}
-            />
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                {intl.formatMessage({
+                  id: "app.component.attribute.dimension",
+                })}
+              </Typography>
+              <DimensionsInput
+                componentSpec={componentSpec}
+                setComponentSpec={setComponentSpec}
+              />
+            </Box>
           </ListItem>
           <ListItem>{renderBoxStyle()}</ListItem>
           <ListItem>{renderPostProcessDropdown()}</ListItem>

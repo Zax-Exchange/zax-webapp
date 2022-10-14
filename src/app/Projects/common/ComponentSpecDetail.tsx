@@ -35,6 +35,8 @@ export default function ComponentSpecDetail({
     style,
     boxStyle,
     dimension,
+    purpose,
+    shape,
     thickness,
     flute,
     color,
@@ -104,6 +106,12 @@ export default function ComponentSpecDetail({
     );
   }
   if (dimension) {
+    const dims = Object.entries(dimension);
+    const output = [];
+    for (let [attr, dim] of dims) {
+      if (!dim || attr === "__typename") continue;
+      output.push(parseFloat(dim));
+    }
     res.push(
       <TableRow>
         <TableCell>
@@ -112,7 +120,7 @@ export default function ComponentSpecDetail({
           </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="caption">{dimension}</Typography>
+          <Typography variant="caption">{output.join("x")} mm</Typography>
         </TableCell>
       </TableRow>
     );
@@ -145,6 +153,34 @@ export default function ComponentSpecDetail({
       </TableRow>
     );
   }
+  if (purpose) {
+    res.push(
+      <TableRow>
+        <TableCell>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.component.attribute.purpose" })}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="caption">{purpose}</Typography>
+        </TableCell>
+      </TableRow>
+    );
+  }
+  if (shape) {
+    res.push(
+      <TableRow>
+        <TableCell>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.component.attribute.shape" })}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="caption">{shape}</Typography>
+        </TableCell>
+      </TableRow>
+    );
+  }
   if (thickness) {
     res.push(
       <TableRow>
@@ -155,7 +191,7 @@ export default function ComponentSpecDetail({
         </TableCell>
 
         <TableCell>
-          <Typography variant="caption">{thickness}</Typography>
+          <Typography variant="caption">{parseFloat(thickness)}</Typography>
         </TableCell>
       </TableRow>
     );

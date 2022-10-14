@@ -18,11 +18,13 @@ import {
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING,
+  productValueToLabelMap,
 } from "../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../../../type/common";
+import DimensionsInput from "../../createProject/common/DimensionsInput";
 
 type MoldedFiberPostProcessDetail = {
   postProcessName: string;
@@ -347,11 +349,28 @@ const MoldedFiberSubSection = ({
       key: string,
       width: number = 250
     ) => {
+      const getDefaultValue = () => {
+        if (
+          componentSpec[componentSpecAttribute] &&
+          typeof componentSpec[componentSpecAttribute] === "string"
+        )
+          if (
+            productValueToLabelMap[
+              componentSpec[componentSpecAttribute] as string
+            ]
+          ) {
+            return productValueToLabelMap[
+              componentSpec[componentSpecAttribute] as string
+            ];
+          }
+        return null;
+      };
       return (
         <Autocomplete
           sx={{ width }}
           options={options}
           autoHighlight
+          value={getDefaultValue()}
           onChange={(e, v) => {
             setComponentSpec((spec) => ({
               ...spec,
@@ -378,7 +397,7 @@ const MoldedFiberSubSection = ({
         />
       );
     },
-    []
+    [componentSpec]
   );
 
   const renderComponentSpecSection = () => {
@@ -393,15 +412,9 @@ const MoldedFiberSubSection = ({
             </Typography>
           </ListItem>
           <ListItem>
-            <TextField
-              key="molded-fiber-dimension"
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.dimension",
-              })}
-              onChange={componentSpecOnChange}
-              name="dimension"
-              value={componentSpec.dimension}
+            <DimensionsInput
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
             />
           </ListItem>
           <ListItem>

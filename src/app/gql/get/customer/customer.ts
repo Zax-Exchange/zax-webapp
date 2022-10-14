@@ -14,6 +14,7 @@ const GET_CUSTOMER_PROJECT = gql`
       deliveryAddress
       targetPrice
       orderQuantities
+      comments
       status
       permission
       createdAt
@@ -30,11 +31,16 @@ const GET_CUSTOMER_PROJECT = gql`
         componentSpec {
           id
           productName
-          dimension
+          dimension {
+            x
+            y
+            z
+          }
           boxStyle
           style
-          productName
-          dimension
+          includeArtworkInQuote
+          purpose
+          shape
           thickness
           flute
           color

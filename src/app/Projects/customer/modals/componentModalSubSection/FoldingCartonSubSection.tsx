@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useCallback, useState } from "react";
 import { CreateProjectComponentSpecInput } from "../../../../../generated/graphql";
 import {
@@ -20,11 +20,16 @@ import {
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING,
+  productValueToLabelMap,
 } from "../../../../constants/products";
-import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
+import {
+  isValidAlphanumeric,
+  isValidFloat,
+} from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../../../type/common";
+import DimensionsInput from "../../createProject/common/DimensionsInput";
 
 type FoldingCartonPostProcessDetail = {
   postProcessName: string;
@@ -43,6 +48,7 @@ const FoldingCartonSubSection = ({
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
   const intl = useIntl();
+
   const [insidePostProcessDetail, setInsidePostProcessDetail] =
     useState<FoldingCartonPostProcessDetail>(
       {} as FoldingCartonPostProcessDetail
@@ -338,10 +344,9 @@ const FoldingCartonSubSection = ({
     const val = e.target.value;
     let isAllowed = true;
 
-    switch (e.target.name) {
-      case "dimension":
-        isAllowed = isValidAlphanumeric(val);
-        break;
+    switch (e.target.name as keyof CreateProjectComponentSpecInput) {
+      case "thickness":
+        isAllowed = isValidFloat(val);
       default:
         break;
     }
@@ -349,7 +354,7 @@ const FoldingCartonSubSection = ({
     if (isAllowed) {
       setComponentSpec({
         ...componentSpec,
-        [e.target.name]: e.target.value,
+        [e.target.name]: val,
       });
     }
   };
@@ -363,11 +368,31 @@ const FoldingCartonSubSection = ({
       key: string,
       width: number = 250
     ) => {
+      const getDefaultValue = () => {
+        if (
+          componentSpec[componentSpecAttribute] &&
+          typeof componentSpec[componentSpecAttribute] === "string"
+        )
+          if (
+            productValueToLabelMap[
+              componentSpec[componentSpecAttribute] as string
+            ]
+          ) {
+            return productValueToLabelMap[
+              componentSpec[componentSpecAttribute] as string
+            ];
+          }
+        return null;
+      };
+      if (componentSpecAttribute === "outsideFinish") {
+        console.log(getDefaultValue(), componentSpec);
+      }
       return (
         <Autocomplete
           sx={{ width }}
           options={options}
           autoHighlight
+          value={getDefaultValue()}
           onChange={(e, v) => {
             setComponentSpec((spec) => ({
               ...spec,
@@ -394,7 +419,7 @@ const FoldingCartonSubSection = ({
         />
       );
     },
-    []
+    [componentSpec]
   );
 
   const renderComponentSpecSection = () => {
@@ -407,15 +432,9 @@ const FoldingCartonSubSection = ({
             </Typography>
           </ListItem>
           <ListItem>
-            <TextField
-              key="folding-carton-dimension"
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.dimension",
-              })}
-              onChange={componentSpecOnChange}
-              name="dimension"
-              value={componentSpec.dimension}
+            <DimensionsInput
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
             />
           </ListItem>
           <ListItem>

@@ -24,6 +24,7 @@ const GET_PROJECT_DETAIL = gql`
       deliveryAddress
       targetPrice
       orderQuantities
+      comments
       status
       components {
         id
@@ -37,11 +38,16 @@ const GET_PROJECT_DETAIL = gql`
         componentSpec {
           id
           productName
+          dimension {
+            x
+            y
+            z
+          }
           boxStyle
           style
-          dimension
-          productName
-          dimension
+          includeArtworkInQuote
+          purpose
+          shape
           thickness
           flute
           color

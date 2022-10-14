@@ -248,6 +248,18 @@ const GuidedReview = ({
                 variant: "caption",
               })}
             </ProjectDetailListItem>
+
+            <ProjectDetailListItem>
+              {renderTypography(
+                intl.formatMessage({
+                  id: "app.project.attribute.comments",
+                }),
+                { variant: "subtitle2" }
+              )}
+              {renderTypography(projectData.comments, {
+                variant: "caption",
+              })}
+            </ProjectDetailListItem>
           </List>
         </Box>
 

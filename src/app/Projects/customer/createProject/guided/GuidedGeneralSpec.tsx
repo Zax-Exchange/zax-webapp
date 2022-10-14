@@ -59,7 +59,6 @@ export default function GuidedGeneralSpec({
         break;
       case "targetPrice":
         isAllowed = isValidFloat(val);
-        val = parseInt(val, 10);
         break;
       default:
         break;

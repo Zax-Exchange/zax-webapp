@@ -55,13 +55,31 @@ import PaperTubeSubSection from "./componentModalSubSection/PaperTubeSubSection"
 import RigidBoxSubSection from "./componentModalSubSection/RigidBoxSubSection";
 import SleeveSubSection from "./componentModalSubSection/SleeveSubSection";
 
+const getComponentSpecDefaultState = (
+  productName: string
+): CreateProjectComponentSpecInput => {
+  const defaultSpec = {
+    productName,
+    dimension: { x: "", y: "", z: "" },
+  };
+  switch (productName) {
+    case PRODUCT_NAME_RIGID_BOX.value:
+    case PRODUCT_NAME_FOLDING_CARTON.value:
+    case PRODUCT_NAME_PAPER_TUBE.value:
+    case PRODUCT_NAME_SLEEVE.value:
+      return defaultSpec;
+  }
+  return defaultSpec;
+};
+
 const CreateProjectComponentModal = ({
-  projectData,
-  existingDesigns,
   setProjectData,
   setComponentModalOpen,
   setComponentsDesigns,
   setTemporaryDesigns,
+  setComponentIndexToEdit,
+  projectData,
+  existingDesigns,
   defaultComponentIndex,
 }: {
   setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
@@ -70,6 +88,7 @@ const CreateProjectComponentModal = ({
   setTemporaryDesigns: React.Dispatch<
     React.SetStateAction<ProjectDesign[] | null>
   >;
+  setComponentIndexToEdit: React.Dispatch<React.SetStateAction<number | null>>;
   projectData: CreateProjectInput;
   existingDesigns?: ProjectDesign[];
   defaultComponentIndex?: number;
@@ -87,10 +106,25 @@ const CreateProjectComponentModal = ({
     useState<CreateProjectComponentSpecInput>(
       {} as CreateProjectComponentSpecInput
     );
+
   const [componentData, setComponentData] =
     useState<CreateProjectComponentInput>({} as CreateProjectComponentInput);
 
   const [componentDesigns, setComponentDesigns] = useState<ProjectDesign[]>([]);
+
+  // when view changes reset everything, this will be the same as adding a new component
+  // defaultComponentIndex will be set when user selects a new product name
+  useEffect(() => {
+    if (view && defaultComponentIndex === undefined) {
+      setComponentSpec(getComponentSpecDefaultState(view));
+      setComponentData({
+        name: "",
+        designIds: [],
+        componentSpec: {} as CreateProjectComponentSpecInput,
+      });
+      setComponentDesigns([]);
+    }
+  }, [view]);
 
   useEffect(() => {
     if (deleteDesignError) {
@@ -105,6 +139,8 @@ const CreateProjectComponentModal = ({
   useEffect(() => {
     if (componentSpec.productName) {
       setView(productValueToLabelMap[componentSpec.productName].value);
+    } else {
+      setView("");
     }
   }, [componentSpec.productName]);
 
@@ -193,6 +229,9 @@ const CreateProjectComponentModal = ({
       });
     }
 
+    // clear component-for-edit index so user can start clean if they click create component again
+    setComponentIndexToEdit(null);
+
     setTemporaryDesigns([]);
     // close component modal
     setComponentModalOpen(false);
@@ -219,16 +258,49 @@ const CreateProjectComponentModal = ({
 
   // TODO: finish implementation
   // check if component modal add button should be disabled
-  const shouldDisableComponentModalAddButton = () => {
+  const shouldDisableComponentModalAddOrSaveButton = () => {
     // check each required spec is filled
+    return false;
+
+    const isInvalidComponentDimension = () => {
+      if (
+        !componentData.componentSpec ||
+        !componentData.componentSpec.productName
+      ) {
+        return true;
+      }
+
+      switch (componentData.componentSpec.productName) {
+        case PRODUCT_NAME_FOLDING_CARTON.value:
+          return (
+            Object.values(componentData.componentSpec.dimension).filter(
+              (d) => !!d
+            ).length !== 3
+          );
+        default:
+          return false;
+      }
+    };
 
     const isInvalidComponentSpec = () => {
       if (Object.keys(componentSpec).length === 0) return true;
 
       for (let key in componentSpec) {
-        const val = componentSpec[key as keyof CreateProjectComponentSpecInput];
+        const attribute: keyof CreateProjectComponentSpecInput =
+          key as keyof CreateProjectComponentSpecInput;
 
-        if (val !== undefined && val !== null) {
+        if (attribute === "dimension") {
+          if (isInvalidComponentDimension()) return true;
+        }
+
+        const val = componentSpec[attribute];
+
+        if (
+          val !== undefined &&
+          val !== null &&
+          typeof val !== "boolean" &&
+          typeof val !== "object"
+        ) {
           if (val.length === 0) return true;
         }
       }
@@ -238,7 +310,7 @@ const CreateProjectComponentModal = ({
     if (isInvalidComponentSpec()) return true;
 
     for (let key in componentData) {
-      if (key === "componentSpec") {
+      if (key === "componentSpec" || key === "designIds") {
         continue;
       }
       if (
@@ -283,6 +355,7 @@ const CreateProjectComponentModal = ({
               } as CreateProjectComponentSpecInput;
             }
           });
+          setComponentIndexToEdit(null);
         }}
         renderInput={(params) => (
           <TextField
@@ -319,6 +392,22 @@ const CreateProjectComponentModal = ({
   const setTempDesign = (file: ProjectDesign | null) => {
     if (file) {
       setTemporaryDesigns((prev) => [...(prev ? prev : []), file]);
+    }
+  };
+
+  const deleteComponentDesigns = () => {
+    if (componentData.designIds) {
+      Promise.all(
+        componentData.designIds.map((id) => {
+          return deleteDesignMutation({
+            variables: {
+              data: {
+                designId: id,
+              },
+            },
+          });
+        })
+      );
     }
   };
   const deleteDesign = async (id: string, ind: number) => {
@@ -382,6 +471,7 @@ const CreateProjectComponentModal = ({
       </ListItem>
     );
   };
+  console.log({ view, componentData, componentSpec });
 
   return (
     <>
@@ -399,13 +489,17 @@ const CreateProjectComponentModal = ({
             {defaultComponentIndex === undefined ? (
               <Button
                 onClick={addComponent}
-                disabled={shouldDisableComponentModalAddButton()}
+                disabled={shouldDisableComponentModalAddOrSaveButton()}
                 variant="contained"
               >
                 {intl.formatMessage({ id: "app.general.add" })}
               </Button>
             ) : (
-              <Button onClick={saveComponent} variant="contained">
+              <Button
+                onClick={saveComponent}
+                disabled={shouldDisableComponentModalAddOrSaveButton()}
+                variant="contained"
+              >
                 {intl.formatMessage({ id: "app.general.save" })}
               </Button>
             )}

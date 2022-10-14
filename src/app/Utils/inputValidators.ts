@@ -15,6 +15,7 @@ export const isValidInt = (val: string) => {
 };
 
 export const isValidFloat = (val: string) => {
-  const floatOnlyRegEx = /^\d{0,4}(\.\d{0,4})?$/;
+  const floatOnlyRegEx = /^([0-9]{1,})?(\.)?([0-9]{1,})?$/;
+  
   return (floatOnlyRegEx.test(val) || val === "") && val !== " " && val !== "0";
 }

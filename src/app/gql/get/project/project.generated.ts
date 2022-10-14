@@ -16,14 +16,14 @@ export type GetProjectDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, dimension: string, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null } }> } | null };
+export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null } } }> } | null };
 
 export type SearchCustomerProjectsQueryVariables = Types.Exact<{
   data: Types.SearchCustomerProjectInput;
 }>;
 
 
-export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, category: string, products: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, createdAt: string }> };
+export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, category: string, products: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: string }> };
 
 
 export const GetProjectUsersDocument = gql`
@@ -76,6 +76,7 @@ export const GetProjectDetailDocument = gql`
     deliveryAddress
     targetPrice
     orderQuantities
+    comments
     status
     components {
       id
@@ -89,11 +90,16 @@ export const GetProjectDetailDocument = gql`
       componentSpec {
         id
         productName
+        dimension {
+          x
+          y
+          z
+        }
         boxStyle
         style
-        dimension
-        productName
-        dimension
+        includeArtworkInQuote
+        purpose
+        shape
         thickness
         flute
         color

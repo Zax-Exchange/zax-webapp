@@ -54,7 +54,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useIntl } from "react-intl";
 import EditIcon from "@mui/icons-material/Edit";
 import { useUpdateProjectMutation } from "../../gql/update/project/project.generated";
-import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
+import {
+  isValidAlphanumeric,
+  isValidFloat,
+  isValidInt,
+} from "../../Utils/inputValidators";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
@@ -217,6 +221,7 @@ const CustomerProjectDetail = () => {
       targetPrice,
       orderQuantities,
       components,
+      comments,
     } = getProjectData!.getCustomerProject;
 
     const compsForUpdate: UpdateProjectComponentInput[] = [];
@@ -292,6 +297,7 @@ const CustomerProjectDetail = () => {
       deliveryAddress,
       targetPrice,
       orderQuantities,
+      comments,
     });
 
     setUpdateProjectComponentData(compsForUpdate);
@@ -338,7 +344,9 @@ const CustomerProjectDetail = () => {
     isEditMode: boolean,
     setData: React.Dispatch<React.SetStateAction<UpdateProjectInput | null>>,
     projectAttribute: keyof UpdateProjectInput,
-    projectFieldData: string | number | number[]
+    projectFieldData: string | number | number[],
+    multiline = false,
+    draggable = false
   ) => {
     const addOrderQuantity = () => {
       setData(
@@ -365,7 +373,7 @@ const CustomerProjectDetail = () => {
       });
     };
 
-    // Used for direct text input including projectName targetPrice, totalWeight
+    // Used for direct text input including projectName targetPrice, totalWeight, comments
     const renderTextField = (InputProps?: Partial<InputProps>) => {
       return (
         <TextField
@@ -374,14 +382,16 @@ const CustomerProjectDetail = () => {
             !!projectEditError[projectAttribute] &&
             intl.formatMessage({ id: "app.general.input.emptyError" })
           }
+          multiline={multiline}
+          draggable={draggable}
           onChange={onChange}
           value={projectFieldData}
-          size="small"
+          // size="small"
           sx={{
             ml: 2,
-            "& .MuiInputBase-root": {
-              height: "2em",
-            },
+            // "& .MuiInputBase-root": {
+            //   height: "2em",
+            // },
           }}
           FormHelperTextProps={{
             sx: {
@@ -470,6 +480,7 @@ const CustomerProjectDetail = () => {
           <GoogleMaps
             parentSetDataHandler={deliveryAddressOnChange}
             height="2em"
+            width={400}
             defaultAddress={projectFieldData as string}
             error={!!projectEditError.deliveryAddress}
             errorHelperText={
@@ -553,6 +564,7 @@ const CustomerProjectDetail = () => {
       let isAllowed = false;
       switch (projectAttribute) {
         case "name":
+        case "comments":
           if (isValidAlphanumeric(val)) {
             isAllowed = true;
           }
@@ -563,21 +575,24 @@ const CustomerProjectDetail = () => {
           }
           break;
         case "targetPrice":
-          if (isValidInt(val)) {
+          if (isValidFloat(val)) {
             isAllowed = true;
-            val = parseInt(val, 10) || "";
           }
           break;
 
         default:
           break;
       }
+
       if (isAllowed) {
         if (val === "") {
-          setProjectEditError((prev) => ({
-            ...prev,
-            [projectAttribute]: true,
-          }));
+          // comments is allowed to be empty
+          if (projectAttribute !== "comments") {
+            setProjectEditError((prev) => ({
+              ...prev,
+              [projectAttribute]: true,
+            }));
+          }
         } else {
           setProjectEditError((prev) => ({
             ...prev,
@@ -607,6 +622,7 @@ const CustomerProjectDetail = () => {
     switch (projectAttribute) {
       case "name":
       case "targetPrice":
+      case "comments":
         res = renderTextField();
         break;
       case "category":
@@ -709,8 +725,8 @@ const CustomerProjectDetail = () => {
                   <EditIcon color="action" />
                 </Tooltip>
               </IconButton>
-              <Box display="flex">
-                <List sx={{ mr: 3 }}>
+              <Box display="flex" justifyContent="space-between">
+                <List>
                   <ProjectDetailListItem>
                     {renderAttributeTitle(
                       intl.formatMessage({ id: "app.project.attribute.name" })
@@ -827,6 +843,25 @@ const CustomerProjectDetail = () => {
                       {convertToDate(projectData.updatedAt)}
                     </Typography>
                   </ProjectDetailListItem>
+
+                  {!!projectData.comments && (
+                    <ProjectDetailListItem>
+                      {renderAttributeTitle(
+                        intl.formatMessage({
+                          id: "app.project.attribute.comments",
+                        })
+                      )}
+
+                      {renderEditableProjectField(
+                        projectEditMode,
+                        setUpdateProjectData,
+                        "comments",
+                        updateProjectData.comments!,
+                        true,
+                        true
+                      )}
+                    </ProjectDetailListItem>
+                  )}
                 </List>
               </Box>
               {/* COMPONENTS SECTION */}

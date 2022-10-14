@@ -25,8 +25,12 @@ import {
   PRODUCT_NAME_PAPER_TRAY,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
-import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
+import {
+  isValidAlphanumeric,
+  isValidFloat,
+} from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
+import DimensionsInput from "../common/DimensionsInput";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 
 const GuidedInsideSpec = ({
@@ -54,11 +58,6 @@ const GuidedInsideSpec = ({
       color: "",
       postProcess: [],
     } as CreateProjectComponentSpecInput);
-  useEffect(() => {
-    if (componentData && componentData.componentSpec) {
-      setComponentSpec(componentData.componentSpec);
-    }
-  }, [componentData]);
 
   const [
     deleteProjectDesign,
@@ -69,6 +68,12 @@ const GuidedInsideSpec = ({
     shouldDisplayPostProcessDropdown,
     setShouldDisplayPostProcessDropdown,
   ] = useState(false);
+
+  useEffect(() => {
+    if (componentData && componentData.componentSpec) {
+      setComponentSpec(componentData.componentSpec);
+    }
+  }, [componentData]);
 
   const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -201,13 +206,19 @@ const GuidedInsideSpec = ({
 
   const shouldDisableNextButton = () => {
     let res = false;
+    if (
+      !componentSpec.dimension.x ||
+      !componentSpec.dimension.y ||
+      !componentSpec.dimension.z
+    )
+      return true;
+
     for (let key in componentSpec) {
       const attribute = key as keyof CreateProjectComponentSpecInput;
 
       // These four are required for outside spec
       switch (attribute) {
         case "productName":
-        case "dimension":
         case "color":
           if (!componentSpec[attribute]) return true;
       }
@@ -222,6 +233,7 @@ const GuidedInsideSpec = ({
       designIds: componentDesigns?.map((d) => d.designId),
       componentSpec,
     } as CreateProjectComponentInput;
+
     setComponentData(compData);
   };
 
@@ -267,15 +279,17 @@ const GuidedInsideSpec = ({
       <Stack mt={2} mb={2} spacing={2}>
         <ListItem>{renderInsideTrayDropdown()}</ListItem>
         <ListItem>
-          <TextField
-            autoComplete="new-password"
-            label={intl.formatMessage({
-              id: "app.component.attribute.dimension",
-            })}
-            onChange={componentSpecOnChange}
-            name="dimension"
-            value={componentSpec.dimension}
-          />
+          <Box>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              {intl.formatMessage({
+                id: "app.component.attribute.dimension",
+              })}
+            </Typography>
+            <DimensionsInput
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
+            />
+          </Box>
         </ListItem>
         <ListItem>
           <TextField

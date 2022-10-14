@@ -78,7 +78,9 @@ const VendorProjects = () => {
 
   const sortByTargetPrice = () => {
     let proj = [...projects];
-    proj = proj.sort((a, b) => a.targetPrice - b.targetPrice);
+    proj = proj.sort(
+      (a, b) => parseFloat(a.targetPrice) - parseFloat(b.targetPrice)
+    );
     setProjects([...proj]);
   };
 

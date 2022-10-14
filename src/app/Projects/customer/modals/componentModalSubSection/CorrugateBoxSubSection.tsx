@@ -30,6 +30,7 @@ import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../../../type/common";
+import DimensionsInput from "../../createProject/common/DimensionsInput";
 
 type CorrugatePostProcessDetail = {
   postProcessName: string;
@@ -419,7 +420,7 @@ const CorrugateBoxSubSection = ({
         />
       );
     },
-    []
+    [componentSpec]
   );
 
   const renderComponentSpecSection = () => {
@@ -434,16 +435,9 @@ const CorrugateBoxSubSection = ({
             </Typography>
           </ListItem>
           <ListItem>
-            <TextField
-              sx={{ width: 250 }}
-              key="corrugate-box-dimension"
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.dimension",
-              })}
-              onChange={componentSpecOnChange}
-              name="dimension"
-              value={componentSpec.dimension}
+            <DimensionsInput
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
             />
           </ListItem>
           <ListItem>

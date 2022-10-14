@@ -16,14 +16,14 @@ export type GetVendorProjectQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyName: string, companyId: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, dimension: string, boxStyle?: string | null, style?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } | null };
+export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyName: string, companyId: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null } } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: number }> }> } } | null };
 
 export type GetVendorProjectsQueryVariables = Types.Exact<{
   data: Types.GetVendorProjectsInput;
 }>;
 
 
-export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProjectOverview', id: string, userId: string, bidId: string, bidStatus: Types.BidStatus, companyName: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: number, orderQuantities: Array<number>, status: string, totalWeight: string, category: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string }> };
+export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProjectOverview', id: string, userId: string, bidId: string, bidStatus: Types.BidStatus, companyName: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: string, totalWeight: string, category: string, permission: Types.ProjectPermission, createdAt: string, updatedAt: string }> };
 
 export type SearchVendorCompaniesQueryVariables = Types.Exact<{
   data: Types.SearchVendorCompanyInput;
@@ -95,6 +95,7 @@ export const GetVendorProjectDocument = gql`
     deliveryAddress
     targetPrice
     orderQuantities
+    comments
     status
     components {
       id
@@ -108,11 +109,16 @@ export const GetVendorProjectDocument = gql`
       componentSpec {
         id
         productName
-        dimension
+        dimension {
+          x
+          y
+          z
+        }
         boxStyle
         style
-        productName
-        dimension
+        includeArtworkInQuote
+        purpose
+        shape
         thickness
         flute
         color

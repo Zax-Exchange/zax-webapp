@@ -94,18 +94,18 @@ export default function GuidedCreateProject() {
     category: "",
     totalWeight: "",
     deliveryDate: new Date().toISOString().split("T")[0],
-    targetPrice: 0,
+    targetPrice: "",
     orderQuantities: [],
     comments: "",
     components: [],
   });
-
   const [componentsData, setComponentsData] =
     useState<GuidedCreateComponentsDataContainer>({
       [GuidedView.OUTER_BOX]: null,
       [GuidedView.INSIDE_TRAY]: null,
       [GuidedView.OTHER]: null,
     });
+  console.log(componentsData);
 
   // Storing uploaded designs/artworks locally before creating project so we can still display
   // if user navigates back and forth

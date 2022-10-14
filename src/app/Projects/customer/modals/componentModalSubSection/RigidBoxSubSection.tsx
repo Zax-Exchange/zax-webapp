@@ -18,6 +18,7 @@ import {
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING,
+  productValueToLabelMap,
   RIGID_BOX_BOX_STYLES,
   RIGID_BOX_FINISHES,
   RIGID_BOX_MATERIALS,
@@ -29,6 +30,7 @@ import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../../../type/common";
+import DimensionsInput from "../../createProject/common/DimensionsInput";
 
 type RigidBoxPostProcessDetail = {
   postProcessName: string;
@@ -170,11 +172,28 @@ const RigidBoxSubSection = ({
       helperText: string = "",
       width: number = 250
     ) => {
+      const getDefaultValue = () => {
+        if (
+          componentSpec[componentSpecAttribute] &&
+          typeof componentSpec[componentSpecAttribute] === "string"
+        )
+          if (
+            productValueToLabelMap[
+              componentSpec[componentSpecAttribute] as string
+            ]
+          ) {
+            return productValueToLabelMap[
+              componentSpec[componentSpecAttribute] as string
+            ];
+          }
+        return null;
+      };
       return (
         <Autocomplete
           sx={{ width }}
           options={options}
           autoHighlight
+          value={getDefaultValue()}
           onChange={(e, v) => {
             setComponentSpec((spec) => ({
               ...spec,
@@ -201,7 +220,7 @@ const RigidBoxSubSection = ({
         />
       );
     },
-    []
+    [componentSpec]
   );
 
   const renderPostProcessSection = (
@@ -421,14 +440,9 @@ const RigidBoxSubSection = ({
             )}
           </ListItem>
           <ListItem>
-            <TextField
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.dimension",
-              })}
-              onChange={componentSpecOnChange}
-              name="dimension"
-              value={componentSpec.dimension}
+            <DimensionsInput
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
             />
           </ListItem>
           <ListItem>

@@ -10,6 +10,87 @@ const intl = createIntl({
   messages: en
 }, cache)
 
+/** Product names */
+export const PRODUCT_NAME_RIGID_BOX: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.rigidBox"}),
+  value: "Rigid Box"
+}
+export const PRODUCT_NAME_FOLDING_CARTON: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.foldingCarton"}),
+  value: "Folding Carton"
+}
+export const PRODUCT_NAME_SLEEVE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.sleeve"}),
+  value: "Sleeve"
+}
+export const PRODUCT_NAME_CORRUGATE_BOX: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.corrugateBox"}),
+  value: "Corrugate Box"
+}
+export const PRODUCT_NAME_PAPER_TUBE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.paperTube"}),
+  value: "Paper Tube"
+}
+export const PRODUCT_NAME_STICKER: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.sticker"}),
+  value: "Sticker"
+}
+export const PRODUCT_NAME_PRINTING: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.printing"}),
+  value: "Printing"
+}
+export const PRODUCT_NAME_MOLDED_FIBER_TRAY: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.moldedFiberTray"}),
+  value: "Molded Fiber Tray"
+}
+
+export const PRODUCT_NAME_PAPER_TRAY: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.paperTray"}),
+  value: "Paper Tray"
+}
+export const PRODUCT_NAME_CORRUGATE_TRAY: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.corrugateTray"}),
+  value: "Corrugate Tray"
+}
+
+export const PRODUCT_NAME_BOOKLET: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.name.booklet"}),
+  value: "Booklet"
+}
+
+/* Sticker only */
+export const PURPOSE_LABELING: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.purpose.labeling"}),
+  value: "Labeling"
+}
+
+export const PURPOSE_SEALING: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.purpose.sealing"}),
+  value: "Sealing"
+}
+
+export const SHAPE_SQUARE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.shape.square"}),
+  value: "Square"
+}
+
+export const SHAPE_RECTANGLE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.shape.rectangle"}),
+  value: "Rectangle"
+}
+export const SHAPE_CIRCLE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.shape.circle"}),
+  value: "Circle"
+}
+export const SHAPE_OVAL: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.shape.oval"}),
+  value: "Oval"
+}
+export const SHAPE_OTHER: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.shape.other"}),
+  value: "Irregular"
+}
+
 /* For corrugate box only */
 export const A_FLUTE: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.flute.aFlute"}),
@@ -122,55 +203,6 @@ export const FINISH_GLOSS: TranslatableAttribute = {
 export const FINISH_UNCOATED: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.finish.uncoated"}),
   value: "Uncoated"
-}
-
-
-/** Product names */
-export const PRODUCT_NAME_RIGID_BOX: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.rigidBox"}),
-  value: "Rigid Box"
-}
-export const PRODUCT_NAME_FOLDING_CARTON: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.foldingCarton"}),
-  value: "Folding Carton"
-}
-export const PRODUCT_NAME_SLEEVE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.sleeve"}),
-  value: "Sleeve"
-}
-export const PRODUCT_NAME_CORRUGATE_BOX: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.corrugateBox"}),
-  value: "Corrugate Box"
-}
-export const PRODUCT_NAME_PAPER_TUBE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.paperTube"}),
-  value: "Paper Tube"
-}
-export const PRODUCT_NAME_STICKER: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.sticker"}),
-  value: "Sticker"
-}
-export const PRODUCT_NAME_PRINTING: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.printing"}),
-  value: "Printing"
-}
-export const PRODUCT_NAME_MOLDED_FIBER_TRAY: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.moldedFiberTray"}),
-  value: "Molded Fiber Tray"
-}
-
-export const PRODUCT_NAME_PAPER_TRAY: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.paperTray"}),
-  value: "Paper Tray"
-}
-export const PRODUCT_NAME_CORRUGATE_TRAY: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.corrugateTray"}),
-  value: "Corrugate Tray"
-}
-
-export const PRODUCT_NAME_BOOKLET: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.product.name.booklet"}),
-  value: "Booklet"
 }
 
 /** Booklet styles */
@@ -421,6 +453,20 @@ export const GUIDED_PROJECT_FINISH = [
   FINISH_GLOSS,
   FINISH_MATTE,
   FINISH_UNCOATED
+]
+
+/** STICKER DATA */
+export const STICKER_PURPOSES = [
+  PURPOSE_LABELING,
+  PURPOSE_SEALING
+]
+
+export const STICKER_SHAPES = [
+  SHAPE_RECTANGLE,
+  SHAPE_SQUARE,
+  SHAPE_CIRCLE,
+  SHAPE_OVAL,
+  SHAPE_OTHER,
 ]
 
 /** BOOKLET DATA */
@@ -731,5 +777,14 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [BOOKLET_STYLE_PERFECT_BOUND.value]: BOOKLET_STYLE_PERFECT_BOUND,
   [BOOKLET_STYLE_SADDLE_STITCH.value]: BOOKLET_STYLE_SADDLE_STITCH,
   [BOOKLET_STYLE_SEWN_BOUND.value]: BOOKLET_STYLE_SEWN_BOUND,
-  [BOOKLET_STYLE_SPIRAL_BOUND.value]: BOOKLET_STYLE_SPIRAL_BOUND
+  [BOOKLET_STYLE_SPIRAL_BOUND.value]: BOOKLET_STYLE_SPIRAL_BOUND,
+
+  [SHAPE_RECTANGLE.value]: SHAPE_RECTANGLE,
+  [SHAPE_SQUARE.value]: SHAPE_SQUARE,
+  [SHAPE_CIRCLE.value]: SHAPE_CIRCLE,
+  [SHAPE_OVAL.value]: SHAPE_OVAL,
+  [SHAPE_OTHER.value]: SHAPE_OTHER,
+
+  [PURPOSE_LABELING.value]: PURPOSE_LABELING,
+  [PURPOSE_SEALING.value]: PURPOSE_SEALING
 }

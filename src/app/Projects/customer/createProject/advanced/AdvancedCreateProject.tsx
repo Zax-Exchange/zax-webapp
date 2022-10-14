@@ -39,6 +39,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import FullScreenLoading from "../../../../Utils/Loading";
 import {
   isValidAlphanumeric,
+  isValidFloat,
   isValidInt,
 } from "../../../../Utils/inputValidators";
 import GoogleMapAutocomplete from "../../../../Utils/GoogleMapAutocomplete";
@@ -120,7 +121,7 @@ const AdvancedCreateProject = () => {
     category: "",
     totalWeight: "",
     deliveryDate: new Date().toISOString().split("T")[0],
-    targetPrice: 0,
+    targetPrice: "",
     orderQuantities: [],
     comments: "",
     components: [],
@@ -180,16 +181,17 @@ const AdvancedCreateProject = () => {
 
       const sanitizedComponents: CreateProjectComponentInput[] = components.map(
         (comp) => {
-          const copySpec: any = Object.assign({}, comp.componentSpec);
-          const copyComp: any = Object.assign({}, comp);
+          const copySpec: any = JSON.parse(JSON.stringify(comp.componentSpec));
+          const copyComp: any = JSON.parse(JSON.stringify(comp));
 
           // get rid of ids and typenames so data between getProjectData and createProjectData is uniform
           delete copyComp.__typename;
           delete copyComp.id;
           delete copyComp.projectId;
+          delete copyComp.designs;
           delete copySpec.id;
           delete copySpec.__typename;
-          delete copyComp.designs;
+          delete copySpec.dimension.__typename;
 
           return {
             ...copyComp,
@@ -326,15 +328,18 @@ const AdvancedCreateProject = () => {
     let val: string | number = e.target.value;
     let isAllowed = true;
 
-    switch (e.target.name) {
+    switch (e.target.name as keyof CreateProjectInput) {
       case "name":
       case "comments":
         isAllowed = isValidAlphanumeric(val);
         break;
-      case "targetPrice":
       case "orderQuantities":
         isAllowed = isValidInt(val);
         val = parseInt(val, 10);
+        break;
+      case "targetPrice":
+      case "totalWeight":
+        isAllowed = isValidFloat(val);
         break;
       default:
         break;
@@ -352,7 +357,7 @@ const AdvancedCreateProject = () => {
     for (let key in projectData) {
       if (key === "comments" || key === "designId") continue;
       if (key === "targetPrice") {
-        if (projectData.targetPrice === 0) return true;
+        if (!projectData.targetPrice) return true;
         continue;
       }
       if (
@@ -561,6 +566,7 @@ const AdvancedCreateProject = () => {
               <TextField
                 autoComplete="new-password"
                 multiline
+                draggable
                 label={intl.formatMessage({
                   id: "app.project.attribute.comments",
                 })}
@@ -634,6 +640,7 @@ const AdvancedCreateProject = () => {
           sx: {
             borderTopLeftRadius: "4px",
             borderBottomLeftRadius: "4px",
+            width: "500px",
           },
         }}
         ModalProps={{
@@ -648,10 +655,11 @@ const AdvancedCreateProject = () => {
       >
         <CreateProjectComponentModal
           setComponentsDesigns={setComponentsDesigns}
-          projectData={projectData}
-          setProjectData={setProjectData}
           setComponentModalOpen={setComponentModalOpen}
+          setProjectData={setProjectData}
           setTemporaryDesigns={setTemporaryDesigns}
+          setComponentIndexToEdit={setComponentIndexToEdit}
+          projectData={projectData}
           defaultComponentIndex={
             componentIndexToEdit !== null ? componentIndexToEdit : undefined
           }
