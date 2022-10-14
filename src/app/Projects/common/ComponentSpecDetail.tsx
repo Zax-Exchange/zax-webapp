@@ -191,7 +191,7 @@ export default function ComponentSpecDetail({
         </TableCell>
 
         <TableCell>
-          <Typography variant="caption">{parseFloat(thickness)}</Typography>
+          <Typography variant="caption">{parseFloat(thickness)} mm</Typography>
         </TableCell>
       </TableRow>
     );

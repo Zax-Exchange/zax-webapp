@@ -384,9 +384,7 @@ const FoldingCartonSubSection = ({
           }
         return null;
       };
-      if (componentSpecAttribute === "outsideFinish") {
-        console.log(getDefaultValue(), componentSpec);
-      }
+
       return (
         <Autocomplete
           sx={{ width }}

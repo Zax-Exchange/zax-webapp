@@ -471,7 +471,6 @@ const CreateProjectComponentModal = ({
       </ListItem>
     );
   };
-  console.log({ view, componentData, componentSpec });
 
   return (
     <>

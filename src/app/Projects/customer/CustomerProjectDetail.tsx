@@ -494,60 +494,75 @@ const CustomerProjectDetail = () => {
     };
 
     const renderOrderQuantities = () => {
+      if (!updateProjectData) return null;
+
       return (
         <>
-          <Box display="flex" flexDirection="row" ml={2}>
-            <Box>
-              <TextField
-                onChange={orderQuantityOnChange}
-                value={orderQuantity}
-                size="small"
-                sx={{
-                  "& .MuiInputBase-root": {
-                    height: "2em",
-                  },
-                }}
-                error={!!projectEditError.orderQuantities}
-                helperText={
-                  !!projectEditError.orderQuantities &&
-                  intl.formatMessage({
-                    id: "app.customer.projectDetail.error.orderQuantity.helperText",
-                  })
-                }
-                FormHelperTextProps={{
-                  sx: {
-                    margin: 0,
-                    fontSize: "0.7em",
-                  },
-                }}
-              />
-            </Box>
-            <Box>
-              <IconButton onClick={addOrderQuantity} disabled={!orderQuantity}>
-                <AddCircleIcon />
-              </IconButton>
-            </Box>
-          </Box>
-          {!!(projectFieldData as number[]).length && (
-            <List>
-              {(projectFieldData as number[]).map((quantity, i) => {
-                return (
-                  <ListItem key={i}>
-                    <Typography variant="caption">{quantity}</Typography>
-                    <IconButton onClick={() => removeOrderQuantity(i)}>
-                      <CancelIcon />
-                    </IconButton>
-                  </ListItem>
-                );
-              })}
-            </List>
-          )}
+          <Autocomplete
+            options={[]}
+            freeSolo
+            multiple
+            value={[...updateProjectData.orderQuantities]}
+            inputValue={orderQuantity}
+            onInputChange={(e, v) => orderQuantityOnChange(v)}
+            onBlur={() => {
+              if (orderQuantity) {
+                setUpdateProjectData((prev) => ({
+                  ...prev!,
+                  orderQuantities: [...prev!.orderQuantities, +orderQuantity],
+                }));
+              }
+              setOrderQuantity("");
+            }}
+            onChange={(e, v) => {
+              if (!v) {
+                setUpdateProjectData((prev) => ({
+                  ...prev!,
+                  orderQuantities: [],
+                }));
+              } else {
+                setUpdateProjectData((prev) => ({
+                  ...prev!,
+                  orderQuantities: v.map((v) => +v),
+                }));
+              }
+            }}
+            renderInput={(params) => {
+              return (
+                <TextField
+                  {...params}
+                  autoComplete="new-password"
+                  type="tel"
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password", // disable autocomplete and autofill
+                  }}
+                  InputLabelProps={{
+                    sx: {
+                      fontSize: 16,
+                      top: -7,
+                    },
+                  }}
+                  sx={{
+                    ml: 2,
+                  }}
+                  error={!!projectEditError.orderQuantities}
+                  helperText={
+                    !!projectEditError.orderQuantities &&
+                    intl.formatMessage({
+                      id: "app.customer.projectDetail.error.orderQuantity.helperText",
+                    })
+                  }
+                />
+              );
+            }}
+            renderOption={() => null}
+          />
         </>
       );
     };
 
-    const orderQuantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      let val: string | number = e.target.value;
+    const orderQuantityOnChange = (val: string) => {
       let isAllowed = false;
 
       if (isValidInt(val)) {
@@ -570,10 +585,6 @@ const CustomerProjectDetail = () => {
           }
           break;
         case "totalWeight":
-          if (isValidInt(val)) {
-            isAllowed = true;
-          }
-          break;
         case "targetPrice":
           if (isValidFloat(val)) {
             isAllowed = true;
@@ -659,6 +670,9 @@ const CustomerProjectDetail = () => {
     let fieldString = projectFieldData;
     if (projectAttribute === "totalWeight") {
       fieldString += " g";
+    }
+    if (projectAttribute === "targetPrice") {
+      fieldString = parseFloat(fieldString as string);
     }
     return <Typography variant="caption">{fieldString}</Typography>;
   };

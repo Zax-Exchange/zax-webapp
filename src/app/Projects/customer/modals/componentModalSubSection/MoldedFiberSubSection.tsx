@@ -20,7 +20,10 @@ import {
   POST_PROCESS_PRINTING,
   productValueToLabelMap,
 } from "../../../../constants/products";
-import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
+import {
+  isValidAlphanumeric,
+  isValidFloat,
+} from "../../../../Utils/inputValidators";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../../../type/common";
@@ -323,10 +326,11 @@ const MoldedFiberSubSection = ({
     let isAllowed = true;
 
     switch (e.target.name) {
-      case "dimension":
-      case "thickness":
       case "color":
         isAllowed = isValidAlphanumeric(val);
+        break;
+      case "thickness":
+        isAllowed = isValidFloat(val);
         break;
       default:
         break;

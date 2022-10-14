@@ -27,6 +27,8 @@ import {
   Tab,
   CSSObject,
   Tooltip,
+  Autocomplete,
+  Chip,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../../../context/AuthContext";
@@ -263,8 +265,7 @@ const AdvancedCreateProject = () => {
     });
   };
 
-  const orderQuantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
+  const orderQuantityOnChange = (val: string) => {
     if (isValidInt(val)) {
       setOrderQuantity(val);
     }
@@ -409,7 +410,7 @@ const AdvancedCreateProject = () => {
   };
 
   const isLoading = createProjectLoading || getCustomerProjectLoading;
-
+  console.log(orderQuantity);
   return (
     <>
       {isLoading && <FullScreenLoading />}
@@ -538,30 +539,67 @@ const AdvancedCreateProject = () => {
             </ListItem>
 
             <ListItem>
-              <TextField
-                autoComplete="new-password"
-                type="tel"
-                label={intl.formatMessage({
-                  id: "app.project.attribute.orderQuantities",
-                })}
-                onChange={orderQuantityOnChange}
-                value={orderQuantity}
-              />
-              <IconButton onClick={addOrderQuantity}>
-                <AddCircleIcon />
-              </IconButton>
+              <Box>
+                <Autocomplete
+                  options={[]}
+                  freeSolo
+                  multiple
+                  value={[...projectData.orderQuantities]}
+                  inputValue={orderQuantity}
+                  onInputChange={(e, v) => orderQuantityOnChange(v)}
+                  onBlur={() => {
+                    if (orderQuantity) {
+                      setProjectData((prev) => ({
+                        ...prev,
+                        orderQuantities: [
+                          ...prev.orderQuantities,
+                          +orderQuantity,
+                        ],
+                      }));
+                    }
+                    setOrderQuantity("");
+                  }}
+                  onChange={(e, v) => {
+                    if (!v) {
+                      setProjectData((prev) => ({
+                        ...prev,
+                        orderQuantities: [],
+                      }));
+                    } else {
+                      setProjectData((prev) => ({
+                        ...prev,
+                        orderQuantities: v.map((v) => +v),
+                      }));
+                    }
+                  }}
+                  renderInput={(params) => {
+                    return (
+                      <TextField
+                        {...params}
+                        autoComplete="new-password"
+                        type="tel"
+                        label={intl.formatMessage({
+                          id: "app.project.attribute.orderQuantities",
+                        })}
+                        inputProps={{
+                          ...params.inputProps,
+                          autoComplete: "new-password", // disable autocomplete and autofill
+                        }}
+                        InputLabelProps={{
+                          sx: {
+                            fontSize: 16,
+                            top: -7,
+                          },
+                        }}
+                        value={orderQuantity}
+                        onChange={(e) => orderQuantityOnChange(e.target.value)}
+                      />
+                    );
+                  }}
+                  renderOption={() => null}
+                />
+              </Box>
             </ListItem>
-            {!!projectData.orderQuantities.length &&
-              projectData.orderQuantities.map((quantity, i) => {
-                return (
-                  <ListItem>
-                    <Typography variant="caption">{quantity}</Typography>
-                    <IconButton onClick={() => removeOrderQuantity(i)}>
-                      <CancelIcon />
-                    </IconButton>
-                  </ListItem>
-                );
-              })}
             <ListItem>
               <TextField
                 autoComplete="new-password"
