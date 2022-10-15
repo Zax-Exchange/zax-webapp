@@ -41,7 +41,7 @@ const DimensionsInput = ({
         name="x"
         value={componentSpec.dimension.x}
         sx={{
-          width: 120,
+          width: 100,
           mr: 2,
         }}
       />
@@ -52,7 +52,7 @@ const DimensionsInput = ({
         name="y"
         value={componentSpec.dimension.y}
         sx={{
-          width: 120,
+          width: 100,
           mr: 2,
         }}
       />
@@ -64,7 +64,7 @@ const DimensionsInput = ({
           name="z"
           value={componentSpec.dimension.z}
           sx={{
-            width: 120,
+            width: 100,
           }}
         />
       )}

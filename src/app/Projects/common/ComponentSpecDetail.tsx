@@ -1,4 +1,6 @@
+import { CheckCircle } from "@mui/icons-material";
 import {
+  Box,
   Link,
   List,
   ListItem,
@@ -8,6 +10,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -35,6 +38,7 @@ export default function ComponentSpecDetail({
     style,
     boxStyle,
     dimension,
+    includeArtworkInQuote,
     purpose,
     shape,
     thickness,
@@ -63,9 +67,23 @@ export default function ComponentSpecDetail({
     res.push(
       <TableRow>
         <TableCell>
-          <Typography variant="subtitle2">
-            {intl.formatMessage({ id: "app.component.attribute.designs" })}
-          </Typography>
+          <Box display="flex" alignItems="center">
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.component.attribute.designs" })}
+            </Typography>
+            {typeof includeArtworkInQuote === "boolean" &&
+              includeArtworkInQuote && (
+                <Tooltip
+                  title={intl.formatMessage({
+                    id: "app.component.attribute.includeArtworkInQuote",
+                  })}
+                  placement="top"
+                  arrow
+                >
+                  <CheckCircle fontSize="small" color="info" sx={{ ml: 1 }} />
+                </Tooltip>
+              )}
+          </Box>
         </TableCell>
         <TableCell>
           {designs.map((design) => {

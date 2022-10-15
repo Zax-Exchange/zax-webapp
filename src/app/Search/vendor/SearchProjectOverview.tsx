@@ -135,7 +135,7 @@ const SearchProjectOverview = ({
                     <AttachMoneyIcon />
                   </Tooltip>
                   <Typography variant="caption">
-                    $ {projectData.targetPrice}
+                    {parseFloat(projectData.targetPrice)}
                   </Typography>
                 </ProjectOverviewListItem>
 

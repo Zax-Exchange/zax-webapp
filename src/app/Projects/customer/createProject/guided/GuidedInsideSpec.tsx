@@ -1,7 +1,9 @@
+import { Cancel } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
   Button,
+  IconButton,
   Link,
   ListItem,
   Stack,
@@ -31,6 +33,7 @@ import {
 } from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
 import DimensionsInput from "../common/DimensionsInput";
+import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 
 const GuidedInsideSpec = ({
@@ -38,6 +41,7 @@ const GuidedInsideSpec = ({
   setProjectData,
   setComponentDesigns,
   setActiveStep,
+  deleteComponentDesign,
   componentData,
   componentDesigns,
   activeStep,
@@ -46,6 +50,7 @@ const GuidedInsideSpec = ({
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
   setComponentDesigns: (data: ProjectDesign | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
+  deleteComponentDesign: (ind: number) => void;
   componentData: CreateProjectComponentInput | null;
   componentDesigns: ProjectDesign[] | null;
   activeStep: number;
@@ -54,8 +59,13 @@ const GuidedInsideSpec = ({
   const [componentSpec, setComponentSpec] =
     useState<CreateProjectComponentSpecInput>({
       productName: "",
-      dimension: "",
+      dimension: {
+        x: "",
+        y: "",
+        z: "",
+      },
       color: "",
+      includeArtworkInQuote: false,
       postProcess: [],
     } as CreateProjectComponentSpecInput);
 
@@ -204,12 +214,32 @@ const GuidedInsideSpec = ({
     );
   };
 
+  const deleteDesign = async (id: string, ind: number) => {
+    try {
+      await deleteProjectDesign({
+        variables: {
+          data: {
+            designId: id,
+          },
+        },
+      });
+
+      deleteComponentDesign(ind);
+    } catch (error) {}
+  };
+
   const shouldDisableNextButton = () => {
     let res = false;
     if (
       !componentSpec.dimension.x ||
       !componentSpec.dimension.y ||
       !componentSpec.dimension.z
+    )
+      return true;
+
+    if (
+      componentSpec.includeArtworkInQuote &&
+      (!componentDesigns || !componentDesigns.length)
     )
       return true;
 
@@ -303,20 +333,40 @@ const GuidedInsideSpec = ({
           />
         </ListItem>
         <ListItem>{renderPostProcessDropdown()}</ListItem>
-        {!!componentDesigns && (
-          <ListItem>
-            <Typography variant="subtitle2">
+        <ListItem>
+          <Box>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
               {intl.formatMessage({
-                id: "app.component.attribute.designs",
+                id: "app.component.attribute.includeArtworkInQuote",
               })}
             </Typography>
-            {componentDesigns.map((file) => {
-              return (
-                <Link href={file.url} target="_blank" rel="noopener">
-                  {file.filename}
-                </Link>
-              );
-            })}
+            <IncludeArtworkInQuoteDropdown
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
+            />
+          </Box>
+        </ListItem>
+        {!!componentDesigns && (
+          <ListItem>
+            <Box>
+              <Typography variant="subtitle2">
+                {intl.formatMessage({
+                  id: "app.component.attribute.designs",
+                })}
+              </Typography>
+              {componentDesigns.map((file, i) => {
+                return (
+                  <Box>
+                    <Link href={file.url} target="_blank" rel="noopener">
+                      {file.filename}
+                    </Link>
+                    <IconButton onClick={() => deleteDesign(file.designId, i)}>
+                      <Cancel fontSize="small" />
+                    </IconButton>
+                  </Box>
+                );
+              })}
+            </Box>
           </ListItem>
         )}
       </Stack>

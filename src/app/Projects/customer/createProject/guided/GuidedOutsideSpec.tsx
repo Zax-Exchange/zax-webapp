@@ -1,3 +1,4 @@
+import { Cancel } from "@mui/icons-material";
 import Add from "@mui/icons-material/Add";
 import {
   Autocomplete,
@@ -34,6 +35,7 @@ import {
 } from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
 import DimensionsInput from "../common/DimensionsInput";
+import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedCreateBoxStyleSelection from "./modals/GuidedCreateBoxStyleSelection";
 
@@ -42,6 +44,7 @@ const GuidedOutsideSpec = ({
   setProjectData,
   setComponentDesigns,
   setActiveStep,
+  deleteComponentDesign,
   componentData,
   componentDesigns,
   activeStep,
@@ -50,6 +53,7 @@ const GuidedOutsideSpec = ({
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
   setComponentDesigns: (data: ProjectDesign | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
+  deleteComponentDesign: (ind: number) => void;
   componentData: CreateProjectComponentInput | null;
   componentDesigns: ProjectDesign[] | null;
   activeStep: number;
@@ -58,6 +62,7 @@ const GuidedOutsideSpec = ({
   const [componentSpec, setComponentSpec] =
     useState<CreateProjectComponentSpecInput>({
       productName: "",
+      includeArtworkInQuote: false,
       dimension: {
         x: "",
         y: "",
@@ -112,50 +117,54 @@ const GuidedOutsideSpec = ({
       return null;
     };
     return (
-      <Autocomplete
-        sx={{ width: 200 }}
-        options={GUIDED_PROJECT_OUTSIDE_PRODUCTS}
-        autoHighlight
-        value={getDefaultBoxType()}
-        onChange={(e, v) => {
-          setComponentSpec((spec) => {
-            if (!v) {
-              return {
-                ...spec,
-                productName: "",
-                boxStyle: "",
-              };
-            }
-            if (v.value === componentSpec.productName) {
-              return spec;
-            } else {
-              return {
-                ...spec,
-                boxStyle: "",
-                productName: v.value,
-              };
-            }
-          });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={intl.formatMessage({
-              id: "app.customer.createProject.guidedCreate.boxType",
-            })}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({
+            id: "app.customer.createProject.guidedCreate.boxType",
+          })}
+        </Typography>
+        <Autocomplete
+          sx={{ width: 200 }}
+          options={GUIDED_PROJECT_OUTSIDE_PRODUCTS}
+          autoHighlight
+          value={getDefaultBoxType()}
+          onChange={(e, v) => {
+            setComponentSpec((spec) => {
+              if (!v) {
+                return {
+                  ...spec,
+                  productName: "",
+                  boxStyle: "",
+                };
+              }
+              if (v.value === componentSpec.productName) {
+                return spec;
+              } else {
+                return {
+                  ...spec,
+                  boxStyle: "",
+                  productName: v.value,
+                };
+              }
+            });
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+            />
+          )}
+        />
+      </Box>
     );
   };
 
@@ -186,7 +195,12 @@ const GuidedOutsideSpec = ({
 
   const renderPostProcessDropdown = () => {
     return (
-      <Box display="flex">
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({
+            id: "app.component.attribute.postProcess",
+          })}
+        </Typography>
         <Autocomplete
           sx={{ width: 200 }}
           options={GUIDED_PROJECT_ALL_POST_PROCESS}
@@ -210,9 +224,6 @@ const GuidedOutsideSpec = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              label={intl.formatMessage({
-                id: "app.component.attribute.postProcess",
-              })}
               inputProps={{
                 ...params.inputProps,
                 autoComplete: "new-password",
@@ -290,6 +301,12 @@ const GuidedOutsideSpec = ({
     )
       return true;
 
+    if (
+      componentSpec.includeArtworkInQuote &&
+      (!componentDesigns || !componentDesigns.length)
+    )
+      return true;
+
     for (let key in componentSpec) {
       const attribute = key as keyof CreateProjectComponentSpecInput;
 
@@ -304,6 +321,19 @@ const GuidedOutsideSpec = ({
     return false;
   };
 
+  const deleteDesign = async (id: string, ind: number) => {
+    try {
+      await deleteProjectDesign({
+        variables: {
+          data: {
+            designId: id,
+          },
+        },
+      });
+
+      deleteComponentDesign(ind);
+    } catch (error) {}
+  };
   const saveComponentData = () => {
     const compData = {
       name: "Outer Box",
@@ -371,20 +401,42 @@ const GuidedOutsideSpec = ({
           </ListItem>
           <ListItem>{renderBoxStyle()}</ListItem>
           <ListItem>{renderPostProcessDropdown()}</ListItem>
-          {!!componentDesigns && (
-            <ListItem>
-              <Typography variant="subtitle2">
+          <ListItem>
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 {intl.formatMessage({
-                  id: "app.component.attribute.designs",
+                  id: "app.component.attribute.includeArtworkInQuote",
                 })}
               </Typography>
-              {componentDesigns.map((file) => {
-                return (
-                  <Link href={file.url} target="_blank" rel="noopener">
-                    {file.filename}
-                  </Link>
-                );
-              })}
+              <IncludeArtworkInQuoteDropdown
+                componentSpec={componentSpec}
+                setComponentSpec={setComponentSpec}
+              />
+            </Box>
+          </ListItem>
+          {!!componentDesigns && (
+            <ListItem>
+              <Box>
+                <Typography variant="subtitle2">
+                  {intl.formatMessage({
+                    id: "app.component.attribute.designs",
+                  })}
+                </Typography>
+                {componentDesigns.map((file, i) => {
+                  return (
+                    <Box>
+                      <Link href={file.url} target="_blank" rel="noopener">
+                        {file.filename}
+                      </Link>
+                      <IconButton
+                        onClick={() => deleteDesign(file.designId, i)}
+                      >
+                        <Cancel fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  );
+                })}
+              </Box>
             </ListItem>
           )}
         </Stack>

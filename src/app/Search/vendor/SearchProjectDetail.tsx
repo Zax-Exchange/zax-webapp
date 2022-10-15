@@ -603,7 +603,7 @@ const SearchProjectDetail = () => {
                     })}
                   </Typography>
                   <Typography variant="caption" component="p">
-                    {targetPrice}
+                    $ {parseFloat(targetPrice)}
                   </Typography>
                 </ProjectListItem>
               </Stack>

@@ -20,7 +20,9 @@
   "app.general.add": "Add",
   "app.general.save": "Save",
   "app.general.previous": "Previous",
-  
+  "app.general.yes": "Yes",
+  "app.general.no": "No",
+
   "app.general.input.dateError": "Invalid date.",
   "app.general.input.invalidError": "Invalid input.",
   "app.general.input.emptyError": "Field cannot be empty.",
@@ -135,9 +137,11 @@
   "app.component.insideSpecs": "Inside Specs",
   "app.component.attribute.name": "Component Name",
   "app.component.attribute.designs": "Designs / Artworks",
+  "app.component.attribute.includeArtworkInQuote": "Include Artwork In Quote",
   "app.component.attribute.samplingFee": "Sampling Fee",  
   "app.component.attribute.boxStyle": "Box Style",
   "app.component.attribute.style": "Style",
+  "app.component.attribute.type": "Type",
   "app.component.attribute.purpose": "Purpose",
   "app.component.attribute.shape": "Shape",
   "app.component.attribute.product": "Product",
@@ -161,6 +165,7 @@
   "app.component.attribute.insidePostProcess": "Inside Post Process",
   "app.component.attribute.insideFinish": "Inside Finish",
 
+  "app.component.attribute.includeArtworkInQuote.helperText": "If you select Yes, you must upload an artwork file.",
   "app.component.postProcess.printing.numberOfColors": "Number Of Colors To Print",
   "app.component.postProcess.printing.estimatedArea": "Estimated Area",
   "app.component.postProcess.printing.method": "Printing Method",

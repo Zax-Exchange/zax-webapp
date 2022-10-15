@@ -1,7 +1,9 @@
+import { Cancel } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
   Button,
+  IconButton,
   Link,
   ListItem,
   Stack,
@@ -43,6 +45,7 @@ import {
 } from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
 import DimensionsInput from "../common/DimensionsInput";
+import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 
 const bookletInitialState: CreateProjectComponentSpecInput = {
@@ -52,6 +55,7 @@ const bookletInitialState: CreateProjectComponentSpecInput = {
     y: "",
     z: "",
   },
+  includeArtworkInQuote: false,
 };
 
 const stickerInitialState: CreateProjectComponentSpecInput = {
@@ -62,12 +66,14 @@ const stickerInitialState: CreateProjectComponentSpecInput = {
   },
   purpose: "",
   shape: "",
+  includeArtworkInQuote: false,
 };
 
 const GuidedOther = ({
   setComponentData,
   setComponentDesigns,
   setActiveStep,
+  deleteComponentDesign,
   componentDesigns,
   componentData,
   isRequired,
@@ -76,13 +82,14 @@ const GuidedOther = ({
   setComponentData: GuidedCreateSetComponentData;
   setComponentDesigns: (data: ProjectDesign | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
+  deleteComponentDesign: (ind: number) => void;
   componentDesigns: ProjectDesign[] | null;
   componentData: CreateProjectComponentInput | null;
   isRequired: boolean; // If there are no outerBox spec and insideTray spec added, this one is required
   activeStep: number;
 }) => {
   const intl = useIntl();
-  const [localComponentSpec, setLocalComponentSpec] =
+  const [componentSpec, setComponentSpec] =
     useState<CreateProjectComponentSpecInput>(
       {} as CreateProjectComponentSpecInput
     );
@@ -102,13 +109,13 @@ const GuidedOther = ({
   useEffect(() => {
     if (view) {
       if (view === PRODUCT_NAME_BOOKLET.value) {
-        setLocalComponentSpec(bookletInitialState);
+        setComponentSpec(bookletInitialState);
       }
       if (view === PRODUCT_NAME_STICKER.value) {
-        setLocalComponentSpec(stickerInitialState);
+        setComponentSpec(stickerInitialState);
       }
     } else {
-      setLocalComponentSpec({} as CreateProjectComponentSpecInput);
+      setComponentSpec({} as CreateProjectComponentSpecInput);
     }
 
     if (view !== PRODUCT_NAME_BOOKLET.value) {
@@ -120,7 +127,7 @@ const GuidedOther = ({
   // so that initialized data does not get overwritten when the above one executes
   useEffect(() => {
     if (componentData && componentData.componentSpec) {
-      setLocalComponentSpec(componentData.componentSpec);
+      setComponentSpec(componentData.componentSpec);
     }
   }, []);
 
@@ -134,43 +141,48 @@ const GuidedOther = ({
     }
 
     if (isAllowed) {
-      setLocalComponentSpec({
-        ...localComponentSpec,
+      setComponentSpec({
+        ...componentSpec,
         [e.target.name]: e.target.value,
       });
     }
   };
 
   const shouldDisableNextButton = () => {
-    if (!Object.keys(localComponentSpec).length) return true;
+    if (!Object.keys(componentSpec).length) return true;
 
-    if (localComponentSpec.productName === PRODUCT_NAME_BOOKLET.value) {
+    if (
+      componentSpec.includeArtworkInQuote &&
+      (!componentDesigns || !componentDesigns.length)
+    )
+      return true;
+
+    if (componentSpec.productName === PRODUCT_NAME_BOOKLET.value) {
       if (
-        !localComponentSpec.dimension.x ||
-        !localComponentSpec.dimension.y ||
-        !localComponentSpec.dimension.z
+        !componentSpec.dimension.x ||
+        !componentSpec.dimension.y ||
+        !componentSpec.dimension.z
       )
         return true;
-      for (let key in localComponentSpec) {
+      for (let key in componentSpec) {
         const attribute = key as keyof CreateProjectComponentSpecInput;
 
         // These four are required for outside spec
         switch (attribute) {
           case "style":
-            if (!localComponentSpec[attribute]) return true;
+            if (!componentSpec[attribute]) return true;
         }
       }
     } else {
-      if (!localComponentSpec.dimension.x || !localComponentSpec.dimension.y)
-        return true;
-      for (let key in localComponentSpec) {
+      if (!componentSpec.dimension.x || !componentSpec.dimension.y) return true;
+      for (let key in componentSpec) {
         const attribute = key as keyof CreateProjectComponentSpecInput;
 
         // These four are required for outside spec
         switch (attribute) {
           case "purpose":
           case "shape":
-            if (!localComponentSpec[attribute]) return true;
+            if (!componentSpec[attribute]) return true;
         }
       }
     }
@@ -182,7 +194,7 @@ const GuidedOther = ({
     const compData = {
       name: "Other Printing & Packaging",
       designIds: componentDesigns?.map((d) => d.designId),
-      componentSpec: localComponentSpec,
+      componentSpec: componentSpec,
     } as CreateProjectComponentInput;
 
     setComponentData(compData);
@@ -210,7 +222,7 @@ const GuidedOther = ({
   };
 
   const handleBack = () => {
-    if (Object.keys(localComponentSpec).length || componentDesigns) {
+    if (Object.keys(componentSpec).length || componentDesigns) {
       saveComponentData();
     }
     setActiveStep((step) => step - 1);
@@ -222,6 +234,20 @@ const GuidedOther = ({
     deleteComponentDesigns();
   };
 
+  const deleteDesign = async (id: string, ind: number) => {
+    try {
+      await deleteProjectDesign({
+        variables: {
+          data: {
+            designId: id,
+          },
+        },
+      });
+
+      deleteComponentDesign(ind);
+    } catch (error) {}
+  };
+
   const renderAutocompleteDropdown = (
     options: TranslatableAttribute[],
     attribute: keyof CreateProjectComponentSpecInput,
@@ -229,11 +255,11 @@ const GuidedOther = ({
   ) => {
     const getDefaultValue = () => {
       if (
-        localComponentSpec &&
-        localComponentSpec[attribute] &&
-        typeof localComponentSpec[attribute] === "string"
+        componentSpec &&
+        componentSpec[attribute] &&
+        typeof componentSpec[attribute] === "string"
       ) {
-        return productValueToLabelMap[localComponentSpec[attribute] as string];
+        return productValueToLabelMap[componentSpec[attribute] as string];
       } else {
         return null;
       }
@@ -246,7 +272,7 @@ const GuidedOther = ({
         autoHighlight
         value={getDefaultValue()}
         onChange={(e, v) => {
-          setLocalComponentSpec((spec) => {
+          setComponentSpec((spec) => {
             if (!v) {
               return {
                 ...spec!,
@@ -254,7 +280,7 @@ const GuidedOther = ({
               };
             }
 
-            if (v.value === localComponentSpec[attribute]) {
+            if (v.value === componentSpec[attribute]) {
               return spec!;
             } else {
               return {
@@ -286,8 +312,8 @@ const GuidedOther = ({
 
   const renderProductsDropdown = () => {
     const getDefaultProduct = () => {
-      if (localComponentSpec.productName) {
-        return productValueToLabelMap[localComponentSpec.productName];
+      if (componentSpec.productName) {
+        return productValueToLabelMap[componentSpec.productName];
       }
       return null;
     };
@@ -340,19 +366,8 @@ const GuidedOther = ({
         </ListItem>
         <ListItem>
           <DimensionsInput
-            componentSpec={localComponentSpec}
-            setComponentSpec={setLocalComponentSpec}
-          />
-        </ListItem>
-        <ListItem>
-          <TextField
-            autoComplete="new-password"
-            label={intl.formatMessage({
-              id: "app.component.attribute.color",
-            })}
-            onChange={componentSpecOnChange}
-            name="color"
-            value={localComponentSpec.color}
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
           />
         </ListItem>
       </>
@@ -382,8 +397,8 @@ const GuidedOther = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
-              componentSpec={localComponentSpec}
-              setComponentSpec={setLocalComponentSpec}
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
             />
           </Box>
         </ListItem>
@@ -416,6 +431,21 @@ const GuidedOther = ({
         <ListItem>{renderProductsDropdown()}</ListItem>
 
         {renderView()}
+        {!!view && (
+          <ListItem>
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                {intl.formatMessage({
+                  id: "app.component.attribute.includeArtworkInQuote",
+                })}
+              </Typography>
+              <IncludeArtworkInQuoteDropdown
+                componentSpec={componentSpec}
+                setComponentSpec={setComponentSpec}
+              />
+            </Box>
+          </ListItem>
+        )}
         {!!componentDesigns && (
           <ListItem>
             <Box>
@@ -424,11 +454,16 @@ const GuidedOther = ({
                   id: "app.component.attribute.designs",
                 })}
               </Typography>
-              {componentDesigns.map((file) => {
+              {componentDesigns.map((file, i) => {
                 return (
-                  <Link href={file.url} target="_blank" rel="noopener">
-                    {file.filename}
-                  </Link>
+                  <Box>
+                    <Link href={file.url} target="_blank" rel="noopener">
+                      {file.filename}
+                    </Link>
+                    <IconButton onClick={() => deleteDesign(file.designId, i)}>
+                      <Cancel fontSize="small" />
+                    </IconButton>
+                  </Box>
                 );
               })}
             </Box>
