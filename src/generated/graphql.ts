@@ -106,6 +106,7 @@ export type CreateProjectBidComponentInput = {
   projectComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPriceInput>;
   samplingFee: Scalars['Int'];
+  toolingFee?: InputMaybe<Scalars['Int']>;
 };
 
 export type CreateProjectBidInput = {
@@ -696,6 +697,7 @@ export type ProjectBidComponent = {
   projectComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPrice>;
   samplingFee: Scalars['Int'];
+  toolingFee?: Maybe<Scalars['Int']>;
 };
 
 export type ProjectChangelog = {
@@ -809,12 +811,12 @@ export enum ProjectStatus {
 
 export type QuantityPrice = {
   __typename?: 'QuantityPrice';
-  price: Scalars['Int'];
+  price: Scalars['String'];
   quantity: Scalars['Int'];
 };
 
 export type QuantityPriceInput = {
-  price: Scalars['Int'];
+  price: Scalars['String'];
   quantity: Scalars['Int'];
 };
 

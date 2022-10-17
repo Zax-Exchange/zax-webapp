@@ -49,17 +49,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MuiListItem from "@mui/material/ListItem";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
-import { isValidInt } from "../../Utils/inputValidators";
+import { isValidFloat, isValidInt } from "../../Utils/inputValidators";
 import { AuthContext } from "../../../context/AuthContext";
 import { useIntl } from "react-intl";
 import { useGetProjectBidLazyQuery } from "../../gql/get/bid/bid.generated";
 import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
 import MuiTextField, { TextFieldProps } from "@mui/material/TextField";
-
-export type QuantityPriceData = {
-  quantity: number;
-  price: number;
-};
+import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../constants/products";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -139,6 +135,7 @@ const SearchProjectDetail = () => {
         projectId: projectId || "",
       },
     },
+    fetchPolicy: "no-cache",
   });
 
   const navigate = useNavigate();
@@ -177,10 +174,15 @@ const SearchProjectDetail = () => {
           quantityPrices: orderQuantities.map((quantity) => {
             return {
               quantity,
-              price: 0,
+              price: "",
             };
           }),
           samplingFee: 0,
+          toolingFee:
+            comp.componentSpec.productName ===
+            PRODUCT_NAME_MOLDED_FIBER_TRAY.value
+              ? 0
+              : null,
         })),
       }));
 
@@ -191,6 +193,7 @@ const SearchProjectDetail = () => {
             projectId: getProjectDetailData.getProjectDetail.id,
           },
         },
+        fetchPolicy: "no-cache",
       });
     }
   }, [getProjectDetailData]);
@@ -218,12 +221,12 @@ const SearchProjectDetail = () => {
     componentQpInd: number
   ) => {
     const val = e.target.value;
-    if (!isValidInt(val)) return;
+    if (!isValidFloat(val)) return;
     const components = [...bidInput.components];
     const curComponent = bidInput.components[componentInd];
-    console.log(curComponent, componentInd);
+
     const curQp = curComponent.quantityPrices[componentQpInd];
-    curQp.price = parseInt(val, 10);
+    curQp.price = val;
     components.splice(componentInd, 1, curComponent);
 
     setBidInput((prev) => ({
@@ -234,13 +237,15 @@ const SearchProjectDetail = () => {
 
   const componentSamplingFeeOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    componentInd: number
+    componentInd: number,
+    type: "samplingFee" | "toolingFee"
   ) => {
     const val = e.target.value;
     if (!isValidInt(val)) return;
+
     const components = [...bidInput.components];
     const curComponent = bidInput.components[componentInd];
-    curComponent.samplingFee = parseInt(val, 10);
+    curComponent[type] = parseInt(val, 10);
     components.splice(componentInd, 1, curComponent);
 
     setBidInput((prev) => ({
@@ -345,11 +350,6 @@ const SearchProjectDetail = () => {
                           id: "app.bid.attribute.price",
                         })}
                       </TableCell>
-                      <TableCell>
-                        {intl.formatMessage({
-                          id: "app.component.attribute.samplingFee",
-                        })}
-                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -393,33 +393,65 @@ const SearchProjectDetail = () => {
                               }}
                             />
                           </TableCell>
-                          {componentQpIndex ===
-                          comp.quantityPrices.length - 1 ? (
-                            <TableCell>
-                              <BidInputPriceTextField
-                                onChange={(e) =>
-                                  componentSamplingFeeOnChange(
-                                    e,
-                                    componentIndex
-                                  )
-                                }
-                                value={comp.samplingFee ? comp.samplingFee : ""}
-                                size="small"
-                                InputProps={{
-                                  startAdornment: (
-                                    <InputAdornment position="start">
-                                      $
-                                    </InputAdornment>
-                                  ),
-                                }}
-                              />
-                            </TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
                         </TableRow>
                       );
                     })}
+                    <TableRow>
+                      <TableCell>
+                        {intl.formatMessage({
+                          id: "app.bid.attribute.samplingFee",
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <BidInputPriceTextField
+                          onChange={(e) =>
+                            componentSamplingFeeOnChange(
+                              e,
+                              componentIndex,
+                              "samplingFee"
+                            )
+                          }
+                          value={comp.samplingFee ? comp.samplingFee : ""}
+                          size="small"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                $
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    {comp.toolingFee !== null && (
+                      <TableRow>
+                        <TableCell>
+                          {intl.formatMessage({
+                            id: "app.bid.attribute.toolingFee",
+                          })}
+                        </TableCell>
+                        <TableCell>
+                          <BidInputPriceTextField
+                            onChange={(e) =>
+                              componentSamplingFeeOnChange(
+                                e,
+                                componentIndex,
+                                "toolingFee"
+                              )
+                            }
+                            value={comp.toolingFee ? comp.toolingFee : ""}
+                            size="small"
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  $
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -494,11 +526,22 @@ const SearchProjectDetail = () => {
                     <TableRow>
                       <TableCell colSpan={2} sx={{ textAlign: "center" }}>
                         {intl.formatMessage({
-                          id: "app.component.attribute.samplingFee",
+                          id: "app.bid.attribute.samplingFee",
                         })}
                       </TableCell>
                       <TableCell>$ {comp.samplingFee}</TableCell>
                     </TableRow>
+
+                    {!!comp.toolingFee && (
+                      <TableRow>
+                        <TableCell colSpan={2} sx={{ textAlign: "center" }}>
+                          {intl.formatMessage({
+                            id: "app.bid.attribute.toolingFee",
+                          })}
+                        </TableCell>
+                        <TableCell>$ {comp.toolingFee}</TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -528,7 +571,7 @@ const SearchProjectDetail = () => {
       status,
       components,
     } = getProjectDetailData.getProjectDetail as Project;
-
+    console.log(existingBid);
     return (
       <Container>
         {createProjectBidLoading && <FullScreenLoading />}

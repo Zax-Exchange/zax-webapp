@@ -39,7 +39,7 @@ import ComponentSpecDetail from "../../common/ComponentSpecDetail";
 type ProjectComponentRow = {
   name: string;
   quantity: number;
-  price: number;
+  price: string;
   projectComponent: ProjectComponent;
   isLast: boolean;
 };

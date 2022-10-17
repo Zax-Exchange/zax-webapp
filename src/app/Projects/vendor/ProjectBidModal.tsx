@@ -31,12 +31,12 @@ import {
   Project,
   ProjectComponent,
   QuantityPrice,
+  QuantityPriceInput,
 } from "../../../generated/graphql";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
 import { useGetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
-import { QuantityPriceData } from "../../Search/vendor/SearchProjectDetail";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { isValidInt } from "../../Utils/inputValidators";
@@ -52,7 +52,7 @@ const ProjectBidModal = ({
   component: ProjectComponent | null;
   orderQuantities: number[];
   setComponentsQpData: React.Dispatch<
-    React.SetStateAction<Record<string, QuantityPriceData[]>>
+    React.SetStateAction<Record<string, QuantityPriceInput[]>>
   >;
 }) => {
   const intl = useIntl();
@@ -76,12 +76,12 @@ const ProjectBidModal = ({
   };
 
   const addBidsOnClick = () => {
-    const componentQpData: QuantityPriceData[] = [];
+    const componentQpData: QuantityPriceInput[] = [];
     prices.forEach((price, i) => {
       if (price) {
         componentQpData.push({
           quantity: orderQuantities[i],
-          price: parseInt(price, 10),
+          price,
         });
       }
     });

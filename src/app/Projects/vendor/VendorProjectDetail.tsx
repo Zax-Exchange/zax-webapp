@@ -45,6 +45,12 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 
+type BidComponent = {
+  quantityPrices: QuantityPrice[];
+  samplingFee: number;
+  toolingFee?: number | null;
+};
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -141,10 +147,10 @@ const VendorProjectDetail = () => {
       bidInfo,
     } = getVendorProjectData.getVendorProject;
 
-    const bids: Record<string, QuantityPrice[]> = {};
+    const bids: Record<string, BidComponent> = {};
 
     bidInfo.components.forEach((comp) => {
-      bids[comp.projectComponentId] = comp.quantityPrices;
+      bids[comp.projectComponentId] = comp;
     });
 
     if (getVendorProjectLoading || getVendorDetailLoading) {
@@ -305,14 +311,34 @@ const VendorProjectDetail = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {bids[comp.id].map((qp, i) => {
+                            {bids[comp.id].quantityPrices.map((qp, i) => {
                               return (
                                 <TableRow>
                                   <TableCell>{qp.quantity}</TableCell>
-                                  <TableCell>{qp.price}</TableCell>
+                                  <TableCell>{parseFloat(qp.price)}</TableCell>
                                 </TableRow>
                               );
                             })}
+                            <TableRow>
+                              <TableCell>
+                                {intl.formatMessage({
+                                  id: "app.bid.attribute.samplingFee",
+                                })}
+                              </TableCell>
+                              <TableCell>{bids[comp.id].samplingFee}</TableCell>
+                            </TableRow>
+                            {!!bids[comp.id].toolingFee && (
+                              <TableRow>
+                                <TableCell>
+                                  {intl.formatMessage({
+                                    id: "app.bid.attribute.toolingFee",
+                                  })}
+                                </TableCell>
+                                <TableCell>
+                                  {bids[comp.id].toolingFee}
+                                </TableCell>
+                              </TableRow>
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

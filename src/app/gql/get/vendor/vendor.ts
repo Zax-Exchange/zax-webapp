@@ -89,6 +89,8 @@ const GET_VENDOR_PROJECT = gql`
             quantity
             price
           }
+          samplingFee
+          toolingFee
         }
         createdAt
         updatedAt

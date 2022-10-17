@@ -126,6 +126,8 @@
 
   "app.bid.attribute.quantity": "Quantity",
   "app.bid.attribute.price": "Price",
+  "app.bid.attribute.samplingFee": "Sampling Fee",  
+  "app.bid.attribute.toolingFee": "Tooling Fee",  
   "app.bid.status.open": "Open",
   "app.bid.status.outdated": "Outdated",
   "app.bid.status.accepted": "Accepted",
@@ -138,7 +140,6 @@
   "app.component.attribute.name": "Component Name",
   "app.component.attribute.designs": "Designs / Artworks",
   "app.component.attribute.includeArtworkInQuote": "Include Artwork In Quote",
-  "app.component.attribute.samplingFee": "Sampling Fee",  
   "app.component.attribute.boxStyle": "Box Style",
   "app.component.attribute.style": "Style",
   "app.component.attribute.type": "Type",

@@ -76,11 +76,10 @@ export default function UploadDesign({
 
   const onUpload = async ({ target }: { target: Target }) => {
     if (!target.files) return;
-
     const file = target.files[0];
     target.value = "";
 
-    if (file.type === "application/pdf") {
+    try {
       await mutate({
         variables: { file },
         fetchPolicy: "no-cache",
@@ -105,7 +104,7 @@ export default function UploadDesign({
           }
         }
       });
-    } else {
+    } catch (e) {
       // invalid file type
       setSnackbar({
         severity: "error",
@@ -126,9 +125,7 @@ export default function UploadDesign({
       })}
     >
       <IconButton component="label" sx={{ borderRadius: 40 }} color="primary">
-        {!loading && (
-          <input hidden type="file" onChange={onUpload} accept=".pdf" />
-        )}
+        {!loading && <input hidden type="file" onChange={onUpload} />}
         {loading && <CircularProgress size={24} />}
         {!loading && <CloudUploadIcon />}
       </IconButton>

@@ -67,7 +67,7 @@ const CustomerProjectOverviewCard = ({
     useState<HTMLButtonElement | null>(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
-  const date = new Date(parseInt(project.createdAt)).toISOString().slice(0, 10);
+  const date = project.createdAt.slice(0, 10);
 
   const viewDetailHandler = () => {
     const dest = CUSTOMER_ROUTES.PROJECT_DETAIL.split(":");
