@@ -73,9 +73,6 @@ const VendorProjectOverviewCard = ({
     useState<HTMLButtonElement | null>(null);
 
   const projectMenuOpen = !!projectMenuAnchor;
-  const date = new Date(parseInt(project.createdAt, 10))
-    .toISOString()
-    .slice(0, 10);
 
   const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setProjectMenuAnchor(e.currentTarget);
@@ -248,7 +245,9 @@ const VendorProjectOverviewCard = ({
               >
                 <CreateIcon />
               </Tooltip>
-              <Typography variant="caption">{date}</Typography>
+              <Typography variant="caption">
+                {project.createdAt.slice(0, 10)}
+              </Typography>
             </ProjectOverviewListItem>
           </List>
         </Container>

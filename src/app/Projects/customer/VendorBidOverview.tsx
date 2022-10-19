@@ -92,10 +92,6 @@ const VendorBidOverview = ({
     }
   }, [getVendorDetailData]);
 
-  const convertToDate = (timestamp: string) => {
-    return new Date(parseInt(timestamp, 10)).toISOString().slice(0, 10);
-  };
-
   const moreOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setVendorBidMenuAnchor(e.currentTarget);
   };
@@ -181,7 +177,7 @@ const VendorBidOverview = ({
                 <ListItem>
                   <Typography variant="caption">
                     {intl.formatMessage({ id: "app.general.createdAt" })}:{" "}
-                    {convertToDate(bid.createdAt)}
+                    {bid.createdAt.slice(0, 10)}
                   </Typography>
                 </ListItem>
               </List>

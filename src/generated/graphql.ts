@@ -11,6 +11,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
   JSON: any;
   Upload: any;
 };
@@ -40,7 +41,7 @@ export type CompanyDetail = {
   companyUrl?: Maybe<Scalars['String']>;
   contactEmail: Scalars['String'];
   country: Scalars['String'];
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   fax?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   isActive: Scalars['Boolean'];
@@ -53,7 +54,7 @@ export type CompanyDetail = {
   name: Scalars['String'];
   phone: Scalars['String'];
   products?: Maybe<Array<Scalars['String']>>;
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
 };
 
 export enum CompanyPermission {
@@ -232,7 +233,7 @@ export type CustomerProject = {
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
@@ -243,14 +244,14 @@ export type CustomerProject = {
   status: Scalars['String'];
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
   userId: Scalars['String'];
 };
 
 export type CustomerProjectOverview = {
   __typename?: 'CustomerProjectOverview';
   category: Scalars['String'];
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   id: Scalars['String'];
@@ -260,7 +261,7 @@ export type CustomerProjectOverview = {
   status: Scalars['String'];
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
   userId: Scalars['String'];
 };
 
@@ -586,7 +587,7 @@ export type PermissionedCompany = {
   companyUrl: Scalars['String'];
   contactEmail: Scalars['String'];
   country: Scalars['String'];
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   fax: Scalars['String'];
   id: Scalars['String'];
   isActive: Scalars['Boolean'];
@@ -601,19 +602,19 @@ export type PermissionedCompany = {
   phone: Scalars['String'];
   planInfo: CompanyPlan;
   products?: Maybe<Array<Scalars['String']>>;
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
 };
 
 export type PermissionedProjectBid = {
   __typename?: 'PermissionedProjectBid';
   companyId: Scalars['String'];
   components: Array<ProjectBidComponent>;
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   id: Scalars['String'];
   permission: ProjectPermission;
   projectId: Scalars['String'];
   status: BidStatus;
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
   userId: Scalars['String'];
 };
 
@@ -664,7 +665,7 @@ export type Project = {
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   id: Scalars['String'];
@@ -673,7 +674,7 @@ export type Project = {
   status: Scalars['String'];
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
   userId: Scalars['String'];
 };
 
@@ -682,11 +683,11 @@ export type ProjectBid = {
   comments: Scalars['String'];
   companyId: Scalars['String'];
   components: Array<ProjectBidComponent>;
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   id: Scalars['String'];
   projectId: Scalars['String'];
   status: BidStatus;
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
   userId: Scalars['String'];
 };
 
@@ -778,7 +779,7 @@ export type ProjectOverview = {
   category: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   id: Scalars['String'];
@@ -1187,7 +1188,7 @@ export type VendorProject = {
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   id: Scalars['String'];
@@ -1197,7 +1198,7 @@ export type VendorProject = {
   status: Scalars['String'];
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
   userId: Scalars['String'];
 };
 
@@ -1207,7 +1208,7 @@ export type VendorProjectOverview = {
   bidStatus: BidStatus;
   category: Scalars['String'];
   companyName: Scalars['String'];
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   id: Scalars['String'];
@@ -1217,6 +1218,6 @@ export type VendorProjectOverview = {
   status: Scalars['String'];
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['Date'];
   userId: Scalars['String'];
 };

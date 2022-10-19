@@ -331,10 +331,6 @@ const CustomerProjectDetail = () => {
     }
   };
 
-  const convertToDate = (timestamp: string) => {
-    return new Date(parseInt(timestamp, 10)).toISOString().slice(0, 10);
-  };
-
   const backButtonHandler = () => {
     navigate(CUSTOMER_ROUTES.PROJECTS);
   };
@@ -844,7 +840,7 @@ const CustomerProjectDetail = () => {
                       })
                     )}
                     <Typography variant="caption">
-                      {convertToDate(projectData.createdAt)}
+                      {projectData.createdAt.slice(0, 10)}
                     </Typography>
                   </ProjectDetailListItem>
                   <ProjectDetailListItem>
@@ -854,7 +850,7 @@ const CustomerProjectDetail = () => {
                       })
                     )}
                     <Typography variant="caption">
-                      {convertToDate(projectData.updatedAt)}
+                      {projectData.updatedAt.slice(0, 10)}
                     </Typography>
                   </ProjectDetailListItem>
 

@@ -47,10 +47,6 @@ const SearchProjectOverview = ({
     navigate(`${dest.join("")}`);
   };
 
-  const date = new Date(parseInt(projectData.createdAt, 10))
-    .toISOString()
-    .slice(0, 10);
-
   return (
     <Container style={{ marginBottom: "10px" }}>
       <Card
