@@ -46,8 +46,7 @@ export enum GuidedView {
 
 export type GuidedComponentConfigView =
   | GuidedView.OUTER_BOX
-  | GuidedView.INSIDE_TRAY
-  | GuidedView.OTHER;
+  | GuidedView.INSIDE_TRAY;
 
 // data container to hold component data in each guided view including outerBox, insideTray and other
 export type GuidedCreateComponentsDataContainer = Record<
@@ -103,7 +102,6 @@ export default function GuidedCreateProject() {
     useState<GuidedCreateComponentsDataContainer>({
       [GuidedView.OUTER_BOX]: null,
       [GuidedView.INSIDE_TRAY]: null,
-      [GuidedView.OTHER]: null,
     });
 
   // Storing uploaded designs/artworks locally before creating project so we can still display
@@ -113,8 +111,14 @@ export default function GuidedCreateProject() {
   >({
     [GuidedView.OUTER_BOX]: null,
     [GuidedView.INSIDE_TRAY]: null,
-    [GuidedView.OTHER]: null,
   });
+
+  const [additionalComponents, setAdditionalComponents] = useState<
+    CreateProjectComponentInput[]
+  >([]);
+
+  const [additionalComponentsDesigns, setAdditionalComponentsDesigns] =
+    useState<ProjectDesign[][]>([]);
 
   useEffect(() => {
     switch (activeStep) {
@@ -135,6 +139,18 @@ export default function GuidedCreateProject() {
         break;
     }
   }, [activeStep]);
+
+  const deleteAdditionalComponentsDesigns = (
+    componentInd: number,
+    designInd: number
+  ) => {
+    const compDesigns = [...additionalComponentsDesigns[componentInd]];
+    compDesigns.splice(designInd, 1);
+    const allAdditionalDesigns = [...additionalComponentsDesigns];
+    allAdditionalDesigns.splice(componentInd, 1, compDesigns);
+
+    setAdditionalComponentsDesigns(allAdditionalDesigns);
+  };
 
   // setComponentsData with injected view value also mimics react setState so caller can use callback and have
   // access to component data's previous state
@@ -237,13 +253,11 @@ export default function GuidedCreateProject() {
             !componentsData[GuidedView.OUTER_BOX] &&
             !componentsData[GuidedView.INSIDE_TRAY]
           }
-          setComponentData={withViewSetComponentData(GuidedView.OTHER)}
-          setComponentDesigns={withViewSetCompoentDesigns(GuidedView.OTHER)}
-          deleteComponentDesign={withViewDeleteComponentDesign(
-            GuidedView.OTHER
-          )}
-          componentDesigns={componentsDesigns[GuidedView.OTHER]}
-          componentData={componentsData[GuidedView.OTHER]}
+          additionalComponents={additionalComponents}
+          setAdditionalComponents={setAdditionalComponents}
+          additionalComponentsDesigns={additionalComponentsDesigns}
+          setAdditionalComponentsDesigns={setAdditionalComponentsDesigns}
+          deleteAdditionalComponentsDesigns={deleteAdditionalComponentsDesigns}
           setActiveStep={setActiveStep}
           activeStep={activeStep}
         />
@@ -258,6 +272,8 @@ export default function GuidedCreateProject() {
           projectData={projectData}
           componentsDesigns={componentsDesigns}
           componentsData={componentsData}
+          additionalComponents={additionalComponents}
+          additionalComponentsDesigns={additionalComponentsDesigns}
         />
       );
     }

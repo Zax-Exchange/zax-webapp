@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Cancel } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -10,6 +11,7 @@ import {
   Tab,
   Tabs,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { TypographyProps } from "@mui/system";
@@ -76,6 +78,8 @@ const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
 const GuidedReview = ({
   setProjectData,
   setActiveStep,
+  additionalComponents,
+  additionalComponentsDesigns,
   componentsData,
   projectData,
   componentsDesigns,
@@ -83,12 +87,13 @@ const GuidedReview = ({
 }: {
   setActiveStep: Dispatch<SetStateAction<number>>;
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
+  additionalComponents: CreateProjectComponentInput[];
+  additionalComponentsDesigns: ProjectDesign[][];
   componentsData: GuidedCreateComponentsDataContainer;
   projectData: CreateProjectInput;
   componentsDesigns: Record<GuidedComponentConfigView, ProjectDesign[] | null>;
   activeStep: number;
 }) => {
-  console.log(componentsData);
   const intl = useIntl();
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
@@ -121,9 +126,11 @@ const GuidedReview = ({
   };
 
   const extractComponentsData = () => {
-    return Object.values(componentsData).filter(
-      (data) => !!data
-    ) as CreateProjectComponentInput[];
+    return (
+      Object.values(componentsData).filter(
+        (data) => !!data
+      ) as CreateProjectComponentInput[]
+    ).concat(additionalComponents);
   };
 
   const createProject = async () => {
@@ -167,6 +174,47 @@ const GuidedReview = ({
   };
 
   const renderProjectDetail = () => {
+    let compInd = 0;
+
+    const allDesigns = [
+      ...Object.values(componentsDesigns).map((d) => {
+        if (!d) return [];
+        return d;
+      }),
+      ...additionalComponentsDesigns,
+    ];
+
+    const tabs: JSX.Element[] = [];
+    const tabPanels: JSX.Element[] = [];
+
+    for (let [view, comp] of Object.entries(componentsData)) {
+      if (!comp) continue;
+
+      tabs.push(<Tab label={comp.name} key={compInd} />);
+      tabPanels.push(
+        <TabPanel value={currentTab} index={compInd}>
+          <ComponentSpecDetail
+            spec={comp!.componentSpec}
+            designs={componentsDesigns[view as GuidedComponentConfigView]}
+          />
+        </TabPanel>
+      );
+      compInd++;
+    }
+
+    additionalComponents.forEach((comp, i) => {
+      tabs.push(<Tab label={comp!.name} key={compInd} />);
+      tabPanels.push(
+        <TabPanel value={currentTab} index={compInd}>
+          <ComponentSpecDetail
+            spec={comp!.componentSpec}
+            designs={additionalComponentsDesigns[i]}
+          />
+        </TabPanel>
+      );
+      compInd++;
+    });
+
     return (
       <>
         <Box>
@@ -274,27 +322,10 @@ const GuidedReview = ({
         <Box>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs value={currentTab} onChange={componentTabOnChange}>
-              {Object.values(componentsData)
-                .filter((comp) => !!comp)
-                .map((comp, i) => {
-                  return <Tab label={comp!.name} key={i} />;
-                })}
+              {tabs}
             </Tabs>
           </Box>
-          {Object.entries(componentsData)
-            .filter((comp) => !!comp[1])
-            .map(([view, comp], i) => {
-              return (
-                <TabPanel value={currentTab} index={i}>
-                  <ComponentSpecDetail
-                    spec={comp!.componentSpec}
-                    designs={
-                      componentsDesigns[view as GuidedComponentConfigView]
-                    }
-                  />
-                </TabPanel>
-              );
-            })}
+          {tabPanels}
         </Box>
       </>
     );

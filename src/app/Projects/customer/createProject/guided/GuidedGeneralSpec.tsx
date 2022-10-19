@@ -78,26 +78,6 @@ export default function GuidedGeneralSpec({
     });
   };
 
-  const addOrderQuantity = () => {
-    setProjectData({
-      ...projectData,
-      orderQuantities: [
-        ...projectData.orderQuantities,
-        parseInt(orderQuantity, 10),
-      ],
-    });
-    setOrderQuantity("");
-  };
-
-  const removeOrderQuantity = (ind: number) => {
-    const orderQuantities = [...projectData.orderQuantities];
-    orderQuantities.splice(ind, 1);
-    setProjectData({
-      ...projectData,
-      orderQuantities,
-    });
-  };
-
   const orderQuantityOnChange = (val: string) => {
     if (isValidInt(val)) {
       setOrderQuantity(val);

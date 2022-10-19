@@ -3,6 +3,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Divider,
   IconButton,
   Link,
   ListItem,
@@ -47,6 +48,7 @@ import UploadDesign from "../../UploadDesign";
 import DimensionsInput from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
+import GuidedOtherSubSection from "./subsections/GuidedOtherSubSection";
 
 const bookletInitialState: CreateProjectComponentSpecInput = {
   productName: PRODUCT_NAME_BOOKLET.value,
@@ -55,7 +57,6 @@ const bookletInitialState: CreateProjectComponentSpecInput = {
     y: "",
     z: "",
   },
-  includeArtworkInQuote: false,
 };
 
 const stickerInitialState: CreateProjectComponentSpecInput = {
@@ -70,137 +71,64 @@ const stickerInitialState: CreateProjectComponentSpecInput = {
 };
 
 const GuidedOther = ({
-  setComponentData,
-  setComponentDesigns,
   setActiveStep,
-  deleteComponentDesign,
-  componentDesigns,
-  componentData,
+  setAdditionalComponents,
+  setAdditionalComponentsDesigns,
+  deleteAdditionalComponentsDesigns,
+  additionalComponents,
+  additionalComponentsDesigns,
   isRequired,
   activeStep,
 }: {
-  setComponentData: GuidedCreateSetComponentData;
-  setComponentDesigns: (data: ProjectDesign | null) => void;
   setActiveStep: Dispatch<SetStateAction<number>>;
-  deleteComponentDesign: (ind: number) => void;
-  componentDesigns: ProjectDesign[] | null;
-  componentData: CreateProjectComponentInput | null;
+  setAdditionalComponents: React.Dispatch<
+    React.SetStateAction<CreateProjectComponentInput[]>
+  >;
+  setAdditionalComponentsDesigns: React.Dispatch<
+    React.SetStateAction<ProjectDesign[][]>
+  >;
+  deleteAdditionalComponentsDesigns: (
+    componentInd: number,
+    designInd: number
+  ) => void;
+  additionalComponentsDesigns: ProjectDesign[][];
+  additionalComponents: CreateProjectComponentInput[];
   isRequired: boolean; // If there are no outerBox spec and insideTray spec added, this one is required
   activeStep: number;
 }) => {
   const intl = useIntl();
-  const [componentSpec, setComponentSpec] =
-    useState<CreateProjectComponentSpecInput>(
-      {} as CreateProjectComponentSpecInput
-    );
-
-  // view based on selected productName, either booklet or stickers or null
-  const [view, setView] = useState<string | null>(
-    componentData && componentData.componentSpec
-      ? componentData.componentSpec.productName
-      : null
-  );
 
   const [
     deleteProjectDesign,
     { error: deleteProjectDesignError, data: deleteProjectDesignData },
   ] = useDeleteProjectDesignMutation();
 
-  useEffect(() => {
-    if (view) {
-      if (view === PRODUCT_NAME_BOOKLET.value) {
-        setComponentSpec(bookletInitialState);
-      }
-      if (view === PRODUCT_NAME_STICKER.value) {
-        setComponentSpec(stickerInitialState);
-      }
-    } else {
-      setComponentSpec({} as CreateProjectComponentSpecInput);
-    }
-
-    if (view !== PRODUCT_NAME_BOOKLET.value) {
-      deleteComponentDesigns();
-    }
-  }, [view]);
-
-  // intialize componentSpec if there's existing data, we need this to run after the above useEffect
-  // so that initialized data does not get overwritten when the above one executes
-  useEffect(() => {
-    if (componentData && componentData.componentSpec) {
-      setComponentSpec(componentData.componentSpec);
-    }
-  }, []);
-
-  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name) {
-      default:
-        break;
-    }
-
-    if (isAllowed) {
-      setComponentSpec({
-        ...componentSpec,
-        [e.target.name]: e.target.value,
-      });
-    }
-  };
-
   const shouldDisableNextButton = () => {
-    if (!Object.keys(componentSpec).length) return true;
-
-    if (
-      componentSpec.includeArtworkInQuote &&
-      (!componentDesigns || !componentDesigns.length)
-    )
-      return true;
-
-    if (componentSpec.productName === PRODUCT_NAME_BOOKLET.value) {
-      if (
-        !componentSpec.dimension.x ||
-        !componentSpec.dimension.y ||
-        !componentSpec.dimension.z
-      )
-        return true;
-      for (let key in componentSpec) {
-        const attribute = key as keyof CreateProjectComponentSpecInput;
-
-        // These four are required for outside spec
-        switch (attribute) {
-          case "style":
-            if (!componentSpec[attribute]) return true;
-        }
-      }
-    } else {
-      if (!componentSpec.dimension.x || !componentSpec.dimension.y) return true;
-      for (let key in componentSpec) {
-        const attribute = key as keyof CreateProjectComponentSpecInput;
-
-        // These four are required for outside spec
-        switch (attribute) {
-          case "purpose":
-          case "shape":
-            if (!componentSpec[attribute]) return true;
-        }
-      }
-    }
-
     return false;
   };
 
-  const saveComponentData = () => {
-    const compData = {
-      name: "Other Printing & Packaging",
-      designIds: componentDesigns?.map((d) => d.designId),
-      componentSpec: componentSpec,
-    } as CreateProjectComponentInput;
-
-    setComponentData(compData);
+  const addComponent = () => {
+    setAdditionalComponents((prev) => [
+      ...prev,
+      {} as CreateProjectComponentInput,
+    ]);
+    setAdditionalComponentsDesigns((prev) => [...prev, []]);
   };
 
-  const deleteComponentDesigns = () => {
+  const saveComponentsData = () => {
+    setAdditionalComponents(
+      additionalComponents.map((comp, i) => {
+        return {
+          ...comp,
+          designIds: additionalComponentsDesigns[i].map((d) => d.designId),
+        };
+      })
+    );
+  };
+
+  const deleteComponentDesigns = (compInd: number) => {
+    const componentDesigns = additionalComponentsDesigns[compInd];
+
     if (componentDesigns) {
       Promise.all(
         componentDesigns.map((design) => {
@@ -213,209 +141,85 @@ const GuidedOther = ({
           });
         })
       );
-      setComponentDesigns(null);
+      const allDesigns = [...additionalComponentsDesigns];
+      allDesigns.splice(compInd, 1, []);
+      setAdditionalComponentsDesigns(allDesigns);
     }
   };
   const handleNext = () => {
-    saveComponentData();
+    saveComponentsData();
     setActiveStep((step) => step + 1);
   };
 
   const handleBack = () => {
-    if (Object.keys(componentSpec).length || componentDesigns) {
-      saveComponentData();
-    }
+    saveComponentsData();
     setActiveStep((step) => step - 1);
   };
 
   const skipToNext = () => {
-    setComponentData(null);
+    additionalComponents.forEach((comp, i) => {
+      deleteComponentDesigns(i);
+    });
+    setAdditionalComponents([]);
+    setAdditionalComponentsDesigns([]);
     setActiveStep((step) => step + 1);
-    deleteComponentDesigns();
   };
 
-  const deleteDesign = async (id: string, ind: number) => {
+  const deleteDesign = (compInd: number) => async (designInd: number) => {
     try {
+      const compDesign = additionalComponentsDesigns[compInd][designInd];
       await deleteProjectDesign({
         variables: {
           data: {
-            designId: id,
+            designId: compDesign.designId,
           },
         },
       });
 
-      deleteComponentDesign(ind);
+      setAdditionalComponentsDesigns((prev) => {
+        const curDesigns = [...prev][compInd];
+        curDesigns.splice(designInd, 1);
+        const allDesigns = [...prev];
+        allDesigns.splice(compInd, 1, curDesigns);
+        return allDesigns;
+      });
     } catch (error) {}
   };
 
-  const renderAutocompleteDropdown = (
-    options: TranslatableAttribute[],
-    attribute: keyof CreateProjectComponentSpecInput,
-    label: string
-  ) => {
-    const getDefaultValue = () => {
-      if (
-        componentSpec &&
-        componentSpec[attribute] &&
-        typeof componentSpec[attribute] === "string"
-      ) {
-        return productValueToLabelMap[componentSpec[attribute] as string];
+  const setComponentData =
+    (compInd: number) =>
+    (
+      arg:
+        | CreateProjectComponentInput
+        | ((prev: CreateProjectComponentInput) => CreateProjectComponentInput)
+    ) => {
+      const allComps = [...additionalComponents];
+      if (typeof arg === "function") {
+        const currentComp = additionalComponents[compInd];
+        allComps.splice(compInd, 1, arg(currentComp));
       } else {
-        return null;
+        allComps.splice(compInd, 1, arg);
       }
+      setAdditionalComponents(allComps);
     };
 
-    return (
-      <Autocomplete
-        sx={{ width: 200 }}
-        options={options}
-        autoHighlight
-        value={getDefaultValue()}
-        onChange={(e, v) => {
-          setComponentSpec((spec) => {
-            if (!v) {
-              return {
-                ...spec!,
-                [attribute]: "",
-              };
-            }
+  const addComponentDesigns =
+    (compInd: number) => (design: ProjectDesign | null) => {
+      if (!design) return;
 
-            if (v.value === componentSpec[attribute]) {
-              return spec!;
-            } else {
-              return {
-                ...spec!,
-                [attribute]: v.value,
-              };
-            }
-          });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={label}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
-    );
-  };
+      const compDesigns = [...additionalComponentsDesigns[compInd]];
+      compDesigns.push(design);
+      const allDesigns = [...additionalComponentsDesigns];
+      allDesigns.splice(compInd, 1, compDesigns);
 
-  const renderProductsDropdown = () => {
-    const getDefaultProduct = () => {
-      if (componentSpec.productName) {
-        return productValueToLabelMap[componentSpec.productName];
-      }
-      return null;
+      setAdditionalComponentsDesigns(allDesigns);
     };
-    return (
-      <Autocomplete
-        sx={{ width: 200 }}
-        options={GUIDED_PROJECT_OTHER_PRODUCTS}
-        autoHighlight
-        value={getDefaultProduct()}
-        onChange={(e, v) => {
-          if (!v) {
-            setView(null);
-            return;
-          }
-          setView(v.value);
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={intl.formatMessage({
-              id: "app.customer.createProject.guidedCreate.otherPrintingAndPackaging",
-            })}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
-    );
-  };
 
-  const renderBookletView = () => {
-    return (
-      <>
-        <ListItem>
-          {renderAutocompleteDropdown(
-            BOOKLET_STYLES,
-            "style",
-            intl.formatMessage({
-              id: "app.component.attribute.type",
-            })
-          )}
-        </ListItem>
-        <ListItem>
-          <DimensionsInput
-            componentSpec={componentSpec}
-            setComponentSpec={setComponentSpec}
-          />
-        </ListItem>
-      </>
-    );
-  };
-
-  const renderStickerView = () => {
-    return (
-      <>
-        <ListItem>
-          {renderAutocompleteDropdown(
-            STICKER_PURPOSES,
-            "purpose",
-            intl.formatMessage({ id: "app.component.attribute.purpose" })
-          )}
-        </ListItem>
-        <ListItem>
-          {renderAutocompleteDropdown(
-            STICKER_SHAPES,
-            "shape",
-            intl.formatMessage({ id: "app.component.attribute.shape" })
-          )}
-        </ListItem>
-        <ListItem>
-          <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              {intl.formatMessage({ id: "app.component.attribute.dimension" })}
-            </Typography>
-            <DimensionsInput
-              componentSpec={componentSpec}
-              setComponentSpec={setComponentSpec}
-            />
-          </Box>
-        </ListItem>
-      </>
-    );
-  };
-
-  const renderView = () => {
-    if (view === PRODUCT_NAME_BOOKLET.value) {
-      return renderBookletView();
-    }
-
-    if (view === PRODUCT_NAME_STICKER.value) {
-      return renderStickerView();
-    }
-
-    return null;
+  const deleteComponent = (compInd: number) => () => {
+    const allAdditionalComps = [...additionalComponents];
+    allAdditionalComps.splice(compInd, 1);
+    setAdditionalComponents(allAdditionalComps);
+    deleteComponentDesigns(compInd);
   };
 
   return (
@@ -428,55 +232,33 @@ const GuidedOther = ({
         </Typography>
       </Box>
       <Stack mt={2} mb={2} spacing={2}>
-        <ListItem>{renderProductsDropdown()}</ListItem>
-
-        {renderView()}
-        {!!view && (
-          <ListItem>
-            <Box>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                {intl.formatMessage({
-                  id: "app.component.attribute.includeArtworkInQuote",
-                })}
-              </Typography>
-              <IncludeArtworkInQuoteDropdown
-                componentSpec={componentSpec}
-                setComponentSpec={setComponentSpec}
+        {additionalComponents.map((comp, i) => {
+          return (
+            <>
+              {i !== 0 && <Divider />}
+              <GuidedOtherSubSection
+                setComponentData={
+                  setComponentData(i) as GuidedCreateSetComponentData
+                }
+                setComponentDesigns={addComponentDesigns(i)}
+                deleteComponentDesign={deleteDesign(i)}
+                deleteComponentDesigns={deleteComponentDesigns}
+                deleteComponent={deleteComponent(i)}
+                componentIndex={i}
+                componentDesigns={additionalComponentsDesigns[i]}
+                componentData={comp}
+                key={i + 3}
               />
-            </Box>
-          </ListItem>
-        )}
-        {!!componentDesigns && (
-          <ListItem>
-            <Box>
-              <Typography variant="subtitle2">
-                {intl.formatMessage({
-                  id: "app.component.attribute.designs",
-                })}
-              </Typography>
-              {componentDesigns.map((file, i) => {
-                return (
-                  <Box>
-                    <Link href={file.url} target="_blank" rel="noopener">
-                      {file.filename}
-                    </Link>
-                    <IconButton onClick={() => deleteDesign(file.designId, i)}>
-                      <Cancel fontSize="small" />
-                    </IconButton>
-                  </Box>
-                );
-              })}
-            </Box>
-          </ListItem>
-        )}
+            </>
+          );
+        })}
       </Stack>
       <Box>
-        <UploadDesign
-          setComponentData={setComponentData}
-          parentSetDesigns={[setComponentDesigns]}
-        />
         <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
           {intl.formatMessage({ id: "app.general.back" })}
+        </Button>
+        <Button variant="contained" onClick={addComponent}>
+          {intl.formatMessage({ id: "app.general.add" })}
         </Button>
         <Button
           variant="text"

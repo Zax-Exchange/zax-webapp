@@ -79,6 +79,11 @@
   "app.product.finish.gloss": "Gloss",
   "app.product.finish.uncoated": "Uncoated",
 
+  "app.product.bookletStyle.saddleStitch": "Saddle Stitch",
+  "app.product.bookletStyle.sewnBound": "Sewn Bound",
+  "app.product.bookletStyle.spiralBound": "Spiral Bound",
+  "app.product.bookletStyle.perfectBound": "Perfect Bound",
+  
   "app.product.name.rigidBox": "Rigid Box",
   "app.product.name.foldingCarton": "Folding Carton",
   "app.product.name.sleeve": "Sleeve",

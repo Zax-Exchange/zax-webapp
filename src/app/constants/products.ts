@@ -207,25 +207,25 @@ export const FINISH_UNCOATED: TranslatableAttribute = {
 
 /** Booklet styles */
 export const BOOKLET_STYLE_SADDLE_STITCH: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.bookletStyle.saddleStitch"}),
+  label: intl.formatMessage({id: "app.product.bookletStyle.saddleStitch"}),
   value: "Saddle Stitch",
   code: "saddle-stitch"
 }
 
 export const BOOKLET_STYLE_SEWN_BOUND: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.bookletStyle.sewnBound"}),
+  label: intl.formatMessage({id: "app.product.bookletStyle.sewnBound"}),
   value: "Sewn Bound",
   code: "sewn-bound"
 }
 
 export const BOOKLET_STYLE_SPIRAL_BOUND: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.bookletStyle.spiralBound"}),
+  label: intl.formatMessage({id: "app.product.bookletStyle.spiralBound"}),
   value: "Spiral Bound",
   code: "spiral-bound"
 }
 
 export const BOOKLET_STYLE_PERFECT_BOUND: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.bookletStyle.perfectBound"}),
+  label: intl.formatMessage({id: "app.product.bookletStyle.perfectBound"}),
   value: "Perfect Bound",
   code: "perfect-bound"
 }

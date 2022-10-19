@@ -11,9 +11,13 @@ const DimensionsInput = ({
   setComponentSpec,
 }: {
   componentSpec: CreateProjectComponentSpecInput;
-  setComponentSpec: React.Dispatch<
-    React.SetStateAction<CreateProjectComponentSpecInput>
-  >;
+  setComponentSpec:
+    | React.Dispatch<React.SetStateAction<CreateProjectComponentSpecInput>>
+    | ((
+        arg: (
+          prev: CreateProjectComponentSpecInput
+        ) => CreateProjectComponentSpecInput
+      ) => void);
 }) => {
   const dimensionOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -41,7 +45,7 @@ const DimensionsInput = ({
         name="x"
         value={componentSpec.dimension.x}
         sx={{
-          width: 100,
+          width: 80,
           mr: 2,
         }}
       />
@@ -52,7 +56,7 @@ const DimensionsInput = ({
         name="y"
         value={componentSpec.dimension.y}
         sx={{
-          width: 100,
+          width: 80,
           mr: 2,
         }}
       />
@@ -64,7 +68,7 @@ const DimensionsInput = ({
           name="z"
           value={componentSpec.dimension.z}
           sx={{
-            width: 100,
+            width: 80,
           }}
         />
       )}

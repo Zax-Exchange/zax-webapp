@@ -8,9 +8,13 @@ const IncludeArtworkInQuoteDropdown = ({
   setComponentSpec,
 }: {
   componentSpec: CreateProjectComponentSpecInput;
-  setComponentSpec: React.Dispatch<
-    React.SetStateAction<CreateProjectComponentSpecInput>
-  >;
+  setComponentSpec:
+    | React.Dispatch<React.SetStateAction<CreateProjectComponentSpecInput>>
+    | ((
+        arg: (
+          prev: CreateProjectComponentSpecInput
+        ) => CreateProjectComponentSpecInput
+      ) => void);
 }) => {
   const intl = useIntl();
   const YES_OPTION = {
