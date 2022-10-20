@@ -38,6 +38,7 @@ import en from "./translations/en.json";
 import zhCn from "./translations/zh-cn.json";
 import GuidedCreateProject from "./app/Projects/customer/createProject/guided/GuidedCreateProject";
 import VendorProfile from "./app/Profile/vendor/VendorProfile";
+import ProjectDetail from "./app/Projects/ProjectDetail";
 
 const theme = createTheme({
   palette: {
@@ -188,7 +189,14 @@ function App() {
                       </RequireAuth>
                     }
                   />
-
+                  <Route
+                    path={GENERAL_ROUTES.PROJECT_DETAIL}
+                    element={
+                      <RequireAuth isAllowed={true}>
+                        <ProjectDetail />
+                      </RequireAuth>
+                    }
+                  />
                   <Route
                     path={GENERAL_ROUTES.SETTINGS}
                     element={
@@ -216,14 +224,7 @@ function App() {
                       </RequireAuth>
                     }
                   />
-                  <Route
-                    path={CUSTOMER_ROUTES.PROJECT_DETAIL}
-                    element={
-                      <RequireAuth isAllowed={!user?.isVendor}>
-                        <CustomerProjectDetail />
-                      </RequireAuth>
-                    }
-                  />
+
                   <Route
                     path={CUSTOMER_ROUTES.GUIDED_CREATE_PROJECT}
                     element={
@@ -277,14 +278,7 @@ function App() {
                       </RequireAuth>
                     }
                   />
-                  <Route
-                    path={VENDOR_ROUTES.PROJECT_DETAIL}
-                    element={
-                      <RequireAuth isAllowed={user?.isVendor}>
-                        <VendorProjectDetail />
-                      </RequireAuth>
-                    }
-                  />
+
                   {/* END VENDOR PATH */}
 
                   {/* logged out routes */}

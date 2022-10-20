@@ -27,7 +27,11 @@ import MuiListItem from "@mui/material/ListItem";
 import { useNavigate } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import React from "react";
-import { CUSTOMER_ROUTES, VENDOR_ROUTES } from "../constants/loggedInRoutes";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+  VENDOR_ROUTES,
+} from "../constants/loggedInRoutes";
 
 const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
 const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
@@ -208,7 +212,7 @@ const VendorNotification = () => {
   const navigateToProjectDetail = async (noti: Notification, ind: number) => {
     if (!feed) return;
     notiOnClose();
-    const dest = VENDOR_ROUTES.PROJECT_DETAIL.split(":");
+    const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
     dest[1] = (noti.data as ProjectDataUpdateNotification).projectId;
 
     navigate(`${dest.join("")}`);

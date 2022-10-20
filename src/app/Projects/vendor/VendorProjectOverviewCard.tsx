@@ -33,7 +33,7 @@ import {
 } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
-import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
+import { GENERAL_ROUTES, VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
 import VendorPermissionModal from "./modals/VendorPermissionModal";
@@ -83,7 +83,7 @@ const VendorProjectOverviewCard = ({
   };
 
   const viewDetailHandler = () => {
-    const dest = VENDOR_ROUTES.PROJECT_DETAIL.split(":");
+    const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
     dest[1] = project.id;
     navigate(`${dest.join("")}`);
   };

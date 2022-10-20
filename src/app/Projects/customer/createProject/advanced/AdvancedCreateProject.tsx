@@ -62,7 +62,7 @@ import {
   ProjectCreationMode,
   ProjectDesign,
 } from "../../../../../generated/graphql";
-import CreateProjectComponentModal from "../../modals/CreateProjectComponentModal";
+import CreateProjectComponentModal from "./modals/CreateProjectComponentModal";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useIntl } from "react-intl";

@@ -36,7 +36,10 @@ import {
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+} from "../../constants/loggedInRoutes";
 import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import { useIntl } from "react-intl";
 import CustomerPermissionModal from "./modals/CustomerPermissionModal";
@@ -70,7 +73,7 @@ const CustomerProjectOverviewCard = ({
   const date = project.createdAt.slice(0, 10);
 
   const viewDetailHandler = () => {
-    const dest = CUSTOMER_ROUTES.PROJECT_DETAIL.split(":");
+    const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
 
     dest[1] = project.id;
 

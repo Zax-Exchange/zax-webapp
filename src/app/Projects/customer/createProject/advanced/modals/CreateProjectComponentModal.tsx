@@ -25,7 +25,7 @@ import {
   CreateProjectComponentSpecInput,
   CreateProjectInput,
   ProjectDesign,
-} from "../../../../generated/graphql";
+} from "../../../../../../generated/graphql";
 import {
   PRODUCT_NAME_CORRUGATE_BOX,
   ALL_PRODUCT_NAMES,
@@ -43,17 +43,17 @@ import {
   PRODUCT_NAME_MOLDED_FIBER_TRAY,
   PRODUCT_NAME_PAPER_TUBE,
   productValueToLabelMap,
-} from "../../../constants/products";
-import { useDeleteProjectDesignMutation } from "../../../gql/delete/project/project.generated";
-import useCustomSnackbar from "../../../Utils/CustomSnackbar";
-import { isValidAlphanumeric } from "../../../Utils/inputValidators";
-import UploadDesign from "../UploadDesign";
-import CorrugateBoxSubSection from "./componentModalSubSection/CorrugateBoxSubSection";
-import FoldingCartonSubSection from "./componentModalSubSection/FoldingCartonSubSection";
-import MoldedFiberSubSection from "./componentModalSubSection/MoldedFiberSubSection";
-import PaperTubeSubSection from "./componentModalSubSection/PaperTubeSubSection";
-import RigidBoxSubSection from "./componentModalSubSection/RigidBoxSubSection";
-import SleeveSubSection from "./componentModalSubSection/SleeveSubSection";
+} from "../../../../../constants/products";
+import { useDeleteProjectDesignMutation } from "../../../../../gql/delete/project/project.generated";
+import useCustomSnackbar from "../../../../../Utils/CustomSnackbar";
+import { isValidAlphanumeric } from "../../../../../Utils/inputValidators";
+import UploadDesign from "../../../UploadDesign";
+import CorrugateBoxSubSection from "../../../modals/componentModalSubSection/CorrugateBoxSubSection";
+import FoldingCartonSubSection from "../../../modals/componentModalSubSection/FoldingCartonSubSection";
+import MoldedFiberSubSection from "../../../modals/componentModalSubSection/MoldedFiberSubSection";
+import PaperTubeSubSection from "../../../modals/componentModalSubSection/PaperTubeSubSection";
+import RigidBoxSubSection from "../../../modals/componentModalSubSection/RigidBoxSubSection";
+import SleeveSubSection from "../../../modals/componentModalSubSection/SleeveSubSection";
 
 const getComponentSpecDefaultState = (
   productName: string
@@ -345,15 +345,9 @@ const CreateProjectComponentModal = ({
             return;
           }
           setComponentSpec((spec) => {
-            // If product name is same, do nothing.
-            if (v.value === componentSpec.productName) {
-              return spec;
-            } else {
-              // If product name is different, reset everything
-              return {
-                productName: v.value,
-              } as CreateProjectComponentSpecInput;
-            }
+            return {
+              productName: v.value,
+            } as CreateProjectComponentSpecInput;
           });
           setComponentIndexToEdit(null);
         }}
@@ -410,6 +404,7 @@ const CreateProjectComponentModal = ({
       );
     }
   };
+
   const deleteDesign = async (id: string, ind: number) => {
     try {
       await deleteDesignMutation({
