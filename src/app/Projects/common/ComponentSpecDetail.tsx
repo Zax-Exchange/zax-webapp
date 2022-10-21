@@ -37,6 +37,7 @@ export default function ComponentSpecDetail({
     productName,
     style,
     boxStyle,
+    numberOfPages,
     dimension,
     includeArtworkInQuote,
     purpose,
@@ -143,6 +144,23 @@ export default function ComponentSpecDetail({
       </TableRow>
     );
   }
+  if (numberOfPages) {
+    res.push(
+      <TableRow>
+        <TableCell>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({
+              id: "app.component.attribute.numberOfPages",
+            })}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="caption">{numberOfPages}</Typography>
+        </TableCell>
+      </TableRow>
+    );
+  }
+
   if (boxStyle) {
     res.push(
       <TableRow>

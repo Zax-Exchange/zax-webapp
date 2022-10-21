@@ -120,7 +120,7 @@ const GuidedOutsideSpec = ({
       <Box>
         <Typography variant="subtitle2">
           {intl.formatMessage({
-            id: "app.customer.createProject.guidedCreate.boxType",
+            id: "app.component.attribute.product",
           })}
         </Typography>
         <Autocomplete
@@ -383,8 +383,8 @@ const GuidedOutsideSpec = ({
           })}
         </Typography>
       </Box>
-      <Box display="flex" flexDirection="row">
-        <Stack mt={2} mb={2} spacing={2}>
+      <Box display="flex" justifyContent="space-between">
+        <Stack mt={2} mb={2} spacing={2} flexBasis="50%">
           <ListItem>{renderBoxTypeDropdown()}</ListItem>
           <ListItem>
             <Box>
@@ -401,6 +401,8 @@ const GuidedOutsideSpec = ({
           </ListItem>
           <ListItem>{renderBoxStyle()}</ListItem>
           <ListItem>{renderPostProcessDropdown()}</ListItem>
+        </Stack>
+        <Stack mt={2} mb={2} spacing={2} flexBasis="50%">
           <ListItem>
             <Box>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -414,38 +416,45 @@ const GuidedOutsideSpec = ({
               />
             </Box>
           </ListItem>
-          {!!componentDesigns && (
-            <ListItem>
-              <Box>
+          <ListItem>
+            <Box>
+              <Box display="flex" alignItems="center">
                 <Typography variant="subtitle2">
                   {intl.formatMessage({
                     id: "app.component.attribute.designs",
                   })}
                 </Typography>
-                {componentDesigns.map((file, i) => {
-                  return (
-                    <Box>
-                      <Link href={file.url} target="_blank" rel="noopener">
-                        {file.filename}
-                      </Link>
-                      <IconButton
-                        onClick={() => deleteDesign(file.designId, i)}
-                      >
-                        <Cancel fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  );
-                })}
+                <UploadDesign
+                  setComponentData={setComponentData}
+                  parentSetDesigns={[setComponentDesigns]}
+                />
               </Box>
-            </ListItem>
-          )}
+              {componentDesigns?.map((file, i) => {
+                return (
+                  <Box>
+                    <Link href={file.url} target="_blank" rel="noopener">
+                      {file.filename}
+                    </Link>
+                    <IconButton onClick={() => deleteDesign(file.designId, i)}>
+                      <Cancel fontSize="small" />
+                    </IconButton>
+                  </Box>
+                );
+              })}
+              {!componentDesigns?.length && (
+                <Typography variant="caption">
+                  <i>
+                    {intl.formatMessage({
+                      id: "app.customer.createProject.noDesignPlaceholder",
+                    })}
+                  </i>
+                </Typography>
+              )}
+            </Box>
+          </ListItem>
         </Stack>
       </Box>
       <Box>
-        <UploadDesign
-          setComponentData={setComponentData}
-          parentSetDesigns={[setComponentDesigns]}
-        />
         <Button
           variant="text"
           onClick={handleBack}

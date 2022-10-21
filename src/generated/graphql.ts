@@ -138,6 +138,7 @@ export type CreateProjectComponentSpecInput = {
   manufacturingProcess?: InputMaybe<Scalars['String']>;
   material?: InputMaybe<Scalars['String']>;
   materialSource?: InputMaybe<Scalars['String']>;
+  numberOfPages?: InputMaybe<Scalars['String']>;
   outsideColor?: InputMaybe<Scalars['String']>;
   outsideFinish?: InputMaybe<Scalars['String']>;
   outsideMaterial?: InputMaybe<Scalars['String']>;
@@ -749,6 +750,7 @@ export type ProjectComponentSpec = {
   manufacturingProcess?: Maybe<Scalars['String']>;
   material?: Maybe<Scalars['String']>;
   materialSource?: Maybe<Scalars['String']>;
+  numberOfPages?: Maybe<Scalars['String']>;
   outsideColor?: Maybe<Scalars['String']>;
   outsideFinish?: Maybe<Scalars['String']>;
   outsideMaterial?: Maybe<Scalars['String']>;

@@ -104,6 +104,33 @@ const GuidedOther = ({
   ] = useDeleteProjectDesignMutation();
 
   const shouldDisableNextButton = () => {
+    for (let comp of additionalComponents) {
+      // empty component data
+      if (!Object.keys(comp).length) return true;
+
+      // empty component spec data
+      if (!Object.keys(comp.componentSpec).length) return true;
+
+      if (comp.componentSpec.productName === PRODUCT_NAME_BOOKLET.value) {
+        if (!comp.componentSpec.numberOfPages) return true;
+        if (!comp.componentSpec.style) return true;
+        if (!comp.componentSpec.dimension.x || !comp.componentSpec.dimension.y)
+          return true;
+      }
+
+      if (comp.componentSpec.productName === PRODUCT_NAME_STICKER.value) {
+        if (!comp.componentSpec.purpose) return true;
+        if (!comp.componentSpec.shape) return true;
+        if (!comp.componentSpec.dimension.x || !comp.componentSpec.dimension.y)
+          return true;
+
+        if (!comp.designIds || !comp.designIds.length) {
+          // no designs but chose to include artworks
+
+          if (comp.componentSpec.includeArtworkInQuote) return true;
+        }
+      }
+    }
     return false;
   };
 
@@ -174,6 +201,24 @@ const GuidedOther = ({
             designId: compDesign.designId,
           },
         },
+      });
+
+      setAdditionalComponents((prev) => {
+        // find current component
+        const curComp = [...prev][compInd];
+
+        // find to-be-deleted design index in component.designIds array
+        const designInd = curComp.designIds!.findIndex(
+          (id) => id === compDesign.designId
+        )!;
+
+        // remove the designId
+        curComp.designIds?.splice(designInd, 1);
+
+        const allAdditionalComps = [...prev];
+        allAdditionalComps.splice(compInd, 1, curComp);
+
+        return allAdditionalComps;
       });
 
       setAdditionalComponentsDesigns((prev) => {
@@ -247,7 +292,6 @@ const GuidedOther = ({
                 componentIndex={i}
                 componentDesigns={additionalComponentsDesigns[i]}
                 componentData={comp}
-                key={i + 3}
               />
             </>
           );

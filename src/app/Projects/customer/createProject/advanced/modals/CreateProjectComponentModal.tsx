@@ -43,6 +43,12 @@ import {
   PRODUCT_NAME_MOLDED_FIBER_TRAY,
   PRODUCT_NAME_PAPER_TUBE,
   productValueToLabelMap,
+  DEFAULT_RIGID_BOX_SPEC,
+  DEFAULT_FOLDING_CARTON_SPEC,
+  DEFAULT_PAPER_TUBE_SPEC,
+  DEFAULT_SLEEVE_SPEC,
+  DEFAULT_CORRUGATE_BOX_SPEC,
+  DEFAULT_MOLDED_FIBER_TRAY_SPEC,
 } from "../../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../../gql/delete/project/project.generated";
 import useCustomSnackbar from "../../../../../Utils/CustomSnackbar";
@@ -58,18 +64,21 @@ import SleeveSubSection from "../../../modals/componentModalSubSection/SleeveSub
 const getComponentSpecDefaultState = (
   productName: string
 ): CreateProjectComponentSpecInput => {
-  const defaultSpec = {
-    productName,
-    dimension: { x: "", y: "", z: "" },
-  };
   switch (productName) {
     case PRODUCT_NAME_RIGID_BOX.value:
+      return DEFAULT_RIGID_BOX_SPEC;
     case PRODUCT_NAME_FOLDING_CARTON.value:
+      return DEFAULT_FOLDING_CARTON_SPEC;
     case PRODUCT_NAME_PAPER_TUBE.value:
+      return DEFAULT_PAPER_TUBE_SPEC;
     case PRODUCT_NAME_SLEEVE.value:
-      return defaultSpec;
+      return DEFAULT_SLEEVE_SPEC;
+    case PRODUCT_NAME_CORRUGATE_BOX.value:
+      return DEFAULT_CORRUGATE_BOX_SPEC;
+    case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
+      return DEFAULT_MOLDED_FIBER_TRAY_SPEC;
   }
-  return defaultSpec;
+  return {} as CreateProjectComponentSpecInput;
 };
 
 const CreateProjectComponentModal = ({
@@ -96,7 +105,7 @@ const CreateProjectComponentModal = ({
   const theme = useTheme();
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [view, setView] = useState("");
+
   const [
     deleteDesignMutation,
     { error: deleteDesignError, loading: deleteDesignLoading },
@@ -112,20 +121,6 @@ const CreateProjectComponentModal = ({
 
   const [componentDesigns, setComponentDesigns] = useState<ProjectDesign[]>([]);
 
-  // when view changes reset everything, this will be the same as adding a new component
-  // defaultComponentIndex will be set when user selects a new product name
-  useEffect(() => {
-    if (view && defaultComponentIndex === undefined) {
-      setComponentSpec(getComponentSpecDefaultState(view));
-      setComponentData({
-        name: "",
-        designIds: [],
-        componentSpec: {} as CreateProjectComponentSpecInput,
-      });
-      setComponentDesigns([]);
-    }
-  }, [view]);
-
   useEffect(() => {
     if (deleteDesignError) {
       setSnackbar({
@@ -135,14 +130,6 @@ const CreateProjectComponentModal = ({
       setSnackbarOpen(true);
     }
   }, [deleteDesignError]);
-
-  useEffect(() => {
-    if (componentSpec.productName) {
-      setView(productValueToLabelMap[componentSpec.productName].value);
-    } else {
-      setView("");
-    }
-  }, [componentSpec.productName]);
 
   useEffect(() => {
     if (defaultComponentIndex !== undefined) {
@@ -345,9 +332,7 @@ const CreateProjectComponentModal = ({
             return;
           }
           setComponentSpec((spec) => {
-            return {
-              productName: v.value,
-            } as CreateProjectComponentSpecInput;
+            return getComponentSpecDefaultState(v.value);
           });
           setComponentIndexToEdit(null);
         }}
@@ -467,6 +452,54 @@ const CreateProjectComponentModal = ({
     );
   };
 
+  const renderSubSection = () => {
+    if (!Object.keys(componentSpec).length) return null;
+
+    switch (componentSpec.productName) {
+      case PRODUCT_NAME_RIGID_BOX.value:
+        return (
+          <RigidBoxSubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+      case PRODUCT_NAME_FOLDING_CARTON.value:
+        return (
+          <FoldingCartonSubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+      case PRODUCT_NAME_PAPER_TUBE.value:
+        return (
+          <PaperTubeSubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+      case PRODUCT_NAME_SLEEVE.value:
+        return (
+          <SleeveSubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+      case PRODUCT_NAME_CORRUGATE_BOX.value:
+        return (
+          <CorrugateBoxSubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+      case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
+        return (
+          <MoldedFiberSubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+    }
+  };
   return (
     <>
       <Container sx={{ paddingTop: 5, paddingBottom: 5, width: "480px" }}>
@@ -537,47 +570,7 @@ const CreateProjectComponentModal = ({
             </ListItem>
             {renderDesignFiles()}
           </Stack>
-          {view === PRODUCT_NAME_RIGID_BOX.value && (
-            <RigidBoxSubSection
-              setComponentSpec={setComponentSpec}
-              componentSpec={componentSpec}
-            />
-          )}
-
-          {view === PRODUCT_NAME_FOLDING_CARTON.value && (
-            <FoldingCartonSubSection
-              setComponentSpec={setComponentSpec}
-              componentSpec={componentSpec}
-            />
-          )}
-
-          {view === PRODUCT_NAME_SLEEVE.value && (
-            <SleeveSubSection
-              setComponentSpec={setComponentSpec}
-              componentSpec={componentSpec}
-            />
-          )}
-
-          {view === PRODUCT_NAME_CORRUGATE_BOX.value && (
-            <CorrugateBoxSubSection
-              setComponentSpec={setComponentSpec}
-              componentSpec={componentSpec}
-            />
-          )}
-
-          {view === PRODUCT_NAME_MOLDED_FIBER_TRAY.value && (
-            <MoldedFiberSubSection
-              setComponentSpec={setComponentSpec}
-              componentSpec={componentSpec}
-            />
-          )}
-
-          {view === PRODUCT_NAME_PAPER_TUBE.value && (
-            <PaperTubeSubSection
-              setComponentSpec={setComponentSpec}
-              componentSpec={componentSpec}
-            />
-          )}
+          {renderSubSection()}
         </Stack>
       </Container>
     </>

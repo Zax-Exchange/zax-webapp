@@ -43,6 +43,7 @@ import { useDeleteProjectDesignMutation } from "../../../../../gql/delete/projec
 import {
   isValidAlphanumeric,
   isValidFloat,
+  isValidInt,
 } from "../../../../../Utils/inputValidators";
 import UploadDesign from "../../../UploadDesign";
 import DimensionsInput from "../../common/DimensionsInput";
@@ -54,9 +55,9 @@ const bookletInitialState: CreateProjectComponentSpecInput = {
   dimension: {
     x: "",
     y: "",
-    z: "",
   },
-  includeArtworkInQuote: false,
+  includeArtworkInQuote: true,
+  numberOfPages: "",
 };
 
 const stickerInitialState: CreateProjectComponentSpecInput = {
@@ -121,6 +122,28 @@ const GuidedOtherSubSection = ({
     }));
   };
 
+  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const attr = e.target.name as keyof CreateProjectComponentSpecInput;
+    const val = e.target.value;
+    let isAllowed = false;
+
+    switch (attr) {
+      case "numberOfPages":
+        isAllowed = isValidInt(val);
+        break;
+      default:
+        break;
+    }
+    if (isAllowed) {
+      setComponentData((prev) => ({
+        ...prev!,
+        componentSpec: {
+          ...prev!.componentSpec,
+          [attr]: val,
+        },
+      }));
+    }
+  };
   const getDefaultComponentSpec = (productName: string) => {
     switch (productName) {
       case PRODUCT_NAME_BOOKLET.value:
@@ -242,6 +265,21 @@ const GuidedOtherSubSection = ({
         </ListItem>
         <ListItem>
           <Box>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.component.attribute.numberOfPages",
+              })}
+            </Typography>
+            <TextField
+              autoComplete="new-password"
+              onChange={componentSpecOnChange}
+              name="numberOfPages"
+              value={componentData.componentSpec.numberOfPages}
+            />
+          </Box>
+        </ListItem>
+        <ListItem>
+          <Box>
             <Typography variant="subtitle2" mb={1}>
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
@@ -308,12 +346,7 @@ const GuidedOtherSubSection = ({
   };
 
   return (
-    <Box
-      position="relative"
-      display="flex"
-      justifyContent="space-between"
-      key={componentIndex}
-    >
+    <Box position="relative" display="flex" justifyContent="space-between">
       <IconButton
         onClick={deleteComponent}
         sx={{ position: "absolute", top: 5, right: 5, zIndex: 2 }}
@@ -384,6 +417,15 @@ const GuidedOtherSubSection = ({
                   </Box>
                 );
               })}
+              {!componentDesigns?.length && (
+                <Typography variant="caption">
+                  <i>
+                    {intl.formatMessage({
+                      id: "app.customer.createProject.noDesignPlaceholder",
+                    })}
+                  </i>
+                </Typography>
+              )}
             </Box>
           </ListItem>
         </Stack>

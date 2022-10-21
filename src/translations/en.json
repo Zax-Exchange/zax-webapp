@@ -65,10 +65,12 @@
   "app.product.material.c1s": "C1S",
   "app.product.material.c2s": "C2S",
   "app.product.material.uncoatedPaper": "Uncoated Paper",
+  "app.product.material.defaultCorrugate": "Default Corrugate",
 
   "app.product.materialSource.standard": "Standard",
   "app.product.materialSource.recycled": "Recycled",
   "app.product.materialSource.fsc": "FSC",
+  "app.product.materialSource.occ": "OCC / Recycled Materials",
 
   "app.product.postProcess.printing": "Printing",
   "app.product.postProcess.emboss": "Emboss",
@@ -148,6 +150,7 @@
   "app.component.attribute.boxStyle": "Box Style",
   "app.component.attribute.style": "Style",
   "app.component.attribute.type": "Type",
+  "app.component.attribute.numberOfPages": "Number of Pages",
   "app.component.attribute.purpose": "Purpose",
   "app.component.attribute.shape": "Shape",
   "app.component.attribute.product": "Product",

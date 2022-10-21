@@ -113,48 +113,52 @@ const GuidedInsideSpec = ({
       return null;
     };
     return (
-      <Autocomplete
-        sx={{ width: 200 }}
-        options={GUIDED_PROJECT_INSIDE_PRODUCTS}
-        autoHighlight
-        value={getDefaultInsideTray()}
-        onChange={(e, v) => {
-          setComponentSpec((spec) => {
-            if (!v) {
-              return {
-                ...spec,
-                productName: "",
-              };
-            }
-            if (v.value === componentSpec.productName) {
-              return spec;
-            } else {
-              return {
-                ...spec,
-                productName: v.value,
-              };
-            }
-          });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={intl.formatMessage({
-              id: "app.customer.createProject.guidedCreate.tray",
-            })}
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
-        )}
-      />
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({
+            id: "app.component.attribute.product",
+          })}
+        </Typography>
+        <Autocomplete
+          sx={{ width: 200 }}
+          options={GUIDED_PROJECT_INSIDE_PRODUCTS}
+          autoHighlight
+          value={getDefaultInsideTray()}
+          onChange={(e, v) => {
+            setComponentSpec((spec) => {
+              if (!v) {
+                return {
+                  ...spec,
+                  productName: "",
+                };
+              }
+              if (v.value === componentSpec.productName) {
+                return spec;
+              } else {
+                return {
+                  ...spec,
+                  productName: v.value,
+                };
+              }
+            });
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+            />
+          )}
+        />
+      </Box>
     );
   };
 
@@ -170,7 +174,12 @@ const GuidedInsideSpec = ({
 
   const renderPostProcessDropdown = () => {
     return (
-      <Box display="flex">
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({
+            id: "app.component.attribute.postProcess",
+          })}
+        </Typography>
         <Autocomplete
           sx={{ width: 200 }}
           options={GUIDED_PROJECT_ALL_POST_PROCESS}
@@ -194,9 +203,6 @@ const GuidedInsideSpec = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              label={intl.formatMessage({
-                id: "app.component.attribute.postProcess",
-              })}
               inputProps={{
                 ...params.inputProps,
                 autoComplete: "new-password",
@@ -306,55 +312,67 @@ const GuidedInsideSpec = ({
           })}
         </Typography>
       </Box>
-      <Stack mt={2} mb={2} spacing={2}>
-        <ListItem>{renderInsideTrayDropdown()}</ListItem>
-        <ListItem>
-          <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              {intl.formatMessage({
-                id: "app.component.attribute.dimension",
-              })}
-            </Typography>
-            <DimensionsInput
-              componentSpec={componentSpec}
-              setComponentSpec={setComponentSpec}
-            />
-          </Box>
-        </ListItem>
-        <ListItem>
-          <TextField
-            autoComplete="new-password"
-            label={intl.formatMessage({
-              id: "app.component.attribute.color",
-            })}
-            onChange={componentSpecOnChange}
-            name="color"
-            value={componentSpec.color}
-          />
-        </ListItem>
-        <ListItem>{renderPostProcessDropdown()}</ListItem>
-        <ListItem>
-          <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              {intl.formatMessage({
-                id: "app.component.attribute.includeArtworkInQuote",
-              })}
-            </Typography>
-            <IncludeArtworkInQuoteDropdown
-              componentSpec={componentSpec}
-              setComponentSpec={setComponentSpec}
-            />
-          </Box>
-        </ListItem>
-        {!!componentDesigns && (
+      <Box display="flex" justifyContent="space-between">
+        <Stack mt={2} mb={2} spacing={2} flexBasis="50%">
+          <ListItem>{renderInsideTrayDropdown()}</ListItem>
+          <ListItem>
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                {intl.formatMessage({
+                  id: "app.component.attribute.dimension",
+                })}
+              </Typography>
+              <DimensionsInput
+                componentSpec={componentSpec}
+                setComponentSpec={setComponentSpec}
+              />
+            </Box>
+          </ListItem>
           <ListItem>
             <Box>
               <Typography variant="subtitle2">
                 {intl.formatMessage({
-                  id: "app.component.attribute.designs",
+                  id: "app.component.attribute.color",
                 })}
               </Typography>
-              {componentDesigns.map((file, i) => {
+              <TextField
+                autoComplete="new-password"
+                onChange={componentSpecOnChange}
+                name="color"
+                value={componentSpec.color}
+              />
+            </Box>
+          </ListItem>
+          <ListItem>{renderPostProcessDropdown()}</ListItem>
+        </Stack>
+        <Stack mt={2} mb={2} spacing={2} flexBasis="50%">
+          <ListItem>
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                {intl.formatMessage({
+                  id: "app.component.attribute.includeArtworkInQuote",
+                })}
+              </Typography>
+              <IncludeArtworkInQuoteDropdown
+                componentSpec={componentSpec}
+                setComponentSpec={setComponentSpec}
+              />
+            </Box>
+          </ListItem>
+          <ListItem>
+            <Box>
+              <Box display="flex" alignItems="center">
+                <Typography variant="subtitle2">
+                  {intl.formatMessage({
+                    id: "app.component.attribute.designs",
+                  })}
+                </Typography>
+                <UploadDesign
+                  setComponentData={setComponentData}
+                  parentSetDesigns={[setComponentDesigns]}
+                />
+              </Box>
+              {componentDesigns?.map((file, i) => {
                 return (
                   <Box>
                     <Link href={file.url} target="_blank" rel="noopener">
@@ -366,15 +384,20 @@ const GuidedInsideSpec = ({
                   </Box>
                 );
               })}
+              {!componentDesigns?.length && (
+                <Typography variant="caption">
+                  <i>
+                    {intl.formatMessage({
+                      id: "app.customer.createProject.noDesignPlaceholder",
+                    })}
+                  </i>
+                </Typography>
+              )}
             </Box>
           </ListItem>
-        )}
-      </Stack>
+        </Stack>
+      </Box>
       <Box>
-        <UploadDesign
-          setComponentData={setComponentData}
-          parentSetDesigns={[setComponentDesigns]}
-        />
         <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
           {intl.formatMessage({ id: "app.general.back" })}
         </Button>

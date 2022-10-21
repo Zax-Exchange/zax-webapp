@@ -1,4 +1,5 @@
 import {createIntl, createIntlCache, RawIntlProvider} from 'react-intl'
+import { CreateProjectComponentSpecInput, ProductDimension } from '../../generated/graphql';
 import en from "../../translations/en.json";
 import zh from "../../translations/zh-cn.json";
 import { TranslatableAttribute } from '../../type/common';
@@ -155,6 +156,11 @@ export const MATERIAL_C1S: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.material.c1s"}),
   value: "C1S"
 }
+export const MATERIAL_DEFAULT_CORRUGATE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.material.defaultCorrugate"}),
+  value: "Default Corrugate"
+}
+
 export const MATERIAL_UNCOATED_PAPER: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.material.uncoatedPaper"}),
   value: "Uncoated Paper"
@@ -171,6 +177,11 @@ export const MATERIAL_SOURCE_RECYCLED: TranslatableAttribute = {
 export const MATERIAL_SOURCE_FSC: TranslatableAttribute = {
   label: intl.formatMessage({id: "app.product.materialSource.fsc"}),
   value: "FSC"
+}
+
+export const MATERIAL_SOURCE_OCC: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.product.materialSource.occ"}),
+  value: "OCC / Recycled Materials"
 }
 
 
@@ -717,10 +728,12 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [MATERIAL_C2S.value]: MATERIAL_C2S,
   [MATERIAL_C1S.value]: MATERIAL_C1S,
   [MATERIAL_UNCOATED_PAPER.value]: MATERIAL_UNCOATED_PAPER,
-  
+  [MATERIAL_DEFAULT_CORRUGATE.value]: MATERIAL_DEFAULT_CORRUGATE,
+
   [MATERIAL_SOURCE_RECYCLED.value]: MATERIAL_SOURCE_RECYCLED,
   [MATERIAL_SOURCE_FSC.value]: MATERIAL_SOURCE_FSC,
   [MATERIAL_SOURCE_STANDARD.value]: MATERIAL_SOURCE_STANDARD,
+  [MATERIAL_SOURCE_OCC.value]: MATERIAL_SOURCE_OCC,
 
   [POST_PROCESS_PRINTING.value]: POST_PROCESS_PRINTING,
   [POST_PROCESS_EMBOSS.value]: POST_PROCESS_EMBOSS,
@@ -787,4 +800,114 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
 
   [PURPOSE_LABELING.value]: PURPOSE_LABELING,
   [PURPOSE_SEALING.value]: PURPOSE_SEALING
+}
+
+
+/** Product default spec data */
+
+export const DEFAULT_RIGID_BOX_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_RIGID_BOX.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: ""
+  },
+  includeArtworkInQuote: false,
+  boxStyle: "",
+  thickness: "",
+  outsideMaterial: "",
+  outsideMaterialSource: "",
+  outsideFinish: "",
+  outsidePostProcess: [],
+  insideMaterial: "",
+  insideMaterialSource: "",
+  insideFinish: "",
+  insidePostProcess: []
+}
+
+export const DEFAULT_FOLDING_CARTON_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_FOLDING_CARTON.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: ""
+  },
+  includeArtworkInQuote: false,
+  boxStyle: "",
+  thickness: "",
+  material: "",
+  materialSource: "",
+  outsideFinish: "",
+  outsidePostProcess: [],
+  insideFinish: "",
+  insidePostProcess: []
+}
+
+export const DEFAULT_SLEEVE_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_SLEEVE.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: ""
+  },
+  includeArtworkInQuote: false,
+  boxStyle: "",
+  thickness: "",
+  material: "",
+  materialSource: "",
+  outsideFinish: "",
+  outsidePostProcess: [],
+  insideFinish: "",
+  insidePostProcess: []
+}
+
+export const DEFAULT_CORRUGATE_BOX_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_CORRUGATE_BOX.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: ""
+  },
+  includeArtworkInQuote: false,
+  boxStyle: "",
+  thickness: "",
+  flute: "",
+  material: MATERIAL_DEFAULT_CORRUGATE.value,
+  materialSource: MATERIAL_SOURCE_OCC.value,
+  outsideFinish: "",
+  outsidePostProcess: [],
+  insideFinish: "",
+  insidePostProcess: []
+}
+
+export const DEFAULT_PAPER_TUBE_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_PAPER_TUBE.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: ""
+  },
+  includeArtworkInQuote: false,
+  boxStyle: BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE.value,
+  thickness: "",
+  outsideMaterial: "",
+  outsideMaterialSource: "",
+  outsideFinish: "",
+  outsidePostProcess: [],
+}
+
+export const DEFAULT_MOLDED_FIBER_TRAY_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_MOLDED_FIBER_TRAY.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: ""
+  },
+  includeArtworkInQuote: false,
+  thickness: "",
+  color: "",
+  manufacturingProcess: "",
+  materialSource: "",
+  outsidePostProcess: [],
+  insidePostProcess: []
 }

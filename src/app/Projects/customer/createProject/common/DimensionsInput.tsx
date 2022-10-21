@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
   CreateProjectComponentSpecInput,
@@ -37,42 +37,49 @@ const DimensionsInput = ({
   if (!componentSpec.dimension) return null;
 
   return (
-    <>
-      <TextField
-        autoComplete="new-password"
-        label="X"
-        onChange={dimensionOnChange}
-        name="x"
-        value={componentSpec.dimension.x}
-        sx={{
-          width: 80,
-          mr: 2,
-        }}
-      />
-      <TextField
-        autoComplete="new-password"
-        label="Y"
-        onChange={dimensionOnChange}
-        name="y"
-        value={componentSpec.dimension.y}
-        sx={{
-          width: 80,
-          mr: 2,
-        }}
-      />
-      {componentSpec.dimension.z !== undefined && (
+    <Box>
+      <Box>
         <TextField
           autoComplete="new-password"
-          label="Z"
+          label="X"
           onChange={dimensionOnChange}
-          name="z"
-          value={componentSpec.dimension.z}
+          name="x"
+          value={componentSpec.dimension.x}
           sx={{
             width: 80,
+            mr: 2,
           }}
         />
-      )}
-    </>
+        <TextField
+          autoComplete="new-password"
+          label="Y"
+          onChange={dimensionOnChange}
+          name="y"
+          value={componentSpec.dimension.y}
+          sx={{
+            width: 80,
+            mr: 2,
+          }}
+        />
+        {componentSpec.dimension.z !== undefined && (
+          <TextField
+            autoComplete="new-password"
+            label="Z"
+            onChange={dimensionOnChange}
+            name="z"
+            value={componentSpec.dimension.z}
+            sx={{
+              width: 80,
+            }}
+          />
+        )}
+      </Box>
+      <Box>
+        <Typography variant="caption" fontSize="0.8rem">
+          <i>* units are all in mm</i>
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 
