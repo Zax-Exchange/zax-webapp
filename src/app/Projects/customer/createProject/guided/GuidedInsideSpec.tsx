@@ -22,8 +22,11 @@ import {
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
   GUIDED_PROJECT_PAPER_POST_PROCESS,
+  MANUFACTURING_PROCESS_WET_PRESS,
+  MATERIAL_SOURCE_STANDARD,
   productValueToLabelMap,
   PRODUCT_NAME_CORRUGATE_TRAY,
+  PRODUCT_NAME_MOLDED_FIBER_TRAY,
   PRODUCT_NAME_PAPER_TRAY,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
@@ -35,6 +38,13 @@ import UploadDesign from "../../UploadDesign";
 import DimensionsInput from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
+
+const moldedFiberAdditionalDefaultSpec: Partial<CreateProjectComponentSpecInput> =
+  {
+    thickness: "0.8",
+    manufacturingProcess: MANUFACTURING_PROCESS_WET_PRESS.value,
+    materialSource: MATERIAL_SOURCE_STANDARD.value,
+  };
 
 const GuidedInsideSpec = ({
   setComponentData,
@@ -103,6 +113,14 @@ const GuidedInsideSpec = ({
         [e.target.name]: e.target.value,
       });
     }
+  };
+
+  const getAdditionalDefatulSpec = (productName: string) => {
+    switch (productName) {
+      case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
+        return moldedFiberAdditionalDefaultSpec;
+    }
+    return {};
   };
 
   const renderInsideTrayDropdown = () => {
@@ -267,7 +285,10 @@ const GuidedInsideSpec = ({
     const compData = {
       name: "Inner Tray",
       designIds: componentDesigns?.map((d) => d.designId),
-      componentSpec,
+      componentSpec: {
+        ...componentSpec,
+        ...getAdditionalDefatulSpec(componentSpec.productName),
+      },
     } as CreateProjectComponentInput;
 
     setComponentData(compData);
@@ -397,22 +418,28 @@ const GuidedInsideSpec = ({
           </ListItem>
         </Stack>
       </Box>
-      <Box>
-        <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
-          {intl.formatMessage({ id: "app.general.back" })}
-        </Button>
-        <Button variant="text" onClick={skipToNext} style={{ marginRight: 8 }}>
-          {intl.formatMessage({
-            id: "app.customer.createProject.guidedCreate.skip",
-          })}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleNext}
-          disabled={shouldDisableNextButton()}
-        >
-          {intl.formatMessage({ id: "app.general.next" })}
-        </Button>
+      <Box display="flex" mt={5}>
+        <Box>
+          <Button variant="outlined" onClick={handleBack}>
+            {intl.formatMessage({ id: "app.general.back" })}
+          </Button>
+        </Box>
+        <Box ml="auto">
+          <Button
+            variant="contained"
+            onClick={handleNext}
+            disabled={shouldDisableNextButton()}
+          >
+            {intl.formatMessage({ id: "app.general.next" })}
+          </Button>
+        </Box>
+        <Box mr={-5} ml={1}>
+          <Button variant="text" onClick={skipToNext}>
+            {intl.formatMessage({
+              id: "app.customer.createProject.guidedCreate.skip",
+            })}
+          </Button>
+        </Box>
       </Box>
     </>
   );

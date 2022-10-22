@@ -327,6 +327,16 @@ const GuidedReview = ({
           </Box>
           {tabPanels}
         </Box>
+        <Box display="flex">
+          <Typography variant="caption">
+            <i>
+              *
+              {intl.formatMessage({
+                id: "app.customer.createProject.guidedCreate.review.componentDetail.helperText",
+              })}
+            </i>
+          </Typography>
+        </Box>
       </>
     );
   };
@@ -343,7 +353,7 @@ const GuidedReview = ({
       </Box>
       <Box>{renderProjectDetail()}</Box>
       <Box mt={3}>
-        <Button variant="text" onClick={handleBack} disabled={activeStep === 0}>
+        <Button variant="text" onClick={handleBack} sx={{ mr: 2 }}>
           {intl.formatMessage({ id: "app.general.back" })}
         </Button>
         <Button variant="contained" onClick={createProject}>

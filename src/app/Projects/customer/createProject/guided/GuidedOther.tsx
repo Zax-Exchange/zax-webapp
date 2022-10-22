@@ -104,6 +104,9 @@ const GuidedOther = ({
   ] = useDeleteProjectDesignMutation();
 
   const shouldDisableNextButton = () => {
+    // no outer box and inner tray and no additional components added
+    if (!additionalComponents.length) return true;
+
     for (let comp of additionalComponents) {
       // empty component data
       if (!Object.keys(comp).length) return true;
@@ -131,6 +134,7 @@ const GuidedOther = ({
         }
       }
     }
+
     return false;
   };
 
@@ -140,17 +144,6 @@ const GuidedOther = ({
       {} as CreateProjectComponentInput,
     ]);
     setAdditionalComponentsDesigns((prev) => [...prev, []]);
-  };
-
-  const saveComponentsData = () => {
-    setAdditionalComponents(
-      additionalComponents.map((comp, i) => {
-        return {
-          ...comp,
-          designIds: additionalComponentsDesigns[i].map((d) => d.designId),
-        };
-      })
-    );
   };
 
   const deleteComponentDesigns = (compInd: number) => {
@@ -174,12 +167,10 @@ const GuidedOther = ({
     }
   };
   const handleNext = () => {
-    saveComponentsData();
     setActiveStep((step) => step + 1);
   };
 
   const handleBack = () => {
-    saveComponentsData();
     setActiveStep((step) => step - 1);
   };
 
@@ -296,31 +287,41 @@ const GuidedOther = ({
             </>
           );
         })}
+        {!!additionalComponents.length && <Divider />}
+        <ListItem>
+          <Button variant="outlined" onClick={addComponent}>
+            {additionalComponents.length
+              ? intl.formatMessage({ id: "app.general.addMore" })
+              : intl.formatMessage({
+                  id: "app.customer.createProject.guidedCreate.addProduct",
+                })}
+          </Button>
+        </ListItem>
       </Stack>
-      <Box>
-        <Button variant="text" onClick={handleBack} style={{ marginRight: 8 }}>
-          {intl.formatMessage({ id: "app.general.back" })}
-        </Button>
-        <Button variant="contained" onClick={addComponent}>
-          {intl.formatMessage({ id: "app.general.add" })}
-        </Button>
-        <Button
-          variant="text"
-          onClick={skipToNext}
-          style={{ marginRight: 8 }}
-          disabled={isRequired}
-        >
-          {intl.formatMessage({
-            id: "app.customer.createProject.guidedCreate.skip",
-          })}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleNext}
-          disabled={shouldDisableNextButton()}
-        >
-          {intl.formatMessage({ id: "app.general.next" })}
-        </Button>
+      <Box display="flex" mt={5}>
+        <Box>
+          <Button variant="outlined" onClick={handleBack}>
+            {intl.formatMessage({ id: "app.general.back" })}
+          </Button>
+        </Box>
+        <Box ml="auto">
+          <Button
+            variant="contained"
+            onClick={handleNext}
+            disabled={shouldDisableNextButton()}
+          >
+            {intl.formatMessage({ id: "app.general.next" })}
+          </Button>
+        </Box>
+        {!isRequired && (
+          <Box mr={-5} ml={1}>
+            <Button variant="text" onClick={skipToNext}>
+              {intl.formatMessage({
+                id: "app.customer.createProject.guidedCreate.skip",
+              })}
+            </Button>
+          </Box>
+        )}
       </Box>
     </>
   );

@@ -1,4 +1,4 @@
-import { Cancel } from "@mui/icons-material";
+import { Cancel, ChangeCircle } from "@mui/icons-material";
 import Add from "@mui/icons-material/Add";
 import {
   Autocomplete,
@@ -27,6 +27,18 @@ import {
   GUIDED_PROJECT_OUTSIDE_PRODUCTS,
   GUIDED_PROJECT_ALL_POST_PROCESS,
   productValueToLabelMap,
+  FINISH_UNCOATED,
+  MATERIAL_SOURCE_OCC,
+  B_FLUTE,
+  MATERIAL_C1S,
+  MATERIAL_SOURCE_STANDARD,
+  FINISH_MATTE,
+  MATERIAL_C2S,
+  PRODUCT_NAME_CORRUGATE_BOX,
+  PRODUCT_NAME_FOLDING_CARTON,
+  PRODUCT_NAME_PAPER_TUBE,
+  PRODUCT_NAME_RIGID_BOX,
+  PRODUCT_NAME_SLEEVE,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import {
@@ -38,6 +50,52 @@ import DimensionsInput from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedCreateBoxStyleSelection from "./modals/GuidedCreateBoxStyleSelection";
+
+/** OUTER BOXES DEFAULT DATA */
+const corrugateBoxAdditionalDefaultSpecs: Partial<CreateProjectComponentSpecInput> =
+  {
+    outsideFinish: FINISH_UNCOATED.value,
+    insideFinish: FINISH_UNCOATED.value,
+    materialSource: MATERIAL_SOURCE_OCC.value,
+    flute: B_FLUTE.value,
+  };
+
+const foldingCartonAdditionalDefaultSpecs: Partial<CreateProjectComponentSpecInput> =
+  {
+    material: MATERIAL_C1S.value,
+    materialSource: MATERIAL_SOURCE_STANDARD.value,
+    thickness: "0.5",
+    outsideFinish: FINISH_MATTE.value,
+    insideFinish: FINISH_UNCOATED.value,
+  };
+
+const sleeveAdditionalDefaultSpecs: Partial<CreateProjectComponentSpecInput> = {
+  material: MATERIAL_C1S.value,
+  materialSource: MATERIAL_SOURCE_STANDARD.value,
+  thickness: "0.5",
+  outsideFinish: FINISH_MATTE.value,
+  insideFinish: FINISH_UNCOATED.value,
+};
+
+const rigidBoxAdditionalDefaultSpecs: Partial<CreateProjectComponentSpecInput> =
+  {
+    thickness: "1",
+    outsideMaterial: MATERIAL_C2S.value,
+    outsideMaterialSource: MATERIAL_SOURCE_STANDARD.value,
+    outsideFinish: FINISH_MATTE.value,
+    insideMaterial: MATERIAL_C2S.value,
+    insideMaterialSource: MATERIAL_SOURCE_STANDARD.value,
+    insideFinish: FINISH_MATTE.value,
+  };
+
+const paperTubeAdditionalDefaultSpecs: Partial<CreateProjectComponentSpecInput> =
+  {
+    // TBD
+    thickness: "0.5",
+    outsideMaterial: MATERIAL_C2S.value,
+    outsideMaterialSource: MATERIAL_SOURCE_STANDARD.value,
+    outsideFinish: FINISH_MATTE.value,
+  };
 
 const GuidedOutsideSpec = ({
   setComponentData,
@@ -109,136 +167,20 @@ const GuidedOutsideSpec = ({
     }
   };
 
-  const renderBoxTypeDropdown = () => {
-    const getDefaultBoxType = () => {
-      if (componentSpec.productName) {
-        return productValueToLabelMap[componentSpec.productName];
-      }
-      return null;
-    };
-    return (
-      <Box>
-        <Typography variant="subtitle2">
-          {intl.formatMessage({
-            id: "app.component.attribute.product",
-          })}
-        </Typography>
-        <Autocomplete
-          sx={{ width: 200 }}
-          options={GUIDED_PROJECT_OUTSIDE_PRODUCTS}
-          autoHighlight
-          value={getDefaultBoxType()}
-          onChange={(e, v) => {
-            setComponentSpec((spec) => {
-              if (!v) {
-                return {
-                  ...spec,
-                  productName: "",
-                  boxStyle: "",
-                };
-              }
-              if (v.value === componentSpec.productName) {
-                return spec;
-              } else {
-                return {
-                  ...spec,
-                  boxStyle: "",
-                  productName: v.value,
-                };
-              }
-            });
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password",
-              }}
-              InputLabelProps={{
-                sx: {
-                  fontSize: 16,
-                  top: -7,
-                },
-              }}
-            />
-          )}
-        />
-      </Box>
-    );
-  };
-
-  // TODO: change .value to .label
-  const renderBoxStyle = () => {
-    return (
-      <Box display="flex" flexDirection="column">
-        <Typography variant="subtitle2">
-          {intl.formatMessage({ id: "app.component.attribute.boxStyle" })}
-        </Typography>
-        <Typography variant="caption">
-          {componentSpec.boxStyle
-            ? productValueToLabelMap[componentSpec.boxStyle].value
-            : "Please select a boxy style"}
-        </Typography>
-        <Button
-          variant="outlined"
-          onClick={() => setBoxStyleModalOpen(true)}
-          disabled={!componentSpec.productName}
-        >
-          {intl.formatMessage({
-            id: "app.customer.createProject.selectBoxStyle",
-          })}
-        </Button>
-      </Box>
-    );
-  };
-
-  const renderPostProcessDropdown = () => {
-    return (
-      <Box>
-        <Typography variant="subtitle2">
-          {intl.formatMessage({
-            id: "app.component.attribute.postProcess",
-          })}
-        </Typography>
-        <Autocomplete
-          sx={{ width: 200 }}
-          options={GUIDED_PROJECT_ALL_POST_PROCESS}
-          autoHighlight
-          multiple
-          value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
-            return componentSpec.postProcess?.includes(p.value);
-          })}
-          isOptionEqualToValue={(option, value) => {
-            if (typeof value === "string") {
-              return option.value === value;
-            }
-            return option.value === value.value;
-          }}
-          onChange={(e, v) => {
-            setComponentSpec((prev) => ({
-              ...prev,
-              postProcess: v.map((p) => p.value),
-            }));
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password",
-              }}
-              InputLabelProps={{
-                sx: {
-                  fontSize: 16,
-                  top: -7,
-                },
-              }}
-            />
-          )}
-        />
-      </Box>
-    );
+  const getAdditionalDefatulSpec = (productName: string) => {
+    switch (productName) {
+      case PRODUCT_NAME_CORRUGATE_BOX.value:
+        return corrugateBoxAdditionalDefaultSpecs;
+      case PRODUCT_NAME_FOLDING_CARTON.value:
+        return foldingCartonAdditionalDefaultSpecs;
+      case PRODUCT_NAME_PAPER_TUBE.value:
+        return paperTubeAdditionalDefaultSpecs;
+      case PRODUCT_NAME_RIGID_BOX.value:
+        return rigidBoxAdditionalDefaultSpecs;
+      case PRODUCT_NAME_SLEEVE.value:
+        return sleeveAdditionalDefaultSpecs;
+    }
+    return {};
   };
 
   // Not needed right now.
@@ -334,11 +276,15 @@ const GuidedOutsideSpec = ({
       deleteComponentDesign(ind);
     } catch (error) {}
   };
+
   const saveComponentData = () => {
     const compData = {
       name: "Outer Box",
       designIds: componentDesigns?.map((d) => d.designId),
-      componentSpec,
+      componentSpec: {
+        ...componentSpec,
+        ...getAdditionalDefatulSpec(componentSpec.productName),
+      },
     } as CreateProjectComponentInput;
 
     setComponentData(compData);
@@ -374,6 +320,147 @@ const GuidedOutsideSpec = ({
     }
   };
 
+  // TODO: change .value to .label
+  const renderBoxStyle = () => {
+    return (
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({ id: "app.component.attribute.boxStyle" })}
+        </Typography>
+
+        {componentSpec.boxStyle ? (
+          <Box>
+            <Typography variant="caption">
+              {productValueToLabelMap[componentSpec.boxStyle].value}
+            </Typography>
+            <IconButton
+              onClick={() => setBoxStyleModalOpen(true)}
+              color="primary"
+            >
+              <ChangeCircle />
+            </IconButton>
+          </Box>
+        ) : (
+          <Button
+            variant="outlined"
+            onClick={() => setBoxStyleModalOpen(true)}
+            disabled={!componentSpec.productName}
+          >
+            {intl.formatMessage({
+              id: "app.customer.createProject.selectBoxStyle",
+            })}
+          </Button>
+        )}
+      </Box>
+    );
+  };
+
+  const renderPostProcessDropdown = () => {
+    return (
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({
+            id: "app.component.attribute.postProcess",
+          })}
+        </Typography>
+        <Autocomplete
+          sx={{ width: 200 }}
+          options={GUIDED_PROJECT_ALL_POST_PROCESS}
+          autoHighlight
+          multiple
+          value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
+            return componentSpec.postProcess?.includes(p.value);
+          })}
+          isOptionEqualToValue={(option, value) => {
+            if (typeof value === "string") {
+              return option.value === value;
+            }
+            return option.value === value.value;
+          }}
+          onChange={(e, v) => {
+            setComponentSpec((prev) => ({
+              ...prev,
+              postProcess: v.map((p) => p.value),
+            }));
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+            />
+          )}
+        />
+      </Box>
+    );
+  };
+
+  const renderBoxTypeDropdown = () => {
+    const getDefaultBoxType = () => {
+      if (componentSpec.productName) {
+        return productValueToLabelMap[componentSpec.productName];
+      }
+      return null;
+    };
+    return (
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({
+            id: "app.component.attribute.product",
+          })}
+        </Typography>
+        <Autocomplete
+          sx={{ width: 200 }}
+          options={GUIDED_PROJECT_OUTSIDE_PRODUCTS}
+          autoHighlight
+          value={getDefaultBoxType()}
+          onChange={(e, v) => {
+            setComponentSpec((spec) => {
+              if (!v) {
+                return {
+                  ...spec,
+                  productName: "",
+                  boxStyle: "",
+                };
+              }
+              if (v.value === componentSpec.productName) {
+                return spec;
+              } else {
+                return {
+                  ...spec,
+                  boxStyle: "",
+                  productName: v.value,
+                };
+              }
+            });
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+            />
+          )}
+        />
+      </Box>
+    );
+  };
   return (
     <>
       <Box>
@@ -454,27 +541,28 @@ const GuidedOutsideSpec = ({
           </ListItem>
         </Stack>
       </Box>
-      <Box>
-        <Button
-          variant="text"
-          onClick={handleBack}
-          disabled={activeStep === 0}
-          style={{ marginRight: 8 }}
-        >
-          {intl.formatMessage({ id: "app.general.back" })}
-        </Button>
-        <Button variant="text" onClick={skipToNext} style={{ marginRight: 8 }}>
-          {intl.formatMessage({
-            id: "app.customer.createProject.guidedCreate.skip",
-          })}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleNext}
-          disabled={shouldDisableNextButton()}
-        >
-          {intl.formatMessage({ id: "app.general.next" })}
-        </Button>
+      <Box display="flex" mt={5}>
+        <Box>
+          <Button variant="outlined" onClick={handleBack}>
+            {intl.formatMessage({ id: "app.general.back" })}
+          </Button>
+        </Box>
+        <Box ml="auto">
+          <Button
+            variant="contained"
+            onClick={handleNext}
+            disabled={shouldDisableNextButton()}
+          >
+            {intl.formatMessage({ id: "app.general.next" })}
+          </Button>
+        </Box>
+        <Box mr={-5} ml={1}>
+          <Button variant="text" onClick={skipToNext}>
+            {intl.formatMessage({
+              id: "app.customer.createProject.guidedCreate.skip",
+            })}
+          </Button>
+        </Box>
       </Box>
       <Dialog
         open={boxStyleModalOpen}

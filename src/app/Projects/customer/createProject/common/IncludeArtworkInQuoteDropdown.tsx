@@ -59,9 +59,13 @@ const IncludeArtworkInQuoteDropdown = ({
                 top: -7,
               },
             }}
-            helperText={intl.formatMessage({
-              id: "app.component.attribute.includeArtworkInQuote.helperText",
-            })}
+            helperText={
+              componentSpec.includeArtworkInQuote === true
+                ? intl.formatMessage({
+                    id: "app.component.attribute.includeArtworkInQuote.helperText",
+                  })
+                : ""
+            }
             FormHelperTextProps={{
               sx: {
                 margin: 0,
