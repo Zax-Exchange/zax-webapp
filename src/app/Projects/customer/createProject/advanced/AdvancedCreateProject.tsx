@@ -195,6 +195,15 @@ const AdvancedCreateProject = () => {
           delete copySpec.__typename;
           delete copySpec.dimension.__typename;
 
+          if (copySpec.postProcess) {
+            delete copySpec.postProcess.__typename;
+            for (let process of copySpec.postProcess) {
+              if (process.estimatedArea) {
+                delete process.estimatedArea.__typename;
+              }
+            }
+          }
+
           return {
             ...copyComp,
             componentSpec: copySpec,
@@ -678,7 +687,7 @@ const AdvancedCreateProject = () => {
           sx: {
             borderTopLeftRadius: "4px",
             borderBottomLeftRadius: "4px",
-            width: "500px",
+            width: "600px",
           },
         }}
         ModalProps={{

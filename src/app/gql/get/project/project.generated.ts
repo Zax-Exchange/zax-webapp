@@ -16,7 +16,7 @@ export type GetProjectDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null } } }> } | null };
+export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyName: string, companyId: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, numberOfColors?: string | null, color?: string | null, fontSize?: string | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
 
 export type SearchCustomerProjectsQueryVariables = Types.Exact<{
   data: Types.SearchCustomerProjectInput;
@@ -106,16 +106,25 @@ export const GetProjectDetailDocument = gql`
         manufacturingProcess
         material
         materialSource
-        postProcess
+        postProcess {
+          postProcessName
+          isInside
+          printingMethod
+          numberOfColors
+          color
+          estimatedArea {
+            x
+            y
+          }
+          fontSize
+        }
         finish
         outsideMaterial
         outsideMaterialSource
-        outsidePostProcess
         outsideFinish
         outsideColor
         insideMaterial
         insideMaterialSource
-        insidePostProcess
         insideFinish
         insideColor
       }

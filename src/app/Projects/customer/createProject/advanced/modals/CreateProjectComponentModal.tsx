@@ -54,12 +54,12 @@ import { useDeleteProjectDesignMutation } from "../../../../../gql/delete/projec
 import useCustomSnackbar from "../../../../../Utils/CustomSnackbar";
 import { isValidAlphanumeric } from "../../../../../Utils/inputValidators";
 import UploadDesign from "../../../UploadDesign";
-import CorrugateBoxSubSection from "../../../modals/componentModalSubSection/CorrugateBoxSubSection";
-import FoldingCartonSubSection from "../../../modals/componentModalSubSection/FoldingCartonSubSection";
-import MoldedFiberSubSection from "../../../modals/componentModalSubSection/MoldedFiberSubSection";
-import PaperTubeSubSection from "../../../modals/componentModalSubSection/PaperTubeSubSection";
-import RigidBoxSubSection from "../../../modals/componentModalSubSection/RigidBoxSubSection";
-import SleeveSubSection from "../../../modals/componentModalSubSection/SleeveSubSection";
+import CorrugateBoxSubSection from "../subsections/CorrugateBoxSubSection";
+import FoldingCartonSubSection from "../subsections/FoldingCartonSubSection";
+import MoldedFiberSubSection from "../subsections/MoldedFiberSubSection";
+import PaperTubeSubSection from "../subsections/PaperTubeSubSection";
+import RigidBoxSubSection from "../subsections/RigidBoxSubSection";
+import SleeveSubSection from "../subsections/SleeveSubSection";
 
 const getComponentSpecDefaultState = (
   productName: string
@@ -111,6 +111,8 @@ const CreateProjectComponentModal = ({
     { error: deleteDesignError, loading: deleteDesignLoading },
   ] = useDeleteProjectDesignMutation();
 
+  // keep a local componentSpec so that when user is editing and decides to cancel, we don't change the projectData
+  // only when user decides to add/save then we will change the projectData state
   const [componentSpec, setComponentSpec] =
     useState<CreateProjectComponentSpecInput>(
       {} as CreateProjectComponentSpecInput
@@ -502,7 +504,9 @@ const CreateProjectComponentModal = ({
   };
   return (
     <>
-      <Container sx={{ paddingTop: 5, paddingBottom: 5, width: "480px" }}>
+      <Container
+        sx={{ paddingTop: 5, paddingBottom: 5, width: "580px", ml: 2 }}
+      >
         <Box display="flex" justifyContent="space-between">
           <Typography
             variant="h6"

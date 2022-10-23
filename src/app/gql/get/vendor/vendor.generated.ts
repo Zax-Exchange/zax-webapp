@@ -16,7 +16,7 @@ export type GetVendorProjectQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyName: string, companyId: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, postProcess?: Array<string> | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsidePostProcess?: Array<string> | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insidePostProcess?: Array<string> | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null } } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }> } } | null };
+export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyName: string, companyId: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, numberOfColors?: string | null, color?: string | null, fontSize?: string | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }> } } | null };
 
 export type GetVendorProjectsQueryVariables = Types.Exact<{
   data: Types.GetVendorProjectsInput;
@@ -125,16 +125,25 @@ export const GetVendorProjectDocument = gql`
         manufacturingProcess
         material
         materialSource
-        postProcess
+        postProcess {
+          postProcessName
+          isInside
+          printingMethod
+          numberOfColors
+          color
+          estimatedArea {
+            x
+            y
+          }
+          fontSize
+        }
         finish
         outsideMaterial
         outsideMaterialSource
-        outsidePostProcess
         outsideFinish
         outsideColor
         insideMaterial
         insideMaterialSource
-        insidePostProcess
         insideFinish
         insideColor
       }

@@ -244,13 +244,11 @@ const CustomerProjectDetail = () => {
         outsideColor,
         outsideMaterial,
         outsideMaterialSource,
-        outsidePostProcess,
         outsideFinish,
 
         insideColor,
         insideMaterial,
         insideMaterialSource,
-        insidePostProcess,
         insideFinish,
       } = componentSpec;
 
@@ -275,13 +273,11 @@ const CustomerProjectDetail = () => {
           outsideColor,
           outsideMaterial,
           outsideMaterialSource,
-          outsidePostProcess,
           outsideFinish,
 
           insideColor,
           insideMaterial,
           insideMaterialSource,
-          insidePostProcess,
           insideFinish,
         },
       });

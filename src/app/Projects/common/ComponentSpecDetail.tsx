@@ -52,12 +52,10 @@ export default function ComponentSpecDetail({
     finish,
     outsideMaterial,
     outsideMaterialSource,
-    outsidePostProcess,
     outsideFinish,
     outsideColor,
     insideMaterial,
     insideMaterialSource,
-    insidePostProcess,
     insideFinish,
     insideColor,
   } = spec;
@@ -326,6 +324,7 @@ export default function ComponentSpecDetail({
   }
 
   if (postProcess && postProcess.length) {
+    // only field in postProcess guaranteed to exist is postProcessName
     res.push(
       <TableRow>
         <TableCell>
@@ -341,7 +340,38 @@ export default function ComponentSpecDetail({
             {postProcess.map((process) => {
               return (
                 <ListItem sx={{ padding: 0 }}>
-                  <Typography variant="caption">{process}</Typography>
+                  <Typography variant="caption">
+                    {process.postProcessName} -
+                    {process.numberOfColors
+                      ? ` ${intl.formatMessage({
+                          id: "app.component.postProcess.printing.numberOfColors",
+                        })}: ${process.color}`
+                      : ""}
+                    {process.printingMethod
+                      ? ` ${intl.formatMessage({
+                          id: "app.component.postProcess.printing.method",
+                        })}: ${process.printingMethod}`
+                      : ""}
+                    {process.fontSize
+                      ? ` ${intl.formatMessage({
+                          id: "app.component.postProcess.emboss.fontSize",
+                        })}: ${process.fontSize}`
+                      : ""}
+                    {process.color
+                      ? ` ${intl.formatMessage({
+                          id: "app.component.postProcess.foilStamp.color",
+                        })}: ${process.color}`
+                      : ""}
+                    {process.estimatedArea &&
+                    Object.values(process.estimatedArea).filter((dim) => !!dim)
+                      .length
+                      ? ` ${intl.formatMessage({
+                          id: "app.component.postProcess.estimatedArea",
+                        })}: ${Object.values(process.estimatedArea).join(
+                          "x"
+                        )}mm`
+                      : ""}
+                  </Typography>
                 </ListItem>
               );
             })}
@@ -404,32 +434,6 @@ export default function ComponentSpecDetail({
           <Typography variant="caption">
             {productValueToLabelMap[outsideMaterialSource].label}
           </Typography>
-        </TableCell>
-      </TableRow>
-    );
-  }
-
-  if (outsidePostProcess && outsidePostProcess.length) {
-    res.push(
-      <TableRow>
-        <TableCell>
-          <Typography variant="subtitle2">
-            {intl.formatMessage({
-              id: "app.component.attribute.outsidePostProcess",
-            })}
-          </Typography>
-        </TableCell>
-
-        <TableCell>
-          <Stack>
-            {outsidePostProcess.map((process) => {
-              return (
-                <ListItem sx={{ padding: 0 }}>
-                  <Typography variant="caption">{process}</Typography>
-                </ListItem>
-              );
-            })}
-          </Stack>
         </TableCell>
       </TableRow>
     );
@@ -508,32 +512,6 @@ export default function ComponentSpecDetail({
           <Typography variant="caption">
             {productValueToLabelMap[insideMaterialSource].label}
           </Typography>
-        </TableCell>
-      </TableRow>
-    );
-  }
-
-  if (insidePostProcess && insidePostProcess.length) {
-    res.push(
-      <TableRow>
-        <TableCell>
-          <Typography variant="subtitle2">
-            {intl.formatMessage({
-              id: "app.component.attribute.insidePostProcess",
-            })}
-          </Typography>
-        </TableCell>
-
-        <TableCell>
-          <Stack>
-            {insidePostProcess.map((process) => {
-              return (
-                <ListItem sx={{ padding: 0 }}>
-                  <Typography variant="caption">{process}</Typography>
-                </ListItem>
-              );
-            })}
-          </Stack>
         </TableCell>
       </TableRow>
     );

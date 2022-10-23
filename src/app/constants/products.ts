@@ -819,11 +819,10 @@ export const DEFAULT_RIGID_BOX_SPEC: CreateProjectComponentSpecInput = {
   outsideMaterial: "",
   outsideMaterialSource: "",
   outsideFinish: "",
-  outsidePostProcess: [],
+  postProcess: [],
   insideMaterial: "",
   insideMaterialSource: "",
   insideFinish: "",
-  insidePostProcess: []
 }
 
 export const DEFAULT_FOLDING_CARTON_SPEC: CreateProjectComponentSpecInput = {
@@ -839,9 +838,8 @@ export const DEFAULT_FOLDING_CARTON_SPEC: CreateProjectComponentSpecInput = {
   material: "",
   materialSource: "",
   outsideFinish: "",
-  outsidePostProcess: [],
+  postProcess: [],
   insideFinish: "",
-  insidePostProcess: []
 }
 
 export const DEFAULT_SLEEVE_SPEC: CreateProjectComponentSpecInput = {
@@ -857,9 +855,8 @@ export const DEFAULT_SLEEVE_SPEC: CreateProjectComponentSpecInput = {
   material: "",
   materialSource: "",
   outsideFinish: "",
-  outsidePostProcess: [],
+  postProcess: [],
   insideFinish: "",
-  insidePostProcess: []
 }
 
 export const DEFAULT_CORRUGATE_BOX_SPEC: CreateProjectComponentSpecInput = {
@@ -876,9 +873,8 @@ export const DEFAULT_CORRUGATE_BOX_SPEC: CreateProjectComponentSpecInput = {
   material: MATERIAL_DEFAULT_CORRUGATE.value,
   materialSource: MATERIAL_SOURCE_OCC.value,
   outsideFinish: "",
-  outsidePostProcess: [],
+  postProcess: [],
   insideFinish: "",
-  insidePostProcess: []
 }
 
 export const DEFAULT_PAPER_TUBE_SPEC: CreateProjectComponentSpecInput = {
@@ -891,10 +887,10 @@ export const DEFAULT_PAPER_TUBE_SPEC: CreateProjectComponentSpecInput = {
   includeArtworkInQuote: false,
   boxStyle: BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE.value,
   thickness: "",
+  postProcess: [],
   outsideMaterial: "",
   outsideMaterialSource: "",
   outsideFinish: "",
-  outsidePostProcess: [],
 }
 
 export const DEFAULT_MOLDED_FIBER_TRAY_SPEC: CreateProjectComponentSpecInput = {
@@ -909,6 +905,5 @@ export const DEFAULT_MOLDED_FIBER_TRAY_SPEC: CreateProjectComponentSpecInput = {
   color: "",
   manufacturingProcess: "",
   materialSource: "",
-  outsidePostProcess: [],
-  insidePostProcess: []
+  postProcess: [],
 }

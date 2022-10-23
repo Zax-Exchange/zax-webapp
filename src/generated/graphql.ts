@@ -134,7 +134,6 @@ export type CreateProjectComponentSpecInput = {
   insideFinish?: InputMaybe<Scalars['String']>;
   insideMaterial?: InputMaybe<Scalars['String']>;
   insideMaterialSource?: InputMaybe<Scalars['String']>;
-  insidePostProcess?: InputMaybe<Array<Scalars['String']>>;
   manufacturingProcess?: InputMaybe<Scalars['String']>;
   material?: InputMaybe<Scalars['String']>;
   materialSource?: InputMaybe<Scalars['String']>;
@@ -143,8 +142,7 @@ export type CreateProjectComponentSpecInput = {
   outsideFinish?: InputMaybe<Scalars['String']>;
   outsideMaterial?: InputMaybe<Scalars['String']>;
   outsideMaterialSource?: InputMaybe<Scalars['String']>;
-  outsidePostProcess?: InputMaybe<Array<Scalars['String']>>;
-  postProcess?: InputMaybe<Array<Scalars['String']>>;
+  postProcess?: InputMaybe<Array<PostProcessDetailInput>>;
   productName: Scalars['String'];
   purpose?: InputMaybe<Scalars['String']>;
   shape?: InputMaybe<Scalars['String']>;
@@ -633,6 +631,27 @@ export enum PlanTier {
   Premium = 'PREMIUM'
 }
 
+export type PostProcessDetail = {
+  __typename?: 'PostProcessDetail';
+  color?: Maybe<Scalars['String']>;
+  estimatedArea?: Maybe<ProductDimension>;
+  fontSize?: Maybe<Scalars['String']>;
+  isInside?: Maybe<Scalars['Boolean']>;
+  numberOfColors?: Maybe<Scalars['String']>;
+  postProcessName: Scalars['String'];
+  printingMethod?: Maybe<Scalars['String']>;
+};
+
+export type PostProcessDetailInput = {
+  color?: InputMaybe<Scalars['String']>;
+  estimatedArea?: InputMaybe<ProductDimensionInput>;
+  fontSize?: InputMaybe<Scalars['String']>;
+  isInside?: InputMaybe<Scalars['Boolean']>;
+  numberOfColors?: InputMaybe<Scalars['String']>;
+  postProcessName: Scalars['String'];
+  printingMethod?: InputMaybe<Scalars['String']>;
+};
+
 export type PricingDetail = {
   __typename?: 'PricingDetail';
   price: Scalars['Int'];
@@ -654,8 +673,8 @@ export type ProductDimension = {
 };
 
 export type ProductDimensionInput = {
-  x?: InputMaybe<Scalars['String']>;
-  y?: InputMaybe<Scalars['String']>;
+  x: Scalars['String'];
+  y: Scalars['String'];
   z?: InputMaybe<Scalars['String']>;
 };
 
@@ -746,7 +765,6 @@ export type ProjectComponentSpec = {
   insideFinish?: Maybe<Scalars['String']>;
   insideMaterial?: Maybe<Scalars['String']>;
   insideMaterialSource?: Maybe<Scalars['String']>;
-  insidePostProcess?: Maybe<Array<Scalars['String']>>;
   manufacturingProcess?: Maybe<Scalars['String']>;
   material?: Maybe<Scalars['String']>;
   materialSource?: Maybe<Scalars['String']>;
@@ -755,8 +773,7 @@ export type ProjectComponentSpec = {
   outsideFinish?: Maybe<Scalars['String']>;
   outsideMaterial?: Maybe<Scalars['String']>;
   outsideMaterialSource?: Maybe<Scalars['String']>;
-  outsidePostProcess?: Maybe<Array<Scalars['String']>>;
-  postProcess?: Maybe<Array<Scalars['String']>>;
+  postProcess?: Maybe<Array<PostProcessDetail>>;
   productName: Scalars['String'];
   purpose?: Maybe<Scalars['String']>;
   shape?: Maybe<Scalars['String']>;
@@ -1053,7 +1070,6 @@ export type UpdateProjectComponentSpecInput = {
   insideFinish?: InputMaybe<Scalars['String']>;
   insideMaterial?: InputMaybe<Scalars['String']>;
   insideMaterialSource?: InputMaybe<Scalars['String']>;
-  insidePostProcess?: InputMaybe<Array<Scalars['String']>>;
   manufacturingProcess?: InputMaybe<Scalars['String']>;
   material?: InputMaybe<Scalars['String']>;
   materialSource?: InputMaybe<Scalars['String']>;
@@ -1061,8 +1077,7 @@ export type UpdateProjectComponentSpecInput = {
   outsideFinish?: InputMaybe<Scalars['String']>;
   outsideMaterial?: InputMaybe<Scalars['String']>;
   outsideMaterialSource?: InputMaybe<Scalars['String']>;
-  outsidePostProcess?: InputMaybe<Array<Scalars['String']>>;
-  postProcess?: InputMaybe<Array<Scalars['String']>>;
+  postProcess?: InputMaybe<Array<PostProcessDetailInput>>;
   productName: Scalars['String'];
   style?: InputMaybe<Scalars['String']>;
   thickness?: InputMaybe<Scalars['String']>;

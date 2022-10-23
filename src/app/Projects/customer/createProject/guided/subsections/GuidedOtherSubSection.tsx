@@ -23,6 +23,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
+  ProductDimensionInput,
   ProjectDesign,
 } from "../../../../../../generated/graphql";
 import { TranslatableAttribute } from "../../../../../../type/common";
@@ -284,8 +285,10 @@ const GuidedOtherSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
-              componentSpec={componentData!.componentSpec}
-              setComponentSpec={setComponentSpec}
+              dimension={componentData!.componentSpec.dimension}
+              setDimension={(data: ProductDimensionInput) => {
+                setComponentSpec((prev) => ({ ...prev, dimension: data }));
+              }}
             />
           </Box>
         </ListItem>
@@ -318,8 +321,10 @@ const GuidedOtherSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
-              componentSpec={componentData!.componentSpec}
-              setComponentSpec={setComponentSpec}
+              dimension={componentData!.componentSpec.dimension}
+              setDimension={(data: ProductDimensionInput) => {
+                setComponentSpec((prev) => ({ ...prev, dimension: data }));
+              }}
             />
           </Box>
         </ListItem>

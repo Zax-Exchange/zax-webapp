@@ -16,6 +16,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
+  ProductDimensionInput,
   ProjectDesign,
 } from "../../../../../generated/graphql";
 import {
@@ -204,7 +205,9 @@ const GuidedInsideSpec = ({
           autoHighlight
           multiple
           value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
-            return componentSpec.postProcess?.includes(p.value);
+            return !!componentSpec.postProcess?.filter(
+              (process) => process.postProcessName === p.value
+            ).length;
           })}
           isOptionEqualToValue={(option, value) => {
             if (typeof value === "string") {
@@ -215,7 +218,10 @@ const GuidedInsideSpec = ({
           onChange={(e, v) => {
             setComponentSpec((prev) => ({
               ...prev,
-              postProcess: v.map((p) => p.value),
+              postProcess: v.map((p) => ({
+                postProcessName: p.value,
+                estimatedArea: { x: "", y: "" },
+              })),
             }));
           }}
           renderInput={(params) => (
@@ -344,8 +350,10 @@ const GuidedInsideSpec = ({
                 })}
               </Typography>
               <DimensionsInput
-                componentSpec={componentSpec}
-                setComponentSpec={setComponentSpec}
+                dimension={componentSpec.dimension}
+                setDimension={(data: ProductDimensionInput) => {
+                  setComponentSpec((prev) => ({ ...prev, dimension: data }));
+                }}
               />
             </Box>
           </ListItem>

@@ -54,16 +54,27 @@ const GET_PROJECT_DETAIL = gql`
           manufacturingProcess
           material
           materialSource
-          postProcess
+          postProcess {
+            postProcessName
+            isInside
+            printingMethod
+            numberOfColors
+            color
+            estimatedArea {
+              x
+              y
+            }
+            fontSize
+          }
           finish
           outsideMaterial
           outsideMaterialSource
-          outsidePostProcess
+       
           outsideFinish
           outsideColor
           insideMaterial
           insideMaterialSource
-          insidePostProcess
+       
           insideFinish
           insideColor
         }
