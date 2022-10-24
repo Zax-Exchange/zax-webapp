@@ -16,6 +16,7 @@ import {
 } from "../../../../../generated/graphql";
 import { TranslatableAttribute } from "../../../../../type/common";
 import {
+  ALL_PRINTING_METHODS,
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
@@ -101,6 +102,7 @@ const PostProcessInput = ({
         return {
           ...res,
           numberOfColors: "",
+          printingMethod: "",
           estimatedArea: {
             x: "",
             y: "",
@@ -117,9 +119,55 @@ const PostProcessInput = ({
   };
 
   const renderPrintingPostProcessSection = () => {
+    const getPrintingMethodLabel = () => {
+      if (!postProcess.printingMethod) return null;
+      return productValueToLabelMap[postProcess.printingMethod];
+    };
     return (
       <>
         <Box mb={2}>
+          <Box>
+            <Typography variant="caption">
+              {intl.formatMessage({
+                id: "app.component.postProcess.printing.method",
+              })}
+            </Typography>
+          </Box>
+          <Autocomplete
+            sx={{ width: 180, mb: 2 }}
+            options={ALL_PRINTING_METHODS}
+            autoHighlight
+            getOptionLabel={(option) => option.label}
+            value={getPrintingMethodLabel()}
+            onChange={(e, v) => {
+              if (!v) {
+                setPostProcess({
+                  ...postProcess,
+                  printingMethod: "",
+                });
+                return;
+              }
+              setPostProcess({
+                ...postProcess,
+                printingMethod: v.value,
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: "new-password",
+                }}
+                InputLabelProps={{
+                  sx: {
+                    fontSize: 16,
+                    top: -7,
+                  },
+                }}
+              />
+            )}
+          />
           <Box>
             <Typography variant="caption">
               {intl.formatMessage({

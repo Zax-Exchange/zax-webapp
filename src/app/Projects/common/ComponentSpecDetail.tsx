@@ -338,10 +338,16 @@ export default function ComponentSpecDetail({
         <TableCell>
           <Stack>
             {postProcess.map((process) => {
+              const dims = Object.entries(process.estimatedArea || {});
+              const estimatedArea = [];
+              for (let [attr, dim] of dims) {
+                if (!dim || attr === "__typename") continue;
+                estimatedArea.push(parseFloat(dim));
+              }
               return (
                 <ListItem sx={{ padding: 0 }}>
                   <Typography variant="caption">
-                    {process.postProcessName} -
+                    {process.postProcessName}
                     {process.numberOfColors
                       ? ` ${intl.formatMessage({
                           id: "app.component.postProcess.printing.numberOfColors",
@@ -362,14 +368,10 @@ export default function ComponentSpecDetail({
                           id: "app.component.postProcess.foilStamp.color",
                         })}: ${process.color}`
                       : ""}
-                    {process.estimatedArea &&
-                    Object.values(process.estimatedArea).filter((dim) => !!dim)
-                      .length
+                    {estimatedArea.length
                       ? ` ${intl.formatMessage({
                           id: "app.component.postProcess.estimatedArea",
-                        })}: ${Object.values(process.estimatedArea).join(
-                          "x"
-                        )}mm`
+                        })}: ${estimatedArea.join("x")}mm`
                       : ""}
                   </Typography>
                 </ListItem>

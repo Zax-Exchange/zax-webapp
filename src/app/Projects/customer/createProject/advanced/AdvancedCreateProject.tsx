@@ -196,8 +196,8 @@ const AdvancedCreateProject = () => {
           delete copySpec.dimension.__typename;
 
           if (copySpec.postProcess) {
-            delete copySpec.postProcess.__typename;
             for (let process of copySpec.postProcess) {
+              delete process.__typename;
               if (process.estimatedArea) {
                 delete process.estimatedArea.__typename;
               }
@@ -419,7 +419,7 @@ const AdvancedCreateProject = () => {
   };
 
   const isLoading = createProjectLoading || getCustomerProjectLoading;
-  console.log(orderQuantity);
+
   return (
     <>
       {isLoading && <FullScreenLoading />}
@@ -431,15 +431,15 @@ const AdvancedCreateProject = () => {
             })}
           </Typography>
 
-          <Stack direction="row">
-            <ListItem>
-              <Button onClick={openComponentModal} variant="text">
+          <Box display="flex" flexDirection="row">
+            <Box mr={2}>
+              <Button onClick={openComponentModal} variant="outlined">
                 {intl.formatMessage({
                   id: "app.customer.createProject.addComponent",
                 })}
               </Button>
-            </ListItem>
-            <ListItem>
+            </Box>
+            <Box>
               <Button
                 variant="contained"
                 disabled={shouldDisableCreateProjectButton()}
@@ -449,8 +449,8 @@ const AdvancedCreateProject = () => {
                   id: "app.customer.createProject.create",
                 })}
               </Button>
-            </ListItem>
-          </Stack>
+            </Box>
+          </Box>
         </Box>
         <Container maxWidth="sm">
           <Stack
