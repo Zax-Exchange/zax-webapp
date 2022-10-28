@@ -67,6 +67,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
+import { useGetProjectChangelogQuery } from "../../gql/get/project/project.generated";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -103,6 +104,10 @@ const CustomerProjectDetail = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+
+  const [selectedChangelogVersion, setSelectedChangelogVersion] = useState<
+    number | null
+  >(null);
 
   // Flag to indicate whether project detail section is in edit mode or not.
   const [projectEditMode, setProjectEditMode] = useState(false);
@@ -142,6 +147,19 @@ const CustomerProjectDetail = () => {
       data: {
         projectId: projectId || "",
         userId: user!.id,
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
+
+  const {
+    data: getProjectChangelogData,
+    loading: getProjectChangelogLoading,
+    error: getProjectChangelogError,
+  } = useGetProjectChangelogQuery({
+    variables: {
+      data: {
+        projectId: projectId || "",
       },
     },
     fetchPolicy: "no-cache",
@@ -209,6 +227,9 @@ const CustomerProjectDetail = () => {
     }
   }, [updateProjectData]);
 
+  // set selected projectChangelog version based on number of returned changelogs
+  useEffect(() => {}, []);
+
   // Initialize project data for update purpose.
   const initializeUpdateProjectData = () => {
     const {
@@ -252,11 +273,14 @@ const CustomerProjectDetail = () => {
         insideFinish,
       } = componentSpec;
 
+      const { id: componentSpecId } = componentSpec;
+
       compsForUpdate.push({
         componentId,
         name,
 
         componentSpec: {
+          componentSpecId,
           productName,
           dimension,
 
@@ -692,14 +716,16 @@ const CustomerProjectDetail = () => {
     return false;
   };
 
-  const isLoading = getProjectLoading || updateLoading;
+  const isLoading =
+    getProjectLoading || updateLoading || getProjectChangelogLoading;
 
   if (isLoading) return <FullScreenLoading />;
 
   const projectData = getProjectData?.getCustomerProject;
   const bids = projectData?.bids;
+  const projectChangelogData = getProjectChangelogData?.getProjectChangelog;
 
-  if (projectData && updateProjectData) {
+  if (projectData && updateProjectData && projectChangelogData) {
     return (
       <Container>
         {isLoading && <FullScreenLoading />}
@@ -939,6 +965,18 @@ const CustomerProjectDetail = () => {
             </List>
           </Grid>
         </Grid>
+
+        <Box mt={2}>
+          <Box>
+            <Typography variant="h6">
+              {intl.formatMessage({
+                id: "app.customer.projects.versionHistory",
+              })}
+            </Typography>
+          </Box>
+
+          <Box></Box>
+        </Box>
       </Container>
     );
   }

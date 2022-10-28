@@ -194,6 +194,7 @@
   "app.customer.projects.vendorBids": "Vendor Bids",
   "app.customer.projects.projectDetail": "Project Detail",
   "app.customer.projects.componentsDetail": "Components Detail",
+  "app.customer.projects.versionHistory": "Version History",
   "app.customer.projects.modal.delete.title": "Do you want to delete this project?",
   "app.customer.createProject.configureProjectDetail": "Configure Project Detail",
   "app.customer.createProject.addComponent": "Add Component",

@@ -11,6 +11,19 @@ const GET_PROJECT_USERS = gql`
   }
 `;
 
+const GET_PROJECT_CHANGELOG = gql`
+  query getProjectChangelog($data: GetProjectChangelogInput!) {
+    getProjectChangelog(data: $data) {
+      projectId
+      changedAt
+      changes {
+        propertyName
+        oldValue
+        newValue
+      }
+    }
+  }
+`
 
 const GET_PROJECT_DETAIL = gql`
   query getProjectDetail($data: GetProjectDetailInput!) {

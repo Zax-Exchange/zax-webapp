@@ -11,6 +11,13 @@ export type GetProjectUsersQueryVariables = Types.Exact<{
 
 export type GetProjectUsersQuery = { __typename?: 'Query', getProjectUsers: Array<{ __typename?: 'UserProjectPermission', userId: string, name: string, email: string, permission: Types.ProjectPermission }> };
 
+export type GetProjectChangelogQueryVariables = Types.Exact<{
+  data: Types.GetProjectChangelogInput;
+}>;
+
+
+export type GetProjectChangelogQuery = { __typename?: 'Query', getProjectChangelog: Array<{ __typename?: 'ProjectChangelog', projectId: string, changedAt: any, changes: Array<{ __typename?: 'ProjectPropertyChange', propertyName: string, oldValue?: any | null, newValue?: any | null }> }> };
+
 export type GetProjectDetailQueryVariables = Types.Exact<{
   data: Types.GetProjectDetailInput;
 }>;
@@ -64,6 +71,47 @@ export function useGetProjectUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetProjectUsersQueryHookResult = ReturnType<typeof useGetProjectUsersQuery>;
 export type GetProjectUsersLazyQueryHookResult = ReturnType<typeof useGetProjectUsersLazyQuery>;
 export type GetProjectUsersQueryResult = Apollo.QueryResult<GetProjectUsersQuery, GetProjectUsersQueryVariables>;
+export const GetProjectChangelogDocument = gql`
+    query getProjectChangelog($data: GetProjectChangelogInput!) {
+  getProjectChangelog(data: $data) {
+    projectId
+    changedAt
+    changes {
+      propertyName
+      oldValue
+      newValue
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectChangelogQuery__
+ *
+ * To run a query within a React component, call `useGetProjectChangelogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectChangelogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectChangelogQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetProjectChangelogQuery(baseOptions: Apollo.QueryHookOptions<GetProjectChangelogQuery, GetProjectChangelogQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectChangelogQuery, GetProjectChangelogQueryVariables>(GetProjectChangelogDocument, options);
+      }
+export function useGetProjectChangelogLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectChangelogQuery, GetProjectChangelogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectChangelogQuery, GetProjectChangelogQueryVariables>(GetProjectChangelogDocument, options);
+        }
+export type GetProjectChangelogQueryHookResult = ReturnType<typeof useGetProjectChangelogQuery>;
+export type GetProjectChangelogLazyQueryHookResult = ReturnType<typeof useGetProjectChangelogLazyQuery>;
+export type GetProjectChangelogQueryResult = Apollo.QueryResult<GetProjectChangelogQuery, GetProjectChangelogQueryVariables>;
 export const GetProjectDetailDocument = gql`
     query getProjectDetail($data: GetProjectDetailInput!) {
   getProjectDetail(data: $data) {

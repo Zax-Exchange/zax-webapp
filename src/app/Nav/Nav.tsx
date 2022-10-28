@@ -22,7 +22,6 @@ import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
 import logo from "../../static/logo2.png";
 import { gql, useMutation } from "@apollo/client";
-import CustomerNotification from "../Notification/CustomerNotification";
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import {
@@ -31,7 +30,7 @@ import {
   VENDOR_ROUTES,
 } from "../constants/loggedInRoutes";
 import { useIntl } from "react-intl";
-import VendorNotification from "../Notification/VendorNotification";
+import VendorNotification from "../Notification/NotificationComponent";
 import CustomerNav from "./customer/CustomerNav";
 import VendorNav from "./vendor/VendorNav";
 

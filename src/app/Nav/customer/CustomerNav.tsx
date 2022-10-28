@@ -8,7 +8,6 @@ import {
   Toolbar,
 } from "@mui/material";
 import React, { useState } from "react";
-import CustomerNotification from "../../Notification/CustomerNotification";
 import SearchBar from "../../Search/SearchBar";
 import CustomerSideNav from "./CustomerSideNav";
 import logo from "../../../static/logo2.png";
@@ -20,6 +19,7 @@ import {
   GENERAL_ROUTES,
 } from "../../constants/loggedInRoutes";
 import CreateProjectSelectionModal from "./CreateProjectSelectionModal";
+import NotificationComponent from "../../Notification/NotificationComponent";
 
 export default function CustomerNav() {
   const intl = useIntl();
@@ -70,7 +70,7 @@ export default function CustomerNav() {
             })}
           </Button>
         </Box>
-        <CustomerNotification />
+        <NotificationComponent />
       </Toolbar>
       <CustomerSideNav
         sideNavOpen={sideNavOpen}

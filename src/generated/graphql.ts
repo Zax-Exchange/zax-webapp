@@ -723,7 +723,7 @@ export type ProjectBidComponent = {
 
 export type ProjectChangelog = {
   __typename?: 'ProjectChangelog';
-  changedAt: Scalars['String'];
+  changedAt: Scalars['Date'];
   changes: Array<ProjectPropertyChange>;
   projectId: Scalars['String'];
 };
@@ -739,7 +739,7 @@ export type ProjectComponent = {
 
 export type ProjectComponentChangelog = {
   __typename?: 'ProjectComponentChangelog';
-  changedAt: Scalars['String'];
+  changedAt: Scalars['Date'];
   changes: Array<ProjectComponentPropertyChange>;
   projectComponentId: Scalars['String'];
 };
@@ -1062,6 +1062,7 @@ export type UpdateProjectComponentInput = {
 export type UpdateProjectComponentSpecInput = {
   boxStyle?: InputMaybe<Scalars['String']>;
   color?: InputMaybe<Scalars['String']>;
+  componentSpecId: Scalars['String'];
   dimension: ProductDimensionInput;
   finish?: InputMaybe<Scalars['String']>;
   flute?: InputMaybe<Scalars['String']>;
@@ -1073,12 +1074,15 @@ export type UpdateProjectComponentSpecInput = {
   manufacturingProcess?: InputMaybe<Scalars['String']>;
   material?: InputMaybe<Scalars['String']>;
   materialSource?: InputMaybe<Scalars['String']>;
+  numberOfPages?: InputMaybe<Scalars['String']>;
   outsideColor?: InputMaybe<Scalars['String']>;
   outsideFinish?: InputMaybe<Scalars['String']>;
   outsideMaterial?: InputMaybe<Scalars['String']>;
   outsideMaterialSource?: InputMaybe<Scalars['String']>;
   postProcess?: InputMaybe<Array<PostProcessDetailInput>>;
   productName: Scalars['String'];
+  purpose?: InputMaybe<Scalars['String']>;
+  shape?: InputMaybe<Scalars['String']>;
   style?: InputMaybe<Scalars['String']>;
   thickness?: InputMaybe<Scalars['String']>;
 };

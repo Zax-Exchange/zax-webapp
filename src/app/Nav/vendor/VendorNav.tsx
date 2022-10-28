@@ -1,12 +1,13 @@
-import { IconButton, Toolbar } from "@mui/material";
+import { Box, IconButton, Toolbar } from "@mui/material";
 import React, { useState } from "react";
 import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
-import VendorNotification from "../../Notification/VendorNotification";
+import NotificationComponent from "../../Notification/NotificationComponent";
 import SearchBar from "../../Search/SearchBar";
 import logo from "../../../static/logo2.png";
 import { useNavigate } from "react-router-dom";
 import VendorSideNav from "./VendorSideNav";
 import { Menu } from "@mui/icons-material";
+
 const VendorNav = () => {
   const navigate = useNavigate();
   const [sideNavOpen, setSideNavOpen] = useState(false);
@@ -43,7 +44,8 @@ const VendorNav = () => {
         {renderHamburger()}
         {renderLogo()}
         <SearchBar />
-        <VendorNotification />
+        <Box sx={{ flexGrow: 2 }}></Box>
+        <NotificationComponent />
       </Toolbar>
       <VendorSideNav
         sideNavOpen={sideNavOpen}
