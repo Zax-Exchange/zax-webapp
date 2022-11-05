@@ -146,11 +146,9 @@ const AdvancedCreateProject = () => {
     []
   );
 
-  // record temporary designs in case user closes this modal we need to cleanup the design files in backend
+  // record temporary designs in case user closes the createComponentModal we need to cleanup the design files in backend
   // this array will store for at most 1 component's designs
-  const [temporaryDesigns, setTemporaryDesigns] = useState<
-    ProjectDesign[] | null
-  >([]);
+  const [temporaryDesigns, setTemporaryDesigns] = useState<ProjectDesign[]>([]);
 
   // get project data if user chooses to import
   useEffect(() => {

@@ -33,6 +33,8 @@ const GET_PROJECT_DETAIL = gql`
       companyName
       companyId
       name
+      category
+      totalWeight
       deliveryDate
       deliveryAddress
       targetPrice

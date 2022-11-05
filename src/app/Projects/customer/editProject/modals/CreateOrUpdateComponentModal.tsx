@@ -23,43 +23,36 @@ import { useIntl } from "react-intl";
 import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
-  CreateProjectInput,
   ProjectDesign,
-} from "../../../../../../generated/graphql";
+  UpdateProjectComponentInput,
+  UpdateProjectComponentSpecInput,
+} from "../../../../../generated/graphql";
 import {
-  PRODUCT_NAME_CORRUGATE_BOX,
   ALL_PRODUCT_NAMES,
-  PRODUCT_NAME_RIGID_BOX,
-  RIGID_BOX_MATERIALS,
-  RIGID_BOX_POST_PROCESSES,
-  RIGID_BOX_MATERIAL_SOURCES,
-  RIGID_BOX_FINISHES,
-  POST_PROCESS_PRINTING,
-  POST_PROCESS_DEBOSS,
-  POST_PROCESS_EMBOSS,
-  POST_PROCESS_FOIL_STAMP,
+  DEFAULT_CORRUGATE_BOX_SPEC,
+  DEFAULT_FOLDING_CARTON_SPEC,
+  DEFAULT_MOLDED_FIBER_TRAY_SPEC,
+  DEFAULT_PAPER_TUBE_SPEC,
+  DEFAULT_RIGID_BOX_SPEC,
+  DEFAULT_SLEEVE_SPEC,
+  productValueToLabelMap,
+  PRODUCT_NAME_CORRUGATE_BOX,
   PRODUCT_NAME_FOLDING_CARTON,
-  PRODUCT_NAME_SLEEVE,
   PRODUCT_NAME_MOLDED_FIBER_TRAY,
   PRODUCT_NAME_PAPER_TUBE,
-  productValueToLabelMap,
-  DEFAULT_RIGID_BOX_SPEC,
-  DEFAULT_FOLDING_CARTON_SPEC,
-  DEFAULT_PAPER_TUBE_SPEC,
-  DEFAULT_SLEEVE_SPEC,
-  DEFAULT_CORRUGATE_BOX_SPEC,
-  DEFAULT_MOLDED_FIBER_TRAY_SPEC,
-} from "../../../../../constants/products";
-import { useDeleteProjectDesignMutation } from "../../../../../gql/delete/project/project.generated";
-import useCustomSnackbar from "../../../../../Utils/CustomSnackbar";
-import { isValidAlphanumeric } from "../../../../../Utils/inputValidators";
-import UploadDesign from "../../../UploadDesign";
-import CorrugateBoxSubSection from "../subsections/CorrugateBoxSubSection";
-import FoldingCartonSubSection from "../subsections/FoldingCartonSubSection";
-import MoldedFiberSubSection from "../subsections/MoldedFiberSubSection";
-import PaperTubeSubSection from "../subsections/PaperTubeSubSection";
-import RigidBoxSubSection from "../subsections/RigidBoxSubSection";
-import SleeveSubSection from "../subsections/SleeveSubSection";
+  PRODUCT_NAME_RIGID_BOX,
+  PRODUCT_NAME_SLEEVE,
+} from "../../../../constants/products";
+import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
+import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
+import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
+import CorrugateBoxSubSection from "../../createProject/advanced/subsections/CorrugateBoxSubSection";
+import FoldingCartonSubSection from "../../createProject/advanced/subsections/FoldingCartonSubSection";
+import MoldedFiberSubSection from "../../createProject/advanced/subsections/MoldedFiberSubSection";
+import PaperTubeSubSection from "../../createProject/advanced/subsections/PaperTubeSubSection";
+import RigidBoxSubSection from "../../createProject/advanced/subsections/RigidBoxSubSection";
+import SleeveSubSection from "../../createProject/advanced/subsections/SleeveSubSection";
+import UploadDesign from "../../UploadDesign";
 
 const getComponentSpecDefaultState = (
   productName: string
@@ -81,24 +74,47 @@ const getComponentSpecDefaultState = (
   return {} as CreateProjectComponentSpecInput;
 };
 
-const CreateProjectComponentModal = ({
-  setProjectData,
-  setComponentModalOpen,
+/**
+ * There are three types of scenarios with using this modal
+ * 1. Add a completely new component -- CreateProjectComponentInput
+ *      - component data only exists in this modal
+ * 2. Edit a newly created component (created through scenario 1.) -- CreateProjectComponentInput
+ * 3. Edit a pre-existing component (exists in db) -- UpdateProjectComponentInput
+ *      - component data exists in both parent and modal
+ *      - component data that's in this modal is temporary, since user could exit the modal before saving and we don't want to change parent data
+ */
+const CreateOrUpdateComponentModal = ({
+  setComponents,
   setComponentsDesigns,
   setTemporaryDesigns,
+  setTemporaryDesignsToDelete,
+  setComponentModalOpen,
   setComponentIndexToEdit,
-  projectData,
+  temporaryDesignsToDelete,
+  componentIndexToEdit,
+  existingComponent,
   existingDesigns,
-  defaultComponentIndex,
 }: {
-  setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
-  setComponentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setComponents: React.Dispatch<
+    React.SetStateAction<
+      (CreateProjectComponentInput | UpdateProjectComponentInput)[]
+    >
+  >;
   setComponentsDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[][]>>;
   setTemporaryDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[]>>;
+  setTemporaryDesignsToDelete: React.Dispatch<
+    React.SetStateAction<ProjectDesign[]>
+  >;
+  setComponentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setComponentIndexToEdit: React.Dispatch<React.SetStateAction<number | null>>;
-  projectData: CreateProjectInput;
-  existingDesigns?: ProjectDesign[];
-  defaultComponentIndex?: number;
+  temporaryDesignsToDelete: ProjectDesign[];
+  // existing comp could be either a newly added comp or a pre-existing one
+  existingComponent:
+    | CreateProjectComponentInput
+    | UpdateProjectComponentInput
+    | null;
+  componentIndexToEdit: number | null;
+  existingDesigns: ProjectDesign[] | null;
 }) => {
   const theme = useTheme();
   const intl = useIntl();
@@ -110,16 +126,25 @@ const CreateProjectComponentModal = ({
   ] = useDeleteProjectDesignMutation();
 
   // keep a local componentSpec so that when user is editing and decides to cancel, we don't change the projectData
-  // only when user decides to add/save then we will change the projectData state
-  const [componentSpec, setComponentSpec] =
-    useState<CreateProjectComponentSpecInput>(
-      {} as CreateProjectComponentSpecInput
-    );
+  // only when user decides to add/save then we will change the projectData state in parent
+  const [componentSpec, setComponentSpec] = useState<
+    CreateProjectComponentSpecInput | UpdateProjectComponentSpecInput
+  >(
+    existingComponent
+      ? existingComponent.componentSpec
+      : ({} as CreateProjectComponentSpecInput)
+  );
 
-  const [componentData, setComponentData] =
-    useState<CreateProjectComponentInput>({} as CreateProjectComponentInput);
+  const [componentData, setComponentData] = useState<
+    CreateProjectComponentInput | UpdateProjectComponentInput
+  >(
+    existingComponent ? existingComponent : ({} as CreateProjectComponentInput)
+  );
 
-  const [componentDesigns, setComponentDesigns] = useState<ProjectDesign[]>([]);
+  // local designs array, will be used to update the parent componentsDesigns state when add/save
+  const [componentDesigns, setComponentDesigns] = useState<ProjectDesign[]>(
+    existingDesigns ? existingDesigns : []
+  );
 
   useEffect(() => {
     if (deleteDesignError) {
@@ -131,30 +156,8 @@ const CreateProjectComponentModal = ({
     }
   }, [deleteDesignError]);
 
-  useEffect(() => {
-    if (defaultComponentIndex !== undefined) {
-      const comp = projectData.components[defaultComponentIndex];
-      setComponentData(comp);
-      setComponentSpec(comp.componentSpec);
-      setComponentDesigns(existingDesigns ? existingDesigns : []);
-    }
-  }, [defaultComponentIndex]);
-
-  // // record these temporary designs in case user closes this modal we need to cleanup the design files in backend
-  // useEffect(() => {
-  //   if (existingDesigns) {
-  //     // only add to temporary designs array if the design is a newly uploaded one
-  //     // so when cleaning up we don't delete existing designs
-  //     const temporaryDesigns = componentDesigns.filter((design) => {
-  //       return !!existingDesigns.find(
-  //         (existingDesign) => existingDesign.designId === design.designId
-  //       );
-  //     });
-
-  //     setTemporaryDesigns(temporaryDesigns);
-  //   }
-  // }, [componentDesigns]);
-
+  console.log(componentData);
+  // Scenario 1
   const addComponent = () => {
     // construct CreateProjectComponentInput
     const comp: CreateProjectComponentInput = {
@@ -164,62 +167,73 @@ const CreateProjectComponentModal = ({
         ...componentSpec,
       },
     };
-    // add component to projectData
-    setProjectData({
-      ...projectData,
-      components: [...projectData.components, comp],
+    // add component to components list
+    setComponents((prev) => {
+      const allComps = [...prev, comp];
+      return allComps;
     });
 
-    // record design files for this component on parent react component since we are in a modal, this is for display purpose only.
-    if (componentDesigns) {
-      setComponentsDesigns((prev) => [...prev, componentDesigns]);
-    } else {
-      // set an empty array so parent can delete component and component designs based on index
-      // otherwise if a component doesn't have designs and user tries to delete the component it'll result in null
-      // since deleting a component will trigger a check for whether there's any designs attached
-      setComponentsDesigns((prev) => [...prev, []]);
-    }
+    setComponentsDesigns((prev) => [...prev, componentDesigns]);
 
-    setTemporaryDesigns([]);
+    // No need to set temporary designs since this is a completely new component
+    // every design uploaded/deleted will be recorded with the local componentDesigns array directly
+
     // close component modal
     setComponentModalOpen(false);
   };
 
+  // Scenario 2, 3
   const saveComponent = () => {
-    // construct CreateProjectComponentInput
-    const comp: CreateProjectComponentInput = {
+    // comp here could be of both types Create/Update Input type
+    const comp = {
       ...componentData,
       designIds: componentDesigns?.map((d) => d.designId),
-      componentSpec: {
-        ...componentSpec,
-      },
+      componentSpec,
     };
-    const components = [...projectData.components];
-    components[defaultComponentIndex!] = comp;
-    // add component to projectData
-    setProjectData({
-      ...projectData,
-      components,
+
+    setComponents((prev) => {
+      const allComps = [...prev];
+      allComps[componentIndexToEdit!] = comp;
+      return allComps;
     });
 
+    if (temporaryDesignsToDelete.length) {
+      // user has clicked on files delete buttons and now is saving
+      // we proceed with cleaning up the deleted files
+      Promise.all(
+        temporaryDesignsToDelete.map((file) => {
+          return deleteDesignMutation({
+            variables: {
+              data: {
+                designId: file.designId,
+              },
+            },
+          });
+        })
+      );
+
+      // reset temporaryDesignsToDelete array
+      setTemporaryDesignsToDelete([]);
+    }
+
+    // Set the parent component designs based on local component designs
     if (componentDesigns && componentDesigns.length) {
       setComponentsDesigns((prev) => {
         const prevDesigns = [...prev];
-        prevDesigns[defaultComponentIndex!] = componentDesigns;
+        prevDesigns[componentIndexToEdit!] = componentDesigns;
         return prevDesigns;
       });
     } else {
       setComponentsDesigns((prev) => {
         const prevDesigns = [...prev];
-        prevDesigns[defaultComponentIndex!] = [];
+        prevDesigns[componentIndexToEdit!] = [];
         return prevDesigns;
       });
     }
 
-    // clear component-for-edit index so user can start clean if they click create component again
-    setComponentIndexToEdit(null);
-
+    // empty temporaryDesigns array because user saved
     setTemporaryDesigns([]);
+
     // close component modal
     setComponentModalOpen(false);
   };
@@ -248,76 +262,11 @@ const CreateProjectComponentModal = ({
   const shouldDisableComponentModalAddOrSaveButton = () => {
     // check each required spec is filled
     return false;
-
-    const isInvalidComponentDimension = () => {
-      if (
-        !componentData.componentSpec ||
-        !componentData.componentSpec.productName
-      ) {
-        return true;
-      }
-
-      switch (componentData.componentSpec.productName) {
-        case PRODUCT_NAME_FOLDING_CARTON.value:
-          return (
-            Object.values(componentData.componentSpec.dimension).filter(
-              (d) => !!d
-            ).length !== 3
-          );
-        default:
-          return false;
-      }
-    };
-
-    const isInvalidComponentSpec = () => {
-      if (Object.keys(componentSpec).length === 0) return true;
-
-      for (let key in componentSpec) {
-        const attribute: keyof CreateProjectComponentSpecInput =
-          key as keyof CreateProjectComponentSpecInput;
-
-        if (attribute === "dimension") {
-          if (isInvalidComponentDimension()) return true;
-        }
-
-        const val = componentSpec[attribute];
-
-        if (
-          val !== undefined &&
-          val !== null &&
-          typeof val !== "boolean" &&
-          typeof val !== "object"
-        ) {
-          if (val.length === 0) return true;
-        }
-      }
-      return false;
-    };
-
-    if (isInvalidComponentSpec()) return true;
-
-    for (let key in componentData) {
-      if (key === "componentSpec" || key === "designIds") {
-        continue;
-      }
-      if (
-        (componentData[key as keyof CreateProjectComponentInput] as string)
-          .length === 0
-      )
-        return true;
-    }
-    return false;
   };
 
   const renderProductsDropdown = () => {
     const getDefaultProduct = () => {
-      if (defaultComponentIndex !== undefined) {
-        return productValueToLabelMap[
-          projectData.components[defaultComponentIndex].componentSpec
-            .productName
-        ];
-      }
-      return null;
+      return productValueToLabelMap[componentSpec.productName] || null;
     };
 
     return (
@@ -327,6 +276,10 @@ const CreateProjectComponentModal = ({
         autoHighlight
         defaultValue={getDefaultProduct()}
         onChange={(e, v) => {
+          // whenever product name changes, we assume it's a brand new component
+          setComponentIndexToEdit(null);
+          setComponentDesigns([]);
+
           if (!v) {
             setComponentSpec({} as CreateProjectComponentSpecInput);
             return;
@@ -334,7 +287,6 @@ const CreateProjectComponentModal = ({
           setComponentSpec((spec) => {
             return getComponentSpecDefaultState(v.value);
           });
-          setComponentIndexToEdit(null);
         }}
         renderInput={(params) => (
           <TextField
@@ -359,65 +311,43 @@ const CreateProjectComponentModal = ({
     );
   };
 
-  // callback passed into UploadDesign component to add/empty the local designs array
+  // callback passed into UploadDesign component to add to the local designs array
   const setDesigns = (file: ProjectDesign | null) => {
-    if (!file) {
-      setComponentDesigns([]);
-    } else {
+    if (file) {
       setComponentDesigns([...componentDesigns, file]);
     }
   };
 
+  // we only record temporary designs when we're editing a component
   const setTempDesign = (file: ProjectDesign | null) => {
-    if (file) {
-      setTemporaryDesigns((prev) => [...(prev ? prev : []), file]);
-    }
-  };
-
-  const deleteComponentDesigns = () => {
-    if (componentData.designIds) {
-      Promise.all(
-        componentData.designIds.map((id) => {
-          return deleteDesignMutation({
-            variables: {
-              data: {
-                designId: id,
-              },
-            },
-          });
-        })
-      );
+    if (componentIndexToEdit !== null) {
+      if (file) {
+        setTemporaryDesigns((prev) => [...prev, file]);
+      }
     }
   };
 
   const deleteDesign = async (id: string, ind: number) => {
     try {
-      await deleteDesignMutation({
-        variables: {
-          data: {
-            designId: id,
+      if (componentIndexToEdit === null) {
+        // scenario 1 we just delete directly
+        await deleteDesignMutation({
+          variables: {
+            data: {
+              designId: id,
+            },
           },
-        },
-      });
+        });
+      } else {
+        // scenario 2, 3 we add it to temporaryDesignsToDelete so we can revert if user does not save
+        setTemporaryDesignsToDelete((prev) => [...prev, componentDesigns[ind]]);
+      }
+      // remove from local designs array
       setComponentDesigns((prev) => {
         const prevDesigns = [...prev!];
         prevDesigns.splice(ind, 1);
         return prevDesigns;
       });
-
-      // if the design is an existing design, we want to delete it in parent as well
-      if (defaultComponentIndex !== undefined) {
-        setComponentsDesigns((prev) => {
-          const allExistingDesigns = [...prev];
-          const currentComponentExistingDesigns = [
-            ...allExistingDesigns[defaultComponentIndex],
-          ];
-          currentComponentExistingDesigns.splice(ind, 1);
-          allExistingDesigns[defaultComponentIndex] =
-            currentComponentExistingDesigns;
-          return allExistingDesigns;
-        });
-      }
     } catch (error) {}
   };
 
@@ -515,7 +445,7 @@ const CreateProjectComponentModal = ({
             })}
           </Typography>
           <Box margin={1}>
-            {defaultComponentIndex === undefined ? (
+            {componentIndexToEdit === null ? (
               <Button
                 onClick={addComponent}
                 disabled={shouldDisableComponentModalAddOrSaveButton()}
@@ -550,6 +480,7 @@ const CreateProjectComponentModal = ({
                 label={intl.formatMessage({
                   id: "app.component.attribute.name",
                 })}
+                id="component-attribute-name"
                 onChange={componentInputOnChange}
                 name="name"
                 value={componentData.name}
@@ -579,4 +510,4 @@ const CreateProjectComponentModal = ({
   );
 };
 
-export default CreateProjectComponentModal;
+export default CreateOrUpdateComponentModal;

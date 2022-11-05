@@ -121,6 +121,7 @@ export type CreateProjectComponentInput = {
   componentSpec: CreateProjectComponentSpecInput;
   designIds?: InputMaybe<Array<Scalars['String']>>;
   name: Scalars['String'];
+  projectId?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateProjectComponentSpecInput = {
@@ -403,6 +404,7 @@ export type Mutation = {
   createCustomerSubscription: StripeSubscription;
   createProject: Scalars['Boolean'];
   createProjectBid: Scalars['Boolean'];
+  createProjectComponents: Scalars['Boolean'];
   createStripeCustomer: Scalars['String'];
   createUser: LoggedInUser;
   createVendor: Scalars['String'];
@@ -418,9 +420,9 @@ export type Mutation = {
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
   updateCustomerInfo: Scalars['Boolean'];
-  updateProject?: Maybe<Scalars['Boolean']>;
+  updateProject: Scalars['Boolean'];
   updateProjectBidPermissions: Scalars['Boolean'];
-  updateProjectComponent?: Maybe<Scalars['Boolean']>;
+  updateProjectComponents: Scalars['Boolean'];
   updateProjectPermissions: Scalars['Boolean'];
   updateStripeSubscription: Scalars['Boolean'];
   updateUserInfo: Scalars['Boolean'];
@@ -454,6 +456,11 @@ export type MutationCreateProjectArgs = {
 
 export type MutationCreateProjectBidArgs = {
   data: CreateProjectBidInput;
+};
+
+
+export type MutationCreateProjectComponentsArgs = {
+  data: Array<CreateProjectComponentInput>;
 };
 
 
@@ -533,7 +540,7 @@ export type MutationUpdateCustomerInfoArgs = {
 
 
 export type MutationUpdateProjectArgs = {
-  data?: InputMaybe<UpdateProjectInput>;
+  data: UpdateProjectInput;
 };
 
 
@@ -542,8 +549,8 @@ export type MutationUpdateProjectBidPermissionsArgs = {
 };
 
 
-export type MutationUpdateProjectComponentArgs = {
-  data?: InputMaybe<UpdateProjectComponentInput>;
+export type MutationUpdateProjectComponentsArgs = {
+  data: Array<UpdateProjectComponentInput>;
 };
 
 

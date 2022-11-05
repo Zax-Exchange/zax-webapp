@@ -12,6 +12,12 @@ const CREATE_PROJECT = gql`
   }
 `;
 
+const CREATE_PROJECT_COMPONENTS = gql`
+  mutation createProjectComponents($data: [CreateProjectComponentInput!]!) {
+    createProjectComponents(data: $data)
+  }
+`
+
 const UPLOAD_PROJECT_DESIGN = gql`
   mutation uploadProjectDesign($file: Upload!) {
     uploadProjectDesign(file: $file) {

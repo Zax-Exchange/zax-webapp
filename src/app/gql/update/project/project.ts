@@ -7,7 +7,13 @@ const UPDATE_PROJECT_PERMISSION = gql`
 `;
 
 const UPDATE_PROJECT = gql`
-  mutation updateProject($data: UpdateProjectInput) {
+  mutation updateProject($data: UpdateProjectInput!) {
     updateProject(data: $data)
+  }
+`
+
+const UPDATE_PROJECT_COMPONENTS = gql`
+  mutation updateProjectComponents($data: [UpdateProjectComponentInput!]!) {
+    updateProjectComponents(data: $data)
   }
 `

@@ -39,6 +39,7 @@ import zhCn from "./translations/zh-cn.json";
 import GuidedCreateProject from "./app/Projects/customer/createProject/guided/GuidedCreateProject";
 import VendorProfile from "./app/Profile/vendor/VendorProfile";
 import ProjectDetail from "./app/Projects/ProjectDetail";
+import EditProject from "./app/Projects/customer/editProject/EditProject";
 
 const theme = createTheme({
   palette: {
@@ -213,6 +214,14 @@ function App() {
                     element={
                       <RequireAuth isAllowed={!user?.isVendor}>
                         <CustomerProjects />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path={CUSTOMER_ROUTES.EDIT_PROJECT}
+                    element={
+                      <RequireAuth isAllowed={!user?.isVendor}>
+                        <EditProject />
                       </RequireAuth>
                     }
                   />
