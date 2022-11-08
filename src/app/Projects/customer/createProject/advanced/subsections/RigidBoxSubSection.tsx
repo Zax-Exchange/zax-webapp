@@ -37,6 +37,7 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
+import BoxStyleDropdown from "./common/BoxStyleDropdown";
 
 type RigidBoxPostProcessDetail = {
   postProcessName: string;
@@ -153,13 +154,11 @@ const RigidBoxSubSection = ({
             </Typography>
           </ListItem>
           <ListItem>
-            {renderAutocompleteDropdown(
-              RIGID_BOX_BOX_STYLES,
-              "boxStyle",
-              intl.formatMessage({
-                id: "app.component.attribute.boxStyle",
-              })
-            )}
+            <BoxStyleDropdown
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
+              options={RIGID_BOX_BOX_STYLES}
+            />
           </ListItem>
           <ListItem>
             <DimensionsInput

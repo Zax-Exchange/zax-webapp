@@ -34,14 +34,8 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
+import ColorDropdown from "../../common/ColorDropdown";
 
-type MoldedFiberPostProcessDetail = {
-  postProcessName: string;
-  numberOfColors?: string;
-  color?: string;
-  estimatedArea?: string;
-  fontSize?: string;
-};
 const MoldedFiberSubSection = ({
   setComponentSpec,
   componentSpec,
@@ -169,15 +163,9 @@ const MoldedFiberSubSection = ({
             />
           </ListItem>
           <ListItem>
-            <TextField
-              key="molded-fiber-color"
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.color",
-              })}
-              onChange={componentSpecOnChange}
-              name="color"
-              value={componentSpec.color}
+            <ColorDropdown
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
             />
           </ListItem>
           <ListItem>

@@ -50,26 +50,6 @@ import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdo
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedOtherSubSection from "./subsections/GuidedOtherSubSection";
 
-const bookletInitialState: CreateProjectComponentSpecInput = {
-  productName: PRODUCT_NAME_BOOKLET.value,
-  dimension: {
-    x: "",
-    y: "",
-    z: "",
-  },
-};
-
-const stickerInitialState: CreateProjectComponentSpecInput = {
-  productName: PRODUCT_NAME_STICKER.value,
-  dimension: {
-    x: "",
-    y: "",
-  },
-  purpose: "",
-  shape: "",
-  includeArtworkInQuote: false,
-};
-
 const GuidedOther = ({
   setActiveStep,
   setAdditionalComponents,

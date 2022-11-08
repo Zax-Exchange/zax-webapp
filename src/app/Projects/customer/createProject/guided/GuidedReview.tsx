@@ -139,7 +139,6 @@ const GuidedReview = ({
         variables: {
           data: {
             ...projectData,
-            totalWeight: projectData.totalWeight + " g",
             components: extractComponentsData(),
           },
         },

@@ -36,6 +36,7 @@ import {
   isValidFloat,
 } from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
+import ColorDropdown from "../common/ColorDropdown";
 import DimensionsInput from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
@@ -364,11 +365,9 @@ const GuidedInsideSpec = ({
                   id: "app.component.attribute.color",
                 })}
               </Typography>
-              <TextField
-                autoComplete="new-password"
-                onChange={componentSpecOnChange}
-                name="color"
-                value={componentSpec.color}
+              <ColorDropdown
+                setComponentSpec={setComponentSpec}
+                componentSpec={componentSpec}
               />
             </Box>
           </ListItem>

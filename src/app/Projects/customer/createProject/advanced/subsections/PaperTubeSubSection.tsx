@@ -37,6 +37,7 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
+import BoxStyleDropdown from "./common/BoxStyleDropdown";
 
 type PaperTubePostProcessDetail = {
   postProcessName: string;
@@ -150,14 +151,11 @@ const PaperTubeSubSection = ({
             </Typography>
           </ListItem>
           <ListItem>
-            {renderAutocompleteDropdown(
-              PAPER_TUBE_BOX_STYLES,
-              "boxStyle",
-              intl.formatMessage({
-                id: "app.component.attribute.boxStyle",
-              }),
-              "paper-tube-box-style"
-            )}
+            <BoxStyleDropdown
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
+              options={PAPER_TUBE_BOX_STYLES}
+            />
           </ListItem>
           <ListItem>
             <DimensionsInput

@@ -244,178 +244,198 @@ export const BOOKLET_STYLE_PERFECT_BOUND: TranslatableAttribute = {
 
 /** Box styles */
 export const BOX_STYLE_FOLDING_CARTON_RTE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.rte"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.rte"}),
   value: "Reverse Tuck End",
   code: "rte"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_STE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.ste"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.ste"}),
   value: "Straight Tuck End",
   code: "ste"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_SEB: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.sealEndBox"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.sealEndBox"}),
   value: "Seal End Box",
   code: "seal-end"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_BOX_SLEEVE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.boxSleeve"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.boxSleeve"}),
   value: "Box Sleeve",
   code: "box-sleeve"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_STE_HANG: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.steWithHang"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.steWithHang"}),
   value: "Straight Tuck End with Hang Tab",
   code: "ste-hang"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_STE_SIDE_HANG: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.steWithSideHang"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.steWithSideHang"}),
   value: "Straight Tuck End with Side Hang Tab",
   code: "ste-side-hang"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_BEER_TRAY: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.beerTray"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.beerTray"}),
   value: "Beer Tray with Lid",
   code: "beer-tray"
 }
 
 export const BOX_STYLE_FOLDING_CARTON_RTE_FOLDER: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.rteFolder"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.rteFolder"}),
   value: "Reverse Tuck End Folder Box",
   code: "rte-folder"
 }
 
 export const BOX_STYLE_RIGID_BOX_PARTIAL_TELESCOPE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.partialTelescope"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.partialTelescope"}),
   value: "Partial Telescope",
   code: "p-telescope"
 }
 
 export const BOX_STYLE_RIGID_BOX_SHOEBOX: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.shoebox"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.shoebox"}),
   value: "Classic Shoebox",
   code: "shoebox"
 }
 
 export const BOX_STYLE_RIGID_BOX_FULL_TELESCOPE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.fullTelescope"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.fullTelescope"}),
   value: "Full Telescope",
   code: "f-telescope"
 }
 
 export const BOX_STYLE_RIGID_BOX_CIGAR: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.cigar"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.cigar"}),
   value: "Cigar Box",
   code: "cigar"
 }
 
 export const BOX_STYLE_RIGID_BOX_BOOK: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.book"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.book"}),
   value: "Book Style",
   code: "book"
 }
 
 export const BOX_STYLE_RIGID_BOX_BOOK_MAGNETIC: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.bookMagnetic"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.bookMagnetic"}),
   value: "Book Style with Magnetic Closure",
   code: "book-magnetic"
 }
 
 export const BOX_STYLE_RIGID_BOX_NECK: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.neck"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.neck"}),
   value: "Neck Box",
   code: "neck"
 }
 
 export const BOX_STYLE_RIGID_BOX_NECK_HINGE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.neckHinge"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.neckHinge"}),
   value: "Neck Box with Hinge Cover",
   code: "neck-hinge"
 }
 
 export const BOX_STYLE_RIGID_BOX_THREE_SIDE_HINGE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.threeSideHinge"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.threeSideHinge"}),
   value: "Three Sided Hinge Cover",
   code: "three-sided"
 }
 
 export const BOX_STYLE_RIGID_BOX_BRIEF_JOINT: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.briefJoint"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.briefJoint"}),
   value: "Briefcase Style with Joint Cover",
   code: "briefcase-joint"
 }
 
 export const BOX_STYLE_RIGID_BOX_BRIEF_NECK: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.briefNeck"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.briefNeck"}),
   value: "Briefcase Style with Neck Box",
   code: "briefcase-neck"
 }
 
 export const BOX_STYLE_RIGID_BOX_TRAY_WITH_SLEEVE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.trayWithSleeve"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.trayWithSleeve"}),
   value: "Tray with Sleeve",
   code: "tray-sleeve"
 }
 
 export const BOX_STYLE_CORRUGATE_RSC: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.rsc"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.rsc"}),
   value: "Regular Slotted Container",
   code: "slotted-container"
 }
 
 export const BOX_STYLE_CORRUGATE_SNAP_TOP_TUCK: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.snapTopTuck"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.snapTopTuck"}),
   value: "Snap Lock (1-2-3 Bottom with Top Tuck)",
   code: "snap-tuck"
 }
 
 export const BOX_STYLE_CORRUGATE_SNAP_RSC: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.snapRSC"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.snapRSC"}),
   value: "Snap Lock (1-2-3 Bottom with RSC Top)",
   code: "snap-rsc"
 }
 
 export const BOX_STYLE_CORRUGATE_FULL_TELESCOPE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.fsd"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.fsd"}),
   value: "Full Telescope Design",
   code: "fsd"
 }
 
 export const BOX_STYLE_CORRUGATE_ONE_PIECE_FOLDER: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.onePieceFolder"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.onePieceFolder"}),
   value: "One Piece Folder",
   code: "opf"
 }
 
 export const BOX_STYLE_CORRUGATE_FIVE_PANEL: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.fivePanel"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.fivePanel"}),
   value: "Five Panel Folder",
   code: "fpf"
 }
 
 export const BOX_STYLE_CORRUGATE_REFT: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.reft"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.reft"}),
   value: "REFT",
   code: "reft"
 }
 
 export const BOX_STYLE_CORRUGATE_RETT: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.rett"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.rett"}),
   value: "RETT",
   code: "rett"
 }
 
 export const BOX_STYLE_PAPER_TUBE_CUSTOM_TUBE: TranslatableAttribute = {
-  label: intl.formatMessage({id: "app.boxStyle.customTubeShape"}),
+  label: intl.formatMessage({id: "app.product.boxStyle.customTubeShape"}),
   value: "Custom Tube Shape",
   code: "custom-tube"
 }
+
+/**Color data */
+
+export const COLOR_RED: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.component.attribute.color.red"}),
+  value: "Red",
+}
+
+export const COLOR_WHITE: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.component.attribute.color.white"}),
+  value: "White",
+}
+
+export const COLOR_BLACK: TranslatableAttribute = {
+  label: intl.formatMessage({id: "app.component.attribute.color.black"}),
+  value: "Black",
+}
+
+
+/** Below are combinations of attributes based on different flows/products*/
 
 export const ALL_PRODUCT_NAMES = [
   PRODUCT_NAME_RIGID_BOX,
@@ -427,7 +447,7 @@ export const ALL_PRODUCT_NAMES = [
   PRODUCT_NAME_PAPER_TRAY,
   PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_STICKER,
-  PRODUCT_NAME_PRINTING,
+  PRODUCT_NAME_BOOKLET,
 ]
 
 export const ALL_PRINTING_METHODS = [
@@ -435,6 +455,12 @@ export const ALL_PRINTING_METHODS = [
   PRINTING_METHOD_FLEXO,
   PRINTING_METHOD_LITHO,
   PRINTING_METHOD_SILK_SCREEN
+]
+
+export const ALL_COLORS = [
+  COLOR_RED,
+  COLOR_BLACK,
+  COLOR_WHITE
 ]
 
 // Guided Project Creation data
@@ -801,7 +827,11 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [SHAPE_OTHER.value]: SHAPE_OTHER,
 
   [PURPOSE_LABELING.value]: PURPOSE_LABELING,
-  [PURPOSE_SEALING.value]: PURPOSE_SEALING
+  [PURPOSE_SEALING.value]: PURPOSE_SEALING,
+
+  [COLOR_RED.value]: COLOR_RED,
+  [COLOR_BLACK.value]:   COLOR_BLACK,
+  [COLOR_WHITE.value]:   COLOR_WHITE
 }
 
 
@@ -908,3 +938,46 @@ export const DEFAULT_MOLDED_FIBER_TRAY_SPEC: CreateProjectComponentSpecInput = {
   materialSource: "",
   postProcess: [],
 }
+
+export const DEFAULT_PAPER_TRAY_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_PAPER_TRAY.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: ""
+  },
+  includeArtworkInQuote: false,
+}
+
+export const DEFAULT_CORRUGATE_TRAY_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_CORRUGATE_TRAY.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: ""
+  },
+}
+
+export const DEFAULT_STICKER_SPEC: CreateProjectComponentSpecInput = {
+   productName: PRODUCT_NAME_STICKER.value,
+  dimension: {
+    x: "",
+    y: "",
+  },
+  purpose: "",
+  shape: "",
+  includeArtworkInQuote: false,
+
+}
+
+export const DEFAULT_BOOKLET_SPEC: CreateProjectComponentSpecInput = {
+  productName: PRODUCT_NAME_BOOKLET.value,
+  dimension: {
+    x: "",
+    y: "",
+    z: "",
+  },
+  numberOfPages: "",
+  style: ""
+}
+

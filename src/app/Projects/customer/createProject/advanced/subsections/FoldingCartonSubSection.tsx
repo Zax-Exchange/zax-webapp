@@ -36,6 +36,7 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
+import BoxStyleDropdown from "./common/BoxStyleDropdown";
 
 type FoldingCartonPostProcessDetail = {
   postProcessName: string;
@@ -144,6 +145,13 @@ const FoldingCartonSubSection = ({
             <Typography variant="subtitle2">
               {intl.formatMessage({ id: "app.component.generalSpecs" })}
             </Typography>
+          </ListItem>
+          <ListItem>
+            <BoxStyleDropdown
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
+              options={FOLDING_CARTON_BOX_STYLES}
+            />
           </ListItem>
           <ListItem>
             <DimensionsInput

@@ -37,6 +37,7 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
+import BoxStyleDropdown from "./common/BoxStyleDropdown";
 
 const CorrugateBoxSubSection = ({
   setComponentSpec,
@@ -151,22 +152,19 @@ const CorrugateBoxSubSection = ({
             </Typography>
           </ListItem>
           <ListItem>
+            <BoxStyleDropdown
+              componentSpec={componentSpec}
+              setComponentSpec={setComponentSpec}
+              options={CORRUGATE_BOX_BOX_STYLES}
+            />
+          </ListItem>
+          <ListItem>
             <DimensionsInput
               dimension={componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));
               }}
             />
-          </ListItem>
-          <ListItem>
-            {renderAutocompleteDropdown(
-              CORRUGATE_BOX_BOX_STYLES,
-              "boxStyle",
-              intl.formatMessage({
-                id: "app.component.attribute.boxStyle",
-              }),
-              "corrugate-box-style"
-            )}
           </ListItem>
           <ListItem>
             <TextField

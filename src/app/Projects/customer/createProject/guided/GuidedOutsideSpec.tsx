@@ -332,7 +332,7 @@ const GuidedOutsideSpec = ({
         {componentSpec.boxStyle ? (
           <Box>
             <Typography variant="caption">
-              {productValueToLabelMap[componentSpec.boxStyle].value}
+              {productValueToLabelMap[componentSpec.boxStyle].label}
             </Typography>
             <IconButton
               onClick={() => setBoxStyleModalOpen(true)}
@@ -437,15 +437,12 @@ const GuidedOutsideSpec = ({
                   boxStyle: "",
                 };
               }
-              if (v.value === componentSpec.productName) {
-                return spec;
-              } else {
-                return {
-                  ...spec,
-                  boxStyle: "",
-                  productName: v.value,
-                };
-              }
+
+              return {
+                ...spec,
+                boxStyle: "",
+                productName: v.value,
+              };
             });
           }}
           renderInput={(params) => (

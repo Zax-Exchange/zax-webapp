@@ -29,6 +29,8 @@ import {
 import { TranslatableAttribute } from "../../../../../../type/common";
 import {
   BOOKLET_STYLES,
+  DEFAULT_BOOKLET_SPEC,
+  DEFAULT_STICKER_SPEC,
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
   GUIDED_PROJECT_OTHER_PRODUCTS,
@@ -59,6 +61,7 @@ const bookletInitialState: CreateProjectComponentSpecInput = {
   },
   includeArtworkInQuote: true,
   numberOfPages: "",
+  style: "",
 };
 
 const stickerInitialState: CreateProjectComponentSpecInput = {
@@ -148,9 +151,9 @@ const GuidedOtherSubSection = ({
   const getDefaultComponentSpec = (productName: string) => {
     switch (productName) {
       case PRODUCT_NAME_BOOKLET.value:
-        return bookletInitialState;
+        return DEFAULT_BOOKLET_SPEC;
       case PRODUCT_NAME_STICKER.value:
-        return stickerInitialState;
+        return DEFAULT_STICKER_SPEC;
     }
   };
 

@@ -49,17 +49,29 @@ import {
   DEFAULT_SLEEVE_SPEC,
   DEFAULT_CORRUGATE_BOX_SPEC,
   DEFAULT_MOLDED_FIBER_TRAY_SPEC,
+  PRODUCT_NAME_BOOKLET,
+  PRODUCT_NAME_CORRUGATE_TRAY,
+  PRODUCT_NAME_PAPER_TRAY,
+  PRODUCT_NAME_STICKER,
+  DEFAULT_CORRUGATE_TRAY_SPEC,
+  DEFAULT_PAPER_TRAY_SPEC,
+  DEFAULT_STICKER_SPEC,
+  DEFAULT_BOOKLET_SPEC,
 } from "../../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../../gql/delete/project/project.generated";
 import useCustomSnackbar from "../../../../../Utils/CustomSnackbar";
 import { isValidAlphanumeric } from "../../../../../Utils/inputValidators";
 import UploadDesign from "../../../UploadDesign";
+import BookletSubSection from "../subsections/BookletSubSection";
 import CorrugateBoxSubSection from "../subsections/CorrugateBoxSubSection";
+import CorrugateTraySubSection from "../subsections/CorrugateTraySubSection";
 import FoldingCartonSubSection from "../subsections/FoldingCartonSubSection";
 import MoldedFiberSubSection from "../subsections/MoldedFiberSubSection";
+import PaperTraySubSection from "../subsections/PaperTraySubSection";
 import PaperTubeSubSection from "../subsections/PaperTubeSubSection";
 import RigidBoxSubSection from "../subsections/RigidBoxSubSection";
 import SleeveSubSection from "../subsections/SleeveSubSection";
+import StickerSubSection from "../subsections/StickerSubSection";
 
 const getComponentSpecDefaultState = (
   productName: string
@@ -77,6 +89,14 @@ const getComponentSpecDefaultState = (
       return DEFAULT_CORRUGATE_BOX_SPEC;
     case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
       return DEFAULT_MOLDED_FIBER_TRAY_SPEC;
+    case PRODUCT_NAME_CORRUGATE_TRAY.value:
+      return DEFAULT_CORRUGATE_TRAY_SPEC;
+    case PRODUCT_NAME_PAPER_TRAY.value:
+      return DEFAULT_PAPER_TRAY_SPEC;
+    case PRODUCT_NAME_STICKER.value:
+      return DEFAULT_STICKER_SPEC;
+    case PRODUCT_NAME_BOOKLET.value:
+      return DEFAULT_BOOKLET_SPEC;
   }
   return {} as CreateProjectComponentSpecInput;
 };
@@ -494,6 +514,36 @@ const CreateProjectComponentModal = ({
       case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
         return (
           <MoldedFiberSubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+      case PRODUCT_NAME_BOOKLET.value:
+        return (
+          <BookletSubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+      case PRODUCT_NAME_CORRUGATE_TRAY.value:
+        return (
+          <CorrugateTraySubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+
+      case PRODUCT_NAME_PAPER_TRAY.value:
+        return (
+          <PaperTraySubSection
+            componentSpec={componentSpec}
+            setComponentSpec={setComponentSpec}
+          />
+        );
+
+      case PRODUCT_NAME_STICKER.value:
+        return (
+          <StickerSubSection
             componentSpec={componentSpec}
             setComponentSpec={setComponentSpec}
           />

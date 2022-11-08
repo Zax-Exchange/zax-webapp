@@ -43,6 +43,7 @@ import {
   ProjectBid,
   ProjectComponent,
   ProjectComponentSpec,
+  ProjectPermission,
   UpdateProjectComponentInput,
   UpdateProjectInput,
 } from "../../../generated/graphql";
@@ -241,17 +242,19 @@ const CustomerProjectDetail = () => {
                   })}
                 </Typography>
               </Box>
-              <IconButton
-                sx={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
-                onClick={openEditProjectPage}
-              >
-                <Tooltip
-                  title={intl.formatMessage({ id: "app.general.edit" })}
-                  placement="left"
+              {projectData.permission !== ProjectPermission.Viewer && (
+                <IconButton
+                  sx={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
+                  onClick={openEditProjectPage}
                 >
-                  <EditIcon color="action" />
-                </Tooltip>
-              </IconButton>
+                  <Tooltip
+                    title={intl.formatMessage({ id: "app.general.edit" })}
+                    placement="left"
+                  >
+                    <EditIcon color="action" />
+                  </Tooltip>
+                </IconButton>
+              )}
               <Box display="flex" justifyContent="space-between">
                 <List>
                   <ProjectDetailListItem>
