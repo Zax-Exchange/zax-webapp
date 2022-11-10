@@ -32,8 +32,6 @@ export default function CustomerSideNav({
   const handleSideNavOnClick = (page: string) => {
     if (page === "home") {
       navigate(GENERAL_ROUTES.HOME);
-    } else if (page === "projects") {
-      navigate(CUSTOMER_ROUTES.PROJECTS);
     } else {
       navigate(`${page}`);
     }

@@ -50,20 +50,6 @@ const Nav = () => {
   const [sideNavOpen, setSideNavOpen] = useState(false);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
-  const handleSideNavOnClick = (page: string) => {
-    if (page === "home") {
-      navigate(GENERAL_ROUTES.HOME);
-    } else if (page === "projects") {
-      if (user!.isVendor) {
-        navigate(VENDOR_ROUTES.PROJECTS);
-      } else {
-        navigate(CUSTOMER_ROUTES.PROJECTS);
-      }
-    } else {
-      navigate(`${page}`);
-    }
-  };
-
   const handleLoggedOutOnClick = (page: string) => {
     navigate(`/${page}`);
   };

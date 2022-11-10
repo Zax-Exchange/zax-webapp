@@ -40,6 +40,7 @@ import GuidedCreateProject from "./app/Projects/customer/createProject/guided/Gu
 import VendorProfile from "./app/Profile/vendor/VendorProfile";
 import ProjectDetail from "./app/Projects/ProjectDetail";
 import EditProject from "./app/Projects/customer/editProject/EditProject";
+import Projects from "./app/Projects/Projects";
 
 const theme = createTheme({
   palette: {
@@ -199,6 +200,14 @@ function App() {
                     }
                   />
                   <Route
+                    path={GENERAL_ROUTES.PROJECTS}
+                    element={
+                      <RequireAuth isAllowed={true}>
+                        <Projects />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
                     path={GENERAL_ROUTES.SETTINGS}
                     element={
                       <RequireAuth isAllowed={true}>
@@ -209,14 +218,6 @@ function App() {
                   {/* END COMMON PATH */}
 
                   {/* START CUSTOMER PATH */}
-                  <Route
-                    path={CUSTOMER_ROUTES.PROJECTS}
-                    element={
-                      <RequireAuth isAllowed={!user?.isVendor}>
-                        <CustomerProjects />
-                      </RequireAuth>
-                    }
-                  />
                   <Route
                     path={CUSTOMER_ROUTES.EDIT_PROJECT}
                     element={
@@ -262,15 +263,6 @@ function App() {
 
                   {/* START VENDOR PATH */}
                   <Route
-                    path={VENDOR_ROUTES.PROJECTS}
-                    element={
-                      <RequireAuth isAllowed={user?.isVendor}>
-                        <VendorProjects />
-                      </RequireAuth>
-                    }
-                  />
-
-                  <Route
                     path={VENDOR_ROUTES.SEARCH_RESULTS}
                     element={
                       <RequireAuth isAllowed={user?.isVendor}>
@@ -287,7 +279,6 @@ function App() {
                       </RequireAuth>
                     }
                   />
-
                   {/* END VENDOR PATH */}
 
                   {/* logged out routes */}

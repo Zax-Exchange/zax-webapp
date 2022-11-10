@@ -23,7 +23,10 @@ import {
   CreateProjectInput,
   ProjectDesign,
 } from "../../../../../generated/graphql";
-import { CUSTOMER_ROUTES } from "../../../../constants/loggedInRoutes";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+} from "../../../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../../../Utils/Loading";
@@ -144,7 +147,7 @@ const GuidedReview = ({
         },
       });
 
-      navigate(CUSTOMER_ROUTES.PROJECTS);
+      navigate(GENERAL_ROUTES.PROJECTS);
 
       setSnackbar({
         severity: "success",

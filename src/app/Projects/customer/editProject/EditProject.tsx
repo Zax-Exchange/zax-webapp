@@ -33,7 +33,10 @@ import {
   UpdateProjectComponentInput,
   UpdateProjectInput,
 } from "../../../../generated/graphql";
-import { CUSTOMER_ROUTES } from "../../../constants/loggedInRoutes";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+} from "../../../constants/loggedInRoutes";
 import {
   useCreateProjectComponentsMutation,
   useCreateProjectMutation,
@@ -511,7 +514,11 @@ const EditProject = () => {
         }),
       ]);
 
-      navigate(CUSTOMER_ROUTES.PROJECTS);
+      const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
+
+      dest[1] = projectData.projectId;
+
+      navigate(`${dest.join("")}`);
 
       setSnackbar({
         severity: "success",

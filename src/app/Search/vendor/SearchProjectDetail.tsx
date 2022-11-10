@@ -47,7 +47,7 @@ import { useGetProjectDetailQuery } from "../../gql/get/project/project.generate
 import { SearchProjectDetailLocationState } from "./SearchProjectOverview";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MuiListItem from "@mui/material/ListItem";
-import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
+import { GENERAL_ROUTES, VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
 import { isValidFloat, isValidInt } from "../../Utils/inputValidators";
 import { AuthContext } from "../../../context/AuthContext";
@@ -306,7 +306,7 @@ const SearchProjectDetail = () => {
         severity: "success",
         message: "Bid created.",
       });
-      navigate(VENDOR_ROUTES.PROJECTS);
+      navigate(GENERAL_ROUTES.PROJECTS);
     } catch (error) {
       setSnackbar({
         severity: "error",

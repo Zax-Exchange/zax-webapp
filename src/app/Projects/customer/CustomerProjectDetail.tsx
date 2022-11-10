@@ -48,7 +48,10 @@ import {
   UpdateProjectInput,
 } from "../../../generated/graphql";
 import React from "react";
-import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+} from "../../constants/loggedInRoutes";
 import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -172,7 +175,7 @@ const CustomerProjectDetail = () => {
     navigate(dest);
   };
   const backButtonHandler = () => {
-    navigate(CUSTOMER_ROUTES.PROJECTS);
+    navigate(GENERAL_ROUTES.PROJECTS);
   };
 
   // Render project fields

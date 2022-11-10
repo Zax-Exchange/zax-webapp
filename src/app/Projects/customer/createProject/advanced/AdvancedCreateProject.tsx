@@ -49,7 +49,10 @@ import UploadDesign from "../../UploadDesign";
 import React from "react";
 
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
-import { CUSTOMER_ROUTES } from "../../../../constants/loggedInRoutes";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+} from "../../../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import {
   useGetCustomerProjectLazyQuery,
@@ -393,7 +396,7 @@ const AdvancedCreateProject = () => {
         },
       });
 
-      navigate(CUSTOMER_ROUTES.PROJECTS);
+      navigate(GENERAL_ROUTES.PROJECTS);
 
       setSnackbar({
         severity: "success",

@@ -32,8 +32,6 @@ export default function VendorSideNav({
   const handleSideNavOnClick = (page: string) => {
     if (page === "home") {
       navigate(GENERAL_ROUTES.HOME);
-    } else if (page === "projects") {
-      navigate(VENDOR_ROUTES.PROJECTS);
     } else {
       navigate(`${page}`);
     }
