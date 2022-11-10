@@ -4,6 +4,16 @@ import * as Types from '../../../../generated/graphql';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type ProjectComponentFragmentFragment = { __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } };
+
+export type ProjectFragment_CustomerProject_Fragment = { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any };
+
+export type ProjectFragment_Project_Fragment = { __typename?: 'Project', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any };
+
+export type ProjectFragment_VendorProject_Fragment = { __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any };
+
+export type ProjectFragmentFragment = ProjectFragment_CustomerProject_Fragment | ProjectFragment_Project_Fragment | ProjectFragment_VendorProject_Fragment;
+
 export type GetProjectUsersQueryVariables = Types.Exact<{
   data: Types.GetProjectUsersInput;
 }>;
@@ -23,7 +33,7 @@ export type GetProjectDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyName: string, companyId: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, numberOfColors?: string | null, color?: string | null, fontSize?: string | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
+export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
 
 export type SearchCustomerProjectsQueryVariables = Types.Exact<{
   data: Types.SearchCustomerProjectInput;
@@ -32,7 +42,82 @@ export type SearchCustomerProjectsQueryVariables = Types.Exact<{
 
 export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, category: string, products: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any }> };
 
-
+export const ProjectComponentFragmentFragmentDoc = gql`
+    fragment ProjectComponentFragment on ProjectComponent {
+  id
+  projectId
+  name
+  designs {
+    designId
+    filename
+    url
+  }
+  componentSpec {
+    id
+    productName
+    dimension {
+      x
+      y
+      z
+    }
+    boxStyle
+    style
+    includeArtworkInQuote
+    purpose
+    shape
+    thickness
+    flute
+    color
+    manufacturingProcess
+    material
+    materialSource
+    numberOfPages
+    postProcess {
+      postProcessName
+      isInside
+      printingMethod
+      numberOfColors {
+        c
+        t
+      }
+      color
+      estimatedArea {
+        x
+        y
+      }
+      fontSize
+    }
+    finish
+    outsideMaterial
+    outsideMaterialSource
+    outsideFinish
+    outsideColor
+    insideMaterial
+    insideMaterialSource
+    insideFinish
+    insideColor
+  }
+}
+    `;
+export const ProjectFragmentFragmentDoc = gql`
+    fragment ProjectFragment on ProjectInterface {
+  id
+  userId
+  companyId
+  companyName
+  name
+  category
+  totalWeight
+  deliveryDate
+  deliveryAddress
+  targetPrice
+  orderQuantities
+  comments
+  status
+  createdAt
+  updatedAt
+}
+    `;
 export const GetProjectUsersDocument = gql`
     query getProjectUsers($data: GetProjectUsersInput!) {
   getProjectUsers(data: $data) {
@@ -115,75 +200,14 @@ export type GetProjectChangelogQueryResult = Apollo.QueryResult<GetProjectChange
 export const GetProjectDetailDocument = gql`
     query getProjectDetail($data: GetProjectDetailInput!) {
   getProjectDetail(data: $data) {
-    id
-    userId
-    companyName
-    companyId
-    name
-    category
-    totalWeight
-    deliveryDate
-    deliveryAddress
-    targetPrice
-    orderQuantities
-    comments
-    status
+    ...ProjectFragment
     components {
-      id
-      projectId
-      name
-      designs {
-        designId
-        filename
-        url
-      }
-      componentSpec {
-        id
-        productName
-        dimension {
-          x
-          y
-          z
-        }
-        boxStyle
-        style
-        includeArtworkInQuote
-        purpose
-        shape
-        thickness
-        flute
-        color
-        manufacturingProcess
-        material
-        materialSource
-        postProcess {
-          postProcessName
-          isInside
-          printingMethod
-          numberOfColors
-          color
-          estimatedArea {
-            x
-            y
-          }
-          fontSize
-        }
-        finish
-        outsideMaterial
-        outsideMaterialSource
-        outsideFinish
-        outsideColor
-        insideMaterial
-        insideMaterialSource
-        insideFinish
-        insideColor
-      }
+      ...ProjectComponentFragment
     }
-    createdAt
-    updatedAt
   }
 }
-    `;
+    ${ProjectFragmentFragmentDoc}
+${ProjectComponentFragmentFragmentDoc}`;
 
 /**
  * __useGetProjectDetailQuery__

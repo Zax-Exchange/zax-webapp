@@ -2,6 +2,7 @@
 import * as Types from '../../../../generated/graphql';
 
 import { gql } from '@apollo/client';
+import { ProjectFragmentFragmentDoc, ProjectComponentFragmentFragmentDoc } from '../project/project.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetVendorDetailQueryVariables = Types.Exact<{
@@ -16,7 +17,7 @@ export type GetVendorProjectQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyName: string, companyId: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, numberOfColors?: string | null, color?: string | null, fontSize?: string | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }> } } | null };
+export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, comments: string, status: string, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', designId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, companyId: string, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }> } } | null };
 
 export type GetVendorProjectsQueryVariables = Types.Exact<{
   data: Types.GetVendorProjectsInput;
@@ -84,69 +85,9 @@ export type GetVendorDetailQueryResult = Apollo.QueryResult<GetVendorDetailQuery
 export const GetVendorProjectDocument = gql`
     query getVendorProject($data: GetVendorProjectInput!) {
   getVendorProject(data: $data) {
-    id
-    userId
-    companyName
-    companyId
-    name
-    category
-    totalWeight
-    deliveryDate
-    deliveryAddress
-    targetPrice
-    orderQuantities
-    comments
-    status
+    ...ProjectFragment
     components {
-      id
-      projectId
-      name
-      designs {
-        designId
-        filename
-        url
-      }
-      componentSpec {
-        id
-        productName
-        dimension {
-          x
-          y
-          z
-        }
-        boxStyle
-        style
-        includeArtworkInQuote
-        purpose
-        shape
-        thickness
-        flute
-        color
-        manufacturingProcess
-        material
-        materialSource
-        postProcess {
-          postProcessName
-          isInside
-          printingMethod
-          numberOfColors
-          color
-          estimatedArea {
-            x
-            y
-          }
-          fontSize
-        }
-        finish
-        outsideMaterial
-        outsideMaterialSource
-        outsideFinish
-        outsideColor
-        insideMaterial
-        insideMaterialSource
-        insideFinish
-        insideColor
-      }
+      ...ProjectComponentFragment
     }
     bidInfo {
       id
@@ -164,11 +105,10 @@ export const GetVendorProjectDocument = gql`
       createdAt
       updatedAt
     }
-    createdAt
-    updatedAt
   }
 }
-    `;
+    ${ProjectFragmentFragmentDoc}
+${ProjectComponentFragmentFragmentDoc}`;
 
 /**
  * __useGetVendorProjectQuery__

@@ -151,7 +151,7 @@ const theme = createTheme({
 });
 
 function App() {
-  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
+  const { CustomSnackbar } = useCustomSnackbar();
   const { user } = useContext(AuthContext);
 
   return (

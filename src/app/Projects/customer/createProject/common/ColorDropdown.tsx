@@ -9,17 +9,26 @@ import {
 
 const ColorDropdown = ({
   setComponentSpec,
+  setColor,
+  color,
   componentSpec,
+  displayLabel = false,
 }: {
-  setComponentSpec: React.Dispatch<
+  setComponentSpec?: React.Dispatch<
     React.SetStateAction<CreateProjectComponentSpecInput>
   >;
-  componentSpec: CreateProjectComponentSpecInput;
+  setColor?: (color: string) => void;
+  color?: string;
+  componentSpec?: CreateProjectComponentSpecInput;
+  displayLabel?: boolean;
 }) => {
   const intl = useIntl();
 
   const getDefaultValue = () => {
-    if (componentSpec.color) {
+    if (color) {
+      return productValueToLabelMap[color];
+    }
+    if (componentSpec && componentSpec.color) {
       return productValueToLabelMap[componentSpec.color];
     }
     return null;
@@ -31,15 +40,26 @@ const ColorDropdown = ({
       autoHighlight
       value={getDefaultValue()}
       onChange={(e, v) => {
-        setComponentSpec((spec) => ({
-          ...spec,
-          color: v ? v.value : "",
-        }));
+        if (setComponentSpec) {
+          setComponentSpec((spec) => ({
+            ...spec,
+            color: v ? v.value : "",
+          }));
+        }
+        if (setColor) {
+          setColor(v ? v.value : "");
+        }
       }}
       renderInput={(params) => (
         <TextField
           {...params}
-          label={intl.formatMessage({ id: "app.component.attribute.color" })}
+          label={
+            displayLabel
+              ? intl.formatMessage({
+                  id: "app.component.attribute.color",
+                })
+              : ""
+          }
           inputProps={{
             ...params.inputProps,
             autoComplete: "new-password",

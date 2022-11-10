@@ -140,7 +140,7 @@ const CustomerProjectDetail = () => {
     },
     fetchPolicy: "no-cache",
   });
-  console.log(getProjectChangelogData);
+
   // For snackbar display purposes based on update mutation status
   useEffect(() => {
     if (getProjectError) {

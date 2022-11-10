@@ -1,4 +1,6 @@
 import { gql } from "@apollo/client";
+import {PROJECT_COMPONENT_FRAGMENT} from "../project/project"
+import {PROJECT_FRAGMENT} from "../project/project"
 
 const GET_VENDOR_DETAIL = gql`
   query getVendorDetail($data: GetVendorDetailInput!) {
@@ -22,73 +24,13 @@ const GET_VENDOR_DETAIL = gql`
 `;
 
 const GET_VENDOR_PROJECT = gql`
+${PROJECT_FRAGMENT}
+${PROJECT_COMPONENT_FRAGMENT}
   query getVendorProject($data: GetVendorProjectInput!) {
     getVendorProject(data: $data) {
-      id
-      userId
-      companyName
-      companyId
-      name
-      category
-      totalWeight
-      deliveryDate
-      deliveryAddress
-      targetPrice
-      orderQuantities
-      comments
-      status
+      ...ProjectFragment
       components {
-        id
-        projectId
-        name
-        designs {
-          designId
-          filename
-          url
-        }
-        componentSpec {
-          id
-          productName
-          dimension {
-            x
-            y
-            z
-          }
-          boxStyle
-          style
-          includeArtworkInQuote
-          purpose
-          shape
-          thickness
-          flute
-          color
-          manufacturingProcess
-          material
-          materialSource
-          postProcess {
-            postProcessName
-            isInside
-            printingMethod
-            numberOfColors
-            color
-            estimatedArea {
-              x
-              y
-            }
-            fontSize
-          }
-          finish
-          outsideMaterial
-          outsideMaterialSource
-       
-          outsideFinish
-          outsideColor
-          insideMaterial
-          insideMaterialSource
-       
-          insideFinish
-          insideColor
-        }
+       ...ProjectComponentFragment
       }
       bidInfo {
         id
@@ -106,9 +48,6 @@ const GET_VENDOR_PROJECT = gql`
         createdAt
         updatedAt
       }
-      createdAt
-      updatedAt
-      
     }
   }
 `;

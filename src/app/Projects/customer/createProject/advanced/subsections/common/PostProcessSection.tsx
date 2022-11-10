@@ -72,6 +72,7 @@ const PostProcessSection = ({
               )}
               <ListItem>
                 <PostProcessInput
+                  componentSpec={componentSpec}
                   setPostProcess={setPostProcess(i)}
                   deletePostProcess={deletePostProcess(i)}
                   postProcess={postProcess}

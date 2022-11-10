@@ -92,7 +92,7 @@ const rigidBoxAdditionalDefaultSpecs: Partial<CreateProjectComponentSpecInput> =
 const paperTubeAdditionalDefaultSpecs: Partial<CreateProjectComponentSpecInput> =
   {
     // TBD
-    thickness: "0.5",
+    thickness: "1.8",
     outsideMaterial: MATERIAL_C2S.value,
     outsideMaterialSource: MATERIAL_SOURCE_STANDARD.value,
     outsideFinish: FINISH_MATTE.value,

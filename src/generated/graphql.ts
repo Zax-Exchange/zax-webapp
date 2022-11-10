@@ -225,7 +225,7 @@ export type CustomerOverview = {
   name: Scalars['String'];
 };
 
-export type CustomerProject = {
+export type CustomerProject = ProjectInterface & {
   __typename?: 'CustomerProject';
   bids?: Maybe<Array<ProjectBid>>;
   category: Scalars['String'];
@@ -644,7 +644,7 @@ export type PostProcessDetail = {
   estimatedArea?: Maybe<ProductDimension>;
   fontSize?: Maybe<Scalars['String']>;
   isInside?: Maybe<Scalars['Boolean']>;
-  numberOfColors?: Maybe<Scalars['String']>;
+  numberOfColors?: Maybe<PostProcessPrintingNumberOfColors>;
   postProcessName: Scalars['String'];
   printingMethod?: Maybe<Scalars['String']>;
 };
@@ -654,9 +654,20 @@ export type PostProcessDetailInput = {
   estimatedArea?: InputMaybe<ProductDimensionInput>;
   fontSize?: InputMaybe<Scalars['String']>;
   isInside?: InputMaybe<Scalars['Boolean']>;
-  numberOfColors?: InputMaybe<Scalars['String']>;
+  numberOfColors?: InputMaybe<PostProcessPrintingNumberOfColorsInput>;
   postProcessName: Scalars['String'];
   printingMethod?: InputMaybe<Scalars['String']>;
+};
+
+export type PostProcessPrintingNumberOfColors = {
+  __typename?: 'PostProcessPrintingNumberOfColors';
+  c: Scalars['String'];
+  t: Scalars['String'];
+};
+
+export type PostProcessPrintingNumberOfColorsInput = {
+  c: Scalars['String'];
+  t: Scalars['String'];
 };
 
 export type PricingDetail = {
@@ -685,7 +696,7 @@ export type ProductDimensionInput = {
   z?: InputMaybe<Scalars['String']>;
 };
 
-export type Project = {
+export type Project = ProjectInterface & {
   __typename?: 'Project';
   category: Scalars['String'];
   comments: Scalars['String'];
@@ -798,6 +809,24 @@ export type ProjectDesign = {
   designId: Scalars['String'];
   filename: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type ProjectInterface = {
+  category: Scalars['String'];
+  comments: Scalars['String'];
+  companyId: Scalars['String'];
+  companyName: Scalars['String'];
+  createdAt: Scalars['Date'];
+  deliveryAddress: Scalars['String'];
+  deliveryDate: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  orderQuantities: Array<Scalars['Int']>;
+  status: Scalars['String'];
+  targetPrice: Scalars['String'];
+  totalWeight: Scalars['String'];
+  updatedAt: Scalars['Date'];
+  userId: Scalars['String'];
 };
 
 export type ProjectOverview = {
@@ -1208,7 +1237,7 @@ export type VendorOverview = {
   products: Array<Scalars['String']>;
 };
 
-export type VendorProject = {
+export type VendorProject = ProjectInterface & {
   __typename?: 'VendorProject';
   bidInfo: PermissionedProjectBid;
   category: Scalars['String'];

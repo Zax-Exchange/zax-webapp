@@ -1,76 +1,17 @@
 import { gql } from "@apollo/client";
+import {PROJECT_COMPONENT_FRAGMENT} from "../project/project"
+import {PROJECT_FRAGMENT} from "../project/project"
 
 const GET_CUSTOMER_PROJECT = gql`
+  ${PROJECT_FRAGMENT}
+  ${PROJECT_COMPONENT_FRAGMENT}
   query getCustomerProject($data: GetCustomerProjectInput!) {
     getCustomerProject(data: $data) {
-      id
-      userId
-      companyId
+      ...ProjectFragment
       creationMode
-      name
-      category
-      totalWeight
-      deliveryDate
-      deliveryAddress
-      targetPrice
-      orderQuantities
-      comments
-      status
       permission
-      createdAt
-      updatedAt
       components {
-        id
-        projectId
-        name
-        designs {
-          designId
-          filename
-          url
-        }
-        componentSpec {
-          id
-          productName
-          dimension {
-            x
-            y
-            z
-          }
-          boxStyle
-          style
-          includeArtworkInQuote
-          purpose
-          shape
-          thickness
-          flute
-          color
-          manufacturingProcess
-          material
-          materialSource
-          postProcess {
-            postProcessName
-            isInside
-            printingMethod
-            numberOfColors
-            color
-            estimatedArea {
-              x
-              y
-            }
-            fontSize
-          }
-          finish
-          outsideMaterial
-          outsideMaterialSource
-        
-          outsideFinish
-          outsideColor
-          insideMaterial
-          insideMaterialSource
-        
-          insideFinish
-          insideColor
-        }
+        ...ProjectComponentFragment
       }
 
       bids {

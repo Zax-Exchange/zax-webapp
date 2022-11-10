@@ -22,11 +22,17 @@ import {
   POST_PROCESS_FOIL_STAMP,
   POST_PROCESS_PRINTING,
   productValueToLabelMap,
+  PRODUCT_NAME_CORRUGATE_BOX,
+  PRODUCT_NAME_CORRUGATE_TRAY,
+  PRODUCT_NAME_MOLDED_FIBER_TRAY,
+  PRODUCT_NAME_PAPER_TRAY,
+  PRODUCT_NAME_PAPER_TUBE,
 } from "../../../../constants/products";
 import {
   isValidAlphanumeric,
   isValidInt,
 } from "../../../../Utils/inputValidators";
+import ColorDropdown from "./ColorDropdown";
 import DimensionsInput from "./DimensionsInput";
 
 const PostProcessInput = ({
@@ -34,11 +40,13 @@ const PostProcessInput = ({
   deletePostProcess,
   postProcess,
   postProcessOptions,
+  componentSpec,
 }: {
   setPostProcess: (data: PostProcessDetail) => void;
   deletePostProcess: () => void;
   postProcess: PostProcessDetail;
   postProcessOptions: TranslatableAttribute[];
+  componentSpec: CreateProjectComponentSpecInput;
 }) => {
   const intl = useIntl();
 
@@ -51,6 +59,17 @@ const PostProcessInput = ({
     value: false,
   };
 
+  const hasInsideOutsideDifference = () => {
+    // All trays and paper tube will not have inside/outside difference for postProcess
+    switch (componentSpec.productName) {
+      case PRODUCT_NAME_CORRUGATE_TRAY.value:
+      case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
+      case PRODUCT_NAME_PAPER_TRAY.value:
+      case PRODUCT_NAME_PAPER_TUBE.value:
+        return false;
+    }
+    return true;
+  };
   const inputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     let isAllowed = false;
@@ -101,7 +120,10 @@ const PostProcessInput = ({
       case POST_PROCESS_PRINTING.value:
         return {
           ...res,
-          numberOfColors: "",
+          numberOfColors: {
+            c: "",
+            t: "",
+          },
           printingMethod: "",
           estimatedArea: {
             x: "",
@@ -123,51 +145,56 @@ const PostProcessInput = ({
       if (!postProcess.printingMethod) return null;
       return productValueToLabelMap[postProcess.printingMethod];
     };
+
     return (
       <>
         <Box mb={2}>
-          <Box>
-            <Typography variant="caption">
-              {intl.formatMessage({
-                id: "app.component.postProcess.printing.method",
-              })}
-            </Typography>
-          </Box>
-          <Autocomplete
-            sx={{ width: 180, mb: 2 }}
-            options={ALL_PRINTING_METHODS}
-            autoHighlight
-            getOptionLabel={(option) => option.label}
-            value={getPrintingMethodLabel()}
-            onChange={(e, v) => {
-              if (!v) {
-                setPostProcess({
-                  ...postProcess,
-                  printingMethod: "",
-                });
-                return;
-              }
-              setPostProcess({
-                ...postProcess,
-                printingMethod: v.value,
-              });
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                inputProps={{
-                  ...params.inputProps,
-                  autoComplete: "new-password",
+          {componentSpec.productName === PRODUCT_NAME_CORRUGATE_BOX.value && (
+            <>
+              <Box>
+                <Typography variant="caption">
+                  {intl.formatMessage({
+                    id: "app.component.postProcess.printing.method",
+                  })}
+                </Typography>
+              </Box>
+              <Autocomplete
+                sx={{ width: 180, mb: 2 }}
+                options={ALL_PRINTING_METHODS}
+                autoHighlight
+                getOptionLabel={(option) => option.label}
+                value={getPrintingMethodLabel()}
+                onChange={(e, v) => {
+                  if (!v) {
+                    setPostProcess({
+                      ...postProcess,
+                      printingMethod: "",
+                    });
+                    return;
+                  }
+                  setPostProcess({
+                    ...postProcess,
+                    printingMethod: v.value,
+                  });
                 }}
-                InputLabelProps={{
-                  sx: {
-                    fontSize: 16,
-                    top: -7,
-                  },
-                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    inputProps={{
+                      ...params.inputProps,
+                      autoComplete: "new-password",
+                    }}
+                    InputLabelProps={{
+                      sx: {
+                        fontSize: 16,
+                        top: -7,
+                      },
+                    }}
+                  />
+                )}
               />
-            )}
-          />
+            </>
+          )}
           <Box>
             <Typography variant="caption">
               {intl.formatMessage({
@@ -175,12 +202,71 @@ const PostProcessInput = ({
               })}
             </Typography>
           </Box>
-          <TextField
-            autoComplete="new-password"
-            onChange={inputOnChange}
-            name="numberOfColors"
-            value={postProcess.numberOfColors}
-          />
+
+          <Box display="flex" mt={2}>
+            <Autocomplete
+              sx={{ width: 100, mr: 2 }}
+              options={["1C", "2C", "3C", "4C"]}
+              autoHighlight
+              value={postProcess.numberOfColors?.c}
+              onChange={(e, v) => {
+                setPostProcess({
+                  ...postProcess,
+                  numberOfColors: {
+                    ...postProcess.numberOfColors!,
+                    c: v ? v : "",
+                  },
+                });
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={"C"}
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password",
+                  }}
+                  InputLabelProps={{
+                    sx: {
+                      fontSize: 16,
+                      top: -7,
+                    },
+                  }}
+                />
+              )}
+            />
+            <Autocomplete
+              sx={{ width: 100 }}
+              options={["0T", "1T", "2T", "3T", "4T"]}
+              autoHighlight
+              value={postProcess.numberOfColors?.t}
+              onChange={(e, v) => {
+                setPostProcess({
+                  ...postProcess,
+                  numberOfColors: {
+                    ...postProcess.numberOfColors!,
+                    t: v ? v : "",
+                  },
+                });
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={"T"}
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password",
+                  }}
+                  InputLabelProps={{
+                    sx: {
+                      fontSize: 16,
+                      top: -7,
+                    },
+                  }}
+                />
+              )}
+            />
+          </Box>
         </Box>
         <Box>
           <Box>
@@ -244,14 +330,11 @@ const PostProcessInput = ({
     return (
       <>
         <Box mb={2}>
-          <TextField
-            autoComplete="new-password"
-            label={intl.formatMessage({
-              id: "app.component.postProcess.foilStamp.color",
-            })}
-            onChange={inputOnChange}
-            name="color"
-            value={postProcess.color}
+          <ColorDropdown
+            color={postProcess.color || ""}
+            setColor={(color: string) =>
+              setPostProcess({ ...postProcess, color })
+            }
           />
         </Box>
         <Box>
@@ -317,7 +400,7 @@ const PostProcessInput = ({
               />
             )}
           />
-          {!!postProcess.postProcessName && (
+          {!!postProcess.postProcessName && hasInsideOutsideDifference() && (
             <Autocomplete
               options={[INSIDE_OPTION, OUTSIDE_OPTION]}
               sx={{ width: 140 }}

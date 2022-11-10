@@ -52,7 +52,7 @@ const BookletSubSection = ({
       });
     }
   };
-
+  console.log(componentSpec);
   const renderAutocompleteDropdown = (
     options: TranslatableAttribute[],
     attribute: keyof CreateProjectComponentSpecInput

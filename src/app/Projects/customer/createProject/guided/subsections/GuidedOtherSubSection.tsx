@@ -30,14 +30,20 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import {
   BOOKLET_STYLES,
   DEFAULT_BOOKLET_SPEC,
+  DEFAULT_SLEEVE_SPEC,
   DEFAULT_STICKER_SPEC,
+  FINISH_MATTE,
+  FINISH_UNCOATED,
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
   GUIDED_PROJECT_OTHER_PRODUCTS,
+  MATERIAL_C1S,
+  MATERIAL_SOURCE_STANDARD,
   productValueToLabelMap,
   PRODUCT_NAME_BOOKLET,
   PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_PAPER_TRAY,
+  PRODUCT_NAME_SLEEVE,
   PRODUCT_NAME_STICKER,
   STICKER_PURPOSES,
   STICKER_SHAPES,
@@ -53,26 +59,12 @@ import DimensionsInput from "../../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "../GuidedCreateProject";
 
-const bookletInitialState: CreateProjectComponentSpecInput = {
-  productName: PRODUCT_NAME_BOOKLET.value,
-  dimension: {
-    x: "",
-    y: "",
-  },
-  includeArtworkInQuote: true,
-  numberOfPages: "",
-  style: "",
-};
-
-const stickerInitialState: CreateProjectComponentSpecInput = {
-  productName: PRODUCT_NAME_STICKER.value,
-  dimension: {
-    x: "",
-    y: "",
-  },
-  purpose: "",
-  shape: "",
-  includeArtworkInQuote: false,
+const sleeveAdditionalDefaultSpecs: Partial<CreateProjectComponentSpecInput> = {
+  material: MATERIAL_C1S.value,
+  materialSource: MATERIAL_SOURCE_STANDARD.value,
+  thickness: "0.5",
+  outsideFinish: FINISH_MATTE.value,
+  insideFinish: FINISH_UNCOATED.value,
 };
 
 const GuidedOtherSubSection = ({
@@ -154,6 +146,11 @@ const GuidedOtherSubSection = ({
         return DEFAULT_BOOKLET_SPEC;
       case PRODUCT_NAME_STICKER.value:
         return DEFAULT_STICKER_SPEC;
+      case PRODUCT_NAME_SLEEVE.value:
+        return {
+          ...DEFAULT_SLEEVE_SPEC,
+          ...sleeveAdditionalDefaultSpecs,
+        };
     }
   };
 
@@ -208,6 +205,59 @@ const GuidedOtherSubSection = ({
           />
         )}
       />
+    );
+  };
+
+  const renderPostProcessDropdown = () => {
+    return (
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({
+            id: "app.component.attribute.postProcess",
+          })}
+        </Typography>
+        <Autocomplete
+          sx={{ width: 200 }}
+          options={GUIDED_PROJECT_ALL_POST_PROCESS}
+          autoHighlight
+          multiple
+          value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
+            return !!componentData.componentSpec.postProcess?.filter(
+              (process) => process.postProcessName === p.value
+            ).length;
+          })}
+          isOptionEqualToValue={(option, value) => {
+            if (typeof value === "string") {
+              return option.value === value;
+            }
+            return option.value === value.value;
+          }}
+          onChange={(e, v) => {
+            setComponentSpec((prev) => ({
+              ...prev,
+              postProcess: v.map((p) => ({
+                postProcessName: p.value,
+                estimatedArea: { x: "", y: "" },
+              })),
+            }));
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+            />
+          )}
+        />
+      </Box>
     );
   };
 
@@ -335,6 +385,29 @@ const GuidedOtherSubSection = ({
     );
   };
 
+  const renderSleeveView = () => {
+    return (
+      <>
+        <ListItem>
+          <Box>
+            <Typography variant="subtitle2" mb={1}>
+              {intl.formatMessage({ id: "app.component.attribute.dimension" })}
+            </Typography>
+            <DimensionsInput
+              dimension={componentData!.componentSpec.dimension}
+              setDimension={(data: ProductDimensionInput) => {
+                setComponentSpec((prev) => ({ ...prev, dimension: data }));
+              }}
+            />
+          </Box>
+        </ListItem>
+        <ListItem>
+          <Box>{renderPostProcessDropdown()}</Box>
+        </ListItem>
+      </>
+    );
+  };
+
   const renderView = () => {
     if (!componentData || !componentData.componentSpec) return null;
 
@@ -348,6 +421,10 @@ const GuidedOtherSubSection = ({
       componentData.componentSpec.productName === PRODUCT_NAME_STICKER.value
     ) {
       return renderStickerView();
+    }
+
+    if (componentData.componentSpec.productName === PRODUCT_NAME_SLEEVE.value) {
+      return renderSleeveView();
     }
 
     return null;
@@ -383,8 +460,8 @@ const GuidedOtherSubSection = ({
       </Stack>
       {!!componentData && !!componentData.componentSpec && (
         <Stack mt={2} mb={2} spacing={2} flexBasis="50%">
-          {componentData.componentSpec.productName ===
-            PRODUCT_NAME_STICKER.value && (
+          {componentData.componentSpec.productName !==
+            PRODUCT_NAME_BOOKLET.value && (
             <ListItem>
               <Box>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>

@@ -20,11 +20,17 @@ import {
   ProjectDesign,
 } from "../../../../../generated/graphql";
 import {
+  B_FLUTE,
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
   GUIDED_PROJECT_PAPER_POST_PROCESS,
+  MANUFACTURING_PROCESS_DRY_PRESS,
   MANUFACTURING_PROCESS_WET_PRESS,
+  MATERIAL_C1S,
+  MATERIAL_SOURCE_OCC,
+  MATERIAL_SOURCE_RECYCLED,
   MATERIAL_SOURCE_STANDARD,
+  MOLDED_FIBER_MANUFACTURING_PROCESSES,
   productValueToLabelMap,
   PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_MOLDED_FIBER_TRAY,
@@ -44,10 +50,19 @@ import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 const moldedFiberAdditionalDefaultSpec: Partial<CreateProjectComponentSpecInput> =
   {
     thickness: "0.8",
-    manufacturingProcess: MANUFACTURING_PROCESS_WET_PRESS.value,
-    materialSource: MATERIAL_SOURCE_STANDARD.value,
   };
 
+const corrugateTrayAdditionalDefaultSpec: Partial<CreateProjectComponentSpecInput> =
+  {
+    flute: B_FLUTE.value,
+  };
+
+const paperTrayAdditionalDefaultSpec: Partial<CreateProjectComponentSpecInput> =
+  {
+    material: MATERIAL_C1S.value,
+    materialSource: MATERIAL_SOURCE_STANDARD.value,
+    thickness: "0.8",
+  };
 const GuidedInsideSpec = ({
   setComponentData,
   setProjectData,
@@ -77,9 +92,10 @@ const GuidedInsideSpec = ({
         z: "",
       },
       color: "",
+      manufacturingProcess: "",
       includeArtworkInQuote: false,
       postProcess: [],
-    } as CreateProjectComponentSpecInput);
+    });
 
   const [
     deleteProjectDesign,
@@ -121,6 +137,10 @@ const GuidedInsideSpec = ({
     switch (productName) {
       case PRODUCT_NAME_MOLDED_FIBER_TRAY.value:
         return moldedFiberAdditionalDefaultSpec;
+      case PRODUCT_NAME_CORRUGATE_TRAY.value:
+        return corrugateTrayAdditionalDefaultSpec;
+      case PRODUCT_NAME_PAPER_TRAY.value:
+        return paperTrayAdditionalDefaultSpec;
     }
     return {};
   };
@@ -140,26 +160,16 @@ const GuidedInsideSpec = ({
           })}
         </Typography>
         <Autocomplete
-          sx={{ width: 200 }}
+          sx={{ width: 250 }}
           options={GUIDED_PROJECT_INSIDE_PRODUCTS}
           autoHighlight
           value={getDefaultInsideTray()}
           onChange={(e, v) => {
             setComponentSpec((spec) => {
-              if (!v) {
-                return {
-                  ...spec,
-                  productName: "",
-                };
-              }
-              if (v.value === componentSpec.productName) {
-                return spec;
-              } else {
-                return {
-                  ...spec,
-                  productName: v.value,
-                };
-              }
+              return {
+                ...spec,
+                productName: v ? v.value : "",
+              };
             });
           }}
           renderInput={(params) => (
@@ -260,7 +270,6 @@ const GuidedInsideSpec = ({
   };
 
   const shouldDisableNextButton = () => {
-    let res = false;
     if (
       !componentSpec.dimension.x ||
       !componentSpec.dimension.y ||
@@ -274,10 +283,14 @@ const GuidedInsideSpec = ({
     )
       return true;
 
+    if (componentSpec.productName === PRODUCT_NAME_MOLDED_FIBER_TRAY.value) {
+      if (!componentSpec.manufacturingProcess) {
+        return true;
+      }
+    }
     for (let key in componentSpec) {
       const attribute = key as keyof CreateProjectComponentSpecInput;
 
-      // These four are required for outside spec
       switch (attribute) {
         case "productName":
         case "color":
@@ -331,6 +344,75 @@ const GuidedInsideSpec = ({
     }
   };
 
+  const renderManufacturingProcessDropdown = () => {
+    const getLabel = () => {
+      if (componentSpec.manufacturingProcess) {
+        return productValueToLabelMap[componentSpec.manufacturingProcess];
+      }
+      return null;
+    };
+
+    // default value varies based on selected manufacturing process
+    const getDefaultValuesForManufacturingProcess = (
+      process: string
+    ): Partial<CreateProjectComponentSpecInput> => {
+      switch (process) {
+        case MANUFACTURING_PROCESS_WET_PRESS.value:
+          return {
+            manufacturingProcess: MANUFACTURING_PROCESS_WET_PRESS.value,
+            materialSource: MATERIAL_SOURCE_STANDARD.value,
+          };
+        case MANUFACTURING_PROCESS_DRY_PRESS.value:
+          return {
+            manufacturingProcess: MANUFACTURING_PROCESS_DRY_PRESS.value,
+            materialSource: MATERIAL_SOURCE_OCC.value,
+          };
+      }
+      return {
+        manufacturingProcess: "",
+        materialSource: "",
+      };
+    };
+
+    return (
+      <ListItem>
+        <Box>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({
+              id: "app.component.attribute.manufacturingProcess",
+            })}
+          </Typography>
+          <Autocomplete
+            sx={{ width: 200 }}
+            options={MOLDED_FIBER_MANUFACTURING_PROCESSES}
+            autoHighlight
+            value={getLabel()}
+            onChange={(e, v) => {
+              setComponentSpec((prev) => ({
+                ...prev,
+                ...getDefaultValuesForManufacturingProcess(v ? v.value : ""),
+              }));
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: "new-password",
+                }}
+                InputLabelProps={{
+                  sx: {
+                    fontSize: 16,
+                    top: -7,
+                  },
+                }}
+              />
+            )}
+          />
+        </Box>
+      </ListItem>
+    );
+  };
   return (
     <>
       <Box>
@@ -343,6 +425,8 @@ const GuidedInsideSpec = ({
       <Box display="flex" justifyContent="space-between">
         <Stack mt={2} mb={2} spacing={2} flexBasis="50%">
           <ListItem>{renderInsideTrayDropdown()}</ListItem>
+          {componentSpec.productName === PRODUCT_NAME_MOLDED_FIBER_TRAY.value &&
+            renderManufacturingProcessDropdown()}
           <ListItem>
             <Box>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>

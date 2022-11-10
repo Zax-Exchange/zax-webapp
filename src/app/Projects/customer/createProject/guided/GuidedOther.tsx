@@ -35,6 +35,7 @@ import {
   PRODUCT_NAME_BOOKLET,
   PRODUCT_NAME_CORRUGATE_TRAY,
   PRODUCT_NAME_PAPER_TRAY,
+  PRODUCT_NAME_SLEEVE,
   PRODUCT_NAME_STICKER,
   STICKER_PURPOSES,
   STICKER_SHAPES,
@@ -73,7 +74,7 @@ const GuidedOther = ({
   ) => void;
   additionalComponentsDesigns: ProjectDesign[][];
   additionalComponents: CreateProjectComponentInput[];
-  isRequired: boolean; // If there are no outerBox spec and insideTray spec added, this one is required
+  isRequired: boolean; // If there are no outerBox and insideTray specs added, this one is required
   activeStep: number;
 }) => {
   const intl = useIntl();
@@ -105,6 +106,21 @@ const GuidedOther = ({
         if (!comp.componentSpec.purpose) return true;
         if (!comp.componentSpec.shape) return true;
         if (!comp.componentSpec.dimension.x || !comp.componentSpec.dimension.y)
+          return true;
+
+        if (!comp.designIds || !comp.designIds.length) {
+          // no designs but chose to include artworks
+
+          if (comp.componentSpec.includeArtworkInQuote) return true;
+        }
+      }
+
+      if (comp.componentSpec.productName === PRODUCT_NAME_SLEEVE.value) {
+        if (
+          !comp.componentSpec.dimension.x ||
+          !comp.componentSpec.dimension.y ||
+          !comp.componentSpec.dimension.z
+        )
           return true;
 
         if (!comp.designIds || !comp.designIds.length) {
