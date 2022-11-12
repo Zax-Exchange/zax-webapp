@@ -12,7 +12,7 @@ const USER_LOGIN = gql`
       id
       companyId
       isVendor
-      isAdmin
+      power
       name
       email
       token
@@ -27,3 +27,9 @@ const INVITE_USER = gql`
     inviteUser(data: $data)
   }
 `;
+
+const REQUEST_TO_JOIN_COMPANY = gql`
+  mutation requestToJoin($data: RequestToJoinInput!) {
+    requestToJoin(data: $data)
+  }
+`

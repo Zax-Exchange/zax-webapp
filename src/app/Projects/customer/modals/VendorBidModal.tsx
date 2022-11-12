@@ -4,6 +4,7 @@ import {
   Collapse,
   Container,
   DialogActions,
+  Divider,
   IconButton,
   List,
   ListItem,
@@ -23,12 +24,15 @@ import { useState } from "react";
 import React from "react";
 import {
   ProjectBid,
+  ProjectBidComponent,
   ProjectComponent,
   ProjectComponentSpec,
   VendorDetail,
 } from "../../../../generated/graphql";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../../common/ComponentSpecDetail";
+import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../../constants/products";
+import { countries } from "../../../constants/countries";
 
 /**
  * Bid modal shown in CustomerProjectDetail
@@ -37,19 +41,23 @@ import ComponentSpecDetail from "../../common/ComponentSpecDetail";
  */
 
 type ProjectComponentRow = {
-  name: string;
   quantity: number;
   price: string;
+  bidComponent: ProjectBidComponent;
   projectComponent: ProjectComponent;
   isLast: boolean;
 };
+
 const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
   const intl = useIntl();
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <TableRow key={row.name} sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow
+        key={row.projectComponent.name}
+        sx={{ "& > *": { borderBottom: "unset" } }}
+      >
         {row.isLast ? (
           <TableCell sx={{ width: "1em" }}>
             <IconButton
@@ -63,20 +71,29 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
         ) : (
           <TableCell sx={{ width: "1em" }} />
         )}
-        <TableCell component="th" scope="row">
-          {row.name}
+        <TableCell component="th" scope="row" align="right">
+          {row.isLast ? row.projectComponent.name : ""}
         </TableCell>
         <TableCell align="right">{row.quantity}</TableCell>
-        <TableCell align="right">{row.price}</TableCell>
+        <TableCell align="right">{parseFloat(row.price)}</TableCell>
+
+        <TableCell align="right">
+          {row.isLast ? row.bidComponent.samplingFee : ""}
+        </TableCell>
+
+        <TableCell align="right">
+          {row.isLast
+            ? row.bidComponent.toolingFee
+              ? row.bidComponent.toolingFee
+              : "NA"
+            : ""}
+        </TableCell>
       </TableRow>
       {row.isLast && (
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
-                <Typography variant="subtitle2" gutterBottom>
-                  {row.projectComponent.name}
-                </Typography>
                 <ComponentSpecDetail
                   spec={row.projectComponent.componentSpec}
                 />
@@ -101,84 +118,114 @@ const VendorBidModal = ({
   vendorData: VendorDetail;
 }) => {
   const intl = useIntl();
+
+  // Get projectComponent based on bidComponent
   const getComponent = (id: string) => {
     return projectComponents.find((comp) => comp.id === id);
   };
 
+  const getCountryPhoneCode = () => {
+    return countries.find((country) => country.label === vendorData.country)!
+      .phone;
+  };
+
   return (
-    <TableContainer component={Box}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        {bid.components.map((comp) => {
-          const rows: ProjectComponentRow[] = [];
-          const projectComponent = getComponent(comp.projectComponentId);
+    <>
+      <Box mb={2} pl={3} mt={1}>
+        <Box>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({
+              id: "app.customer.projectDetail.bidModal.vendorInformation",
+            })}
+          </Typography>
+        </Box>
+        <Box display="flex" flexDirection="column">
+          <Typography variant="caption">{`${vendorData.name}`}</Typography>
 
-          if (projectComponent) {
-            comp.quantityPrices.forEach((qp, i) => {
-              rows.push({
-                name: projectComponent.name,
-                quantity: qp.quantity,
-                price: qp.price,
-                projectComponent,
-                isLast: i === comp.quantityPrices.length - 1,
+          <Typography variant="caption">
+            {`${intl.formatMessage({
+              id: "app.company.attribute.phone",
+            })}: +(${getCountryPhoneCode()}) ${vendorData.phone}`}
+          </Typography>
+
+          {vendorData.fax && (
+            <Typography variant="caption">
+              {`${intl.formatMessage({
+                id: "app.company.attribute.fax",
+              })}: +(${getCountryPhoneCode()}) ${vendorData.fax}`}
+            </Typography>
+          )}
+          <Typography variant="caption">{`${intl.formatMessage({
+            id: "app.company.attribute.contactEmail",
+          })}: ${vendorData.contactEmail}`}</Typography>
+        </Box>
+      </Box>
+      <TableContainer component={Box}>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          {bid.components.map((comp, bidCompIndex) => {
+            const rows: ProjectComponentRow[] = [];
+            const projectComponent = getComponent(comp.projectComponentId)!;
+
+            if (projectComponent) {
+              comp.quantityPrices.forEach((qp, i) => {
+                rows.push({
+                  quantity: qp.quantity,
+                  price: qp.price,
+                  bidComponent: comp,
+                  projectComponent,
+                  isLast: i === comp.quantityPrices.length - 1,
+                });
               });
-            });
-          }
+            }
 
-          return (
-            <>
-              <TableHead>
-                <TableRow>
-                  <TableCell />
-                  <TableCell>
-                    {intl.formatMessage({ id: "app.component.attribute.name" })}
-                  </TableCell>
-                  <TableCell align="right">
-                    {intl.formatMessage({ id: "app.bid.attribute.quantity" })}
-                  </TableCell>
-                  <TableCell align="right">
-                    {intl.formatMessage({ id: "app.bid.attribute.price" })}
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <BidComponentRow row={row} />
-                ))}
-              </TableBody>
-            </>
-          );
-        })}
-      </Table>
-    </TableContainer>
+            return (
+              <>
+                {bidCompIndex === 0 && (
+                  <TableHead>
+                    <TableRow>
+                      <TableCell width="10%" />
+                      <TableCell align="right" width="20%">
+                        {intl.formatMessage({
+                          id: "app.component.attribute.name",
+                        })}
+                      </TableCell>
+                      <TableCell align="right" width="15%">
+                        {intl.formatMessage({
+                          id: "app.bid.attribute.quantity",
+                        })}
+                      </TableCell>
+                      <TableCell align="right" width="15%">
+                        {intl.formatMessage({ id: "app.bid.attribute.price" })}
+                      </TableCell>
+                      <TableCell align="right" width="20%">
+                        {intl.formatMessage({
+                          id: "app.bid.attribute.samplingFee",
+                        })}
+                      </TableCell>
 
-    // <Container>
-    //   <Typography>Vendor: {vendorData.name}</Typography>
-    //   {bid.components.map((comp) => {
-    //     console.log(comp);
-    //     return (
-    //       <>
-    //         <Typography>
-    //           Component: {getComponent(comp.projectComponentId)}
-    //         </Typography>
-    //         <List>
-    //           {comp.quantityPrices.map((qp) => {
-    //             return (
-    //               <ListItem>
-    //                 <Typography>Quantity: {qp.quantity}</Typography>
-    //                 <Typography>Price: {qp.price}</Typography>
-    //               </ListItem>
-    //             );
-    //           })}
-    //         </List>
-    //       </>
-    //     );
-    //   })}
-    //   <DialogActions>
-    //     <Button variant="contained" onClick={() => setIsBidModalOpen(false)}>
-    //       Close
-    //     </Button>
-    //   </DialogActions>
-    // </Container>
+                      <TableCell align="right" width="20%">
+                        {intl.formatMessage({
+                          id: "app.bid.attribute.toolingFee",
+                        })}
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                )}
+                <TableBody>
+                  {rows.map((row) => (
+                    <>
+                      <BidComponentRow row={row} />
+                    </>
+                  ))}
+                </TableBody>
+                <TableBody sx={{ height: 20 }} />
+                {/* {bidCompIndex !== bid.components.length - 1 && <Divider />} */}
+              </>
+            );
+          })}
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 

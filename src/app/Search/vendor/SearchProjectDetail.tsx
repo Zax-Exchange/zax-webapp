@@ -220,8 +220,9 @@ const SearchProjectDetail = () => {
     componentInd: number,
     componentQpInd: number
   ) => {
-    const val = e.target.value;
+    let val = e.target.value;
     if (!isValidFloat(val)) return;
+
     const components = [...bidInput.components];
     const curComponent = bidInput.components[componentInd];
 
@@ -571,7 +572,7 @@ const SearchProjectDetail = () => {
       status,
       components,
     } = getProjectDetailData.getProjectDetail as Project;
-    console.log(existingBid);
+
     return (
       <Container>
         {createProjectBidLoading && <FullScreenLoading />}

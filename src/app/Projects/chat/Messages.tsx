@@ -42,7 +42,6 @@ function Message({
   message: StreamMessage<DefaultStreamChatGenerics>;
   scrollToBottom: () => void;
 }) {
-  console.log(message);
   return (
     <ListItem
       disableGutters

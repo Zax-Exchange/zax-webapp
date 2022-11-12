@@ -6,7 +6,7 @@ const CREATE_USER = gql`
       id
       companyId
       isVendor
-      isAdmin
+      power
       name
       email
       token

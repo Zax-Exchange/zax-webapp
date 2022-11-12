@@ -9,7 +9,7 @@ export type CreateUserMutationVariables = Types.Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, isAdmin: boolean, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, power: Types.UserPower, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
 
 
 export const CreateUserDocument = gql`
@@ -18,7 +18,7 @@ export const CreateUserDocument = gql`
     id
     companyId
     isVendor
-    isAdmin
+    power
     name
     email
     token

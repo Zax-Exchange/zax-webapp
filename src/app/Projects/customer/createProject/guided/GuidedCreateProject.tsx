@@ -28,7 +28,10 @@ import {
   isValidAlphanumeric,
   isValidInt,
 } from "../../../../Utils/inputValidators";
-import { CUSTOMER_ROUTES } from "../../../../constants/loggedInRoutes";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+} from "../../../../constants/loggedInRoutes";
 import { useNavigate } from "react-router-dom";
 import GuidedGeneralSpec from "./GuidedGeneralSpec";
 import GuidedOutsideSpec from "./GuidedOutsideSpec";
@@ -81,9 +84,13 @@ export default function GuidedCreateProject() {
       id: "app.customer.createProject.guidedCreate.step.review",
     }),
   ];
+
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [activeStep, setActiveStep] = useState(0);
   const [currentView, setCurrentView] = useState(GuidedView.GENERAL_SPEC);
+  const [projectCreated, setProjectCreated] = useState(false);
 
   const [projectData, setProjectData] = useState<CreateProjectInput>({
     userId: user!.id,
@@ -98,11 +105,28 @@ export default function GuidedCreateProject() {
     comments: "",
     components: [],
   });
+
   const [componentsData, setComponentsData] =
     useState<GuidedCreateComponentsDataContainer>({
       [GuidedView.OUTER_BOX]: null,
       [GuidedView.INSIDE_TRAY]: null,
     });
+
+  useEffect(() => {
+    if (projectCreated) {
+      navigate(GENERAL_ROUTES.PROJECTS);
+      setSnackbar({
+        severity: "success",
+        message: intl.formatMessage({
+          id: "app.customer.createProject.create.success",
+        }),
+      });
+      setSnackbarOpen(true);
+    }
+    return () => {
+      console.log(projectCreated);
+    };
+  }, [projectCreated]);
 
   // Storing uploaded designs/artworks locally before creating project so we can still display
   // if user navigates back and forth
@@ -268,6 +292,7 @@ export default function GuidedCreateProject() {
         <GuidedReview
           setProjectData={setProjectData}
           setActiveStep={setActiveStep}
+          setProjectCreated={setProjectCreated}
           activeStep={activeStep}
           projectData={projectData}
           componentsDesigns={componentsDesigns}

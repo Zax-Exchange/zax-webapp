@@ -351,7 +351,7 @@ export default function ComponentSpecDetail({
                     {process.numberOfColors
                       ? ` ${intl.formatMessage({
                           id: "app.component.postProcess.printing.numberOfColors",
-                        })}: ${process.numberOfColors.c}+${
+                        })}: ${process.numberOfColors.c}/${
                           process.numberOfColors.t
                         }`
                       : ""}

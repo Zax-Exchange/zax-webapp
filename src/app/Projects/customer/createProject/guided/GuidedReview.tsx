@@ -81,6 +81,7 @@ const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
 const GuidedReview = ({
   setProjectData,
   setActiveStep,
+  setProjectCreated,
   additionalComponents,
   additionalComponentsDesigns,
   componentsData,
@@ -90,6 +91,7 @@ const GuidedReview = ({
 }: {
   setActiveStep: Dispatch<SetStateAction<number>>;
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
+  setProjectCreated: Dispatch<SetStateAction<boolean>>;
   additionalComponents: CreateProjectComponentInput[];
   additionalComponentsDesigns: ProjectDesign[][];
   componentsData: GuidedCreateComponentsDataContainer;
@@ -138,29 +140,28 @@ const GuidedReview = ({
 
   const createProject = async () => {
     try {
-      await createProjectMutation({
-        variables: {
-          data: {
-            ...projectData,
-            components: extractComponentsData(),
-          },
-        },
-      });
-
-      navigate(GENERAL_ROUTES.PROJECTS);
-
-      setSnackbar({
-        severity: "success",
-        message: intl.formatMessage({
-          id: "app.customer.createProject.create.success",
-        }),
-      });
+      // await createProjectMutation({
+      //   variables: {
+      //     data: {
+      //       ...projectData,
+      //       components: extractComponentsData(),
+      //     },
+      //   },
+      // });
+      // setProjectCreated(() => true);
+      // navigate(GENERAL_ROUTES.PROJECTS, { replace: true });
+      // setSnackbar({
+      //   severity: "success",
+      //   message: intl.formatMessage({
+      //     id: "app.customer.createProject.create.success",
+      //   }),
+      // });
+      // setSnackbarOpen(true);
     } catch (e) {
       setSnackbar({
         severity: "error",
         message: intl.formatMessage({ id: "app.general.network.error" }),
       });
-    } finally {
       setSnackbarOpen(true);
     }
   };

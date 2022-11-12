@@ -16,7 +16,7 @@ export type LoginQueryVariables = Types.Exact<{
 }>;
 
 
-export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, isAdmin: boolean, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, power: Types.UserPower, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
 
 export type InviteUserMutationVariables = Types.Exact<{
   data: Types.InviteUserInput;
@@ -24,6 +24,13 @@ export type InviteUserMutationVariables = Types.Exact<{
 
 
 export type InviteUserMutation = { __typename?: 'Mutation', inviteUser: boolean };
+
+export type RequestToJoinMutationVariables = Types.Exact<{
+  data: Types.RequestToJoinInput;
+}>;
+
+
+export type RequestToJoinMutation = { __typename?: 'Mutation', requestToJoin: boolean };
 
 
 export const CheckUserEmailDocument = gql`
@@ -65,7 +72,7 @@ export const LoginDocument = gql`
     id
     companyId
     isVendor
-    isAdmin
+    power
     name
     email
     token
@@ -133,3 +140,34 @@ export function useInviteUserMutation(baseOptions?: Apollo.MutationHookOptions<I
 export type InviteUserMutationHookResult = ReturnType<typeof useInviteUserMutation>;
 export type InviteUserMutationResult = Apollo.MutationResult<InviteUserMutation>;
 export type InviteUserMutationOptions = Apollo.BaseMutationOptions<InviteUserMutation, InviteUserMutationVariables>;
+export const RequestToJoinDocument = gql`
+    mutation requestToJoin($data: RequestToJoinInput!) {
+  requestToJoin(data: $data)
+}
+    `;
+export type RequestToJoinMutationFn = Apollo.MutationFunction<RequestToJoinMutation, RequestToJoinMutationVariables>;
+
+/**
+ * __useRequestToJoinMutation__
+ *
+ * To run a mutation, you first call `useRequestToJoinMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRequestToJoinMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [requestToJoinMutation, { data, loading, error }] = useRequestToJoinMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useRequestToJoinMutation(baseOptions?: Apollo.MutationHookOptions<RequestToJoinMutation, RequestToJoinMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RequestToJoinMutation, RequestToJoinMutationVariables>(RequestToJoinDocument, options);
+      }
+export type RequestToJoinMutationHookResult = ReturnType<typeof useRequestToJoinMutation>;
+export type RequestToJoinMutationResult = Apollo.MutationResult<RequestToJoinMutation>;
+export type RequestToJoinMutationOptions = Apollo.BaseMutationOptions<RequestToJoinMutation, RequestToJoinMutationVariables>;

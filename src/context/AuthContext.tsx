@@ -7,8 +7,8 @@ import { LoggedInUser } from "../generated/graphql";
  *  id
  *  companyId
  *  isVendor
- *  isAdmin
- *  isActive
+ *  power
+ *  status
  *  name
  *  email
  * }

@@ -4,7 +4,7 @@ export const isValidString = (val: string) => {
 };
 
 export const isValidAlphanumeric = (val: string) => {
-  const alphanumericOnlyRegEx = /^[a-zA-Z0-9\s]+$/;
+  const alphanumericOnlyRegEx = /^[a-zA-Z0-9\s_@./#&+-]+$/;
 
   return (alphanumericOnlyRegEx.test(val) || val === "") && val !== " ";
 };
@@ -16,6 +16,14 @@ export const isValidInt = (val: string) => {
 
 export const isValidFloat = (val: string) => {
   const floatOnlyRegEx = /^([0-9]{1,})?(\.)?([0-9]{1,})?$/;
-  
-  return (floatOnlyRegEx.test(val) || val === "") && val !== " " && val !== "0";
+
+  // checking for leading zeros
+  const splitted = val.split(".");
+  if (splitted.length === 2) {
+    if (splitted[0].length > 1 && splitted[0][0] === "0") return false;
+  } else {
+    if (val.length > 1 && val[0] === "0") return false;
+  }
+
+  return (floatOnlyRegEx.test(val) || val === "") && val !== " ";
 }

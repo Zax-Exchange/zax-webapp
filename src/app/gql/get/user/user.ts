@@ -7,7 +7,7 @@ const GET_USER = gql`
       name
       email
       companyId
-      isActive
+      status
     }
   }
 `;

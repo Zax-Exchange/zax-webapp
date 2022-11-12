@@ -9,7 +9,7 @@ export type GetUserQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, name: string, email: string, companyId: string, isActive: boolean } };
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, name: string, email: string, companyId: string, status?: Types.UserStatus | null } };
 
 
 export const GetUserDocument = gql`
@@ -19,7 +19,7 @@ export const GetUserDocument = gql`
     name
     email
     companyId
-    isActive
+    status
   }
 }
     `;

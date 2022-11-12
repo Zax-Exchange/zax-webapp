@@ -81,7 +81,7 @@ const SettingsTitleTypography = styled((props: TypographyProps) => {
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
-  const isAdmin = user!.isAdmin;
+  const power = user!.power;
   const [view, setView] = useState<string | null>(null);
 
   const [expanded, setExpanded] = useState<string | boolean>("");

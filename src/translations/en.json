@@ -1,4 +1,7 @@
 { 
+  "app.error.signup.duplicateJoinRequest": "You have requested to join this company already.",
+  "app.error.signup.existingUser": "This email has been used already.",
+  
   "app.general.vendor": "Vendor",
   "app.general.customer": "Customer",
   "app.general.network.error": "Something went wrong. Please try again later.",
@@ -41,6 +44,7 @@
   "app.signup.pickAPlan": "Pick a plan for your company",
   "app.signup.completePayment": "Complete Payment Information",
   "app.signup.reviewCompany": "Review Company Info",
+  "app.signup.requestToJoin.success": "Join request has been sent to company admins!",
 
   "app.product.purpose.labeling": "Artwork / Labeling",
   "app.product.purpose.sealing": "Sealing / Closure",
@@ -281,6 +285,8 @@
   "app.customer.projectDetail.menu.acceptBid": "Accept",
   "app.customer.projectDetail.menu.rejectBid": "Reject",
   "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
+  "app.customer.projectDetail.bidModal.vendorInformation": "Vendor Information",
+
 
   "app.vendorProfile.tab.companyInfo": "Company Info",
   "app.vendorProfile.tab.certifications": "Certifications & Rewards",

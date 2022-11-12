@@ -30,6 +30,8 @@ import CustomerCheckout from "./CustomerCheckout";
 import { useCreateStripeCustomerMutation } from "../../gql/create/company/company.generated";
 import { useCreateCustomerSubscriptionMutation } from "../../gql/create/customer/customer.generated";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
+import JoinOrCreateCompany from "../JoinOrCreateCompany";
+import JoinCompany from "../JoinCompany";
 
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
@@ -51,6 +53,8 @@ export interface CustomerSignupData {
 }
 
 export const CustomerSignupPage = {
+  JOIN: "JOIN",
+  JOIN_OR_CREATE: "JOIN_OR_CREATE",
   EMAIL_PAGE: "EMAIL_PAGE",
   COMPANY_INFO_PAGE: "COMPANY_INFO_PAGE",
   PLAN_SELECTION_PAGE: "PLAN_SELECTION_PAGE",
@@ -116,7 +120,9 @@ const CustomerSignup = () => {
     billingFrequency: "",
   } as SubscriptionInfo);
 
-  const [currentPage, setCurrentPage] = useState(CustomerSignupPage.EMAIL_PAGE);
+  const [currentPage, setCurrentPage] = useState(
+    CustomerSignupPage.JOIN_OR_CREATE
+  );
   const [stripeData, setStripeData] = useState({
     customerId: "",
     subscriptionId: "",
@@ -214,7 +220,9 @@ const CustomerSignup = () => {
   };
 
   const nextPage = async () => {
-    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
+    if (currentPage === CustomerSignupPage.JOIN_OR_CREATE) {
+      setCurrentPage(CustomerSignupPage.EMAIL_PAGE);
+    } else if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
       setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
@@ -251,8 +259,14 @@ const CustomerSignup = () => {
 
   const previousPage = () => {
     switch (currentPage) {
-      case CustomerSignupPage.EMAIL_PAGE:
+      case CustomerSignupPage.JOIN_OR_CREATE:
         navigate(-1);
+        break;
+      case CustomerSignupPage.JOIN:
+        setCurrentPage(CustomerSignupPage.JOIN_OR_CREATE);
+        break;
+      case CustomerSignupPage.EMAIL_PAGE:
+        setCurrentPage(CustomerSignupPage.JOIN_OR_CREATE);
         break;
       case CustomerSignupPage.COMPANY_INFO_PAGE:
         setCurrentPage(CustomerSignupPage.EMAIL_PAGE);
@@ -294,8 +308,13 @@ const CustomerSignup = () => {
     );
 
     let buttons: JSX.Element[] = [];
-    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
-      buttons = [nextButton];
+    if (
+      currentPage === CustomerSignupPage.JOIN_OR_CREATE ||
+      currentPage === CustomerSignupPage.JOIN
+    ) {
+      buttons = [backButton];
+    } else if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
+      buttons = [backButton, nextButton];
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       buttons = [backButton];
     } else if (currentPage !== CustomerSignupPage.PAYMENT_PAGE) {
@@ -329,7 +348,25 @@ const CustomerSignup = () => {
   };
 
   const renderCompanySignupFlow = () => {
-    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
+    if (currentPage === CustomerSignupPage.JOIN_OR_CREATE) {
+      return (
+        <Fade in={true} mountOnEnter unmountOnExit>
+          <div>
+            <JoinOrCreateCompany setCurrentPage={setCurrentPage} />
+            {renderNavigationButtons(true)}
+          </div>
+        </Fade>
+      );
+    } else if (currentPage === CustomerSignupPage.JOIN) {
+      return (
+        <Fade in={true} mountOnEnter unmountOnExit>
+          <div>
+            <JoinCompany />
+            {renderNavigationButtons(true)}
+          </div>
+        </Fade>
+      );
+    } else if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       // TODO: use email validator
       return (
         <Fade in={true} mountOnEnter unmountOnExit>

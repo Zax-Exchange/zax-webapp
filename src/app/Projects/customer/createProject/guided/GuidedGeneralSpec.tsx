@@ -47,8 +47,9 @@ export default function GuidedGeneralSpec({
   const projectInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val: string | number = e.target.value;
     let isAllowed = true;
+    const attr = e.target.name as keyof CreateProjectInput;
 
-    switch (e.target.name) {
+    switch (attr) {
       case "name":
       case "comments":
         isAllowed = isValidAlphanumeric(val);
@@ -58,6 +59,7 @@ export default function GuidedGeneralSpec({
         val = parseInt(val, 10);
         break;
       case "targetPrice":
+      case "totalWeight":
         isAllowed = isValidFloat(val);
         break;
       default:
@@ -66,7 +68,7 @@ export default function GuidedGeneralSpec({
     if (isAllowed) {
       setProjectData({
         ...projectData,
-        [e.target.name]: val,
+        [attr]: val,
       });
     }
   };
