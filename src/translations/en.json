@@ -252,7 +252,8 @@
 
   "app.customer.editProject.restoreComponent": "Restore Component",
   "app.customer.editProject.removedComponents": "Removed Components",
-
+  "app.customer.editProject.title": "Edit Project Detail",
+  
   "app.customer.createProject.guidedCreate": "Guided",
   "app.customer.createProject.guidedCreate.helperText": "We will guide you through the process and help you decide what you need for your project. Vendors will use their best judgement to come up with price estimations.",
   "app.customer.createProject.guidedCreate.step.generalSpec": "General Spec",
@@ -273,12 +274,11 @@
   "app.customer.createProject.guidedCreate.skip": "Skip",
   "app.customer.createProject.guidedCreate.addProduct": "Add Product",
   "app.customer.createProject.guidedCreate.finish": "Box Finish",
-  
   "app.customer.createProject.advancedCreate": "Advanced",
   "app.customer.createProject.advancedCreate.helperText": "This option is for users who knows exactly what they want and would like to configure the project detail themselves. This option includes technical terms that vendors use across the industry.",
-  
   "app.customer.createProject.import": "Import",
   "app.customer.createProject.importFromExisting": "Import from existing projects below",
+
   "app.customer.projectDetail.menu.viewVendorProfile": "View vendor profile",
   "app.customer.projectDetail.menu.openConversation": "Open conversation",
   "app.customer.projectDetail.menu.exportToPdf": "Export to pdf",

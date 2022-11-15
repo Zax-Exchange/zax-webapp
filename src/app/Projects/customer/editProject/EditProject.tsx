@@ -242,6 +242,9 @@ const EditProject = () => {
               if (process.estimatedArea) {
                 delete process.estimatedArea.__typename;
               }
+              if (process.numberOfColors) {
+                delete process.numberOfColors.__typename;
+              }
             }
           }
 
@@ -598,7 +601,7 @@ const EditProject = () => {
         <Box display="flex" mb={4}>
           <Typography variant="h6" textAlign="left" flexGrow={1}>
             {intl.formatMessage({
-              id: "app.customer.createProject.configureProjectDetail",
+              id: "app.customer.editProject.title",
             })}
           </Typography>
 

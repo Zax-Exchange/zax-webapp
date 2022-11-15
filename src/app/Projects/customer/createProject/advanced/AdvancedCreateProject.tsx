@@ -202,6 +202,9 @@ const AdvancedCreateProject = () => {
               if (process.estimatedArea) {
                 delete process.estimatedArea.__typename;
               }
+              if (process.numberOfColors) {
+                delete process.numberOfColors.__typename;
+              }
             }
           }
 
@@ -391,7 +394,6 @@ const AdvancedCreateProject = () => {
         variables: {
           data: {
             ...projectData,
-            totalWeight: projectData.totalWeight + " g",
           },
         },
       });

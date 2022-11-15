@@ -347,7 +347,18 @@ export default function ComponentSpecDetail({
               return (
                 <ListItem sx={{ padding: 0 }}>
                   <Typography variant="caption">
+                    {process.isInside !== null
+                      ? process.isInside
+                        ? `${intl.formatMessage({
+                            id: "app.component.inside",
+                          })} `
+                        : `${intl.formatMessage({
+                            id: "app.component.outside",
+                          })} `
+                      : ""}
+
                     {process.postProcessName}
+
                     {process.numberOfColors
                       ? ` ${intl.formatMessage({
                           id: "app.component.postProcess.printing.numberOfColors",

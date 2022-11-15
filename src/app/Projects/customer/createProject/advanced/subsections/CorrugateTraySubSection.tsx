@@ -1,11 +1,21 @@
-import { ListItem, Stack, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  ListItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { useIntl } from "react-intl";
 import {
   CreateProjectComponentSpecInput,
   ProductDimensionInput,
 } from "../../../../../../generated/graphql";
-import { CORRUGATE_TRAY_POST_PROCESS } from "../../../../../constants/products";
+import {
+  CORRUGATE_BOX_FLUTES,
+  CORRUGATE_TRAY_POST_PROCESS,
+  productValueToLabelMap,
+} from "../../../../../constants/products";
 import ColorDropdown from "../../common/ColorDropdown";
 import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessSection from "./common/PostProcessSection";
@@ -21,6 +31,47 @@ const CorrugateTraySubSection = ({
 }) => {
   const intl = useIntl();
 
+  const renderFluteDropdown = () => {
+    const getDefaultValue = () => {
+      if (componentSpec.flute) {
+        return productValueToLabelMap[componentSpec.flute];
+      }
+      return null;
+    };
+    return (
+      <Autocomplete
+        sx={{ width: 200 }}
+        options={CORRUGATE_BOX_FLUTES}
+        autoHighlight
+        value={getDefaultValue()}
+        onChange={(e, v) => {
+          setComponentSpec((spec) => ({
+            ...spec,
+            flute: v ? v.value : "",
+          }));
+        }}
+        renderInput={(params) => (
+          <TextField
+            key="corrugate-tray-flute-dropdown"
+            {...params}
+            label={intl.formatMessage({
+              id: "app.component.attribute.flute",
+            })}
+            inputProps={{
+              ...params.inputProps,
+              autoComplete: "new-password",
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: 16,
+                top: -7,
+              },
+            }}
+          />
+        )}
+      />
+    );
+  };
   return (
     <>
       <Stack>
@@ -39,6 +90,7 @@ const CorrugateTraySubSection = ({
             }}
           />
         </ListItem>
+        <ListItem>{renderFluteDropdown()}</ListItem>
         <ListItem>
           <ColorDropdown
             setComponentSpec={setComponentSpec}
