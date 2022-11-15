@@ -112,21 +112,21 @@ export default function GuidedCreateProject() {
       [GuidedView.INSIDE_TRAY]: null,
     });
 
-  useEffect(() => {
-    if (projectCreated) {
-      navigate(GENERAL_ROUTES.PROJECTS);
-      setSnackbar({
-        severity: "success",
-        message: intl.formatMessage({
-          id: "app.customer.createProject.create.success",
-        }),
-      });
-      setSnackbarOpen(true);
-    }
-    return () => {
-      console.log(projectCreated);
-    };
-  }, [projectCreated]);
+  // useEffect(() => {
+  //   if (projectCreated) {
+  //     navigate(GENERAL_ROUTES.PROJECTS);
+  //     setSnackbar({
+  //       severity: "success",
+  //       message: intl.formatMessage({
+  //         id: "app.customer.createProject.create.success",
+  //       }),
+  //     });
+  //     setSnackbarOpen(true);
+  //   }
+  //   return () => {
+  //     console.log(projectCreated);
+  //   };
+  // }, [projectCreated]);
 
   // Storing uploaded designs/artworks locally before creating project so we can still display
   // if user navigates back and forth

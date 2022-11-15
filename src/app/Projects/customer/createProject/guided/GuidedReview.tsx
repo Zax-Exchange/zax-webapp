@@ -140,23 +140,24 @@ const GuidedReview = ({
 
   const createProject = async () => {
     try {
-      // await createProjectMutation({
-      //   variables: {
-      //     data: {
-      //       ...projectData,
-      //       components: extractComponentsData(),
-      //     },
-      //   },
-      // });
+      await createProjectMutation({
+        variables: {
+          data: {
+            ...projectData,
+            components: extractComponentsData(),
+          },
+        },
+      });
       // setProjectCreated(() => true);
-      // navigate(GENERAL_ROUTES.PROJECTS, { replace: true });
-      // setSnackbar({
-      //   severity: "success",
-      //   message: intl.formatMessage({
-      //     id: "app.customer.createProject.create.success",
-      //   }),
-      // });
-      // setSnackbarOpen(true);
+      navigate(GENERAL_ROUTES.PROJECTS, { replace: true });
+
+      setSnackbar({
+        severity: "success",
+        message: intl.formatMessage({
+          id: "app.customer.createProject.create.success",
+        }),
+      });
+      setSnackbarOpen(true);
     } catch (e) {
       setSnackbar({
         severity: "error",
