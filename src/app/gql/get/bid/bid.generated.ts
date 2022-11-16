@@ -4,6 +4,8 @@ import * as Types from '../../../../generated/graphql';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type ProjectBidComponentFragmentFragment = { __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> };
+
 export type GetProjectBidUsersQueryVariables = Types.Exact<{
   data: Types.GetProjectBidUsersInput;
 }>;
@@ -16,9 +18,21 @@ export type GetProjectBidQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectBidQuery = { __typename?: 'Query', getProjectBid?: { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, comments: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }> } | null };
+export type GetProjectBidQuery = { __typename?: 'Query', getProjectBid?: { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, comments: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }> } | null };
 
-
+export const ProjectBidComponentFragmentFragmentDoc = gql`
+    fragment ProjectBidComponentFragment on ProjectBidComponent {
+  id
+  projectBidId
+  projectComponentId
+  samplingFee
+  toolingFee
+  quantityPrices {
+    quantity
+    price
+  }
+}
+    `;
 export const GetProjectBidUsersDocument = gql`
     query getProjectBidUsers($data: GetProjectBidUsersInput!) {
   getProjectBidUsers(data: $data) {
@@ -66,21 +80,14 @@ export const GetProjectBidDocument = gql`
     projectId
     comments
     components {
-      id
-      projectBidId
-      projectComponentId
-      samplingFee
-      quantityPrices {
-        quantity
-        price
-      }
+      ...ProjectBidComponentFragment
     }
     status
     createdAt
     updatedAt
   }
 }
-    `;
+    ${ProjectBidComponentFragmentFragmentDoc}`;
 
 /**
  * __useGetProjectBidQuery__

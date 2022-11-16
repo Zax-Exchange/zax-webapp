@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { PROJECT_BID_COMPONENT_FRAGMENT } from "../bid/bid";
 import {PROJECT_COMPONENT_FRAGMENT} from "../project/project"
 import {PROJECT_FRAGMENT} from "../project/project"
 
@@ -26,6 +27,7 @@ const GET_VENDOR_DETAIL = gql`
 const GET_VENDOR_PROJECT = gql`
 ${PROJECT_FRAGMENT}
 ${PROJECT_COMPONENT_FRAGMENT}
+${PROJECT_BID_COMPONENT_FRAGMENT}
   query getVendorProject($data: GetVendorProjectInput!) {
     getVendorProject(data: $data) {
       ...ProjectFragment
@@ -37,13 +39,7 @@ ${PROJECT_COMPONENT_FRAGMENT}
         companyId
         permission
         components {
-          projectComponentId
-          quantityPrices {
-            quantity
-            price
-          }
-          samplingFee
-          toolingFee
+          ...ProjectBidComponentFragment
         }
         createdAt
         updatedAt

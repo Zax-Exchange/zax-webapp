@@ -1,5 +1,18 @@
 import { gql } from "@apollo/client";
 
+export const PROJECT_BID_COMPONENT_FRAGMENT = gql`
+  fragment ProjectBidComponentFragment on ProjectBidComponent {
+    id
+    projectBidId
+    projectComponentId
+    samplingFee
+    toolingFee
+    quantityPrices {
+      quantity
+      price
+    }
+  }`
+
 const GET_PROJECT_BID_USERS = gql`
   query getProjectBidUsers($data: GetProjectBidUsersInput!) {
     getProjectBidUsers(data: $data) {
@@ -12,6 +25,7 @@ const GET_PROJECT_BID_USERS = gql`
 `;
 
 const GET_PROJECT_BID = gql`
+${PROJECT_BID_COMPONENT_FRAGMENT}
   query getProjectBid($data: GetProjectBidInput!) {
     getProjectBid(data: $data) {
       id
@@ -20,14 +34,7 @@ const GET_PROJECT_BID = gql`
       projectId
       comments
       components {
-        id
-        projectBidId
-        projectComponentId
-        samplingFee
-        quantityPrices {
-          quantity
-          price
-        }
+        ...ProjectBidComponentFragment
       }
       status
       createdAt

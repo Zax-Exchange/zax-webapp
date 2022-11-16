@@ -176,7 +176,6 @@ const CreateOrUpdateComponentModal = ({
     }
   }, [deleteDesignError]);
 
-  console.log(componentData);
   // Scenario 1
   const addComponent = () => {
     // construct CreateProjectComponentInput
@@ -304,6 +303,10 @@ const CreateOrUpdateComponentModal = ({
             setComponentSpec({} as CreateProjectComponentSpecInput);
             return;
           }
+          setComponentData({
+            name: "",
+            componentSpec: {},
+          } as CreateProjectComponentInput);
           setComponentSpec((spec) => {
             return getComponentSpecDefaultState(v.value);
           });

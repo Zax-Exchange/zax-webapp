@@ -11,6 +11,7 @@ export const isValidAlphanumeric = (val: string) => {
 
 export const isValidInt = (val: string) => {
   const intOnlyRegEx = /^[0-9\b]+$/;
+  
   return (intOnlyRegEx.test(val) || val === "") && val !== " " && val !== "0";
 };
 

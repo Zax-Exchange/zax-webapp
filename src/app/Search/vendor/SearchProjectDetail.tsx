@@ -1,20 +1,11 @@
-import { gql, useQuery } from "@apollo/client";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  Dialog,
   Container,
   Typography,
   Button,
-  Card,
-  CardActionArea,
-  CardContent,
   Paper,
-  Link,
   Stack,
   Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   TableRow,
   TableCell,
   TableContainer,
@@ -25,11 +16,8 @@ import {
   Tabs,
   Tab,
   TableHead,
-  ClickAwayListener,
-  ListItem,
   InputAdornment,
 } from "@mui/material";
-import ProjectBidModal from "../../Projects/vendor/ProjectBidModal";
 import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
 import CustomSnackbar from "../../Utils/CustomSnackbar";
@@ -88,7 +76,7 @@ const ProjectListItem = styled(MuiListItem)(() => ({
   },
 }));
 
-const BidInputPriceTextField = styled((props: TextFieldProps) => {
+export const BidInputPriceTextField = styled((props: TextFieldProps) => {
   return (
     <MuiTextField
       {...props}

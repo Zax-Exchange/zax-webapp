@@ -11,6 +11,13 @@ export type UpdateProjectBidPermissionsMutationVariables = Types.Exact<{
 
 export type UpdateProjectBidPermissionsMutation = { __typename?: 'Mutation', updateProjectBidPermissions: boolean };
 
+export type UpdateProjectBidComponentsMutationVariables = Types.Exact<{
+  data: Array<Types.UpdateProjectBidComponentInput> | Types.UpdateProjectBidComponentInput;
+}>;
+
+
+export type UpdateProjectBidComponentsMutation = { __typename?: 'Mutation', updateProjectBidComponents: boolean };
+
 
 export const UpdateProjectBidPermissionsDocument = gql`
     mutation updateProjectBidPermissions($data: UpdateProjectBidPermissionsInput!) {
@@ -43,3 +50,34 @@ export function useUpdateProjectBidPermissionsMutation(baseOptions?: Apollo.Muta
 export type UpdateProjectBidPermissionsMutationHookResult = ReturnType<typeof useUpdateProjectBidPermissionsMutation>;
 export type UpdateProjectBidPermissionsMutationResult = Apollo.MutationResult<UpdateProjectBidPermissionsMutation>;
 export type UpdateProjectBidPermissionsMutationOptions = Apollo.BaseMutationOptions<UpdateProjectBidPermissionsMutation, UpdateProjectBidPermissionsMutationVariables>;
+export const UpdateProjectBidComponentsDocument = gql`
+    mutation updateProjectBidComponents($data: [UpdateProjectBidComponentInput!]!) {
+  updateProjectBidComponents(data: $data)
+}
+    `;
+export type UpdateProjectBidComponentsMutationFn = Apollo.MutationFunction<UpdateProjectBidComponentsMutation, UpdateProjectBidComponentsMutationVariables>;
+
+/**
+ * __useUpdateProjectBidComponentsMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectBidComponentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectBidComponentsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectBidComponentsMutation, { data, loading, error }] = useUpdateProjectBidComponentsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateProjectBidComponentsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectBidComponentsMutation, UpdateProjectBidComponentsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectBidComponentsMutation, UpdateProjectBidComponentsMutationVariables>(UpdateProjectBidComponentsDocument, options);
+      }
+export type UpdateProjectBidComponentsMutationHookResult = ReturnType<typeof useUpdateProjectBidComponentsMutation>;
+export type UpdateProjectBidComponentsMutationResult = Apollo.MutationResult<UpdateProjectBidComponentsMutation>;
+export type UpdateProjectBidComponentsMutationOptions = Apollo.BaseMutationOptions<UpdateProjectBidComponentsMutation, UpdateProjectBidComponentsMutationVariables>;

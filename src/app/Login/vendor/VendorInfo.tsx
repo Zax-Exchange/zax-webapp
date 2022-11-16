@@ -66,7 +66,7 @@ const VendorInfo = ({
     if (isAllowed) {
       setMoqDetail({
         ...moqDetail,
-        [e.target.name]: parseInt(val, 10),
+        [e.target.name]: val,
       });
     }
   };
@@ -127,7 +127,6 @@ const VendorInfo = ({
         options={ALL_PRODUCT_NAMES}
         autoHighlight
         inputValue={product}
-        onInputChange={productOnChange}
         onChange={(e, v) => addProduct(v)}
         multiple
         renderInput={(params) => (
@@ -135,7 +134,6 @@ const VendorInfo = ({
             {...params}
             label="Manufacturing products"
             value={product}
-            onChange={productOnChange}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password",

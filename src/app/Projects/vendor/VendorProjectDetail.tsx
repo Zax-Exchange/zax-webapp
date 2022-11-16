@@ -22,18 +22,23 @@ import {
   TableHead,
   useTheme,
   Tooltip,
+  TextField,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import FullScreenLoading from "../../Utils/Loading";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { AuthContext } from "../../../context/AuthContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProjectChat from "../chat/ProjectChat";
 import React from "react";
 import {
+  CreateProjectBidComponentInput,
   ProjectBidComponent,
+  ProjectComponent,
   ProjectComponentSpec,
   QuantityPrice,
+  QuantityPriceInput,
+  UpdateProjectBidComponentInput,
 } from "../../../generated/graphql";
 import {
   useGetVendorDetailQuery,
@@ -44,6 +49,13 @@ import styled from "@emotion/styled";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { Edit } from "@mui/icons-material";
+import { useUpdateProjectBidComponentsMutation } from "../../gql/update/bid/bid.generated";
+import { BidInputPriceTextField } from "../../Search/vendor/SearchProjectDetail";
+import { isValidFloat, isValidInt } from "../../Utils/inputValidators";
+import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../constants/products";
+import { useCreateProjectBidComponentsMutation } from "../../gql/create/bid/bid.generated";
 
 type BidComponent = {
   quantityPrices: QuantityPrice[];
@@ -81,6 +93,9 @@ const ProjectListItem = styled(MuiListItem)(() => ({
   },
 }));
 
+type BidComponentsForUpdate = Record<string, UpdateProjectBidComponentInput>;
+type BidComponentsForCreate = Record<string, CreateProjectBidComponentInput>;
+
 // TODO: handle null projectDetail
 const VendorProjectDetail = () => {
   const intl = useIntl();
@@ -89,7 +104,16 @@ const VendorProjectDetail = () => {
   const location = useLocation();
   const { projectId } = useParams();
   const [currentTab, setCurrentTab] = useState(0);
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const navigate = useNavigate();
+  const [chatOpen, setChatOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const [bidComponentsForUpdate, setBidComponentsForUpdate] =
+    useState<BidComponentsForUpdate>({});
+
+  const [bidComponentsForCreate, setBidComponentsForCreate] =
+    useState<BidComponentsForCreate>({});
 
   const {
     data: getVendorProjectData,
@@ -118,7 +142,119 @@ const VendorProjectDetail = () => {
     },
   });
 
-  const [chatOpen, setChatOpen] = useState(false);
+  const [
+    updateProjectBidComponents,
+    {
+      loading: updateProjectBidComponentsLoading,
+      error: updateProjectBidComponentsError,
+    },
+  ] = useUpdateProjectBidComponentsMutation();
+
+  const [
+    createProjectBidComponents,
+    {
+      loading: createProjectBidComponentsLoading,
+      error: createProjectBidComponentsError,
+    },
+  ] = useCreateProjectBidComponentsMutation();
+  useEffect(() => {
+    if (isEditMode) {
+      initializeBidComponents();
+    }
+  }, [isEditMode]);
+
+  useEffect(() => {
+    if (getVendorDetailError || getVendorProjectError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getVendorDetailError, getVendorProjectError]);
+
+  useEffect(() => {
+    if (getVendorProjectData && getVendorProjectData.getVendorProject) {
+      initializeBidComponents();
+    }
+  }, [getVendorProjectData]);
+
+  const initializeBidComponents = () => {
+    if (getVendorProjectData && getVendorProjectData.getVendorProject) {
+      const projectComponents =
+        getVendorProjectData.getVendorProject.components;
+      const bidComponentsForUpdate =
+        getVendorProjectData.getVendorProject.bidInfo.components;
+      const bidId = getVendorProjectData.getVendorProject.bidInfo.id;
+
+      const compsForUpdate = {} as BidComponentsForUpdate;
+      const compsForCreate = {} as BidComponentsForCreate;
+
+      // we need to combine existing qp from bid component with project's order quantities
+      // because customer could update order quantities and we need to allow vendors to input
+      // new prices for new quantities
+
+      const getAllQp = (comp: ProjectBidComponent | null) => {
+        const qpInputArr = [] as QuantityPriceInput[];
+
+        // init the qp array with all possible quantities
+        getVendorProjectData.getVendorProject!.orderQuantities.forEach(
+          (quantity) => {
+            qpInputArr.push({
+              quantity,
+              price: "",
+            });
+          }
+        );
+
+        // hydrate price data that have existing quantities in bid
+        comp?.quantityPrices.forEach((bidQp) => {
+          const ind = qpInputArr.findIndex(
+            (qp) => qp.quantity === bidQp.quantity
+          );
+          if (ind >= 0) {
+            qpInputArr[ind].price = bidQp.price;
+          }
+        });
+
+        return qpInputArr;
+      };
+
+      bidComponentsForUpdate.forEach((comp) => {
+        compsForUpdate[comp.projectComponentId] = {
+          bidComponentId: comp.id,
+          quantityPrices: getAllQp(comp),
+          samplingFee: comp.samplingFee,
+          toolingFee: comp.toolingFee,
+        };
+      });
+
+      projectComponents.forEach((comp) => {
+        // only initialize comps for create if there's no existing bid
+        if (!compsForUpdate[comp.id]) {
+          compsForCreate[comp.id] = {
+            projectBidId: bidId,
+            projectComponentId: comp.id,
+            quantityPrices: getAllQp(null),
+            samplingFee: 0,
+          };
+
+          // check whether productName is moldedFiber before initializing the attribute
+          if (
+            comp.componentSpec.productName ===
+            PRODUCT_NAME_MOLDED_FIBER_TRAY.value
+          ) {
+            compsForCreate[comp.id].toolingFee = 0;
+          } else {
+            compsForCreate[comp.id].toolingFee = null;
+          }
+        }
+      });
+
+      setBidComponentsForUpdate(compsForUpdate);
+      setBidComponentsForCreate(compsForCreate);
+    }
+  };
 
   const componentTabOnChange = (
     event: React.SyntheticEvent,
@@ -130,6 +266,361 @@ const VendorProjectDetail = () => {
   const renderProjectAttributeTitle = (value: string) => {
     return <Typography variant="subtitle2">{value}</Typography>;
   };
+
+  const renderBidDetail = (bid: BidComponent | null) => {
+    return (
+      <>
+        <Box>
+          <Typography variant="subtitle1" textAlign="left">
+            {intl.formatMessage({
+              id: "app.vendor.projectDetail.bidDetail",
+            })}
+          </Typography>
+        </Box>
+        {!!bid && (
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="right" width="25%">
+                    {intl.formatMessage({
+                      id: "app.bid.attribute.quantity",
+                    })}
+                  </TableCell>
+                  <TableCell align="right" width="25%">
+                    {intl.formatMessage({
+                      id: "app.bid.attribute.price",
+                    })}
+                  </TableCell>
+                  <TableCell align="right" width="25%">
+                    {intl.formatMessage({
+                      id: "app.bid.attribute.samplingFee",
+                    })}
+                  </TableCell>
+
+                  {!!bid.toolingFee && (
+                    <TableCell align="right" width="25%">
+                      {intl.formatMessage({
+                        id: "app.bid.attribute.toolingFee",
+                      })}
+                    </TableCell>
+                  )}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {bid.quantityPrices.map((qp, i) => {
+                  const isLast = i === bid.quantityPrices.length - 1;
+
+                  return (
+                    <TableRow>
+                      <TableCell align="right">{qp.quantity}</TableCell>
+                      <TableCell align="right">
+                        {parseFloat(qp.price)}
+                      </TableCell>
+                      {isLast ? (
+                        <>
+                          <TableCell align="right">{bid.samplingFee}</TableCell>
+                          {!!bid.toolingFee && (
+                            <TableCell align="right">
+                              {bid.toolingFee}
+                            </TableCell>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <TableCell></TableCell>
+                          {!!bid.toolingFee && <TableCell></TableCell>}
+                        </>
+                      )}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+        {!bid && <Typography>no bid for this</Typography>}
+      </>
+    );
+  };
+
+  // renders an existing bid input table for a particular project component
+  const renderEditBid = (
+    component: ProjectComponent,
+    bidComponent: UpdateProjectBidComponentInput
+  ) => {
+    const qpDataOnChange = (val: string, qpInd: number) => {
+      let isAllowed = isValidFloat(val);
+      if (isAllowed) {
+        const qp = [...bidComponentsForUpdate[component.id].quantityPrices];
+        qp.splice(qpInd, 1, {
+          quantity: qp[qpInd].quantity,
+          price: val,
+        });
+        setBidComponentsForUpdate({
+          ...bidComponentsForUpdate,
+          [component.id]: {
+            ...bidComponentsForUpdate[component.id],
+            quantityPrices: qp,
+          },
+        });
+      }
+    };
+
+    const feeOnChange = (val: string, type: "samplingFee" | "toolingFee") => {
+      let isAllowed = isValidInt(val);
+
+      if (isAllowed) {
+        setBidComponentsForUpdate({
+          ...bidComponentsForUpdate,
+          [component.id]: {
+            ...bidComponentsForUpdate[component.id],
+            [type]: +val,
+          },
+        });
+      }
+    };
+
+    const renderBidInput = () => {
+      return (
+        <>
+          {bidComponent.quantityPrices.map((qp, i) => {
+            return (
+              <>
+                <TableRow>
+                  <TableCell>{qp.quantity}</TableCell>
+                  <TableCell>
+                    <TextField
+                      value={qp.price}
+                      onChange={(e) => qpDataOnChange(e.target.value, i)}
+                    />
+                  </TableCell>
+                </TableRow>
+              </>
+            );
+          })}
+          <TableRow>
+            <TableCell>
+              {intl.formatMessage({
+                id: "app.bid.attribute.samplingFee",
+              })}
+            </TableCell>
+            <TableCell>
+              <TextField
+                value={bidComponent.samplingFee ? bidComponent.samplingFee : ""}
+                onChange={(e) => feeOnChange(e.target.value, "samplingFee")}
+              />
+            </TableCell>
+          </TableRow>
+          {bidComponent.toolingFee !== null && (
+            <TableRow>
+              <TableCell>
+                {intl.formatMessage({
+                  id: "app.bid.attribute.toolingFee",
+                })}
+              </TableCell>
+              <TableCell>
+                <TextField
+                  value={bidComponent.toolingFee ? bidComponent.toolingFee : ""}
+                  onChange={(e) => feeOnChange(e.target.value, "toolingFee")}
+                />
+              </TableCell>
+            </TableRow>
+          )}
+        </>
+      );
+    };
+
+    return (
+      <>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  {intl.formatMessage({
+                    id: "app.bid.attribute.quantity",
+                  })}
+                </TableCell>
+                <TableCell>
+                  {intl.formatMessage({
+                    id: "app.bid.attribute.price",
+                  })}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{renderBidInput()}</TableBody>
+          </Table>
+        </TableContainer>
+      </>
+    );
+  };
+
+  // renders a new bid input for a component that the user hasn't bid on
+  const renderCreateBid = (
+    component: ProjectComponent,
+    bidComponent: CreateProjectBidComponentInput
+  ) => {
+    const qpDataOnChange = (val: string, qpInd: number) => {
+      let isAllowed = isValidFloat(val);
+      if (isAllowed) {
+        const qp = [...bidComponentsForCreate[component.id].quantityPrices];
+        qp.splice(qpInd, 1, {
+          quantity: qp[qpInd].quantity,
+          price: val,
+        });
+        setBidComponentsForCreate({
+          ...bidComponentsForCreate,
+          [component.id]: {
+            ...bidComponentsForCreate[component.id],
+            quantityPrices: qp,
+          },
+        });
+      }
+    };
+
+    const feeOnChange = (val: string, type: "samplingFee" | "toolingFee") => {
+      let isAllowed = isValidInt(val);
+
+      if (isAllowed) {
+        setBidComponentsForCreate({
+          ...bidComponentsForCreate,
+          [component.id]: {
+            ...bidComponentsForCreate[component.id],
+            [type]: +val,
+          },
+        });
+      }
+    };
+
+    const renderBidInput = () => {
+      return (
+        <>
+          {bidComponent.quantityPrices.map((qp, i) => {
+            return (
+              <>
+                <TableRow>
+                  <TableCell>{qp.quantity}</TableCell>
+                  <TableCell>
+                    <TextField
+                      value={qp.price}
+                      onChange={(e) => qpDataOnChange(e.target.value, i)}
+                    />
+                  </TableCell>
+                </TableRow>
+              </>
+            );
+          })}
+          <TableRow>
+            <TableCell>
+              {intl.formatMessage({
+                id: "app.bid.attribute.samplingFee",
+              })}
+            </TableCell>
+            <TableCell>
+              <TextField
+                value={bidComponent.samplingFee ? bidComponent.samplingFee : ""}
+                onChange={(e) => feeOnChange(e.target.value, "samplingFee")}
+              />
+            </TableCell>
+          </TableRow>
+          {bidComponent.toolingFee !== null && (
+            <TableRow>
+              <TableCell>
+                {intl.formatMessage({
+                  id: "app.bid.attribute.toolingFee",
+                })}
+              </TableCell>
+              <TableCell>
+                <TextField
+                  value={bidComponent.toolingFee ? bidComponent.toolingFee : ""}
+                  onChange={(e) => feeOnChange(e.target.value, "toolingFee")}
+                />
+              </TableCell>
+            </TableRow>
+          )}
+        </>
+      );
+    };
+    return (
+      <>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  {intl.formatMessage({
+                    id: "app.bid.attribute.quantity",
+                  })}
+                </TableCell>
+                <TableCell>
+                  {intl.formatMessage({
+                    id: "app.bid.attribute.price",
+                  })}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{renderBidInput()}</TableBody>
+          </Table>
+        </TableContainer>
+      </>
+    );
+  };
+
+  const updateBids = async () => {
+    const isCompleteBidComponent = (
+      comp: UpdateProjectBidComponentInput | CreateProjectBidComponentInput
+    ) => {
+      for (let qp of comp.quantityPrices) {
+        if (!qp.price) return false;
+      }
+      if (!comp.samplingFee) return false;
+      if (comp.toolingFee !== null && !comp.toolingFee) return false;
+
+      return true;
+    };
+    console.log(
+      Object.values(bidComponentsForCreate).filter((comp) =>
+        isCompleteBidComponent(comp)
+      )
+    );
+    try {
+      await Promise.all([
+        updateProjectBidComponents({
+          variables: {
+            data: Object.values(bidComponentsForUpdate).filter((comp) =>
+              isCompleteBidComponent(comp)
+            ),
+          },
+        }),
+        createProjectBidComponents({
+          variables: {
+            data: Object.values(bidComponentsForCreate).filter((comp) =>
+              isCompleteBidComponent(comp)
+            ),
+          },
+        }),
+      ]);
+      setIsEditMode(false);
+      getVendorProjectRefetch();
+      setSnackbar({
+        message: intl.formatMessage({
+          id: "app.vendor.projectDetail.updateSuccess",
+        }),
+        severity: "success",
+      });
+    } catch (error) {
+      setSnackbar({
+        message: intl.formatMessage({
+          id: "app.general.network.error",
+        }),
+        severity: "error",
+      });
+    } finally {
+      setSnackbarOpen(true);
+    }
+  };
+
   const renderProjectDetail = () => {
     if (!getVendorProjectData || !getVendorProjectData.getVendorProject)
       return null;
@@ -153,14 +644,6 @@ const VendorProjectDetail = () => {
       bids[comp.projectComponentId] = comp;
     });
 
-    if (getVendorProjectLoading || getVendorDetailLoading) {
-      return <FullScreenLoading />;
-    }
-
-    if (getVendorProjectError || getVendorDetailError) {
-      return <Typography>Error</Typography>;
-    }
-
     return (
       <>
         <ProjectChat
@@ -170,200 +653,165 @@ const VendorProjectDetail = () => {
           vendorName={getVendorDetailData!.getVendorDetail!.name}
           chatOpen={chatOpen}
         />
-        <Grid container spacing={2}>
-          <Grid item xs={5.5}>
-            <Paper
-              style={{
-                padding: "12px",
-                marginBottom: "8px",
-                position: "relative",
-              }}
-            >
-              <IconButton
-                onClick={() => setChatOpen(true)}
-                sx={{ position: "absolute", top: 6, right: 6, zIndex: 9 }}
-              >
-                <Tooltip title="Message Customer" arrow placement="top">
-                  <QuestionAnswerIcon
-                    sx={{ color: theme.palette.primary.light }}
-                  />
-                </Tooltip>
-              </IconButton>
-              <Stack>
-                <ProjectListItem>
-                  {renderProjectAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.vendor.project.attribute.customerName",
-                    })
-                  )}
 
-                  <Typography variant="caption" component="p">
-                    {customerName}
-                  </Typography>
-                </ProjectListItem>
-                <ProjectListItem>
-                  {renderProjectAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.name",
-                    })
-                  )}
-                  <Typography variant="caption" component="p">
-                    {projectName}
-                  </Typography>
-                </ProjectListItem>
-                <ProjectListItem>
-                  {renderProjectAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.deliveryDate",
-                    })
-                  )}
-                  <Typography variant="caption" component="p">
-                    {deliveryDate}
-                  </Typography>
-                </ProjectListItem>
-                <ProjectListItem>
-                  {renderProjectAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.deliveryAddress",
-                    })
-                  )}
-                  <Typography variant="caption" component="p">
-                    {deliveryAddress}
-                  </Typography>
-                </ProjectListItem>
-                <ProjectListItem>
-                  {renderProjectAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.orderQuantities",
-                    })
-                  )}
-                  <Typography variant="caption" component="p">
-                    {orderQuantities.join(", ")}
-                  </Typography>
-                </ProjectListItem>
-                <ProjectListItem>
-                  {renderProjectAttributeTitle(
-                    intl.formatMessage({
-                      id: "app.project.attribute.targetPrice",
-                    })
-                  )}
-                  <Typography variant="caption" component="p">
-                    {targetPrice}
-                  </Typography>
-                </ProjectListItem>
-              </Stack>
-            </Paper>
-          </Grid>
+        <Paper
+          style={{
+            padding: "12px",
+            marginBottom: "8px",
+            position: "relative",
+          }}
+        >
+          <IconButton
+            onClick={() => setChatOpen(true)}
+            sx={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}
+          >
+            <Tooltip title="Message Customer" arrow placement="top">
+              <QuestionAnswerIcon sx={{ color: theme.palette.primary.light }} />
+            </Tooltip>
+          </IconButton>
+          <Typography variant="subtitle1" textAlign="left">
+            {intl.formatMessage({
+              id: "app.vendor.projectDetail.title",
+            })}
+          </Typography>
+          <Stack>
+            <ProjectListItem>
+              {renderProjectAttributeTitle(
+                intl.formatMessage({
+                  id: "app.vendor.project.attribute.customerName",
+                })
+              )}
 
-          <Grid item xs={6.5}>
-            <Paper>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={currentTab}
-                  onChange={componentTabOnChange}
-                  variant="scrollable"
-                  scrollButtons="auto"
-                >
-                  {components.map((comp, i) => {
-                    if (!bids[comp.id]) return null;
-                    return <Tab label={comp.name} key={i} />;
+              <Typography variant="caption" component="p">
+                {customerName}
+              </Typography>
+            </ProjectListItem>
+            <ProjectListItem>
+              {renderProjectAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.name",
+                })
+              )}
+              <Typography variant="caption" component="p">
+                {projectName}
+              </Typography>
+            </ProjectListItem>
+            <ProjectListItem>
+              {renderProjectAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.deliveryDate",
+                })
+              )}
+              <Typography variant="caption" component="p">
+                {deliveryDate}
+              </Typography>
+            </ProjectListItem>
+            <ProjectListItem>
+              {renderProjectAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.deliveryAddress",
+                })
+              )}
+              <Typography variant="caption" component="p">
+                {deliveryAddress}
+              </Typography>
+            </ProjectListItem>
+            <ProjectListItem>
+              {renderProjectAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.orderQuantities",
+                })
+              )}
+              <Typography variant="caption" component="p">
+                {orderQuantities.join(", ")}
+              </Typography>
+            </ProjectListItem>
+            <ProjectListItem>
+              {renderProjectAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.targetPrice",
+                })
+              )}
+              <Typography variant="caption" component="p">
+                {targetPrice}
+              </Typography>
+            </ProjectListItem>
+          </Stack>
+        </Paper>
+
+        <Paper>
+          <Box p={1}>
+            {isEditMode ? (
+              <>
+                <Button onClick={() => setIsEditMode(false)} variant="outlined">
+                  {intl.formatMessage({
+                    id: "app.general.cancel",
                   })}
-                </Tabs>
-              </Box>
-
+                </Button>
+                <Button onClick={updateBids} variant="contained">
+                  {intl.formatMessage({
+                    id: "app.vendor.projectDetail.updateBid",
+                  })}
+                </Button>
+              </>
+            ) : (
+              <IconButton onClick={() => setIsEditMode(true)}>
+                <Edit />
+              </IconButton>
+            )}
+          </Box>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={currentTab}
+              onChange={componentTabOnChange}
+              variant="scrollable"
+              scrollButtons="auto"
+            >
               {components.map((comp, i) => {
-                if (!bids[comp.id]) return null;
-                return (
-                  <TabPanel value={currentTab} index={i}>
-                    <Box>
-                      <Box>
-                        <Typography variant="subtitle1" textAlign="left">
-                          {intl.formatMessage({
-                            id: "app.vendor.projectDetail.componentsDetail",
-                          })}
-                        </Typography>
-                      </Box>
-                      <ComponentSpecDetail spec={comp.componentSpec} />
-                    </Box>
-
-                    <Box mt={3}>
-                      <Box>
-                        <Typography variant="subtitle1" textAlign="left">
-                          {intl.formatMessage({
-                            id: "app.vendor.projectDetail.bidDetail",
-                          })}
-                        </Typography>
-                      </Box>
-                      <TableContainer>
-                        <Table size="small">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>
-                                {intl.formatMessage({
-                                  id: "app.bid.attribute.quantity",
-                                })}
-                              </TableCell>
-                              <TableCell>
-                                {intl.formatMessage({
-                                  id: "app.bid.attribute.price",
-                                })}
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {bids[comp.id].quantityPrices.map((qp, i) => {
-                              return (
-                                <TableRow>
-                                  <TableCell>{qp.quantity}</TableCell>
-                                  <TableCell>{parseFloat(qp.price)}</TableCell>
-                                </TableRow>
-                              );
-                            })}
-                            <TableRow>
-                              <TableCell>
-                                {intl.formatMessage({
-                                  id: "app.bid.attribute.samplingFee",
-                                })}
-                              </TableCell>
-                              <TableCell>{bids[comp.id].samplingFee}</TableCell>
-                            </TableRow>
-                            {!!bids[comp.id].toolingFee && (
-                              <TableRow>
-                                <TableCell>
-                                  {intl.formatMessage({
-                                    id: "app.bid.attribute.toolingFee",
-                                  })}
-                                </TableCell>
-                                <TableCell>
-                                  {bids[comp.id].toolingFee}
-                                </TableCell>
-                              </TableRow>
-                            )}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Box>
-                  </TabPanel>
-                );
+                return <Tab label={comp.name} key={i} />;
               })}
-            </Paper>
-          </Grid>
-        </Grid>
+            </Tabs>
+          </Box>
+
+          {components.map((comp, i) => {
+            return (
+              <TabPanel value={currentTab} index={i}>
+                <Box>
+                  <Box>
+                    <Typography variant="subtitle1" textAlign="left">
+                      {intl.formatMessage({
+                        id: "app.vendor.projectDetail.componentsDetail",
+                      })}
+                    </Typography>
+                  </Box>
+                  <ComponentSpecDetail spec={comp.componentSpec} />
+                </Box>
+
+                <Box mt={3}>
+                  {isEditMode
+                    ? !!bidComponentsForUpdate[comp.id]
+                      ? renderEditBid(comp, bidComponentsForUpdate[comp.id])
+                      : renderCreateBid(comp, bidComponentsForCreate[comp.id])
+                    : renderBidDetail(bids[comp.id])}
+                </Box>
+              </TabPanel>
+            );
+          })}
+        </Paper>
       </>
     );
   };
 
-  if (getVendorProjectLoading) {
+  const isLoading =
+    getVendorProjectLoading ||
+    getVendorDetailLoading ||
+    updateProjectBidComponentsLoading ||
+    createProjectBidComponentsLoading;
+
+  if (isLoading) {
     return <FullScreenLoading />;
   }
 
-  if (getVendorProjectError) {
-    return (
-      <Container>
-        <Button onClick={() => getVendorProjectRefetch()}>try again</Button>
-      </Container>
-    );
-  }
   return (
     <Container>
       <Box textAlign="left">

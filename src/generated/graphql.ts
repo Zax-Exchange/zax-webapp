@@ -19,8 +19,12 @@ export type Scalars = {
 export enum BidStatus {
   Accepted = 'ACCEPTED',
   Expired = 'EXPIRED',
+  InvoiceAccepted = 'INVOICE_ACCEPTED',
+  InvoiceIssued = 'INVOICE_ISSUED',
   Open = 'OPEN',
   Outdated = 'OUTDATED',
+  PoAccepted = 'PO_ACCEPTED',
+  PoIssued = 'PO_ISSUED',
   Rejected = 'REJECTED'
 }
 
@@ -104,6 +108,7 @@ export type CreateCustomerInput = {
 };
 
 export type CreateProjectBidComponentInput = {
+  projectBidId?: InputMaybe<Scalars['String']>;
   projectComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPriceInput>;
   samplingFee: Scalars['Int'];
@@ -412,6 +417,7 @@ export type Mutation = {
   createCustomerSubscription: StripeSubscription;
   createProject: Scalars['Boolean'];
   createProjectBid: Scalars['Boolean'];
+  createProjectBidComponents: Scalars['Boolean'];
   createProjectComponents: Scalars['Boolean'];
   createStripeCustomer: Scalars['String'];
   createUser: LoggedInUser;
@@ -431,6 +437,7 @@ export type Mutation = {
   updateCompanyStatus: Scalars['Boolean'];
   updateCustomerInfo: Scalars['Boolean'];
   updateProject: Scalars['Boolean'];
+  updateProjectBidComponents: Scalars['Boolean'];
   updateProjectBidPermissions: Scalars['Boolean'];
   updateProjectComponents: Scalars['Boolean'];
   updateProjectPermissions: Scalars['Boolean'];
@@ -466,6 +473,11 @@ export type MutationCreateProjectArgs = {
 
 export type MutationCreateProjectBidArgs = {
   data: CreateProjectBidInput;
+};
+
+
+export type MutationCreateProjectBidComponentsArgs = {
+  data: Array<CreateProjectBidComponentInput>;
 };
 
 
@@ -561,6 +573,11 @@ export type MutationUpdateCustomerInfoArgs = {
 
 export type MutationUpdateProjectArgs = {
   data: UpdateProjectInput;
+};
+
+
+export type MutationUpdateProjectBidComponentsArgs = {
+  data: Array<UpdateProjectBidComponentInput>;
 };
 
 
@@ -1097,13 +1114,14 @@ export type UpdateCustomerInfoInput = {
 };
 
 export type UpdateProjectBidComponentInput = {
-  id: Scalars['String'];
+  bidComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPriceInput>;
+  samplingFee: Scalars['Int'];
+  toolingFee?: InputMaybe<Scalars['Int']>;
 };
 
 export type UpdateProjectBidInput = {
   comments: Scalars['String'];
-  components: Array<UpdateProjectBidComponentInput>;
   id: Scalars['String'];
 };
 

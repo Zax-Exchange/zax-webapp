@@ -299,9 +299,12 @@
   "app.vendor.project.attribute.customerName": "Customer Name",
   "app.vendor.project.attribute.products": "Component Products",
   "app.vendor.project.attribute.customer": "Customer",
+  "app.vendor.projectDetail.title": "Project Detail",
   "app.vendor.projectDetail.componentsDetail": "Components Detail",
   "app.vendor.projectDetail.bidDetail": "Bid Detail",
-
+  "app.vendor.projectDetail.updateBid": "Update Bid",
+  "app.vendor.projectDetail.updateSuccess": "Update Success!",
+  
   "app.vendor.projects.yourBids": "Your Bids",
 
   "app.search.applyFilters": "Apply Filters",
