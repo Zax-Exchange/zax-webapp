@@ -6,6 +6,7 @@ import {
   DialogActions,
   Divider,
   IconButton,
+  Link,
   List,
   ListItem,
   Paper,
@@ -159,7 +160,32 @@ const VendorBidModal = ({
             id: "app.company.attribute.contactEmail",
           })}: ${vendorData.contactEmail}`}</Typography>
         </Box>
+        {!!bid.remarkFile && (
+          <Box mt={2}>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.vendor.search.AdditionRemarks",
+              })}
+            </Typography>
+            <Box display="flex">
+              <Link
+                href={bid.remarkFile.url}
+                target="_blank"
+                rel="noopener"
+                sx={{
+                  ":first-child": {
+                    ml: 0,
+                  },
+                  ml: 1,
+                }}
+              >
+                {bid.remarkFile.filename}
+              </Link>
+            </Box>
+          </Box>
+        )}
       </Box>
+
       <TableContainer component={Box}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           {bid.components.map((comp, bidCompIndex) => {

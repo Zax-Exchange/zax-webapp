@@ -411,7 +411,7 @@ const VendorSearchResults = () => {
               })}
             </Typography>
           )}
-          {searchProjectsData.searchCustomerProjects.length && (
+          {!!searchProjectsData.searchCustomerProjects.length && (
             <>
               <Box>
                 <Typography variant="caption">

@@ -6,6 +6,10 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ProjectBidComponentFragmentFragment = { __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> };
 
+export type ProjectBidFragmentFragment = { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null };
+
+export type PermissionedProjectBidFragmentFragment = { __typename?: 'PermissionedProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null };
+
 export type GetProjectBidUsersQueryVariables = Types.Exact<{
   data: Types.GetProjectBidUsersInput;
 }>;
@@ -33,6 +37,45 @@ export const ProjectBidComponentFragmentFragmentDoc = gql`
   }
 }
     `;
+export const ProjectBidFragmentFragmentDoc = gql`
+    fragment ProjectBidFragment on ProjectBid {
+  id
+  userId
+  companyId
+  projectId
+  components {
+    ...ProjectBidComponentFragment
+  }
+  status
+  remarkFile {
+    fileId
+    filename
+    url
+  }
+  createdAt
+  updatedAt
+}
+    ${ProjectBidComponentFragmentFragmentDoc}`;
+export const PermissionedProjectBidFragmentFragmentDoc = gql`
+    fragment PermissionedProjectBidFragment on PermissionedProjectBid {
+  id
+  userId
+  companyId
+  projectId
+  components {
+    ...ProjectBidComponentFragment
+  }
+  status
+  remarkFile {
+    fileId
+    filename
+    url
+  }
+  permission
+  createdAt
+  updatedAt
+}
+    ${ProjectBidComponentFragmentFragmentDoc}`;
 export const GetProjectBidUsersDocument = gql`
     query getProjectBidUsers($data: GetProjectBidUsersInput!) {
   getProjectBidUsers(data: $data) {
@@ -74,24 +117,10 @@ export type GetProjectBidUsersQueryResult = Apollo.QueryResult<GetProjectBidUser
 export const GetProjectBidDocument = gql`
     query getProjectBid($data: GetProjectBidInput!) {
   getProjectBid(data: $data) {
-    id
-    userId
-    companyId
-    projectId
-    components {
-      ...ProjectBidComponentFragment
-    }
-    status
-    remarkFile {
-      fileId
-      filename
-      url
-    }
-    createdAt
-    updatedAt
+    ...ProjectBidFragment
   }
 }
-    ${ProjectBidComponentFragmentFragmentDoc}`;
+    ${ProjectBidFragmentFragmentDoc}`;
 
 /**
  * __useGetProjectBidQuery__

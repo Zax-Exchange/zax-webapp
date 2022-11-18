@@ -196,6 +196,7 @@ const VendorProjectDetail = () => {
 
   useEffect(() => {
     if (getVendorProjectData && getVendorProjectData.getVendorProject) {
+      console.log(getVendorProjectData.getVendorProject);
       initializeBidComponents();
     }
   }, [getVendorProjectData]);

@@ -13,22 +13,10 @@ export const PROJECT_BID_COMPONENT_FRAGMENT = gql`
     }
   }`
 
-const GET_PROJECT_BID_USERS = gql`
-  query getProjectBidUsers($data: GetProjectBidUsersInput!) {
-    getProjectBidUsers(data: $data) {
-      userId
-      name
-      email
-      permission
-    } 
-  }
-`;
-
-const GET_PROJECT_BID = gql`
+export const PROJECT_BID_FRAGMENT = gql`
 ${PROJECT_BID_COMPONENT_FRAGMENT}
-  query getProjectBid($data: GetProjectBidInput!) {
-    getProjectBid(data: $data) {
-      id
+  fragment ProjectBidFragment on ProjectBid {
+    id
       userId
       companyId
       projectId
@@ -43,6 +31,46 @@ ${PROJECT_BID_COMPONENT_FRAGMENT}
       }
       createdAt
       updatedAt
+  }
+`
+
+export const PERMISSIONED_PROJECT_BID_FRAGMENT = gql`
+${PROJECT_BID_COMPONENT_FRAGMENT}
+  fragment PermissionedProjectBidFragment on PermissionedProjectBid {
+    id
+      userId
+      companyId
+      projectId
+      components {
+        ...ProjectBidComponentFragment
+      }
+      status
+      remarkFile {
+        fileId
+        filename
+        url
+      }
+      permission
+      createdAt
+      updatedAt
+  }
+`
+const GET_PROJECT_BID_USERS = gql`
+  query getProjectBidUsers($data: GetProjectBidUsersInput!) {
+    getProjectBidUsers(data: $data) {
+      userId
+      name
+      email
+      permission
+    } 
+  }
+`;
+
+const GET_PROJECT_BID = gql`
+${PROJECT_BID_FRAGMENT}
+  query getProjectBid($data: GetProjectBidInput!) {
+    getProjectBid(data: $data) {
+      ...ProjectBidFragment
     }
   }
 `

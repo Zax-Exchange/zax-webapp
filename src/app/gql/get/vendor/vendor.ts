@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { PROJECT_BID_COMPONENT_FRAGMENT } from "../bid/bid";
+import { PERMISSIONED_PROJECT_BID_FRAGMENT, PROJECT_BID_COMPONENT_FRAGMENT, PROJECT_BID_FRAGMENT } from "../bid/bid";
 import {PROJECT_COMPONENT_FRAGMENT} from "../project/project"
 import {PROJECT_FRAGMENT} from "../project/project"
 
@@ -27,7 +27,7 @@ const GET_VENDOR_DETAIL = gql`
 const GET_VENDOR_PROJECT = gql`
 ${PROJECT_FRAGMENT}
 ${PROJECT_COMPONENT_FRAGMENT}
-${PROJECT_BID_COMPONENT_FRAGMENT}
+${PERMISSIONED_PROJECT_BID_FRAGMENT}
   query getVendorProject($data: GetVendorProjectInput!) {
     getVendorProject(data: $data) {
       ...ProjectFragment
@@ -35,19 +35,7 @@ ${PROJECT_BID_COMPONENT_FRAGMENT}
        ...ProjectComponentFragment
       }
       bidInfo {
-        id
-        companyId
-        permission
-        components {
-          ...ProjectBidComponentFragment
-        }
-        remarkFile {
-          fileId
-          url 
-          filename
-        }
-        createdAt
-        updatedAt
+        ...PermissionedProjectBidFragment
       }
     }
   }
