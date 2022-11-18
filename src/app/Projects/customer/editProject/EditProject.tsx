@@ -41,7 +41,10 @@ import {
   useCreateProjectComponentsMutation,
   useCreateProjectMutation,
 } from "../../../gql/create/project/project.generated";
-import { useDeleteProjectDesignMutation } from "../../../gql/delete/project/project.generated";
+import {
+  useDeleteProjectComponentsMutation,
+  useDeleteProjectDesignMutation,
+} from "../../../gql/delete/project/project.generated";
 import {
   useGetCustomerProjectLazyQuery,
   useGetCustomerProjectQuery,
@@ -134,6 +137,11 @@ const EditProject = () => {
 
   const [deleteDesign, { error: deleteDesignError }] =
     useDeleteProjectDesignMutation();
+
+  const [
+    deleteComponents,
+    { loading: deleteComponentsLoading, error: deleteComponentsError },
+  ] = useDeleteProjectComponentsMutation();
 
   const [projectData, setProjectData] = useState<UpdateProjectInput>({
     projectId: projectId || "",
@@ -250,7 +258,7 @@ const EditProject = () => {
 
           return {
             componentId: comp.id,
-            designIds: comp.designs?.map((d) => d.designId),
+            designIds: comp.designs?.map((d) => d.fileId),
             name: comp.name,
             componentSpec: copySpec,
           } as UpdateProjectComponentInput;
@@ -336,7 +344,7 @@ const EditProject = () => {
           return deleteDesign({
             variables: {
               data: {
-                designId: design.designId,
+                fileId: design.fileId,
               },
             },
           });
@@ -370,7 +378,7 @@ const EditProject = () => {
     deleteDesign({
       variables: {
         data: {
-          designId: id,
+          fileId: id,
         },
       },
     });
@@ -486,7 +494,15 @@ const EditProject = () => {
 
       for (let comp of components) {
         if (isComponentOfUpdateType(comp)) {
-          compsForUpdate.push(comp as UpdateProjectComponentInput);
+          const existing =
+            getCustomerProjectData!.getCustomerProject.components.find(
+              (existingComp) =>
+                existingComp.id ===
+                (comp as UpdateProjectComponentInput).componentId
+            );
+          if (JSON.stringify(existing) !== JSON.stringify(comp)) {
+            compsForUpdate.push(comp as UpdateProjectComponentInput);
+          }
         } else {
           // we need to add projectId field because we're calling the standalone
           // createProjectComponent gql endpoint instead of bundling it along with createProject
@@ -513,6 +529,21 @@ const EditProject = () => {
         updateProjectComponents({
           variables: {
             data: compsForUpdate,
+          },
+        }),
+        deleteComponents({
+          variables: {
+            data: removedComponents
+              .filter((comp) => {
+                // only existing components are sent for deletion
+                if ((comp as UpdateProjectComponentInput).componentId) {
+                  return true;
+                }
+                return false;
+              })
+              .map((comp) => ({
+                componentId: (comp as UpdateProjectComponentInput).componentId,
+              })),
           },
         }),
       ]);

@@ -240,7 +240,7 @@ const AdvancedCreateProject = () => {
           return deleteDesign({
             variables: {
               data: {
-                designId: design.designId,
+                fileId: design.fileId,
               },
             },
           });
@@ -288,7 +288,7 @@ const AdvancedCreateProject = () => {
     deleteDesign({
       variables: {
         data: {
-          designId: id,
+          fileId: id,
         },
       },
     });
@@ -311,7 +311,7 @@ const AdvancedCreateProject = () => {
     if (componentsDesigns[i]) {
       Promise.all(
         componentsDesigns[i].map((d) => {
-          return deleteDesignFiles(d.designId);
+          return deleteDesignFiles(d.fileId);
         })
       );
     }
@@ -369,7 +369,7 @@ const AdvancedCreateProject = () => {
   // check if create project button should be disabled
   const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
-      if (key === "comments" || key === "designId") continue;
+      if (key === "comments") continue;
       if (key === "targetPrice") {
         if (!projectData.targetPrice) return true;
         continue;

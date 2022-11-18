@@ -173,6 +173,7 @@
   "app.bid.attribute.price": "Price",
   "app.bid.attribute.samplingFee": "Sampling Fee",  
   "app.bid.attribute.toolingFee": "Tooling Fee",  
+  "app.bid.attribute.bidRemark": "Additional Remarks",
   "app.bid.status.open": "Open",
   "app.bid.status.outdated": "Outdated",
   "app.bid.status.accepted": "Accepted",
@@ -296,6 +297,10 @@
   "app.vendor.search.componentsDetail": "Components Detail",
   "app.vendor.search.submitBids": "Submit Bids",
   "app.vendor.search.bidsDetail": "Bids Detail",
+  "app.vendor.search.viewYourBid": "View Your Bid",
+  "app.vendor.search.AdditionRemarks": "Additional Remark",
+  "app.vendor.uploadRemark.tooltip": "Upload Additional Remarks",
+  "app.vendor.uploadRemark.success": "File Uploaded Successfully!",
   "app.vendor.project.attribute.customerName": "Customer Name",
   "app.vendor.project.attribute.products": "Component Products",
   "app.vendor.project.attribute.customer": "Customer",
@@ -304,7 +309,7 @@
   "app.vendor.projectDetail.bidDetail": "Bid Detail",
   "app.vendor.projectDetail.updateBid": "Update Bid",
   "app.vendor.projectDetail.updateSuccess": "Update Success!",
-  
+
   "app.vendor.projects.yourBids": "Your Bids",
 
   "app.search.applyFilters": "Apply Filters",

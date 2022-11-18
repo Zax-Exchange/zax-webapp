@@ -16,6 +16,13 @@ export type Scalars = {
   Upload: any;
 };
 
+export type BidRemark = {
+  __typename?: 'BidRemark';
+  fileId: Scalars['String'];
+  filename: Scalars['String'];
+  url: Scalars['String'];
+};
+
 export enum BidStatus {
   Accepted = 'ACCEPTED',
   Expired = 'EXPIRED',
@@ -116,7 +123,7 @@ export type CreateProjectBidComponentInput = {
 };
 
 export type CreateProjectBidInput = {
-  comments: Scalars['String'];
+  bidRemarkFileId?: InputMaybe<Scalars['String']>;
   components: Array<CreateProjectBidComponentInput>;
   projectId: Scalars['String'];
   userId: Scalars['String'];
@@ -274,6 +281,10 @@ export type DeactivateUserInput = {
   email: Scalars['String'];
 };
 
+export type DeleteBidRemarkInput = {
+  fileId: Scalars['String'];
+};
+
 export type DeletePendingJoinRequestInput = {
   userEmail: Scalars['String'];
 };
@@ -283,8 +294,12 @@ export type DeleteProjectBidPermissionsInput = {
   userIds: Array<Scalars['String']>;
 };
 
+export type DeleteProjectComponentInput = {
+  componentId: Scalars['String'];
+};
+
 export type DeleteProjectDesignInput = {
-  designId: Scalars['String'];
+  fileId: Scalars['String'];
 };
 
 export type DeleteProjectInput = {
@@ -294,23 +309,6 @@ export type DeleteProjectInput = {
 export type DeleteProjectPermissionsInput = {
   projectId: Scalars['String'];
   userIds: Array<Scalars['String']>;
-};
-
-export type File = {
-  __typename?: 'File';
-  encoding: Scalars['String'];
-  filename: Scalars['String'];
-  mimetype: Scalars['String'];
-  uri: Scalars['String'];
-};
-
-export type FileUploadResponse = {
-  __typename?: 'FileUploadResponse';
-  Bucket: Scalars['String'];
-  ETag: Scalars['String'];
-  Key: Scalars['String'];
-  Location: Scalars['String'];
-  key: Scalars['String'];
 };
 
 export type GetAllPendingJoinRequestsInput = {
@@ -424,9 +422,11 @@ export type Mutation = {
   createVendor: Scalars['String'];
   createVendorSubscription: StripeSubscription;
   deactivateUser: Scalars['Boolean'];
+  deleteBidRemark: Scalars['Boolean'];
   deletePendingJoinRequest: Scalars['Boolean'];
   deleteProject: Scalars['Boolean'];
   deleteProjectBidPermissions: Scalars['Boolean'];
+  deleteProjectComponents: Scalars['Boolean'];
   deleteProjectDesign: Scalars['Boolean'];
   deleteProjectPermissions: Scalars['Boolean'];
   inviteUser: Scalars['Boolean'];
@@ -437,6 +437,7 @@ export type Mutation = {
   updateCompanyStatus: Scalars['Boolean'];
   updateCustomerInfo: Scalars['Boolean'];
   updateProject: Scalars['Boolean'];
+  updateProjectBid: Scalars['Boolean'];
   updateProjectBidComponents: Scalars['Boolean'];
   updateProjectBidPermissions: Scalars['Boolean'];
   updateProjectComponents: Scalars['Boolean'];
@@ -446,6 +447,7 @@ export type Mutation = {
   updateUserPassword: Scalars['Boolean'];
   updateUserPower: Scalars['Boolean'];
   updateVendorInfo: Scalars['Boolean'];
+  uploadBidRemark: BidRemark;
   uploadProjectDesign: ProjectDesign;
 };
 
@@ -511,6 +513,11 @@ export type MutationDeactivateUserArgs = {
 };
 
 
+export type MutationDeleteBidRemarkArgs = {
+  data: DeleteBidRemarkInput;
+};
+
+
 export type MutationDeletePendingJoinRequestArgs = {
   data: DeletePendingJoinRequestInput;
 };
@@ -523,6 +530,11 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteProjectBidPermissionsArgs = {
   data: DeleteProjectBidPermissionsInput;
+};
+
+
+export type MutationDeleteProjectComponentsArgs = {
+  data: Array<DeleteProjectComponentInput>;
 };
 
 
@@ -576,6 +588,11 @@ export type MutationUpdateProjectArgs = {
 };
 
 
+export type MutationUpdateProjectBidArgs = {
+  data: UpdateProjectBidInput;
+};
+
+
 export type MutationUpdateProjectBidComponentsArgs = {
   data: Array<UpdateProjectBidComponentInput>;
 };
@@ -621,6 +638,11 @@ export type MutationUpdateVendorInfoArgs = {
 };
 
 
+export type MutationUploadBidRemarkArgs = {
+  file: Scalars['Upload'];
+};
+
+
 export type MutationUploadProjectDesignArgs = {
   file: Scalars['Upload'];
 };
@@ -648,7 +670,28 @@ export type PermissionedCompany = {
   updatedAt: Scalars['Date'];
 };
 
-export type PermissionedProjectBid = {
+export type PermissionedProject = ProjectInterface & {
+  __typename?: 'PermissionedProject';
+  category: Scalars['String'];
+  comments: Scalars['String'];
+  companyId: Scalars['String'];
+  companyName: Scalars['String'];
+  components: Array<ProjectComponent>;
+  createdAt: Scalars['Date'];
+  deliveryAddress: Scalars['String'];
+  deliveryDate: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  orderQuantities: Array<Scalars['Int']>;
+  permission: ProjectPermission;
+  status: ProjectStatus;
+  targetPrice: Scalars['String'];
+  totalWeight: Scalars['String'];
+  updatedAt: Scalars['Date'];
+  userId: Scalars['String'];
+};
+
+export type PermissionedProjectBid = ProjectBidInterface & {
   __typename?: 'PermissionedProjectBid';
   companyId: Scalars['String'];
   components: Array<ProjectBidComponent>;
@@ -656,6 +699,7 @@ export type PermissionedProjectBid = {
   id: Scalars['String'];
   permission: ProjectPermission;
   projectId: Scalars['String'];
+  remarkFile?: Maybe<BidRemark>;
   status: BidStatus;
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
@@ -753,14 +797,14 @@ export type Project = ProjectInterface & {
   userId: Scalars['String'];
 };
 
-export type ProjectBid = {
+export type ProjectBid = ProjectBidInterface & {
   __typename?: 'ProjectBid';
-  comments: Scalars['String'];
   companyId: Scalars['String'];
   components: Array<ProjectBidComponent>;
   createdAt: Scalars['Date'];
   id: Scalars['String'];
   projectId: Scalars['String'];
+  remarkFile?: Maybe<BidRemark>;
   status: BidStatus;
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
@@ -774,6 +818,16 @@ export type ProjectBidComponent = {
   quantityPrices: Array<QuantityPrice>;
   samplingFee: Scalars['Int'];
   toolingFee?: Maybe<Scalars['Int']>;
+};
+
+export type ProjectBidInterface = {
+  companyId: Scalars['String'];
+  createdAt: Scalars['Date'];
+  id: Scalars['String'];
+  projectId: Scalars['String'];
+  status: BidStatus;
+  updatedAt: Scalars['Date'];
+  userId: Scalars['String'];
 };
 
 export type ProjectChangelog = {
@@ -843,7 +897,7 @@ export enum ProjectCreationMode {
 
 export type ProjectDesign = {
   __typename?: 'ProjectDesign';
-  designId: Scalars['String'];
+  fileId: Scalars['String'];
   filename: Scalars['String'];
   url: Scalars['String'];
 };
@@ -1121,8 +1175,9 @@ export type UpdateProjectBidComponentInput = {
 };
 
 export type UpdateProjectBidInput = {
-  comments: Scalars['String'];
-  id: Scalars['String'];
+  bidRemarkFileId?: InputMaybe<Scalars['String']>;
+  projectBidId: Scalars['String'];
+  projectId: Scalars['String'];
 };
 
 export type UpdateProjectBidPermissionsInput = {

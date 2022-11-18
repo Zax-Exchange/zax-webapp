@@ -32,6 +32,7 @@ import { useContext, useEffect, useState } from "react";
 import ProjectChat from "../chat/ProjectChat";
 import React from "react";
 import {
+  BidRemark,
   CreateProjectBidComponentInput,
   ProjectBidComponent,
   ProjectComponent,
@@ -51,11 +52,16 @@ import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { Edit } from "@mui/icons-material";
-import { useUpdateProjectBidComponentsMutation } from "../../gql/update/bid/bid.generated";
+import {
+  useUpdateProjectBidComponentsMutation,
+  useUpdateProjectBidMutation,
+} from "../../gql/update/bid/bid.generated";
 import { BidInputPriceTextField } from "../../Search/vendor/SearchProjectDetail";
 import { isValidFloat, isValidInt } from "../../Utils/inputValidators";
 import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../constants/products";
 import { useCreateProjectBidComponentsMutation } from "../../gql/create/bid/bid.generated";
+import UploadRemark from "./UploadRemark";
+import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 
 type BidComponent = {
   quantityPrices: QuantityPrice[];
@@ -109,6 +115,10 @@ const VendorProjectDetail = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
+  const [newRemarkFileId, setNewRemarkFileId] = useState<string | null>(null);
+
+  const [remarkFile, setRemarkFile] = useState<BidRemark | null>(null);
+
   const [bidComponentsForUpdate, setBidComponentsForUpdate] =
     useState<BidComponentsForUpdate>({});
 
@@ -143,6 +153,16 @@ const VendorProjectDetail = () => {
   });
 
   const [
+    deleteRemark,
+    { loading: deleteRemarkLoading, error: deleteRemarkError },
+  ] = useDeleteBidRemarkMutation();
+
+  const [
+    updateProjectBid,
+    { loading: updateProjectBidLoading, error: updateProjectBidError },
+  ] = useUpdateProjectBidMutation();
+
+  const [
     updateProjectBidComponents,
     {
       loading: updateProjectBidComponentsLoading,
@@ -157,6 +177,7 @@ const VendorProjectDetail = () => {
       error: createProjectBidComponentsError,
     },
   ] = useCreateProjectBidComponentsMutation();
+
   useEffect(() => {
     if (isEditMode) {
       initializeBidComponents();
@@ -186,6 +207,13 @@ const VendorProjectDetail = () => {
       const bidComponentsForUpdate =
         getVendorProjectData.getVendorProject.bidInfo.components;
       const bidId = getVendorProjectData.getVendorProject.bidInfo.id;
+
+      const bidRemarkFile =
+        getVendorProjectData.getVendorProject.bidInfo.remarkFile;
+
+      if (bidRemarkFile) {
+        setRemarkFile(bidRemarkFile);
+      }
 
       const compsForUpdate = {} as BidComponentsForUpdate;
       const compsForCreate = {} as BidComponentsForCreate;
@@ -256,6 +284,21 @@ const VendorProjectDetail = () => {
     }
   };
 
+  const setRemarkId = (fileId: string) => {
+    setNewRemarkFileId(fileId);
+  };
+
+  const deleteExistingRemark = () => {
+    if (remarkFile) {
+      deleteRemark({
+        variables: {
+          data: {
+            fileId: remarkFile.fileId,
+          },
+        },
+      });
+    }
+  };
   const componentTabOnChange = (
     event: React.SyntheticEvent,
     newTab: number
@@ -579,13 +622,18 @@ const VendorProjectDetail = () => {
 
       return true;
     };
-    console.log(
-      Object.values(bidComponentsForCreate).filter((comp) =>
-        isCompleteBidComponent(comp)
-      )
-    );
+
     try {
       await Promise.all([
+        updateProjectBid({
+          variables: {
+            data: {
+              projectBidId: getVendorProjectData!.getVendorProject!.bidInfo.id,
+              projectId: getVendorProjectData!.getVendorProject!.id,
+              bidRemarkFileId: remarkFile?.fileId,
+            },
+          },
+        }),
         updateProjectBidComponents({
           variables: {
             data: Object.values(bidComponentsForUpdate).filter((comp) =>
@@ -740,15 +788,19 @@ const VendorProjectDetail = () => {
         </Paper>
 
         <Paper>
-          <Box p={1}>
+          <Box p={1} display="flex" justifyContent="flex-end">
             {isEditMode ? (
               <>
-                <Button onClick={() => setIsEditMode(false)} variant="outlined">
+                <Button
+                  onClick={() => setIsEditMode(false)}
+                  variant="outlined"
+                  sx={{ mr: 2 }}
+                >
                   {intl.formatMessage({
                     id: "app.general.cancel",
                   })}
                 </Button>
-                <Button onClick={updateBids} variant="contained">
+                <Button onClick={updateBids} variant="contained" sx={{ mr: 2 }}>
                   {intl.formatMessage({
                     id: "app.vendor.projectDetail.updateBid",
                   })}
@@ -784,7 +836,10 @@ const VendorProjectDetail = () => {
                       })}
                     </Typography>
                   </Box>
-                  <ComponentSpecDetail spec={comp.componentSpec} />
+                  <ComponentSpecDetail
+                    spec={comp.componentSpec}
+                    designs={comp.designs}
+                  />
                 </Box>
 
                 <Box mt={3}>
@@ -798,6 +853,41 @@ const VendorProjectDetail = () => {
             );
           })}
         </Paper>
+
+        <Box>
+          <Box display="flex" alignItems="center" mt={2}>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.vendor.search.AdditionRemarks",
+              })}
+            </Typography>
+            {isEditMode && (
+              <UploadRemark
+                setRemarkFile={setRemarkFile}
+                setRemarkId={setRemarkId}
+                deleteExistingRemark={deleteExistingRemark}
+              />
+            )}
+          </Box>
+
+          {!!remarkFile && (
+            <Box display="flex">
+              <Link
+                href={remarkFile.url}
+                target="_blank"
+                rel="noopener"
+                sx={{
+                  ":first-child": {
+                    ml: 0,
+                  },
+                  ml: 1,
+                }}
+              >
+                {remarkFile.filename}
+              </Link>
+            </Box>
+          )}
+        </Box>
       </>
     );
   };

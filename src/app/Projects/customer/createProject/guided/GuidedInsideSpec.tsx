@@ -260,7 +260,7 @@ const GuidedInsideSpec = ({
       await deleteProjectDesign({
         variables: {
           data: {
-            designId: id,
+            fileId: id,
           },
         },
       });
@@ -304,7 +304,7 @@ const GuidedInsideSpec = ({
   const saveComponentData = () => {
     const compData = {
       name: "Inner Tray",
-      designIds: componentDesigns?.map((d) => d.designId),
+      designIds: componentDesigns?.map((d) => d.fileId),
       componentSpec: {
         ...componentSpec,
         ...getAdditionalDefatulSpec(componentSpec.productName),
@@ -334,7 +334,7 @@ const GuidedInsideSpec = ({
           return deleteProjectDesign({
             variables: {
               data: {
-                designId: design.designId,
+                fileId: design.fileId,
               },
             },
           });
@@ -490,7 +490,7 @@ const GuidedInsideSpec = ({
                     <Link href={file.url} target="_blank" rel="noopener">
                       {file.filename}
                     </Link>
-                    <IconButton onClick={() => deleteDesign(file.designId, i)}>
+                    <IconButton onClick={() => deleteDesign(file.fileId, i)}>
                       <Cancel fontSize="small" />
                     </IconButton>
                   </Box>

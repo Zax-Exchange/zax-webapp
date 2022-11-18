@@ -5,3 +5,9 @@ const DELETE_PROJECT_BID_PERMISSION = gql`
     deleteProjectBidPermissions(data: $data)
   }
 `;
+
+const DELETE_BID_REMARK = gql`
+  mutation deleteBidRemark($data: DeleteBidRemarkInput!) {
+    deleteBidRemark(data: $data)
+  }
+`

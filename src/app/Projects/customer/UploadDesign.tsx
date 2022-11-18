@@ -11,10 +11,7 @@ import {
 import { gql, useMutation } from "@apollo/client";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import {
-  UploadProjectDesignMutation,
-  useUploadProjectDesignMutation,
-} from "../../gql/create/project/project.generated";
+
 import {
   CreateProjectComponentInput,
   CreateProjectInput,
@@ -24,18 +21,9 @@ import { useIntl } from "react-intl";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 import { GuidedCreateSetComponentData } from "./createProject/guided/GuidedCreateProject";
 import FullScreenLoading from "../../Utils/Loading";
+import { useUploadProjectDesignMutation } from "../../gql/utils/project/project.generated";
+import { Target } from "../../../type/common";
 
-export type File = {
-  uri: string;
-  filename: string;
-  mimetype: string;
-  encoding: string;
-  type: string;
-};
-type Target = {
-  files: FileList | null;
-  value: any;
-};
 export default function UploadDesign({
   setComponentData,
   parentSetDesigns,
@@ -91,10 +79,7 @@ export default function UploadDesign({
           }
           return {
             ...prev,
-            designIds: [
-              ...prevDesigns,
-              data.data!.uploadProjectDesign!.designId,
-            ],
+            designIds: [...prevDesigns, data.data!.uploadProjectDesign!.fileId],
           } as CreateProjectComponentInput;
         });
 

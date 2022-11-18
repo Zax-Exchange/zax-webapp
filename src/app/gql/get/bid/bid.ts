@@ -32,11 +32,15 @@ ${PROJECT_BID_COMPONENT_FRAGMENT}
       userId
       companyId
       projectId
-      comments
       components {
         ...ProjectBidComponentFragment
       }
       status
+      remarkFile {
+        fileId
+        filename
+        url
+      }
       createdAt
       updatedAt
     }

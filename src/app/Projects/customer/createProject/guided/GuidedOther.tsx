@@ -151,7 +151,7 @@ const GuidedOther = ({
           return deleteProjectDesign({
             variables: {
               data: {
-                designId: design.designId,
+                fileId: design.fileId,
               },
             },
           });
@@ -185,7 +185,7 @@ const GuidedOther = ({
       await deleteProjectDesign({
         variables: {
           data: {
-            designId: compDesign.designId,
+            fileId: compDesign.fileId,
           },
         },
       });
@@ -196,10 +196,10 @@ const GuidedOther = ({
 
         // find to-be-deleted design index in component.designIds array
         const designInd = curComp.designIds!.findIndex(
-          (id) => id === compDesign.designId
+          (id) => id === compDesign.fileId
         )!;
 
-        // remove the designId
+        // remove the fileId
         curComp.designIds?.splice(designInd, 1);
 
         const allAdditionalComps = [...prev];

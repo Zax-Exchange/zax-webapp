@@ -181,7 +181,7 @@ const CreateOrUpdateComponentModal = ({
     // construct CreateProjectComponentInput
     const comp: CreateProjectComponentInput = {
       ...componentData,
-      designIds: componentDesigns?.map((d) => d.designId),
+      designIds: componentDesigns?.map((d) => d.fileId),
       componentSpec: {
         ...componentSpec,
       },
@@ -206,7 +206,7 @@ const CreateOrUpdateComponentModal = ({
     // comp here could be of both types Create/Update Input type
     const comp = {
       ...componentData,
-      designIds: componentDesigns?.map((d) => d.designId),
+      designIds: componentDesigns?.map((d) => d.fileId),
       componentSpec,
     };
 
@@ -224,7 +224,7 @@ const CreateOrUpdateComponentModal = ({
           return deleteDesignMutation({
             variables: {
               data: {
-                designId: file.designId,
+                fileId: file.fileId,
               },
             },
           });
@@ -357,7 +357,7 @@ const CreateOrUpdateComponentModal = ({
         await deleteDesignMutation({
           variables: {
             data: {
-              designId: id,
+              fileId: id,
             },
           },
         });
@@ -386,7 +386,7 @@ const CreateOrUpdateComponentModal = ({
                 <Link href={file.url} target="_blank" rel="noopener">
                   {file.filename}
                 </Link>
-                <IconButton onClick={() => deleteDesign(file.designId, i)}>
+                <IconButton onClick={() => deleteDesign(file.fileId, i)}>
                   <Cancel fontSize="small" />
                 </IconButton>
               </ListItem>

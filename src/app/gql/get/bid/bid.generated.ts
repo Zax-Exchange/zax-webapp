@@ -18,7 +18,7 @@ export type GetProjectBidQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectBidQuery = { __typename?: 'Query', getProjectBid?: { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, comments: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }> } | null };
+export type GetProjectBidQuery = { __typename?: 'Query', getProjectBid?: { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null } | null };
 
 export const ProjectBidComponentFragmentFragmentDoc = gql`
     fragment ProjectBidComponentFragment on ProjectBidComponent {
@@ -78,11 +78,15 @@ export const GetProjectBidDocument = gql`
     userId
     companyId
     projectId
-    comments
     components {
       ...ProjectBidComponentFragment
     }
     status
+    remarkFile {
+      fileId
+      filename
+      url
+    }
     createdAt
     updatedAt
   }

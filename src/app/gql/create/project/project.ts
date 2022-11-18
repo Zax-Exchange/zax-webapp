@@ -17,13 +17,3 @@ const CREATE_PROJECT_COMPONENTS = gql`
     createProjectComponents(data: $data)
   }
 `
-
-const UPLOAD_PROJECT_DESIGN = gql`
-  mutation uploadProjectDesign($file: Upload!) {
-    uploadProjectDesign(file: $file) {
-      filename
-      designId
-      url
-    }
-  }
-`;

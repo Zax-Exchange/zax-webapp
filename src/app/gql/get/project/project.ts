@@ -6,7 +6,7 @@ export const PROJECT_COMPONENT_FRAGMENT = gql`
         projectId
         name
         designs {
-          designId
+          fileId
           filename
           url
         }

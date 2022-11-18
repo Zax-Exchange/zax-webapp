@@ -167,7 +167,7 @@ const CreateProjectComponentModal = ({
   //     // so when cleaning up we don't delete existing designs
   //     const temporaryDesigns = componentDesigns.filter((design) => {
   //       return !!existingDesigns.find(
-  //         (existingDesign) => existingDesign.designId === design.designId
+  //         (existingDesign) => existingDesign.fileId === design.fileId
   //       );
   //     });
 
@@ -179,7 +179,7 @@ const CreateProjectComponentModal = ({
     // construct CreateProjectComponentInput
     const comp: CreateProjectComponentInput = {
       ...componentData,
-      designIds: componentDesigns?.map((d) => d.designId),
+      designIds: componentDesigns?.map((d) => d.fileId),
       componentSpec: {
         ...componentSpec,
       },
@@ -209,7 +209,7 @@ const CreateProjectComponentModal = ({
     // construct CreateProjectComponentInput
     const comp: CreateProjectComponentInput = {
       ...componentData,
-      designIds: componentDesigns?.map((d) => d.designId),
+      designIds: componentDesigns?.map((d) => d.fileId),
       componentSpec: {
         ...componentSpec,
       },
@@ -401,7 +401,7 @@ const CreateProjectComponentModal = ({
           return deleteDesignMutation({
             variables: {
               data: {
-                designId: id,
+                fileId: id,
               },
             },
           });
@@ -415,7 +415,7 @@ const CreateProjectComponentModal = ({
       await deleteDesignMutation({
         variables: {
           data: {
-            designId: id,
+            fileId: id,
           },
         },
       });
@@ -453,7 +453,7 @@ const CreateProjectComponentModal = ({
                 <Link href={file.url} target="_blank" rel="noopener">
                   {file.filename}
                 </Link>
-                <IconButton onClick={() => deleteDesign(file.designId, i)}>
+                <IconButton onClick={() => deleteDesign(file.fileId, i)}>
                   <Cancel fontSize="small" />
                 </IconButton>
               </ListItem>

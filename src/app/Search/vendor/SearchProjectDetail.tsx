@@ -17,6 +17,9 @@ import {
   Tab,
   TableHead,
   InputAdornment,
+  Tooltip,
+  IconButton,
+  Link,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
@@ -24,6 +27,7 @@ import CustomSnackbar from "../../Utils/CustomSnackbar";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import {
+  BidRemark,
   CreateProjectBidComponentInput,
   CreateProjectBidInput,
   Project,
@@ -44,6 +48,9 @@ import { useGetProjectBidLazyQuery } from "../../gql/get/bid/bid.generated";
 import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
 import MuiTextField, { TextFieldProps } from "@mui/material/TextField";
 import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../constants/products";
+import AssistantDirectionRoundedIcon from "@mui/icons-material/AssistantDirectionRounded";
+import UploadRemark from "../../Projects/vendor/UploadRemark";
+import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -131,9 +138,11 @@ const SearchProjectDetail = () => {
   const [bidInput, setBidInput] = useState<CreateProjectBidInput>({
     userId: user!.id,
     projectId: projectId ? projectId : "",
-    comments: "",
     components: [],
+    bidRemarkFileId: null,
   });
+
+  const [remarkFile, setRemarkFile] = useState<BidRemark | null>(null);
 
   const [
     getProjectBid,
@@ -148,6 +157,11 @@ const SearchProjectDetail = () => {
     createProjectBid,
     { loading: createProjectBidLoading, error: createProjectBidError },
   ] = useCreateProjectBidMutation();
+
+  const [
+    deleteRemark,
+    { loading: deleteRemarkLoading, error: deleteRemarkError },
+  ] = useDeleteBidRemarkMutation();
 
   // initialize componentsQpData with componentIds
   useEffect(() => {
@@ -194,14 +208,36 @@ const SearchProjectDetail = () => {
   }, [getProjectBidData]);
 
   useEffect(() => {
-    if (getProjectDetailError || getProjectBidError) {
+    if (getProjectDetailError || getProjectBidError || deleteRemarkError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [getProjectDetailError, getProjectBidError]);
+  }, [getProjectDetailError, getProjectBidError, deleteRemarkError]);
+
+  const navigateToExistingBid = (projectId: string) => {
+    const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
+    dest[1] = projectId;
+    navigate(dest.join(""));
+  };
+
+  const setRemarkId = (fileId: string) => {
+    setBidInput((prev) => ({ ...prev, bidRemarkFileId: fileId }));
+  };
+
+  const deleteExistingRemark = () => {
+    if (remarkFile) {
+      deleteRemark({
+        variables: {
+          data: {
+            fileId: remarkFile.fileId,
+          },
+        },
+      });
+    }
+  };
 
   const qpDataOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -466,7 +502,7 @@ const SearchProjectDetail = () => {
             variant="scrollable"
             scrollButtons="auto"
           >
-            {existingBid?.components.map((comp, i) => {
+            {existingBid!.components.map((comp, i) => {
               return (
                 <Tab label={compIdToNameMap[comp.projectComponentId]} key={i} />
               );
@@ -474,7 +510,7 @@ const SearchProjectDetail = () => {
           </Tabs>
         </Box>
 
-        {existingBid?.components.map((comp, componentIndex) => {
+        {existingBid!.components.map((comp, componentIndex) => {
           return (
             <TabPanel value={currentBidTab} index={componentIndex}>
               <TableContainer>
@@ -537,6 +573,28 @@ const SearchProjectDetail = () => {
             </TabPanel>
           );
         })}
+        {!!existingBid!.remarkFile && (
+          <Box>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.vendor.search.AdditionRemarks",
+              })}
+            </Typography>
+            <Link
+              href={existingBid!.remarkFile.url}
+              target="_blank"
+              rel="noopener"
+              sx={{
+                ":first-child": {
+                  ml: 0,
+                },
+                ml: 1,
+              }}
+            >
+              {existingBid!.remarkFile.filename}
+            </Link>
+          </Box>
+        )}
       </>
     );
   };
@@ -680,12 +738,38 @@ const SearchProjectDetail = () => {
             <Grid item xs={5}>
               <Container>
                 <Box display="flex" justifyContent="space-between" mb={1.5}>
-                  <Box>
-                    <Typography variant="subtitle1" textAlign="left">
-                      {intl.formatMessage({
-                        id: "app.vendor.search.bidsDetail",
-                      })}
-                    </Typography>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    width="100%"
+                  >
+                    <Box>
+                      <Typography variant="subtitle1" textAlign="left">
+                        {intl.formatMessage({
+                          id: "app.vendor.search.bidsDetail",
+                        })}
+                      </Typography>
+                    </Box>
+                    {!!existingBid && (
+                      <Box>
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "app.vendor.search.viewYourBid",
+                          })}
+                          arrow
+                          placement="top"
+                        >
+                          <IconButton
+                            onClick={() =>
+                              navigateToExistingBid(existingBid.projectId)
+                            }
+                          >
+                            <AssistantDirectionRoundedIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    )}
                   </Box>
                   {!existingBid && (
                     <Box>
@@ -706,6 +790,38 @@ const SearchProjectDetail = () => {
                     ? renderExistingBidDetail(components)
                     : renderBidInputSection(components)}
                 </Paper>
+                <Box>
+                  <Box display="flex" alignItems="center" mt={2}>
+                    <Typography variant="subtitle2">
+                      {intl.formatMessage({
+                        id: "app.vendor.search.AdditionRemarks",
+                      })}
+                    </Typography>
+                    <UploadRemark
+                      setRemarkFile={setRemarkFile}
+                      setRemarkId={setRemarkId}
+                      deleteExistingRemark={deleteExistingRemark}
+                    />
+                  </Box>
+
+                  {remarkFile && (
+                    <Box display="flex">
+                      <Link
+                        href={remarkFile.url}
+                        target="_blank"
+                        rel="noopener"
+                        sx={{
+                          ":first-child": {
+                            ml: 0,
+                          },
+                          ml: 1,
+                        }}
+                      >
+                        {remarkFile.filename}
+                      </Link>
+                    </Box>
+                  )}
+                </Box>
               </Container>
             </Grid>
           )}

@@ -41,6 +41,11 @@ ${PROJECT_BID_COMPONENT_FRAGMENT}
         components {
           ...ProjectBidComponentFragment
         }
+        remarkFile {
+          fileId
+          url 
+          filename
+        }
         createdAt
         updatedAt
       }

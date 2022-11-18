@@ -98,7 +98,7 @@ const GuidedOtherSubSection = ({
       await deleteProjectDesign({
         variables: {
           data: {
-            designId: id,
+            fileId: id,
           },
         },
       });
@@ -496,7 +496,7 @@ const GuidedOtherSubSection = ({
                     <Link href={file.url} target="_blank" rel="noopener">
                       {file.filename}
                     </Link>
-                    <IconButton onClick={() => deleteDesign(file.designId, i)}>
+                    <IconButton onClick={() => deleteDesign(file.fileId, i)}>
                       <Cancel fontSize="small" />
                     </IconButton>
                   </Box>

@@ -71,7 +71,7 @@ const GuidedCreateBoxStyleSelection = ({
                       component="img"
                       height="250"
                       width="280"
-                      src={`${cdn}/${boxStyle.code}.png`}
+                      src={`${cdn}/box-styles/${boxStyle.code}.png`}
                     />
                     <Typography variant="subtitle2" textAlign="center">
                       {boxStyle.value}
