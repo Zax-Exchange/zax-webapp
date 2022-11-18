@@ -44,8 +44,6 @@ import {
   ProjectComponent,
   ProjectComponentSpec,
   ProjectPermission,
-  UpdateProjectComponentInput,
-  UpdateProjectInput,
 } from "../../../generated/graphql";
 import React from "react";
 import {

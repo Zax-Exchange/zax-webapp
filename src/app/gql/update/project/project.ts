@@ -11,9 +11,3 @@ const UPDATE_PROJECT = gql`
     updateProject(data: $data)
   }
 `
-
-const UPDATE_PROJECT_COMPONENTS = gql`
-  mutation updateProjectComponents($data: [UpdateProjectComponentInput!]!) {
-    updateProjectComponents(data: $data)
-  }
-`

@@ -30,7 +30,8 @@ import {
   ProjectCreationMode,
   ProjectDesign,
   ProjectPermission,
-  UpdateProjectComponentInput,
+  UpdateProjectComponentData,
+  UpdateProjectData,
   UpdateProjectInput,
 } from "../../../../generated/graphql";
 import {
@@ -41,18 +42,12 @@ import {
   useCreateProjectComponentsMutation,
   useCreateProjectMutation,
 } from "../../../gql/create/project/project.generated";
-import {
-  useDeleteProjectComponentsMutation,
-  useDeleteProjectDesignMutation,
-} from "../../../gql/delete/project/project.generated";
+import { useDeleteProjectDesignMutation } from "../../../gql/delete/project/project.generated";
 import {
   useGetCustomerProjectLazyQuery,
   useGetCustomerProjectQuery,
 } from "../../../gql/get/customer/customer.generated";
-import {
-  useUpdateProjectComponentsMutation,
-  useUpdateProjectMutation,
-} from "../../../gql/update/project/project.generated";
+import { useUpdateProjectMutation } from "../../../gql/update/project/project.generated";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 import {
   isValidAlphanumeric,
@@ -69,7 +64,7 @@ import { useGetProjectDetailQuery } from "../../../gql/get/project/project.gener
 import CreateOrUpdateComponentModal from "./modals/CreateOrUpdateComponentModal";
 import PermissionDenied from "../../../Utils/PermissionDenied";
 
-type EditProjectErrors = Record<keyof UpdateProjectInput, boolean>;
+type EditProjectErrors = Record<keyof UpdateProjectData, boolean>;
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -105,14 +100,6 @@ const EditProject = () => {
     useUpdateProjectMutation();
 
   const [
-    updateProjectComponents,
-    {
-      loading: updateProjectComponentLoading,
-      error: updateProjectComponentError,
-    },
-  ] = useUpdateProjectComponentsMutation();
-
-  const [
     createProjectComponentsMutation,
     {
       loading: createProjectComponentsLoading,
@@ -138,25 +125,25 @@ const EditProject = () => {
   const [deleteDesign, { error: deleteDesignError }] =
     useDeleteProjectDesignMutation();
 
-  const [
-    deleteComponents,
-    { loading: deleteComponentsLoading, error: deleteComponentsError },
-  ] = useDeleteProjectComponentsMutation();
-
-  const [projectData, setProjectData] = useState<UpdateProjectInput>({
-    projectId: projectId || "",
-    name: "",
-    deliveryAddress: "",
-    category: "",
-    totalWeight: "",
-    deliveryDate: new Date().toISOString().split("T")[0],
-    targetPrice: "",
-    orderQuantities: [],
-    comments: "",
-  });
+  const [updateProjectInput, setUpdateProjectInput] =
+    useState<UpdateProjectInput>({
+      projectData: {
+        projectId: projectId || "",
+        name: "",
+        deliveryAddress: "",
+        category: "",
+        totalWeight: "",
+        deliveryDate: new Date().toISOString().split("T")[0],
+        targetPrice: "",
+        orderQuantities: [],
+        comments: "",
+      },
+      componentIdsToDelete: [],
+      componentsData: [],
+    });
 
   const [components, setComponents] = useState<
-    (CreateProjectComponentInput | UpdateProjectComponentInput)[]
+    (CreateProjectComponentInput | UpdateProjectComponentData)[]
   >([]);
 
   // Flags to indicate which project detail field input is in error.
@@ -193,7 +180,7 @@ const EditProject = () => {
 
   // store all removed components so users can restore them if they choose to
   const [removedComponents, setRemovedComponents] = useState<
-    (CreateProjectComponentInput | UpdateProjectComponentInput)[]
+    (CreateProjectComponentInput | UpdateProjectComponentData)[]
   >([]);
 
   // designs associated with removed components, if component does not have designs, it'll be an empty array
@@ -225,6 +212,7 @@ const EditProject = () => {
       }
 
       const {
+        id: projectId,
         name,
         deliveryAddress,
         category,
@@ -235,7 +223,7 @@ const EditProject = () => {
         components,
       } = getCustomerProjectData.getCustomerProject;
 
-      const sanitizedComponents: UpdateProjectComponentInput[] = components.map(
+      const sanitizedComponents: UpdateProjectComponentData[] = components.map(
         (comp) => {
           const copySpec: any = JSON.parse(JSON.stringify(comp.componentSpec));
           delete copySpec.__typename;
@@ -261,19 +249,22 @@ const EditProject = () => {
             designIds: comp.designs?.map((d) => d.fileId),
             name: comp.name,
             componentSpec: copySpec,
-          } as UpdateProjectComponentInput;
+          } as UpdateProjectComponentData;
         }
       );
 
-      setProjectData((prev) => ({
+      setUpdateProjectInput((prev) => ({
         ...prev,
-        name,
-        deliveryAddress,
-        category,
-        totalWeight,
-        deliveryDate,
-        targetPrice,
-        orderQuantities,
+        projectData: {
+          projectId,
+          name,
+          deliveryAddress,
+          category,
+          totalWeight,
+          deliveryDate,
+          targetPrice,
+          orderQuantities,
+        },
       }));
 
       setComponents(sanitizedComponents);
@@ -291,7 +282,8 @@ const EditProject = () => {
 
   // Leverage useEffect to set error flags for project detail edit mode.
   useEffect(() => {
-    if (projectData) {
+    if (updateProjectInput.projectData) {
+      const projectData = updateProjectInput.projectData;
       // Since in edit mode, order quantity input is not a direct input field that can be converted to Typography
       // but rather an input for adding to order quantities list we listen for order quantities changes and indicate
       // error when the list is empty.
@@ -316,7 +308,7 @@ const EditProject = () => {
       }
 
       for (let attr of Object.keys(projectData)) {
-        const key: keyof UpdateProjectInput = attr as keyof UpdateProjectInput;
+        const key: keyof UpdateProjectData = attr as keyof UpdateProjectData;
         if (key === "comments") continue;
 
         if (typeof projectData[key] === "string") {
@@ -334,7 +326,7 @@ const EditProject = () => {
         }
       }
     }
-  }, [projectData]);
+  }, [updateProjectInput]);
 
   useEffect(() => {
     // if user uploads some files without saving, we delete them
@@ -459,9 +451,12 @@ const EditProject = () => {
         break;
     }
     if (isAllowed) {
-      setProjectData({
-        ...projectData,
-        [e.target.name]: val,
+      setUpdateProjectInput({
+        ...updateProjectInput,
+        projectData: {
+          ...updateProjectInput.projectData,
+          [e.target.name]: val,
+        },
       });
     }
   };
@@ -476,11 +471,11 @@ const EditProject = () => {
   };
 
   const isComponentOfUpdateType = (
-    comp: UpdateProjectComponentInput | CreateProjectComponentInput
+    comp: UpdateProjectComponentData | CreateProjectComponentInput
   ) => {
     // only pre-existing components have componentId
-    if ((comp as UpdateProjectComponentInput).componentId) {
-      const id = (comp as UpdateProjectComponentInput).componentId;
+    if ((comp as UpdateProjectComponentData).componentId) {
+      const id = (comp as UpdateProjectComponentData).componentId;
 
       return true;
     }
@@ -489,7 +484,7 @@ const EditProject = () => {
 
   const updateProject = async () => {
     try {
-      const compsForUpdate: UpdateProjectComponentInput[] = [];
+      const compsForUpdate: UpdateProjectComponentData[] = [];
       const compsForCreate: CreateProjectComponentInput[] = [];
 
       for (let comp of components) {
@@ -498,16 +493,16 @@ const EditProject = () => {
             getCustomerProjectData!.getCustomerProject.components.find(
               (existingComp) =>
                 existingComp.id ===
-                (comp as UpdateProjectComponentInput).componentId
+                (comp as UpdateProjectComponentData).componentId
             );
-          if (JSON.stringify(existing) !== JSON.stringify(comp)) {
-            compsForUpdate.push(comp as UpdateProjectComponentInput);
+          if (existing) {
+            compsForUpdate.push(comp as UpdateProjectComponentData);
           }
         } else {
           // we need to add projectId field because we're calling the standalone
           // createProjectComponent gql endpoint instead of bundling it along with createProject
           compsForCreate.push({
-            projectId: projectData.projectId,
+            projectId: updateProjectInput.projectData.projectId,
             ...comp,
           });
         }
@@ -517,7 +512,19 @@ const EditProject = () => {
         updateProjectMutation({
           variables: {
             data: {
-              ...projectData,
+              ...updateProjectInput,
+              componentsData: compsForUpdate,
+              componentIdsToDelete: removedComponents
+                .filter((comp) => {
+                  // only existing components are sent for deletion
+                  if ((comp as UpdateProjectComponentData).componentId) {
+                    return true;
+                  }
+                  return false;
+                })
+                .map(
+                  (comp) => (comp as UpdateProjectComponentData).componentId
+                ),
             },
           },
         }),
@@ -526,31 +533,11 @@ const EditProject = () => {
             data: compsForCreate,
           },
         }),
-        updateProjectComponents({
-          variables: {
-            data: compsForUpdate,
-          },
-        }),
-        deleteComponents({
-          variables: {
-            data: removedComponents
-              .filter((comp) => {
-                // only existing components are sent for deletion
-                if ((comp as UpdateProjectComponentInput).componentId) {
-                  return true;
-                }
-                return false;
-              })
-              .map((comp) => ({
-                componentId: (comp as UpdateProjectComponentInput).componentId,
-              })),
-          },
-        }),
       ]);
 
       const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
 
-      dest[1] = projectData.projectId;
+      dest[1] = projectId!;
 
       navigate(`${dest.join("")}`);
 
@@ -568,15 +555,18 @@ const EditProject = () => {
     }
   };
 
-  const handleAddressOnChange = (address: string) => {
-    setProjectData({
-      ...projectData,
-      deliveryAddress: address,
-    });
+  const handleAddressOnChange = (deliveryAddress: string) => {
+    setUpdateProjectInput((prev) => ({
+      ...prev,
+      projectData: {
+        ...prev.projectData,
+        deliveryAddress,
+      },
+    }));
   };
 
   const renderTextField = (
-    projectAttribute: keyof UpdateProjectInput,
+    projectAttribute: keyof UpdateProjectData,
     projectFieldData: string | number | number[],
     label: string,
     InputProps?: Partial<InputProps>
@@ -604,10 +594,7 @@ const EditProject = () => {
     );
   };
 
-  const isLoading =
-    updateProjectLoading ||
-    updateProjectComponentLoading ||
-    createProjectComponentsLoading;
+  const isLoading = updateProjectLoading || createProjectComponentsLoading;
 
   if (getCustomerProjectError) {
     return null;
@@ -624,6 +611,8 @@ const EditProject = () => {
       </Dialog>
     );
   }
+
+  const { projectData } = updateProjectInput;
 
   return (
     <>
@@ -674,7 +663,10 @@ const EditProject = () => {
               <ProjectCategoryDropdown
                 defaultCategory={projectData.category}
                 parentSetDataCallback={(category: string) => {
-                  setProjectData((prev) => ({ ...prev, category }));
+                  setUpdateProjectInput((prev) => ({
+                    ...prev,
+                    projectData: { ...prev.projectData, category },
+                  }));
                 }}
                 label={intl.formatMessage({
                   id: "app.project.attribute.category",
@@ -716,10 +708,15 @@ const EditProject = () => {
                       ...prev,
                       deliveryDate: false,
                     }));
-                    setProjectData({
-                      ...projectData,
-                      deliveryDate: new Date(v._d).toISOString().split("T")[0],
-                    });
+                    setUpdateProjectInput((prev) => ({
+                      ...prev,
+                      projectData: {
+                        ...projectData,
+                        deliveryDate: new Date(v._d)
+                          .toISOString()
+                          .split("T")[0],
+                      },
+                    }));
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -774,26 +771,37 @@ const EditProject = () => {
                   onInputChange={(e, v) => orderQuantityOnChange(v)}
                   onBlur={() => {
                     if (orderQuantity) {
-                      setProjectData((prev) => ({
+                      setUpdateProjectInput((prev) => ({
                         ...prev,
-                        orderQuantities: [
-                          ...prev.orderQuantities,
-                          +orderQuantity,
-                        ].sort((a, b) => a - b),
+                        projectData: {
+                          ...prev.projectData,
+                          orderQuantities: [
+                            ...prev.projectData.orderQuantities,
+                            +orderQuantity,
+                          ].sort((a, b) => a - b),
+                        },
                       }));
                     }
                     setOrderQuantity("");
                   }}
                   onChange={(e, v) => {
                     if (!v) {
-                      setProjectData((prev) => ({
+                      setUpdateProjectInput((prev) => ({
                         ...prev,
-                        orderQuantities: [],
+                        projectData: {
+                          ...prev.projectData,
+                          orderQuantities: [],
+                        },
                       }));
                     } else {
-                      setProjectData((prev) => ({
+                      setUpdateProjectInput((prev) => ({
                         ...prev,
-                        orderQuantities: v.map((v) => +v).sort((a, b) => a - b),
+                        projectData: {
+                          ...prev.projectData,
+                          orderQuantities: v
+                            .map((v) => +v)
+                            .sort((a, b) => a - b),
+                        },
                       }));
                     }
                   }}

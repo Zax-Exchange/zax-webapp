@@ -426,7 +426,6 @@ export type Mutation = {
   deletePendingJoinRequest: Scalars['Boolean'];
   deleteProject: Scalars['Boolean'];
   deleteProjectBidPermissions: Scalars['Boolean'];
-  deleteProjectComponents: Scalars['Boolean'];
   deleteProjectDesign: Scalars['Boolean'];
   deleteProjectPermissions: Scalars['Boolean'];
   inviteUser: Scalars['Boolean'];
@@ -440,7 +439,6 @@ export type Mutation = {
   updateProjectBid: Scalars['Boolean'];
   updateProjectBidComponents: Scalars['Boolean'];
   updateProjectBidPermissions: Scalars['Boolean'];
-  updateProjectComponents: Scalars['Boolean'];
   updateProjectPermissions: Scalars['Boolean'];
   updateStripeSubscription: Scalars['Boolean'];
   updateUserInfo: Scalars['Boolean'];
@@ -533,11 +531,6 @@ export type MutationDeleteProjectBidPermissionsArgs = {
 };
 
 
-export type MutationDeleteProjectComponentsArgs = {
-  data: Array<DeleteProjectComponentInput>;
-};
-
-
 export type MutationDeleteProjectDesignArgs = {
   data: DeleteProjectDesignInput;
 };
@@ -600,11 +593,6 @@ export type MutationUpdateProjectBidComponentsArgs = {
 
 export type MutationUpdateProjectBidPermissionsArgs = {
   data: UpdateProjectBidPermissionsInput;
-};
-
-
-export type MutationUpdateProjectComponentsArgs = {
-  data: Array<UpdateProjectComponentInput>;
 };
 
 
@@ -1192,14 +1180,14 @@ export type UpdateProjectBidPermissionsInputData = {
   userIds: Array<InputMaybe<Scalars['String']>>;
 };
 
-export type UpdateProjectComponentInput = {
+export type UpdateProjectComponentData = {
   componentId: Scalars['String'];
-  componentSpec: UpdateProjectComponentSpecInput;
+  componentSpec: UpdateProjectComponentSpecData;
   designIds?: InputMaybe<Array<Scalars['String']>>;
   name: Scalars['String'];
 };
 
-export type UpdateProjectComponentSpecInput = {
+export type UpdateProjectComponentSpecData = {
   boxStyle?: InputMaybe<Scalars['String']>;
   color?: InputMaybe<Scalars['String']>;
   componentSpecId: Scalars['String'];
@@ -1227,7 +1215,7 @@ export type UpdateProjectComponentSpecInput = {
   thickness?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateProjectInput = {
+export type UpdateProjectData = {
   category: Scalars['String'];
   comments?: InputMaybe<Scalars['String']>;
   deliveryAddress: Scalars['String'];
@@ -1237,6 +1225,12 @@ export type UpdateProjectInput = {
   projectId: Scalars['String'];
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
+};
+
+export type UpdateProjectInput = {
+  componentIdsToDelete: Array<Scalars['String']>;
+  componentsData: Array<UpdateProjectComponentData>;
+  projectData: UpdateProjectData;
 };
 
 export type UpdateProjectPermissionsInput = {

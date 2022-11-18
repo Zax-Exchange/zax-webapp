@@ -24,8 +24,8 @@ import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   ProjectDesign,
-  UpdateProjectComponentInput,
-  UpdateProjectComponentSpecInput,
+  UpdateProjectComponentData,
+  UpdateProjectComponentSpecData,
 } from "../../../../../generated/graphql";
 import {
   ALL_PRODUCT_NAMES,
@@ -99,7 +99,7 @@ const getComponentSpecDefaultState = (
  * 1. Add a completely new component -- CreateProjectComponentInput
  *      - component data only exists in this modal
  * 2. Edit a newly created component (created through scenario 1.) -- CreateProjectComponentInput
- * 3. Edit a pre-existing component (exists in db) -- UpdateProjectComponentInput
+ * 3. Edit a pre-existing component (exists in db) -- UpdateProjectComponentData
  *      - component data exists in both parent and modal
  *      - component data that's in this modal is temporary, since user could exit the modal before saving and we don't want to change parent data
  */
@@ -117,7 +117,7 @@ const CreateOrUpdateComponentModal = ({
 }: {
   setComponents: React.Dispatch<
     React.SetStateAction<
-      (CreateProjectComponentInput | UpdateProjectComponentInput)[]
+      (CreateProjectComponentInput | UpdateProjectComponentData)[]
     >
   >;
   setComponentsDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[][]>>;
@@ -131,7 +131,7 @@ const CreateOrUpdateComponentModal = ({
   // existing comp could be either a newly added comp or a pre-existing one
   existingComponent:
     | CreateProjectComponentInput
-    | UpdateProjectComponentInput
+    | UpdateProjectComponentData
     | null;
   componentIndexToEdit: number | null;
   existingDesigns: ProjectDesign[] | null;
@@ -148,7 +148,7 @@ const CreateOrUpdateComponentModal = ({
   // keep a local componentSpec so that when user is editing and decides to cancel, we don't change the projectData
   // only when user decides to add/save then we will change the projectData state in parent
   const [componentSpec, setComponentSpec] = useState<
-    CreateProjectComponentSpecInput | UpdateProjectComponentSpecInput
+    CreateProjectComponentSpecInput | UpdateProjectComponentSpecData
   >(
     existingComponent
       ? existingComponent.componentSpec
@@ -156,7 +156,7 @@ const CreateOrUpdateComponentModal = ({
   );
 
   const [componentData, setComponentData] = useState<
-    CreateProjectComponentInput | UpdateProjectComponentInput
+    CreateProjectComponentInput | UpdateProjectComponentData
   >(
     existingComponent ? existingComponent : ({} as CreateProjectComponentInput)
   );

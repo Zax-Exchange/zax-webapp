@@ -25,13 +25,6 @@ export type DeleteProjectDesignMutationVariables = Types.Exact<{
 
 export type DeleteProjectDesignMutation = { __typename?: 'Mutation', deleteProjectDesign: boolean };
 
-export type DeleteProjectComponentsMutationVariables = Types.Exact<{
-  data: Array<Types.DeleteProjectComponentInput> | Types.DeleteProjectComponentInput;
-}>;
-
-
-export type DeleteProjectComponentsMutation = { __typename?: 'Mutation', deleteProjectComponents: boolean };
-
 
 export const DeleteProjectPermissionsDocument = gql`
     mutation deleteProjectPermissions($data: DeleteProjectPermissionsInput!) {
@@ -126,34 +119,3 @@ export function useDeleteProjectDesignMutation(baseOptions?: Apollo.MutationHook
 export type DeleteProjectDesignMutationHookResult = ReturnType<typeof useDeleteProjectDesignMutation>;
 export type DeleteProjectDesignMutationResult = Apollo.MutationResult<DeleteProjectDesignMutation>;
 export type DeleteProjectDesignMutationOptions = Apollo.BaseMutationOptions<DeleteProjectDesignMutation, DeleteProjectDesignMutationVariables>;
-export const DeleteProjectComponentsDocument = gql`
-    mutation deleteProjectComponents($data: [DeleteProjectComponentInput!]!) {
-  deleteProjectComponents(data: $data)
-}
-    `;
-export type DeleteProjectComponentsMutationFn = Apollo.MutationFunction<DeleteProjectComponentsMutation, DeleteProjectComponentsMutationVariables>;
-
-/**
- * __useDeleteProjectComponentsMutation__
- *
- * To run a mutation, you first call `useDeleteProjectComponentsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteProjectComponentsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteProjectComponentsMutation, { data, loading, error }] = useDeleteProjectComponentsMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useDeleteProjectComponentsMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectComponentsMutation, DeleteProjectComponentsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteProjectComponentsMutation, DeleteProjectComponentsMutationVariables>(DeleteProjectComponentsDocument, options);
-      }
-export type DeleteProjectComponentsMutationHookResult = ReturnType<typeof useDeleteProjectComponentsMutation>;
-export type DeleteProjectComponentsMutationResult = Apollo.MutationResult<DeleteProjectComponentsMutation>;
-export type DeleteProjectComponentsMutationOptions = Apollo.BaseMutationOptions<DeleteProjectComponentsMutation, DeleteProjectComponentsMutationVariables>;
