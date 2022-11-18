@@ -235,28 +235,37 @@ const CustomerProjectDetail = () => {
         <Grid container spacing={2}>
           {/* PROJECT SECTION */}
           <Grid item xs={8}>
-            <Paper sx={{ padding: 3, position: "relative" }} elevation={1}>
-              <Box>
-                <Typography variant="h6" textAlign="left">
-                  {intl.formatMessage({
-                    id: "app.customer.projects.projectDetail",
-                  })}
-                </Typography>
+            <Paper elevation={1}>
+              <Box
+                sx={{
+                  padding: 1,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: "1px solid #e1e2e5",
+                }}
+              >
+                <Box pl={2}>
+                  <Typography variant="h6" textAlign="left">
+                    {intl.formatMessage({
+                      id: "app.customer.projects.projectDetail",
+                    })}
+                  </Typography>
+                </Box>
+                {projectData.permission !== ProjectPermission.Viewer && (
+                  <Box>
+                    <IconButton onClick={openEditProjectPage}>
+                      <Tooltip
+                        title={intl.formatMessage({ id: "app.general.edit" })}
+                        placement="left"
+                      >
+                        <EditIcon color="primary" />
+                      </Tooltip>
+                    </IconButton>
+                  </Box>
+                )}
               </Box>
-              {projectData.permission !== ProjectPermission.Viewer && (
-                <IconButton
-                  sx={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
-                  onClick={openEditProjectPage}
-                >
-                  <Tooltip
-                    title={intl.formatMessage({ id: "app.general.edit" })}
-                    placement="left"
-                  >
-                    <EditIcon color="action" />
-                  </Tooltip>
-                </IconButton>
-              )}
-              <Box display="flex" justifyContent="space-between">
+              <Box display="flex" justifyContent="space-between" p={3}>
                 <List>
                   <ProjectDetailListItem>
                     {renderAttributeTitle(
@@ -362,17 +371,25 @@ const CustomerProjectDetail = () => {
                   )}
                 </List>
               </Box>
-              {/* COMPONENTS SECTION */}
-              <Box mt={5}>
+            </Paper>
+
+            {/* COMPONENTS SECTION */}
+            <Paper sx={{ mt: 3 }}>
+              {/* <Box>
                 <Typography variant="h6" textAlign="left">
                   {intl.formatMessage({
                     id: "app.customer.projects.componentsDetail",
                   })}
                 </Typography>
-              </Box>
+              </Box> */}
 
               {/* <Paper sx={{ mt: 1 }}> */}
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Box
+                sx={{
+                  borderBottom: 1,
+                  borderColor: "divider",
+                }}
+              >
                 <Tabs
                   value={currentTab}
                   onChange={componentTabOnChange}
@@ -398,7 +415,7 @@ const CustomerProjectDetail = () => {
           </Grid>
 
           {/* BID SECTION */}
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <Box>
               <Typography variant="h6" textAlign="left">
                 {intl.formatMessage({

@@ -164,6 +164,7 @@ const AdvancedCreateProject = () => {
             userId: user!.id,
           },
         },
+        fetchPolicy: "no-cache",
       });
     }
   }, [location.state]);
@@ -220,7 +221,7 @@ const AdvancedCreateProject = () => {
         name,
         deliveryAddress,
         category,
-        totalWeight: totalWeight.split(" ")[0],
+        totalWeight,
         deliveryDate,
         targetPrice,
         orderQuantities,
@@ -369,18 +370,16 @@ const AdvancedCreateProject = () => {
   // check if create project button should be disabled
   const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
-      if (key === "comments") continue;
-      if (key === "targetPrice") {
+      const attr = key as keyof CreateProjectInput;
+      if (attr === "comments") continue;
+      if (attr === "targetPrice") {
         if (!projectData.targetPrice) return true;
         continue;
       }
-      if (
-        Array.isArray(projectData[key as keyof CreateProjectInput]) &&
-        (projectData[key as keyof CreateProjectInput] as []).length === 0
-      ) {
-        return true;
-      }
-      if (!(projectData[key as keyof CreateProjectInput] as string).length) {
+      if (Array.isArray(projectData[attr])) {
+        if ((projectData[attr] as []).length === 0) return true;
+        return false;
+      } else if (!(projectData[attr] as string).length) {
         return true;
       }
     }

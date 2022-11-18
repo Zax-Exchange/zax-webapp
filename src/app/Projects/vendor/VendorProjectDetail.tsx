@@ -62,6 +62,7 @@ import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../constants/products";
 import { useCreateProjectBidComponentsMutation } from "../../gql/create/bid/bid.generated";
 import UploadRemark from "./UploadRemark";
 import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
+import PermissionDenied from "../../Utils/PermissionDenied";
 
 type BidComponent = {
   quantityPrices: QuantityPrice[];
@@ -118,6 +119,8 @@ const VendorProjectDetail = () => {
   const [newRemarkFileId, setNewRemarkFileId] = useState<string | null>(null);
 
   const [remarkFile, setRemarkFile] = useState<BidRemark | null>(null);
+
+  const [permissionError, setPermissionError] = useState(false);
 
   const [bidComponentsForUpdate, setBidComponentsForUpdate] =
     useState<BidComponentsForUpdate>({});
@@ -186,11 +189,15 @@ const VendorProjectDetail = () => {
 
   useEffect(() => {
     if (getVendorDetailError || getVendorProjectError) {
-      setSnackbar({
-        message: intl.formatMessage({ id: "app.general.network.error" }),
-        severity: "error",
-      });
-      setSnackbarOpen(true);
+      if (getVendorProjectError?.message === "permission denied") {
+        setPermissionError(true);
+      } else {
+        setSnackbar({
+          message: intl.formatMessage({ id: "app.general.network.error" }),
+          severity: "error",
+        });
+        setSnackbarOpen(true);
+      }
     }
   }, [getVendorDetailError, getVendorProjectError]);
 
@@ -900,6 +907,14 @@ const VendorProjectDetail = () => {
 
   if (isLoading) {
     return <FullScreenLoading />;
+  }
+
+  if (permissionError) {
+    return (
+      <Dialog open={true}>
+        <PermissionDenied />
+      </Dialog>
+    );
   }
 
   return (

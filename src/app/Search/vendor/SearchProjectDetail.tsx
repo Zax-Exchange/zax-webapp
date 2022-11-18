@@ -204,6 +204,7 @@ const SearchProjectDetail = () => {
   useEffect(() => {
     if (getProjectBidData && getProjectBidData.getProjectBid) {
       setExistingBid(getProjectBidData.getProjectBid);
+      setRemarkFile(getProjectBidData.getProjectBid.remarkFile || null);
     }
   }, [getProjectBidData]);
 
@@ -573,28 +574,6 @@ const SearchProjectDetail = () => {
             </TabPanel>
           );
         })}
-        {!!existingBid!.remarkFile && (
-          <Box>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({
-                id: "app.vendor.search.AdditionRemarks",
-              })}
-            </Typography>
-            <Link
-              href={existingBid!.remarkFile.url}
-              target="_blank"
-              rel="noopener"
-              sx={{
-                ":first-child": {
-                  ml: 0,
-                },
-                ml: 1,
-              }}
-            >
-              {existingBid!.remarkFile.filename}
-            </Link>
-          </Box>
-        )}
       </>
     );
   };
@@ -797,11 +776,13 @@ const SearchProjectDetail = () => {
                         id: "app.vendor.search.AdditionRemarks",
                       })}
                     </Typography>
-                    <UploadRemark
-                      setRemarkFile={setRemarkFile}
-                      setRemarkId={setRemarkId}
-                      deleteExistingRemark={deleteExistingRemark}
-                    />
+                    {!existingBid?.remarkFile && (
+                      <UploadRemark
+                        setRemarkFile={setRemarkFile}
+                        setRemarkId={setRemarkId}
+                        deleteExistingRemark={deleteExistingRemark}
+                      />
+                    )}
                   </Box>
 
                   {remarkFile && (
