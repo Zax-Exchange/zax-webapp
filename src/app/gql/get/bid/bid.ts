@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { FILE_FRAGMENT } from "../../utils/common/file";
 
 export const PROJECT_BID_COMPONENT_FRAGMENT = gql`
   fragment ProjectBidComponentFragment on ProjectBidComponent {
@@ -15,6 +16,7 @@ export const PROJECT_BID_COMPONENT_FRAGMENT = gql`
 
 export const PROJECT_BID_FRAGMENT = gql`
 ${PROJECT_BID_COMPONENT_FRAGMENT}
+${FILE_FRAGMENT}
   fragment ProjectBidFragment on ProjectBid {
     id
       userId
@@ -25,9 +27,7 @@ ${PROJECT_BID_COMPONENT_FRAGMENT}
       }
       status
       remarkFile {
-        fileId
-        filename
-        url
+        ...FileFragment
       }
       createdAt
       updatedAt
@@ -71,6 +71,16 @@ ${PROJECT_BID_FRAGMENT}
   query getProjectBid($data: GetProjectBidInput!) {
     getProjectBid(data: $data) {
       ...ProjectBidFragment
+    }
+  }
+`
+
+const GET_PROJECT_BIDS_FOR_PO = gql`
+  query getProjectBidsForPo($data: GetProjectBidsForPoInput!) {
+    getProjectBidsForPo(data: $data) {
+      projectBidId
+      companyId
+      companyName
     }
   }
 `

@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { FILE_FRAGMENT } from "../../utils/common/file";
 import { PROJECT_BID_COMPONENT_FRAGMENT, PROJECT_BID_FRAGMENT } from "../bid/bid";
 import {PROJECT_COMPONENT_FRAGMENT} from "../project/project"
 import {PROJECT_FRAGMENT} from "../project/project"
@@ -54,6 +55,43 @@ const GET_CUSTOMER_DETAIL = gql`
         isVerified
         isActive
         companyUrl
+    }
+  }
+`
+
+const GET_CUSTOMER_POS = gql`
+${FILE_FRAGMENT}
+  query getCustomerPos($data: GetCustomerPosInput!) {
+    getCustomerPos(data: $data) {
+      projectInfo {
+        projectId
+        projectName
+      }
+      poDetails {
+        projectBidId
+        vendorInfo {
+          companyId
+          companyName
+        }
+        poFile {
+          ...FileFragment
+          status
+        }
+        invoiceFile {
+          ...FileFragment
+          status
+        }
+      }
+    }
+  }
+`
+
+const GET_PURCHASE_ORDER = gql`
+  ${FILE_FRAGMENT}
+  query getPurchaseOrder($data: GetPurchaseOrderInput!) {
+    getPurchaseOrder(data: $data) {
+      ...FileFragment
+      status
     }
   }
 `

@@ -28,14 +28,19 @@ import { AuthContext } from "../../../context/AuthContext";
 import React from "react";
 import { useGetVendorDetailQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
-import { useGetCustomerDetailQuery } from "../../gql/get/customer/customer.generated";
+import {
+  useGetCustomerDetailQuery,
+  useGetPurchaseOrderQuery,
+} from "../../gql/get/customer/customer.generated";
 import { useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+import CreatePOModal from "./modals/CreatePOModal";
 
 type VendorBidOverviewMenuSelection =
   | "view-profile"
   | "open-conversation"
   | "export-to-pdf"
+  | "create-po"
   | "accept"
   | "reject";
 
@@ -57,6 +62,20 @@ const VendorBidOverview = ({
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
   const [vendorData, setVendorData] = useState<VendorDetail | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [isCreatePOModalOpen, setIsCreatePOModalOpen] = useState(false);
+
+  const {
+    loading: getPurchaseOrderLoading,
+    error: getPurchaseOrderError,
+    data: getPurchaseOrderData,
+  } = useGetPurchaseOrderQuery({
+    variables: {
+      data: {
+        projectId: projectComponents[0].projectId,
+        projectBidId: bid.id,
+      },
+    },
+  });
 
   const {
     data: getCustomerDetailData,
@@ -119,6 +138,9 @@ const VendorBidOverview = ({
     }
     moreOnClose();
   };
+
+  // If there's an existing PO, we render view PO, otherwise we render create PO
+  const renderPOMenuItem = () => {};
 
   const renderBidStatus = (status: BidStatus) => {
     let res: string = "";
@@ -200,32 +222,38 @@ const VendorBidOverview = ({
             <MenuList dense sx={{ padding: "4px 0 4px" }}>
               <MenuItem onClick={() => vendorBidMenuOnClick("view-profile")}>
                 {intl.formatMessage({
-                  id: "app.customer.projectDetail.menu.viewVendorProfile",
+                  id: "app.customer.projectDetail.bid.menu.viewVendorProfile",
                 })}
               </MenuItem>
               <MenuItem
                 onClick={() => vendorBidMenuOnClick("open-conversation")}
               >
                 {intl.formatMessage({
-                  id: "app.customer.projectDetail.menu.openConversation",
+                  id: "app.customer.projectDetail.bid.menu.openConversation",
                 })}
               </MenuItem>
 
               <MenuItem onClick={() => vendorBidMenuOnClick("export-to-pdf")}>
                 {intl.formatMessage({
-                  id: "app.customer.projectDetail.menu.exportToPdf",
+                  id: "app.customer.projectDetail.bid.menu.exportToPdf",
+                })}
+              </MenuItem>
+
+              <MenuItem onClick={() => vendorBidMenuOnClick("create-po")}>
+                {intl.formatMessage({
+                  id: "app.customer.projectDetail.bid.menu.createPO",
                 })}
               </MenuItem>
 
               <MenuItem onClick={() => vendorBidMenuOnClick("accept")}>
                 {intl.formatMessage({
-                  id: "app.customer.projectDetail.menu.acceptBid",
+                  id: "app.customer.projectDetail.bid.menu.acceptBid",
                 })}
               </MenuItem>
 
               <MenuItem onClick={() => vendorBidMenuOnClick("reject")}>
                 {intl.formatMessage({
-                  id: "app.customer.projectDetail.menu.rejectBid",
+                  id: "app.customer.projectDetail.bid.menu.rejectBid",
                 })}
               </MenuItem>
             </MenuList>
@@ -244,6 +272,17 @@ const VendorBidOverview = ({
                 projectComponents={projectComponents}
                 setIsBidModalOpen={setIsBidModalOpen}
               />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog
+            open={isCreatePOModalOpen}
+            onClose={() => setIsCreatePOModalOpen(false)}
+            maxWidth="md"
+            fullWidth={true}
+          >
+            <DialogContent>
+              <CreatePOModal />
             </DialogContent>
           </Dialog>
 

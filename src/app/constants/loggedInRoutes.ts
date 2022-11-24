@@ -7,7 +7,8 @@ export enum GENERAL_ROUTES {
   PROFILE = "/profile",
   SETTINGS = "/settings",
   PROJECT_DETAIL = "/project-detail/:projectId",
-  PROJECTS = "/projects"
+  PROJECTS = "/projects",
+  PO_INVOICE = "/po-invoice"
 }
 
 export enum CUSTOMER_ROUTES {

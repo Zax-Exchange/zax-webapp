@@ -1,4 +1,10 @@
-import { Home, Logout, Settings, TextSnippet } from "@mui/icons-material";
+import {
+  Home,
+  Logout,
+  ReceiptLongRounded,
+  Settings,
+  TextSnippet,
+} from "@mui/icons-material";
 import {
   Box,
   Drawer,
@@ -63,7 +69,9 @@ export default function CustomerSideNav({
             </ListItemButton>
           </ListItem>
 
-          <ListItem onClick={() => handleSideNavOnClick("projects")}>
+          <ListItem
+            onClick={() => handleSideNavOnClick(GENERAL_ROUTES.PROJECTS)}
+          >
             <ListItemButton>
               <ListItemIcon>
                 <TextSnippet />
@@ -77,14 +85,21 @@ export default function CustomerSideNav({
             </ListItemButton>
           </ListItem>
 
-          {/* <ListItem onClick={() => handleSideNavOnClick("profile")}>
+          <ListItem
+            onClick={() => handleSideNavOnClick(GENERAL_ROUTES.PO_INVOICE)}
+          >
             <ListItemButton>
               <ListItemIcon>
-                <AccountBox />
+                <ReceiptLongRounded />
               </ListItemIcon>
-              <ListItemText primary="Profile"></ListItemText>
+              <ListItemText
+                primary={intl.formatMessage({
+                  id: "app.routes.loggedIn.poInvoice",
+                })}
+                primaryTypographyProps={{ variant: "subtitle1" }}
+              ></ListItemText>
             </ListItemButton>
-          </ListItem> */}
+          </ListItem>
 
           <ListItem
             onClick={() => handleSideNavOnClick(GENERAL_ROUTES.SETTINGS)}

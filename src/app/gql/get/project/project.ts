@@ -1,14 +1,14 @@
 import { gql } from "@apollo/client";
+import { FILE_FRAGMENT } from "../../utils/common/file";
 
 export const PROJECT_COMPONENT_FRAGMENT = gql`
+${FILE_FRAGMENT}
   fragment ProjectComponentFragment on ProjectComponent {
     id
         projectId
         name
         designs {
-          fileId
-          filename
-          url
+          ...FileFragment
         }
         componentSpec {
           id

@@ -2,6 +2,7 @@
 import * as Types from '../../../../generated/graphql';
 
 import { gql } from '@apollo/client';
+import { FileFragmentFragmentDoc } from '../../utils/common/file.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ProjectComponentFragmentFragment = { __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } };
@@ -50,9 +51,7 @@ export const ProjectComponentFragmentFragmentDoc = gql`
   projectId
   name
   designs {
-    fileId
-    filename
-    url
+    ...FileFragment
   }
   componentSpec {
     id
@@ -100,7 +99,7 @@ export const ProjectComponentFragmentFragmentDoc = gql`
     insideColor
   }
 }
-    `;
+    ${FileFragmentFragmentDoc}`;
 export const ProjectFragmentFragmentDoc = gql`
     fragment ProjectFragment on ProjectInterface {
   id

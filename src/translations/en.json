@@ -8,6 +8,7 @@
   "app.general.permission.denied.title": "Permission denied",
   "app.general.permission.denied.content": "Please contact company admin to grant permission.",
   "app.general.confirm": "Confirm",
+  "app.general.create": "Create",
   "app.general.cancel": "Cancel",
   "app.general.month": "Month",
   "app.general.year": "Year",
@@ -40,6 +41,7 @@
   "app.routes.loggedIn.projects": "Projects",
   "app.routes.loggedIn.settings": "Settings",
   "app.routes.loggedIn.newProject": "New Project",
+  "app.routes.loggedIn.poInvoice": "PO / Invoice",
 
   "app.signup.billingEmail.helperText": "We will use this email to send billing information.",
   "app.signup.pickAPlan": "Pick a plan for your company",
@@ -281,14 +283,16 @@
   "app.customer.createProject.import": "Import",
   "app.customer.createProject.importFromExisting": "Import from existing projects below",
 
-  "app.customer.projectDetail.menu.viewVendorProfile": "View vendor profile",
-  "app.customer.projectDetail.menu.openConversation": "Open conversation",
-  "app.customer.projectDetail.menu.exportToPdf": "Export to pdf",
-  "app.customer.projectDetail.menu.acceptBid": "Accept",
-  "app.customer.projectDetail.menu.rejectBid": "Reject",
+  "app.customer.projectDetail.bid.menu.viewVendorProfile": "View vendor profile",
+  "app.customer.projectDetail.bid.menu.openConversation": "Open conversation",
+  "app.customer.projectDetail.bid.menu.exportToPdf": "Export to pdf",
+  "app.customer.projectDetail.bid.menu.createPO": "Create PO",
+  "app.customer.projectDetail.bid.menu.acceptBid": "Accept",
+  "app.customer.projectDetail.bid.menu.rejectBid": "Reject",
   "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
   "app.customer.projectDetail.bidModal.vendorInformation": "Vendor Information",
 
+  "app.customer.poInvoice.create": "Create",
 
   "app.vendorProfile.tab.companyInfo": "Company Info",
   "app.vendorProfile.tab.certifications": "Certifications & Rewards",

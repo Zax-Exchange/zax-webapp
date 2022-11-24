@@ -20,3 +20,9 @@ const CREATE_CUSTOMER_SUBSCRIPTION = gql`
     }
   }
 `;
+
+const CREATE_PURCHASE_ORDER = gql`
+  mutation createPurchaseOrder($data: CreatePurchaseOrderInput!) {
+    createPurchaseOrder(data: $data)
+  }
+`

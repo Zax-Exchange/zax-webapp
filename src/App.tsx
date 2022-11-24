@@ -41,6 +41,7 @@ import VendorProfile from "./app/Profile/vendor/VendorProfile";
 import ProjectDetail from "./app/Projects/ProjectDetail";
 import EditProject from "./app/Projects/customer/editProject/EditProject";
 import Projects from "./app/Projects/Projects";
+import POInvoice from "./app/POInvoice/POInvoice";
 
 const theme = createTheme({
   palette: {
@@ -204,6 +205,14 @@ function App() {
                     element={
                       <RequireAuth isAllowed={true}>
                         <Projects />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path={GENERAL_ROUTES.PO_INVOICE}
+                    element={
+                      <RequireAuth isAllowed={true}>
+                        <POInvoice />
                       </RequireAuth>
                     }
                   />

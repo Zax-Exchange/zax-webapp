@@ -21,8 +21,8 @@ import { useIntl } from "react-intl";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 import { GuidedCreateSetComponentData } from "./createProject/guided/GuidedCreateProject";
 import FullScreenLoading from "../../Utils/Loading";
-import { useUploadProjectDesignMutation } from "../../gql/utils/project/project.generated";
 import { Target } from "../../../type/common";
+import { useUploadProjectDesignMutation } from "../../gql/upload/project/uploadProjectDesign.generated";
 
 export default function UploadDesign({
   setComponentData,

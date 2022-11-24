@@ -54,7 +54,7 @@ const DimensionsInput = ({
             mr: 2,
           }}
         />
-        {dimension.z !== undefined && (
+        {dimension.z !== undefined && dimension.z !== null && (
           <TextField
             autoComplete="new-password"
             label="Z"

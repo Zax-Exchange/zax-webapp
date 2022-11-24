@@ -2,6 +2,7 @@
 import * as Types from '../../../../generated/graphql';
 
 import { gql } from '@apollo/client';
+import { FileFragmentFragmentDoc } from '../../utils/common/file.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type UploadBidRemarkMutationVariables = Types.Exact<{
@@ -15,12 +16,10 @@ export type UploadBidRemarkMutation = { __typename?: 'Mutation', uploadBidRemark
 export const UploadBidRemarkDocument = gql`
     mutation uploadBidRemark($file: Upload!) {
   uploadBidRemark(file: $file) {
-    fileId
-    filename
-    url
+    ...FileFragment
   }
 }
-    `;
+    ${FileFragmentFragmentDoc}`;
 export type UploadBidRemarkMutationFn = Apollo.MutationFunction<UploadBidRemarkMutation, UploadBidRemarkMutationVariables>;
 
 /**

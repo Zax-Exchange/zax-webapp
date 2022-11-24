@@ -30,7 +30,6 @@ const StickerSubSection = ({
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
   const intl = useIntl();
-
   const renderAutocompleteDropdown = (
     options: TranslatableAttribute[],
     attribute: keyof CreateProjectComponentSpecInput

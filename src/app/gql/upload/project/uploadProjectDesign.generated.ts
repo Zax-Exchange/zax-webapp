@@ -2,6 +2,7 @@
 import * as Types from '../../../../generated/graphql';
 
 import { gql } from '@apollo/client';
+import { FileFragmentFragmentDoc } from '../../utils/common/file.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type UploadProjectDesignMutationVariables = Types.Exact<{
@@ -9,18 +10,16 @@ export type UploadProjectDesignMutationVariables = Types.Exact<{
 }>;
 
 
-export type UploadProjectDesignMutation = { __typename?: 'Mutation', uploadProjectDesign: { __typename?: 'ProjectDesign', filename: string, fileId: string, url: string } };
+export type UploadProjectDesignMutation = { __typename?: 'Mutation', uploadProjectDesign: { __typename?: 'ProjectDesign', fileId: string, filename: string, url: string } };
 
 
 export const UploadProjectDesignDocument = gql`
     mutation uploadProjectDesign($file: Upload!) {
   uploadProjectDesign(file: $file) {
-    filename
-    fileId
-    url
+    ...FileFragment
   }
 }
-    `;
+    ${FileFragmentFragmentDoc}`;
 export type UploadProjectDesignMutationFn = Apollo.MutationFunction<UploadProjectDesignMutation, UploadProjectDesignMutationVariables>;
 
 /**

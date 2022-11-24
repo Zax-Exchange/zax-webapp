@@ -1,25 +1,24 @@
 import { CircularProgress, IconButton, Tooltip } from "@mui/material";
 import React, { useEffect } from "react";
 import { useIntl } from "react-intl";
-import { BidRemark } from "../../../generated/graphql";
 import { Target } from "../../../type/common";
-import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { useUploadBidRemarkMutation } from "../../gql/upload/bid/uploadBidRemark.generated";
+import { PurchaseOrder } from "../../../generated/graphql";
+import { useUploadPurchaseOrderMutation } from "../../gql/upload/customer/uploadPurchaseOrder.generated";
 
-const UploadRemark = ({
-  setRemarkId,
-  setRemarkFile,
-  deleteExistingRemark,
+const UploadPO = ({
+  setPurchaseOrderId,
+  setPurchaseOrderFile,
 }: {
-  setRemarkId: (id: string) => void;
-  setRemarkFile: React.Dispatch<React.SetStateAction<BidRemark | null>>;
-  deleteExistingRemark: () => void;
+  setPurchaseOrderId: React.Dispatch<React.SetStateAction<string | null>>;
+  setPurchaseOrderFile: React.Dispatch<
+    React.SetStateAction<PurchaseOrder | null>
+  >;
 }) => {
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [mutate, { error, loading, data }] = useUploadBidRemarkMutation();
+  const [mutate, { error, loading, data }] = useUploadPurchaseOrderMutation();
 
   useEffect(() => {
     // server error
@@ -35,7 +34,7 @@ const UploadRemark = ({
       setSnackbar({
         severity: "success",
         message: intl.formatMessage({
-          id: "app.vendor.uploadRemark.success",
+          id: "app.vendor.uploadPurchaseOrder.success",
         }),
       });
       setSnackbarOpen(true);
@@ -48,18 +47,15 @@ const UploadRemark = ({
     target.value = "";
 
     try {
-      const [uploadResult, _] = await Promise.all([
-        mutate({
-          variables: { file },
-          fetchPolicy: "no-cache",
-        }),
-        deleteExistingRemark(),
-      ]);
-      const remarkFile = uploadResult.data?.uploadBidRemark;
+      const uploadResult = await mutate({
+        variables: { file },
+        fetchPolicy: "no-cache",
+      });
+      const poFile = uploadResult.data?.uploadPurchaseOrder;
 
-      if (remarkFile) {
-        setRemarkFile(remarkFile);
-        setRemarkId(remarkFile.fileId);
+      if (poFile) {
+        setPurchaseOrderFile(poFile);
+        setPurchaseOrderId(poFile.fileId);
       }
     } catch (e) {
       // invalid file type
@@ -78,7 +74,7 @@ const UploadRemark = ({
       placement="top"
       arrow
       title={intl.formatMessage({
-        id: "app.vendor.uploadRemark.tooltip",
+        id: "app.vendor.uploadPurchaseOrder.tooltip",
       })}
     >
       <IconButton component="label" sx={{ borderRadius: 40 }} color="primary">
@@ -90,4 +86,4 @@ const UploadRemark = ({
   );
 };
 
-export default UploadRemark;
+export default UploadPO;
