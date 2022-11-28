@@ -18,6 +18,13 @@ export type CreateVendorSubscriptionMutationVariables = Types.Exact<{
 
 export type CreateVendorSubscriptionMutation = { __typename?: 'Mutation', createVendorSubscription: { __typename?: 'StripeSubscription', clientSecret: string, subscriptionId: string } };
 
+export type CreateInvoiceMutationVariables = Types.Exact<{
+  data: Types.CreateInvoiceInput;
+}>;
+
+
+export type CreateInvoiceMutation = { __typename?: 'Mutation', createInvoice: boolean };
+
 
 export const CreateVendorDocument = gql`
     mutation createVendor($data: CreateVendorInput!) {
@@ -84,3 +91,34 @@ export function useCreateVendorSubscriptionMutation(baseOptions?: Apollo.Mutatio
 export type CreateVendorSubscriptionMutationHookResult = ReturnType<typeof useCreateVendorSubscriptionMutation>;
 export type CreateVendorSubscriptionMutationResult = Apollo.MutationResult<CreateVendorSubscriptionMutation>;
 export type CreateVendorSubscriptionMutationOptions = Apollo.BaseMutationOptions<CreateVendorSubscriptionMutation, CreateVendorSubscriptionMutationVariables>;
+export const CreateInvoiceDocument = gql`
+    mutation createInvoice($data: CreateInvoiceInput!) {
+  createInvoice(data: $data)
+}
+    `;
+export type CreateInvoiceMutationFn = Apollo.MutationFunction<CreateInvoiceMutation, CreateInvoiceMutationVariables>;
+
+/**
+ * __useCreateInvoiceMutation__
+ *
+ * To run a mutation, you first call `useCreateInvoiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInvoiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInvoiceMutation, { data, loading, error }] = useCreateInvoiceMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateInvoiceMutation(baseOptions?: Apollo.MutationHookOptions<CreateInvoiceMutation, CreateInvoiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateInvoiceMutation, CreateInvoiceMutationVariables>(CreateInvoiceDocument, options);
+      }
+export type CreateInvoiceMutationHookResult = ReturnType<typeof useCreateInvoiceMutation>;
+export type CreateInvoiceMutationResult = Apollo.MutationResult<CreateInvoiceMutation>;
+export type CreateInvoiceMutationOptions = Apollo.BaseMutationOptions<CreateInvoiceMutation, CreateInvoiceMutationVariables>;

@@ -4,21 +4,20 @@ import { useIntl } from "react-intl";
 import { Target } from "../../../type/common";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { PurchaseOrder } from "../../../generated/graphql";
+import { Invoice, PurchaseOrder } from "../../../generated/graphql";
 import { useUploadPurchaseOrderMutation } from "../../gql/upload/customer/uploadPurchaseOrder.generated";
+import { useUploadInvoiceMutation } from "../../gql/upload/vendor/uploadInvoice.generated";
 
-const UploadPO = ({
-  setPurchaseOrderId,
-  setPurchaseOrderFile,
+const UploadInvoice = ({
+  setInvoiceId,
+  setInvoiceFile,
 }: {
-  setPurchaseOrderId: React.Dispatch<React.SetStateAction<string | null>>;
-  setPurchaseOrderFile: React.Dispatch<
-    React.SetStateAction<PurchaseOrder | null>
-  >;
+  setInvoiceId: React.Dispatch<React.SetStateAction<string | null>>;
+  setInvoiceFile: React.Dispatch<React.SetStateAction<Invoice | null>>;
 }) => {
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [mutate, { error, loading, data }] = useUploadPurchaseOrderMutation();
+  const [mutate, { error, loading, data }] = useUploadInvoiceMutation();
 
   useEffect(() => {
     // server error
@@ -34,7 +33,7 @@ const UploadPO = ({
       setSnackbar({
         severity: "success",
         message: intl.formatMessage({
-          id: "app.vendor.uploadPurchaseOrder.success",
+          id: "app.vendor.poInvoice.upload.success",
         }),
       });
       setSnackbarOpen(true);
@@ -51,11 +50,11 @@ const UploadPO = ({
         variables: { file },
         fetchPolicy: "no-cache",
       });
-      const poFile = uploadResult.data?.uploadPurchaseOrder;
+      const invoiceFile = uploadResult.data?.uploadInvoice;
 
-      if (poFile) {
-        setPurchaseOrderFile(poFile);
-        setPurchaseOrderId(poFile.fileId);
+      if (invoiceFile) {
+        setInvoiceFile(invoiceFile);
+        setInvoiceId(invoiceFile.fileId);
       }
     } catch (e) {
       // invalid file type
@@ -74,7 +73,7 @@ const UploadPO = ({
       placement="top"
       arrow
       title={intl.formatMessage({
-        id: "app.customer.poInvoice.uploadPO.tooltip",
+        id: "app.vendor.poInvoice.uploadInvoice.tooltip",
       })}
     >
       <IconButton component="label" sx={{ borderRadius: 40 }} color="primary">
@@ -86,4 +85,4 @@ const UploadPO = ({
   );
 };
 
-export default UploadPO;
+export default UploadInvoice;

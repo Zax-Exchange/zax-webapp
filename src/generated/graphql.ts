@@ -251,6 +251,7 @@ export type CustomerOverview = {
 
 export type CustomerPo = {
   __typename?: 'CustomerPo';
+  permission: ProjectPermission;
   poDetails: Array<CustomerPoDetail>;
   projectInfo: CustomerPoProjectInfo;
 };
@@ -395,6 +396,11 @@ export type GetCustomerProjectsInput = {
   userId: Scalars['String'];
 };
 
+export type GetInvoiceInput = {
+  projectBidId: Scalars['String'];
+  projectId: Scalars['String'];
+};
+
 export type GetPlanInput = {
   planId: Scalars['String'];
 };
@@ -439,6 +445,10 @@ export type GetUserInput = {
 
 export type GetVendorDetailInput = {
   companyId: Scalars['String'];
+};
+
+export type GetVendorPosInput = {
+  userId: Scalars['String'];
 };
 
 export type GetVendorProjectInput = {
@@ -818,6 +828,12 @@ export enum PlanTier {
   Premium = 'PREMIUM'
 }
 
+export type PoDetailCustomerInfo = {
+  __typename?: 'PoDetailCustomerInfo';
+  companyId: Scalars['String'];
+  companyName: Scalars['String'];
+};
+
 export type PoDetailVendorInfo = {
   __typename?: 'PoDetailVendorInfo';
   companyId: Scalars['String'];
@@ -1107,6 +1123,7 @@ export type Query = {
   getCustomerPos: Array<CustomerPo>;
   getCustomerProject: CustomerProject;
   getCustomerProjects: Array<CustomerProjectOverview>;
+  getInvoice?: Maybe<Invoice>;
   getPlan: Plan;
   getProjectBid?: Maybe<ProjectBid>;
   getProjectBidUsers: Array<UserProjectPermission>;
@@ -1118,6 +1135,7 @@ export type Query = {
   getPurchaseOrder?: Maybe<PurchaseOrder>;
   getUser: User;
   getVendorDetail?: Maybe<VendorDetail>;
+  getVendorPos: Array<VendorPo>;
   getVendorProject?: Maybe<VendorProject>;
   getVendorProjects: Array<VendorProjectOverview>;
   login: LoggedInUser;
@@ -1181,6 +1199,11 @@ export type QueryGetCustomerProjectsArgs = {
 };
 
 
+export type QueryGetInvoiceArgs = {
+  data: GetInvoiceInput;
+};
+
+
 export type QueryGetPlanArgs = {
   data: GetPlanInput;
 };
@@ -1233,6 +1256,11 @@ export type QueryGetUserArgs = {
 
 export type QueryGetVendorDetailArgs = {
   data?: InputMaybe<GetVendorDetailInput>;
+};
+
+
+export type QueryGetVendorPosArgs = {
+  data: GetVendorPosInput;
 };
 
 
@@ -1500,6 +1528,27 @@ export type VendorOverview = {
   moq: Scalars['String'];
   name: Scalars['String'];
   products: Array<Scalars['String']>;
+};
+
+export type VendorPo = {
+  __typename?: 'VendorPo';
+  permission: ProjectPermission;
+  poDetails: Array<VendorPoDetail>;
+  projectInfo: VendorPoProjectInfo;
+};
+
+export type VendorPoDetail = {
+  __typename?: 'VendorPoDetail';
+  customerInfo: PoDetailCustomerInfo;
+  invoiceFile?: Maybe<Invoice>;
+  poFile: PurchaseOrder;
+  projectBidId: Scalars['String'];
+};
+
+export type VendorPoProjectInfo = {
+  __typename?: 'VendorPoProjectInfo';
+  projectId: Scalars['String'];
+  projectName: Scalars['String'];
 };
 
 export type VendorProject = ProjectInterface & {

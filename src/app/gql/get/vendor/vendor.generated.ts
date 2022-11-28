@@ -4,6 +4,7 @@ import * as Types from '../../../../generated/graphql';
 import { gql } from '@apollo/client';
 import { ProjectFragmentFragmentDoc, ProjectComponentFragmentFragmentDoc } from '../project/project.generated';
 import { PermissionedProjectBidFragmentFragmentDoc } from '../bid/bid.generated';
+import { FileFragmentFragmentDoc } from '../../utils/common/file.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetVendorDetailQueryVariables = Types.Exact<{
@@ -33,6 +34,20 @@ export type SearchVendorCompaniesQueryVariables = Types.Exact<{
 
 
 export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, moq: string, leadTime: number }> };
+
+export type GetVendorPosQueryVariables = Types.Exact<{
+  data: Types.GetVendorPosInput;
+}>;
+
+
+export type GetVendorPosQuery = { __typename?: 'Query', getVendorPos: Array<{ __typename?: 'VendorPo', projectInfo: { __typename?: 'VendorPoProjectInfo', projectId: string, projectName: string }, poDetails: Array<{ __typename?: 'VendorPoDetail', projectBidId: string, customerInfo: { __typename?: 'PoDetailCustomerInfo', companyId: string, companyName: string }, poFile: { __typename?: 'PurchaseOrder', status: Types.PurchaseOrderStatus, fileId: string, filename: string, url: string }, invoiceFile?: { __typename?: 'Invoice', status: Types.InvoiceStatus, fileId: string, filename: string, url: string } | null }> }> };
+
+export type GetInvoiceQueryVariables = Types.Exact<{
+  data: Types.GetInvoiceInput;
+}>;
+
+
+export type GetInvoiceQuery = { __typename?: 'Query', getInvoice?: { __typename?: 'Invoice', status: Types.InvoiceStatus, fileId: string, filename: string, url: string } | null };
 
 
 export const GetVendorDetailDocument = gql`
@@ -220,3 +235,92 @@ export function useSearchVendorCompaniesLazyQuery(baseOptions?: Apollo.LazyQuery
 export type SearchVendorCompaniesQueryHookResult = ReturnType<typeof useSearchVendorCompaniesQuery>;
 export type SearchVendorCompaniesLazyQueryHookResult = ReturnType<typeof useSearchVendorCompaniesLazyQuery>;
 export type SearchVendorCompaniesQueryResult = Apollo.QueryResult<SearchVendorCompaniesQuery, SearchVendorCompaniesQueryVariables>;
+export const GetVendorPosDocument = gql`
+    query getVendorPos($data: GetVendorPosInput!) {
+  getVendorPos(data: $data) {
+    projectInfo {
+      projectId
+      projectName
+    }
+    poDetails {
+      projectBidId
+      customerInfo {
+        companyId
+        companyName
+      }
+      poFile {
+        ...FileFragment
+        status
+      }
+      invoiceFile {
+        ...FileFragment
+        status
+      }
+    }
+  }
+}
+    ${FileFragmentFragmentDoc}`;
+
+/**
+ * __useGetVendorPosQuery__
+ *
+ * To run a query within a React component, call `useGetVendorPosQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVendorPosQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVendorPosQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetVendorPosQuery(baseOptions: Apollo.QueryHookOptions<GetVendorPosQuery, GetVendorPosQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVendorPosQuery, GetVendorPosQueryVariables>(GetVendorPosDocument, options);
+      }
+export function useGetVendorPosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVendorPosQuery, GetVendorPosQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVendorPosQuery, GetVendorPosQueryVariables>(GetVendorPosDocument, options);
+        }
+export type GetVendorPosQueryHookResult = ReturnType<typeof useGetVendorPosQuery>;
+export type GetVendorPosLazyQueryHookResult = ReturnType<typeof useGetVendorPosLazyQuery>;
+export type GetVendorPosQueryResult = Apollo.QueryResult<GetVendorPosQuery, GetVendorPosQueryVariables>;
+export const GetInvoiceDocument = gql`
+    query getInvoice($data: GetInvoiceInput!) {
+  getInvoice(data: $data) {
+    ...FileFragment
+    status
+  }
+}
+    ${FileFragmentFragmentDoc}`;
+
+/**
+ * __useGetInvoiceQuery__
+ *
+ * To run a query within a React component, call `useGetInvoiceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetInvoiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetInvoiceQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetInvoiceQuery(baseOptions: Apollo.QueryHookOptions<GetInvoiceQuery, GetInvoiceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetInvoiceQuery, GetInvoiceQueryVariables>(GetInvoiceDocument, options);
+      }
+export function useGetInvoiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInvoiceQuery, GetInvoiceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetInvoiceQuery, GetInvoiceQueryVariables>(GetInvoiceDocument, options);
+        }
+export type GetInvoiceQueryHookResult = ReturnType<typeof useGetInvoiceQuery>;
+export type GetInvoiceLazyQueryHookResult = ReturnType<typeof useGetInvoiceLazyQuery>;
+export type GetInvoiceQueryResult = Apollo.QueryResult<GetInvoiceQuery, GetInvoiceQueryVariables>;

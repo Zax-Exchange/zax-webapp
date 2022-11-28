@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { FILE_FRAGMENT } from "../../utils/common/file";
 import { PERMISSIONED_PROJECT_BID_FRAGMENT, PROJECT_BID_COMPONENT_FRAGMENT, PROJECT_BID_FRAGMENT } from "../bid/bid";
 import {PROJECT_COMPONENT_FRAGMENT} from "../project/project"
 import {PROJECT_FRAGMENT} from "../project/project"
@@ -80,3 +81,40 @@ const SEARCH_VENDOR_COMPANIES = gql`
     }
   }
 `;
+
+const GET_VENDOR_POS = gql`
+${FILE_FRAGMENT}
+  query getVendorPos($data: GetVendorPosInput!) {
+    getVendorPos(data: $data) {
+      projectInfo {
+        projectId
+        projectName
+      }
+      poDetails {
+        projectBidId
+        customerInfo {
+          companyId
+          companyName
+        }
+        poFile {
+          ...FileFragment
+          status
+        }
+        invoiceFile {
+          ...FileFragment
+          status
+        }
+      }
+    }
+  }
+`
+
+const GET_INVOICE = gql`
+${FILE_FRAGMENT}
+  query getInvoice($data: GetInvoiceInput!) {
+    getInvoice(data: $data) {
+      ...FileFragment
+      status
+    }
+  }
+`

@@ -1,3 +1,4 @@
+import { ApolloQueryResult } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import {
   Autocomplete,
@@ -13,6 +14,8 @@ import { useIntl } from "react-intl";
 import { AuthContext } from "../../../../context/AuthContext";
 import {
   CustomerProjectOverview,
+  Exact,
+  GetCustomerPosInput,
   ProjectBidForPo,
   ProjectPermission,
   PurchaseOrder,
@@ -21,6 +24,7 @@ import { useCreatePurchaseOrderMutation } from "../../../gql/create/customer/cus
 import { useDeletePurchaseOrderMutation } from "../../../gql/delete/customer/customer.generated";
 import { useGetProjectBidsForPoLazyQuery } from "../../../gql/get/bid/bid.generated";
 import {
+  GetCustomerPosQuery,
   useGetCustomerProjectsQuery,
   useGetPurchaseOrderLazyQuery,
 } from "../../../gql/get/customer/customer.generated";
@@ -28,9 +32,23 @@ import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 import UploadPO from "../UploadPO";
 
 const UploadPOModal = ({
-  setUploadCreatePOModal,
+  closeUploadPOModal,
+  getCustomerPosRefetch,
+  defaultProjectId,
+  defaultProjectBidId,
 }: {
-  setUploadCreatePOModal: React.Dispatch<React.SetStateAction<boolean>>;
+  closeUploadPOModal: () => void;
+  getCustomerPosRefetch: (
+    variables?:
+      | Partial<
+          Exact<{
+            data: GetCustomerPosInput;
+          }>
+        >
+      | undefined
+  ) => Promise<ApolloQueryResult<GetCustomerPosQuery>>;
+  defaultProjectId: string | null;
+  defaultProjectBidId: string | null;
 }) => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
@@ -94,14 +112,17 @@ const UploadPOModal = ({
             projectBidId,
           },
         },
+        fetchPolicy: "network-only",
       });
     }
   }, [projectId, projectBidId]);
 
   useEffect(() => {
-    if (getPOData) {
+    if (defaultProjectId && defaultProjectBidId) {
+      setProjectId(defaultProjectId);
+      setProjectBidId(defaultProjectBidId);
     }
-  }, [getPOData]);
+  }, [defaultProjectId, defaultProjectBidId]);
 
   useEffect(() => {
     if (createPOError || getCustomerProjectsError || getProjectBidsForPoError) {
@@ -128,6 +149,14 @@ const UploadPOModal = ({
       },
     });
     closeModal();
+    getCustomerPosRefetch();
+    setSnackbar({
+      severity: "success",
+      message: intl.formatMessage({
+        id: "app.customer.poInvoice.createSuccess",
+      }),
+    });
+    setSnackbarOpen(true);
   };
 
   const deletePurchaseOrderFile = async () => {
@@ -150,7 +179,7 @@ const UploadPOModal = ({
   };
 
   const closeModal = () => {
-    setUploadCreatePOModal(false);
+    closeUploadPOModal();
   };
   return (
     <>
@@ -165,6 +194,9 @@ const UploadPOModal = ({
               getCustomerProjectsData?.getCustomerProjects as CustomerProjectOverview[]
             }
             getOptionLabel={(option) => option.name}
+            defaultValue={getCustomerProjectsData?.getCustomerProjects.find(
+              (p) => p.id === defaultProjectId
+            )}
             autoComplete
             onChange={(e, v) => {
               if (!v) {
@@ -186,25 +218,40 @@ const UploadPOModal = ({
           <Typography variant="subtitle2">select vendor</Typography>
         </Box>
         <Box>
-          <Autocomplete
-            openOnFocus
-            disabled={!getProjectBidsForPoData || !projectId}
-            options={
-              getProjectBidsForPoData?.getProjectBidsForPo as ProjectBidForPo[]
-            }
-            getOptionLabel={(option) => option.companyName}
-            autoComplete
-            onChange={(e, v) => {
-              if (!v) {
-                setProjectBidId(null);
-                return;
+          {!!getProjectBidsForPoData && (
+            <Autocomplete
+              openOnFocus
+              disabled={!getProjectBidsForPoData || !projectId}
+              options={
+                getProjectBidsForPoData?.getProjectBidsForPo as ProjectBidForPo[]
               }
-              setProjectBidId(v.projectBidId);
-            }}
-            renderInput={(params) => {
-              return <TextField {...params} />;
-            }}
-          />
+              defaultValue={getProjectBidsForPoData?.getProjectBidsForPo.find(
+                (p) => p.projectBidId === defaultProjectBidId
+              )}
+              getOptionLabel={(option) => option.companyName}
+              autoComplete
+              onChange={(e, v) => {
+                if (!v) {
+                  setProjectBidId(null);
+                  return;
+                }
+                setProjectBidId(v.projectBidId);
+              }}
+              renderInput={(params) => {
+                return <TextField {...params} />;
+              }}
+            />
+          )}
+          {!getProjectBidsForPoData && (
+            <Autocomplete
+              openOnFocus
+              disabled={true}
+              options={[]}
+              renderInput={(params) => {
+                return <TextField {...params} />;
+              }}
+            />
+          )}
         </Box>
       </Box>
 
@@ -221,11 +268,12 @@ const UploadPOModal = ({
             {purchaseOrderFile.filename}
           </Link>
         )}
-        {getPOData && getPOData.getPurchaseOrder && (
-          <Typography>
-            Creating a new PO will overwrite the existing one and void the
-            associating invoice.
-          </Typography>
+        {defaultProjectId && defaultProjectBidId && (
+          <Box>
+            <Typography variant="caption">
+              Creating a new PO will overwrite the existing one.
+            </Typography>
+          </Box>
         )}
       </Box>
 

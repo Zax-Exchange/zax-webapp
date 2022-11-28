@@ -14,3 +14,9 @@ const CREATE_VENDOR_SUBSCRIPTION = gql`
     }
   }
 `;
+
+const CREATE_INVOICE = gql`
+  mutation createInvoice($data: CreateInvoiceInput!) {
+    createInvoice(data: $data)
+  }
+`

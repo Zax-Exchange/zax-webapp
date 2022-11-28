@@ -293,10 +293,20 @@
   "app.customer.projectDetail.bidModal.vendorInformation": "Vendor Information",
 
   "app.customer.poInvoice.create": "Create",
+  "app.customer.poInvoice.createSuccess": "PO Created!",
+  "app.customer.poInvoice.uploadPO.tooltip": "Select Purchase Order To Upload",
+  "app.customer.poInvoice.uploadAnother": "Upload Another PO",
 
   "app.vendorProfile.tab.companyInfo": "Company Info",
   "app.vendorProfile.tab.certifications": "Certifications & Rewards",
   "app.vendorProfile.tab.productShowcase": "Product Showcase",
+  
+
+  "app.vendor.poInvoice.upload.create": "Create Invoice",
+  "app.vendor.poInvoice.upload.success": "Invoice Uploaded!",
+  "app.vendor.poInvoice.create.success": "Invoice Created!",
+  "app.vendor.poInvoice.uploadInvoice.tooltip": "Select Invoice To Upload",
+  "app.vendor.poInvoice.uploadAnother.tooltip": "Upload Another Invoice",
 
   "app.vendor.search.projectDetail": "Project Detail",
   "app.vendor.search.componentsDetail": "Components Detail",
