@@ -105,8 +105,9 @@ const CreateProjectComponentModal = ({
   setProjectData,
   setComponentModalOpen,
   setComponentsDesigns,
-  setTemporaryDesigns,
   setComponentIndexToEdit,
+  setTemporaryDesignIdsToDelete,
+  componentModalOnClose,
   projectData,
   existingDesigns,
   defaultComponentIndex,
@@ -114,8 +115,9 @@ const CreateProjectComponentModal = ({
   setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
   setComponentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setComponentsDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[][]>>;
-  setTemporaryDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[]>>;
   setComponentIndexToEdit: React.Dispatch<React.SetStateAction<number | null>>;
+  setTemporaryDesignIdsToDelete: React.Dispatch<React.SetStateAction<string[]>>;
+  componentModalOnClose: () => void;
   projectData: CreateProjectInput;
   existingDesigns?: ProjectDesign[];
   defaultComponentIndex?: number;
@@ -160,20 +162,16 @@ const CreateProjectComponentModal = ({
     }
   }, [defaultComponentIndex]);
 
-  // // record these temporary designs in case user closes this modal we need to cleanup the design files in backend
-  // useEffect(() => {
-  //   if (existingDesigns) {
-  //     // only add to temporary designs array if the design is a newly uploaded one
-  //     // so when cleaning up we don't delete existing designs
-  //     const temporaryDesigns = componentDesigns.filter((design) => {
-  //       return !!existingDesigns.find(
-  //         (existingDesign) => existingDesign.fileId === design.fileId
-  //       );
-  //     });
-
-  //     setTemporaryDesigns(temporaryDesigns);
-  //   }
-  // }, [componentDesigns]);
+  const cancelOnClick = () => {
+    if (defaultComponentIndex !== undefined) {
+      setTemporaryDesignIdsToDelete([]);
+    } else {
+      if (componentDesigns.length) {
+        deleteComponentDesigns();
+      }
+    }
+    componentModalOnClose();
+  };
 
   const addComponent = () => {
     // construct CreateProjectComponentInput
@@ -190,17 +188,8 @@ const CreateProjectComponentModal = ({
       components: [...projectData.components, comp],
     });
 
-    // record design files for this component on parent react component since we are in a modal, this is for display purpose only.
-    if (componentDesigns) {
-      setComponentsDesigns((prev) => [...prev, componentDesigns]);
-    } else {
-      // set an empty array so parent can delete component and component designs based on index
-      // otherwise if a component doesn't have designs and user tries to delete the component it'll result in null
-      // since deleting a component will trigger a check for whether there's any designs attached
-      setComponentsDesigns((prev) => [...prev, []]);
-    }
+    setComponentsDesigns((prev) => [...prev, componentDesigns]);
 
-    setTemporaryDesigns([]);
     // close component modal
     setComponentModalOpen(false);
   };
@@ -222,24 +211,16 @@ const CreateProjectComponentModal = ({
       components,
     });
 
-    if (componentDesigns && componentDesigns.length) {
-      setComponentsDesigns((prev) => {
-        const prevDesigns = [...prev];
-        prevDesigns[defaultComponentIndex!] = componentDesigns;
-        return prevDesigns;
-      });
-    } else {
-      setComponentsDesigns((prev) => {
-        const prevDesigns = [...prev];
-        prevDesigns[defaultComponentIndex!] = [];
-        return prevDesigns;
-      });
-    }
+    setComponentsDesigns((prev) => {
+      const allExistingDesigns = [...prev];
+
+      allExistingDesigns[defaultComponentIndex!] = componentDesigns;
+      return allExistingDesigns;
+    });
 
     // clear component-for-edit index so user can start clean if they click create component again
     setComponentIndexToEdit(null);
 
-    setTemporaryDesigns([]);
     // close component modal
     setComponentModalOpen(false);
   };
@@ -388,12 +369,6 @@ const CreateProjectComponentModal = ({
     }
   };
 
-  const setTempDesign = (file: ProjectDesign | null) => {
-    if (file) {
-      setTemporaryDesigns((prev) => [...(prev ? prev : []), file]);
-    }
-  };
-
   const deleteComponentDesigns = () => {
     if (componentData.designIds) {
       Promise.all(
@@ -412,32 +387,26 @@ const CreateProjectComponentModal = ({
 
   const deleteDesign = async (id: string, ind: number) => {
     try {
-      await deleteDesignMutation({
-        variables: {
-          data: {
-            fileId: id,
+      // if the deleted design is an existing one
+      if (
+        existingDesigns &&
+        existingDesigns.find((design) => design.fileId === id)
+      ) {
+        setTemporaryDesignIdsToDelete((prev) => [...prev, id]);
+      } else {
+        await deleteDesignMutation({
+          variables: {
+            data: {
+              fileId: id,
+            },
           },
-        },
-      });
+        });
+      }
       setComponentDesigns((prev) => {
         const prevDesigns = [...prev!];
         prevDesigns.splice(ind, 1);
         return prevDesigns;
       });
-
-      // if the design is an existing design, we want to delete it in parent as well
-      if (defaultComponentIndex !== undefined) {
-        setComponentsDesigns((prev) => {
-          const allExistingDesigns = [...prev];
-          const currentComponentExistingDesigns = [
-            ...allExistingDesigns[defaultComponentIndex],
-          ];
-          currentComponentExistingDesigns.splice(ind, 1);
-          allExistingDesigns[defaultComponentIndex] =
-            currentComponentExistingDesigns;
-          return allExistingDesigns;
-        });
-      }
     } catch (error) {}
   };
 
@@ -565,6 +534,9 @@ const CreateProjectComponentModal = ({
             })}
           </Typography>
           <Box margin={1}>
+            <Button variant="outlined" sx={{ mr: 1 }} onClick={cancelOnClick}>
+              {intl.formatMessage({ id: "app.general.cancel" })}
+            </Button>
             {defaultComponentIndex === undefined ? (
               <Button
                 onClick={addComponent}
@@ -617,7 +589,7 @@ const CreateProjectComponentModal = ({
               </Typography>
               <UploadDesign
                 setComponentData={setComponentData}
-                parentSetDesigns={[setDesigns, setTempDesign]}
+                parentSetDesigns={[setDesigns]}
               />
             </ListItem>
             {renderDesignFiles()}

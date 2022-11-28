@@ -149,9 +149,10 @@ const AdvancedCreateProject = () => {
     []
   );
 
-  // record temporary designs in case user closes the createComponentModal we need to cleanup the design files in backend
-  // this array will store for at most 1 component's designs
-  const [temporaryDesigns, setTemporaryDesigns] = useState<ProjectDesign[]>([]);
+  // Track deleted designs when user is editing a component, so we don't invoke delete api until user clicks save
+  const [temporaryDesignIdsToDelete, setTemporaryDesignIdsToDelete] = useState<
+    string[]
+  >([]);
 
   // get project data if user chooses to import
   useEffect(() => {
@@ -233,24 +234,14 @@ const AdvancedCreateProject = () => {
     }
   }, [getCustomerProjectData]);
 
-  // if there are temporary design files uploaded but user closes the modal already, we clean up/delete the files
   useEffect(() => {
-    if (temporaryDesigns && temporaryDesigns.length && !componentModalOpen) {
+    if (temporaryDesignIdsToDelete.length && !componentModalOpen) {
       Promise.all(
-        temporaryDesigns.map((design) => {
-          return deleteDesign({
-            variables: {
-              data: {
-                fileId: design.fileId,
-              },
-            },
-          });
-        })
+        temporaryDesignIdsToDelete.map((id) => deleteDesignFiles(id))
       );
-      setTemporaryDesigns([]);
+      setTemporaryDesignIdsToDelete([]);
     }
-  }, [temporaryDesigns, componentModalOpen]);
-
+  }, [temporaryDesignIdsToDelete, componentModalOpen]);
   // Switch tab for components detail section.
   const componentTabOnChange = (
     event: React.SyntheticEvent,
@@ -684,7 +675,6 @@ const AdvancedCreateProject = () => {
       <Drawer
         anchor="right"
         open={componentModalOpen}
-        onClose={componentModalOnClose}
         PaperProps={{
           sx: {
             borderTopLeftRadius: "4px",
@@ -706,8 +696,9 @@ const AdvancedCreateProject = () => {
           setComponentsDesigns={setComponentsDesigns}
           setComponentModalOpen={setComponentModalOpen}
           setProjectData={setProjectData}
-          setTemporaryDesigns={setTemporaryDesigns}
           setComponentIndexToEdit={setComponentIndexToEdit}
+          setTemporaryDesignIdsToDelete={setTemporaryDesignIdsToDelete}
+          componentModalOnClose={componentModalOnClose}
           projectData={projectData}
           defaultComponentIndex={
             componentIndexToEdit !== null ? componentIndexToEdit : undefined

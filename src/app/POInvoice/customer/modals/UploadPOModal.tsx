@@ -66,6 +66,8 @@ const UploadPOModal = ({
   const [deletePO, { loading: deletePOLoading, error: deletePOError }] =
     useDeletePurchaseOrderMutation();
 
+  const [existingPO, setExistingPO] = useState<PurchaseOrder | null>(null);
+
   const {
     data: getCustomerProjectsData,
     loading: getCustomerProjectsLoading,
@@ -77,6 +79,7 @@ const UploadPOModal = ({
         permissions: [ProjectPermission.Editor, ProjectPermission.Owner],
       },
     },
+    fetchPolicy: "no-cache",
   });
 
   const [
@@ -99,6 +102,7 @@ const UploadPOModal = ({
             projectId,
           },
         },
+        fetchPolicy: "no-cache",
       });
     }
   }, [projectId]);
@@ -123,6 +127,12 @@ const UploadPOModal = ({
       setProjectBidId(defaultProjectBidId);
     }
   }, [defaultProjectId, defaultProjectBidId]);
+
+  useEffect(() => {
+    if (getPOData) {
+      setExistingPO(getPOData.getPurchaseOrder || null);
+    }
+  }, [getPOData]);
 
   useEffect(() => {
     if (createPOError || getCustomerProjectsError || getProjectBidsForPoError) {
@@ -181,6 +191,25 @@ const UploadPOModal = ({
   const closeModal = () => {
     closeUploadPOModal();
   };
+
+  const getVendor = () => {
+    if (projectBidId && getProjectBidsForPoData) {
+      return getProjectBidsForPoData.getProjectBidsForPo.find(
+        (p) => p.projectBidId === projectBidId
+      );
+    }
+    return null;
+  };
+
+  const getProject = () => {
+    if (projectId && getCustomerProjectsData) {
+      return getCustomerProjectsData.getCustomerProjects.find(
+        (p) => p.id === projectId
+      );
+    }
+    return null;
+  };
+
   return (
     <>
       <Box mb={3}>
@@ -194,13 +223,12 @@ const UploadPOModal = ({
               getCustomerProjectsData?.getCustomerProjects as CustomerProjectOverview[]
             }
             getOptionLabel={(option) => option.name}
-            defaultValue={getCustomerProjectsData?.getCustomerProjects.find(
-              (p) => p.id === defaultProjectId
-            )}
+            value={getProject()}
             autoComplete
             onChange={(e, v) => {
               if (!v) {
                 setProjectId(null);
+                setExistingPO(null);
               } else {
                 setProjectId(v.id);
               }
@@ -221,18 +249,16 @@ const UploadPOModal = ({
           {!!getProjectBidsForPoData && (
             <Autocomplete
               openOnFocus
-              disabled={!getProjectBidsForPoData || !projectId}
               options={
-                getProjectBidsForPoData?.getProjectBidsForPo as ProjectBidForPo[]
+                getProjectBidsForPoData.getProjectBidsForPo as ProjectBidForPo[]
               }
-              defaultValue={getProjectBidsForPoData?.getProjectBidsForPo.find(
-                (p) => p.projectBidId === defaultProjectBidId
-              )}
+              value={getVendor()}
               getOptionLabel={(option) => option.companyName}
               autoComplete
               onChange={(e, v) => {
                 if (!v) {
                   setProjectBidId(null);
+                  setExistingPO(null);
                   return;
                 }
                 setProjectBidId(v.projectBidId);
@@ -268,7 +294,7 @@ const UploadPOModal = ({
             {purchaseOrderFile.filename}
           </Link>
         )}
-        {defaultProjectId && defaultProjectBidId && (
+        {!!existingPO && (
           <Box>
             <Typography variant="caption">
               Creating a new PO will overwrite the existing one.

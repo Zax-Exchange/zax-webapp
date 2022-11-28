@@ -107,10 +107,8 @@ const CreateOrUpdateComponentModal = ({
   setComponents,
   setComponentsDesigns,
   setTemporaryDesigns,
-  setTemporaryDesignsToDelete,
   setComponentModalOpen,
   setComponentIndexToEdit,
-  temporaryDesignsToDelete,
   componentIndexToEdit,
   existingComponent,
   existingDesigns,
@@ -122,12 +120,8 @@ const CreateOrUpdateComponentModal = ({
   >;
   setComponentsDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[][]>>;
   setTemporaryDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[]>>;
-  setTemporaryDesignsToDelete: React.Dispatch<
-    React.SetStateAction<ProjectDesign[]>
-  >;
   setComponentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setComponentIndexToEdit: React.Dispatch<React.SetStateAction<number | null>>;
-  temporaryDesignsToDelete: ProjectDesign[];
   // existing comp could be either a newly added comp or a pre-existing one
   existingComponent:
     | CreateProjectComponentInput
@@ -176,12 +170,33 @@ const CreateOrUpdateComponentModal = ({
     }
   }, [deleteDesignError]);
 
+  const cancelOnClick = () => {
+    if (!existingComponent) {
+      // scenario 1 (adding a component)
+      // clean up directly as temporary designs array is only used when editing a component
+      if (componentDesigns.length) {
+        Promise.all(
+          componentDesigns.map((design) =>
+            deleteDesignMutation({
+              variables: {
+                data: {
+                  fileId: design.fileId,
+                },
+              },
+            })
+          )
+        );
+      }
+    }
+    setComponentModalOpen(false);
+  };
+
   // Scenario 1
   const addComponent = () => {
     // construct CreateProjectComponentInput
     const comp: CreateProjectComponentInput = {
       ...componentData,
-      designIds: componentDesigns?.map((d) => d.fileId),
+      designIds: componentDesigns.map((d) => d.fileId),
       componentSpec: {
         ...componentSpec,
       },
@@ -206,7 +221,7 @@ const CreateOrUpdateComponentModal = ({
     // comp here could be of both types Create/Update Input type
     const comp = {
       ...componentData,
-      designIds: componentDesigns?.map((d) => d.fileId),
+      designIds: componentDesigns.map((d) => d.fileId),
       componentSpec,
     };
 
@@ -216,39 +231,12 @@ const CreateOrUpdateComponentModal = ({
       return allComps;
     });
 
-    if (temporaryDesignsToDelete.length) {
-      // user has clicked on files delete buttons and now is saving
-      // we proceed with cleaning up the deleted files
-      Promise.all(
-        temporaryDesignsToDelete.map((file) => {
-          return deleteDesignMutation({
-            variables: {
-              data: {
-                fileId: file.fileId,
-              },
-            },
-          });
-        })
-      );
-
-      // reset temporaryDesignsToDelete array
-      setTemporaryDesignsToDelete([]);
-    }
-
     // Set the parent component designs based on local component designs
-    if (componentDesigns && componentDesigns.length) {
-      setComponentsDesigns((prev) => {
-        const prevDesigns = [...prev];
-        prevDesigns[componentIndexToEdit!] = componentDesigns;
-        return prevDesigns;
-      });
-    } else {
-      setComponentsDesigns((prev) => {
-        const prevDesigns = [...prev];
-        prevDesigns[componentIndexToEdit!] = [];
-        return prevDesigns;
-      });
-    }
+    setComponentsDesigns((prev) => {
+      const prevDesigns = [...prev];
+      prevDesigns[componentIndexToEdit!] = componentDesigns;
+      return prevDesigns;
+    });
 
     // empty temporaryDesigns array because user saved
     setTemporaryDesigns([]);
@@ -361,10 +349,8 @@ const CreateOrUpdateComponentModal = ({
             },
           },
         });
-      } else {
-        // scenario 2, 3 we add it to temporaryDesignsToDelete so we can revert if user does not save
-        setTemporaryDesignsToDelete((prev) => [...prev, componentDesigns[ind]]);
       }
+
       // remove from local designs array
       setComponentDesigns((prev) => {
         const prevDesigns = [...prev!];
@@ -498,6 +484,9 @@ const CreateOrUpdateComponentModal = ({
             })}
           </Typography>
           <Box margin={1}>
+            <Button sx={{ mr: 1 }} variant="outlined" onClick={cancelOnClick}>
+              {intl.formatMessage({ id: "app.general.cancel" })}
+            </Button>
             {componentIndexToEdit === null ? (
               <Button
                 onClick={addComponent}

@@ -174,10 +174,6 @@ const EditProject = () => {
   // only used for when user EDITS a component.
   const [temporaryDesigns, setTemporaryDesigns] = useState<ProjectDesign[]>([]);
 
-  const [temporaryDesignsToDelete, setTemporaryDesignsToDelete] = useState<
-    ProjectDesign[]
-  >([]);
-
   // store all removed components so users can restore them if they choose to
   const [removedComponents, setRemovedComponents] = useState<
     (CreateProjectComponentInput | UpdateProjectComponentData)[]
@@ -343,12 +339,6 @@ const EditProject = () => {
         })
       );
       setTemporaryDesigns([]);
-    }
-    // user deletes without saving, we restore by just resetting the array
-    // the files in this array were never truly deleted, they were merely recorded
-    // they only get deleted when user hits save
-    if (temporaryDesignsToDelete.length && !componentModalOpen) {
-      setTemporaryDesignsToDelete([]);
     }
   }, [temporaryDesigns, componentModalOpen]);
 
@@ -938,7 +928,6 @@ const EditProject = () => {
       <Drawer
         anchor="right"
         open={componentModalOpen}
-        onClose={componentModalOnClose}
         PaperProps={{
           sx: {
             borderTopLeftRadius: "4px",
@@ -960,10 +949,8 @@ const EditProject = () => {
           setComponents={setComponents}
           setComponentsDesigns={setComponentsDesigns}
           setTemporaryDesigns={setTemporaryDesigns}
-          setTemporaryDesignsToDelete={setTemporaryDesignsToDelete}
           setComponentModalOpen={setComponentModalOpen}
           setComponentIndexToEdit={setComponentIndexToEdit}
-          temporaryDesignsToDelete={temporaryDesignsToDelete}
           componentIndexToEdit={componentIndexToEdit}
           existingDesigns={
             componentIndexToEdit !== null

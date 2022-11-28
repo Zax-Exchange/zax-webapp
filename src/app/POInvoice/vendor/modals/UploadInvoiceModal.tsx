@@ -54,6 +54,16 @@ const UploadInvoiceModal = ({
     { loading: deleteInvoiceLoading, error: deleteInvoiceError },
   ] = useDeleteInvoiceMutation();
 
+  const { data } = useGetInvoiceQuery({
+    variables: {
+      data: {
+        projectId: projectId || "",
+        projectBidId: projectBidId || "",
+      },
+    },
+    fetchPolicy: "network-only",
+  });
+  console.log(data);
   useEffect(() => {
     if (createInvoiceError) {
       setSnackbar({

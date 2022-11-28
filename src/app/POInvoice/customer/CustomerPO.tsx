@@ -156,12 +156,7 @@ const CustomerPO = () => {
           </TableContainer>
         )}
       </Box>
-      <Dialog
-        open={openUploadPOModal}
-        onClose={closeUploadPOModal}
-        maxWidth="md"
-        fullWidth={true}
-      >
+      <Dialog open={openUploadPOModal} maxWidth="md" fullWidth={true}>
         <DialogContent>
           <UploadPOModal
             closeUploadPOModal={closeUploadPOModal}

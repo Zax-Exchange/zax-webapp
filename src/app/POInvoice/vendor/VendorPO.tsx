@@ -64,9 +64,9 @@ const VendorPO = () => {
   };
 
   const closeUploadInvoiceModal = () => {
+    setUploadInvoiceMoodalOpen(false);
     setSelectedProjectId(null);
     setSelectedProjectBidId(null);
-    setUploadInvoiceMoodalOpen(false);
   };
 
   return (
@@ -172,12 +172,7 @@ const VendorPO = () => {
           </TableContainer>
         )}
       </Box>
-      <Dialog
-        open={uploadInvoiceModalOpen}
-        onClose={() => closeUploadInvoiceModal()}
-        maxWidth="md"
-        fullWidth={true}
-      >
+      <Dialog open={uploadInvoiceModalOpen} maxWidth="md" fullWidth={true}>
         <DialogContent>
           <UploadInvoiceModal
             projectId={selectedProjectId}
