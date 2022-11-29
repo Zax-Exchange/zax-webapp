@@ -33,7 +33,10 @@ import {
   useGetPurchaseOrderQuery,
 } from "../../gql/get/customer/customer.generated";
 import { useNavigate } from "react-router-dom";
-import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
+import {
+  CUSTOMER_ROUTES,
+  GENERAL_ROUTES,
+} from "../../constants/loggedInRoutes";
 import CreatePOModal from "./modals/CreatePOModal";
 
 type VendorBidOverviewMenuSelection =
@@ -132,6 +135,9 @@ const VendorBidOverview = ({
         break;
       case "view-profile":
         viewVendorProfile();
+        break;
+      case "create-po":
+        navigate(GENERAL_ROUTES.PO_INVOICE);
         break;
       default:
         break;
@@ -245,7 +251,7 @@ const VendorBidOverview = ({
                 })}
               </MenuItem>
 
-              <MenuItem onClick={() => vendorBidMenuOnClick("accept")}>
+              {/* <MenuItem onClick={() => vendorBidMenuOnClick("accept")}>
                 {intl.formatMessage({
                   id: "app.customer.projectDetail.bid.menu.acceptBid",
                 })}
@@ -255,7 +261,7 @@ const VendorBidOverview = ({
                 {intl.formatMessage({
                   id: "app.customer.projectDetail.bid.menu.rejectBid",
                 })}
-              </MenuItem>
+              </MenuItem> */}
             </MenuList>
           </Menu>
 

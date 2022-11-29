@@ -23,6 +23,8 @@ import {
   ProjectDesign,
 } from "../../../generated/graphql";
 import { productValueToLabelMap } from "../../constants/products";
+import AttachmentButton from "../../Utils/AttachmentButton";
+import { openLink } from "../../Utils/openLink";
 
 export default function ComponentSpecDetail({
   spec,
@@ -87,19 +89,10 @@ export default function ComponentSpecDetail({
         <TableCell>
           {designs.map((design) => {
             return (
-              <Link
-                href={design.url}
-                target="_blank"
-                rel="noopener"
-                sx={{
-                  ":first-child": {
-                    ml: 0,
-                  },
-                  ml: 1,
-                }}
-              >
-                {design.filename}
-              </Link>
+              <AttachmentButton
+                label={design.filename}
+                onClick={() => openLink(design.url)}
+              />
             );
           })}
         </TableCell>

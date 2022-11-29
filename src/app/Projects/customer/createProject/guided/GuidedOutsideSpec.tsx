@@ -42,10 +42,12 @@ import {
   PRODUCT_NAME_SLEEVE,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
+import AttachmentButton from "../../../../Utils/AttachmentButton";
 import {
   isValidAlphanumeric,
   isValidFloat,
 } from "../../../../Utils/inputValidators";
+import { openLink } from "../../../../Utils/openLink";
 import UploadDesign from "../../UploadDesign";
 import DimensionsInput from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
@@ -524,9 +526,10 @@ const GuidedOutsideSpec = ({
               {componentDesigns?.map((file, i) => {
                 return (
                   <Box>
-                    <Link href={file.url} target="_blank" rel="noopener">
-                      {file.filename}
-                    </Link>
+                    <AttachmentButton
+                      label={file.filename}
+                      onClick={() => openLink(file.url)}
+                    />
                     <IconButton onClick={() => deleteDesign(file.fileId, i)}>
                       <Cancel fontSize="small" />
                     </IconButton>

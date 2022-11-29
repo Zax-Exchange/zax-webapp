@@ -145,6 +145,9 @@ const NotificationComponent = () => {
 
       navigate(`${dest.join("")}`);
     }
+    if (noti.notificationType === NotificationType.PO_INVOICE) {
+      navigate(GENERAL_ROUTES.PO_INVOICE);
+    }
 
     clearNotification(noti.notificationId);
   };

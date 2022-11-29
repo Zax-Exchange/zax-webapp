@@ -28,7 +28,9 @@ import {
   useGetCustomerProjectsQuery,
   useGetPurchaseOrderLazyQuery,
 } from "../../../gql/get/customer/customer.generated";
+import AttachmentButton from "../../../Utils/AttachmentButton";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
+import { openLink } from "../../../Utils/openLink";
 import UploadPO from "../UploadPO";
 
 const UploadPOModal = ({
@@ -214,7 +216,9 @@ const UploadPOModal = ({
     <>
       <Box mb={3}>
         <Box>
-          <Typography variant="subtitle2">select project</Typography>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.customer.poInvoice.selectProject" })}
+          </Typography>
         </Box>
         <Box>
           <Autocomplete
@@ -243,7 +247,8 @@ const UploadPOModal = ({
 
       <Box mb={3}>
         <Box>
-          <Typography variant="subtitle2">select vendor</Typography>
+          {intl.formatMessage({ id: "app.customer.poInvoice.selectVendor" })}
+          <Typography variant="subtitle2"></Typography>
         </Box>
         <Box>
           {!!getProjectBidsForPoData && (
@@ -283,21 +288,26 @@ const UploadPOModal = ({
 
       <Box mb={3}>
         <Box display="flex" alignItems="center">
-          <Typography variant="subtitle2">Upload PO</Typography>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.customer.poInvoice.uploadPO" })}
+          </Typography>
           <UploadPO
             setPurchaseOrderFile={setPurchaseOrderFile}
             setPurchaseOrderId={setPurchaseOrderId}
           />
         </Box>
         {!!purchaseOrderFile && (
-          <Link href={purchaseOrderFile.url} target="_blank" rel="noopener">
-            {purchaseOrderFile.filename}
-          </Link>
+          <AttachmentButton
+            label={purchaseOrderFile.filename}
+            onClick={() => openLink(purchaseOrderFile.url)}
+          />
         )}
         {!!existingPO && (
           <Box>
             <Typography variant="caption">
-              Creating a new PO will overwrite the existing one.
+              {intl.formatMessage({
+                id: "app.customer.poInvoice.uploadAnother.helperText",
+              })}
             </Typography>
           </Box>
         )}

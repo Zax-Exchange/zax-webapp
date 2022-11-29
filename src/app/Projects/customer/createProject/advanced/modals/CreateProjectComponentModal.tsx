@@ -59,8 +59,10 @@ import {
   DEFAULT_BOOKLET_SPEC,
 } from "../../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../../gql/delete/project/project.generated";
+import AttachmentButton from "../../../../../Utils/AttachmentButton";
 import useCustomSnackbar from "../../../../../Utils/CustomSnackbar";
 import { isValidAlphanumeric } from "../../../../../Utils/inputValidators";
+import { openLink } from "../../../../../Utils/openLink";
 import UploadDesign from "../../../UploadDesign";
 import BookletSubSection from "../subsections/BookletSubSection";
 import CorrugateBoxSubSection from "../subsections/CorrugateBoxSubSection";
@@ -419,9 +421,10 @@ const CreateProjectComponentModal = ({
           {componentDesigns.map((file, i) => {
             return (
               <ListItem sx={{ p: 0 }}>
-                <Link href={file.url} target="_blank" rel="noopener">
-                  {file.filename}
-                </Link>
+                <AttachmentButton
+                  label={file.filename}
+                  onClick={() => openLink(file.url)}
+                />
                 <IconButton onClick={() => deleteDesign(file.fileId, i)}>
                   <Cancel fontSize="small" />
                 </IconButton>

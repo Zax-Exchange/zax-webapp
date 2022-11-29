@@ -17,3 +17,9 @@ const UPDATE_PROJECT_BID = gql`
     updateProjectBid(data: $data)
   }
 `
+
+const RESUBMIT_PROJECT_BID = gql`
+  mutation resubmitProjectBid($data: ResubmitProjectBidInput!) {
+    resubmitProjectBid(data: $data)
+  }
+`

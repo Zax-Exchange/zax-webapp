@@ -34,6 +34,8 @@ import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../../common/ComponentSpecDetail";
 import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../../constants/products";
 import { countries } from "../../../constants/countries";
+import AttachmentButton from "../../../Utils/AttachmentButton";
+import { openLink } from "../../../Utils/openLink";
 
 /**
  * Bid modal shown in CustomerProjectDetail
@@ -168,19 +170,10 @@ const VendorBidModal = ({
               })}
             </Typography>
             <Box display="flex">
-              <Link
-                href={bid.remarkFile.url}
-                target="_blank"
-                rel="noopener"
-                sx={{
-                  ":first-child": {
-                    ml: 0,
-                  },
-                  ml: 1,
-                }}
-              >
-                {bid.remarkFile.filename}
-              </Link>
+              <AttachmentButton
+                label={bid.remarkFile!.filename}
+                onClick={() => openLink(bid.remarkFile!.url)}
+              />
             </Box>
           </Box>
         )}

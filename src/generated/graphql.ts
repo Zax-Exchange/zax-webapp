@@ -476,6 +476,7 @@ export type Invoice = FileInterface & {
 export enum InvoiceStatus {
   Accepted = 'ACCEPTED',
   Open = 'OPEN',
+  Outdated = 'OUTDATED',
   Rejected = 'REJECTED',
   Void = 'VOID'
 }
@@ -520,6 +521,7 @@ export type Mutation = {
   inviteUser: Scalars['Boolean'];
   requestToJoin: Scalars['Boolean'];
   reset: Scalars['Boolean'];
+  resubmitProjectBid: Scalars['Boolean'];
   updateCompanyPlan: Scalars['Boolean'];
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
@@ -664,6 +666,11 @@ export type MutationRequestToJoinArgs = {
 
 export type MutationResetArgs = {
   t?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type MutationResubmitProjectBidArgs = {
+  data: ResubmitProjectBidInput;
 };
 
 
@@ -1095,6 +1102,7 @@ export type PurchaseOrder = FileInterface & {
 export enum PurchaseOrderStatus {
   Accepted = 'ACCEPTED',
   Open = 'OPEN',
+  Outdated = 'OUTDATED',
   Rejected = 'REJECTED',
   Void = 'VOID'
 }
@@ -1293,6 +1301,10 @@ export type RequestToJoinInput = {
   email: Scalars['String'];
 };
 
+export type ResubmitProjectBidInput = {
+  projectBidId: Scalars['String'];
+};
+
 export type SearchCustomerProjectInput = {
   deliveryDate?: InputMaybe<Scalars['String']>;
   orderQuantities?: InputMaybe<Array<Scalars['String']>>;
@@ -1368,7 +1380,7 @@ export type UpdateProjectBidPermissionsInputData = {
 export type UpdateProjectComponentData = {
   componentId: Scalars['String'];
   componentSpec: UpdateProjectComponentSpecData;
-  designIds?: InputMaybe<Array<Scalars['String']>>;
+  designIds: Array<Scalars['String']>;
   name: Scalars['String'];
 };
 

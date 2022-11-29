@@ -57,7 +57,7 @@ import {
 import FullScreenLoading from "../../../Utils/Loading";
 import ProjectCategoryDropdown from "../../../Utils/ProjectCategoryDropdown";
 import GoogleMapAutocomplete from "../../../Utils/GoogleMapAutocomplete";
-import { Cancel, Edit, Restore } from "@mui/icons-material";
+import { ArrowBack, Cancel, Edit, Restore } from "@mui/icons-material";
 import ComponentSpecDetail from "../../common/ComponentSpecDetail";
 import CreateProjectComponentModal from "../createProject/advanced/modals/CreateProjectComponentModal";
 import { useGetProjectDetailQuery } from "../../../gql/get/project/project.generated";
@@ -545,6 +545,13 @@ const EditProject = () => {
     }
   };
 
+  const cancelEdit = () => {
+    const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
+
+    dest[1] = projectId || "";
+
+    navigate(`${dest.join("")}`);
+  };
   const handleAddressOnChange = (deliveryAddress: string) => {
     setUpdateProjectInput((prev) => ({
       ...prev,
@@ -607,6 +614,11 @@ const EditProject = () => {
   return (
     <>
       {isLoading && <FullScreenLoading />}
+      <Box display="flex">
+        <IconButton onClick={cancelEdit}>
+          <ArrowBack />
+        </IconButton>
+      </Box>
       <Paper sx={{ padding: 5 }}>
         <Box display="flex" mb={4}>
           <Typography variant="h6" textAlign="left" flexGrow={1}>

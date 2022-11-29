@@ -51,6 +51,8 @@ import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../constants/products";
 import AssistantDirectionRoundedIcon from "@mui/icons-material/AssistantDirectionRounded";
 import UploadRemark from "../../Projects/vendor/UploadRemark";
 import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
+import AttachmentButton from "../../Utils/AttachmentButton";
+import { openLink } from "../../Utils/openLink";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -787,19 +789,10 @@ const SearchProjectDetail = () => {
 
                   {remarkFile && (
                     <Box display="flex">
-                      <Link
-                        href={remarkFile.url}
-                        target="_blank"
-                        rel="noopener"
-                        sx={{
-                          ":first-child": {
-                            ml: 0,
-                          },
-                          ml: 1,
-                        }}
-                      >
-                        {remarkFile.filename}
-                      </Link>
+                      <AttachmentButton
+                        label={remarkFile.filename}
+                        onClick={() => openLink(remarkFile.url)}
+                      />
                     </Box>
                   )}
                 </Box>

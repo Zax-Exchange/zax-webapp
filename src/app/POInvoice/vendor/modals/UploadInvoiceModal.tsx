@@ -14,7 +14,9 @@ import {
   GetVendorPosQuery,
   useGetInvoiceQuery,
 } from "../../../gql/get/vendor/vendor.generated";
+import AttachmentButton from "../../../Utils/AttachmentButton";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
+import { openLink } from "../../../Utils/openLink";
 import UploadInvoice from "../UploadInvoice";
 
 const UploadInvoiceModal = ({
@@ -40,7 +42,6 @@ const UploadInvoiceModal = ({
 }) => {
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-
   const [invoiceId, setInvoiceId] = useState<string | null>(null);
   const [invoiceFile, setInvoiceFile] = useState<Invoice | null>(null);
 
@@ -54,16 +55,6 @@ const UploadInvoiceModal = ({
     { loading: deleteInvoiceLoading, error: deleteInvoiceError },
   ] = useDeleteInvoiceMutation();
 
-  const { data } = useGetInvoiceQuery({
-    variables: {
-      data: {
-        projectId: projectId || "",
-        projectBidId: projectBidId || "",
-      },
-    },
-    fetchPolicy: "network-only",
-  });
-  console.log(data);
   useEffect(() => {
     if (createInvoiceError) {
       setSnackbar({
@@ -116,21 +107,26 @@ const UploadInvoiceModal = ({
     <>
       <Box>
         <Box display="flex" alignItems="center">
-          <Typography variant="subtitle2">Upload Invoice</Typography>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({ id: "app.vendor.poInvoice.uploadInvoice" })}
+          </Typography>
           <UploadInvoice
             setInvoiceId={setInvoiceId}
             setInvoiceFile={setInvoiceFile}
           />
         </Box>
         {!!invoiceFile && (
-          <Link href={invoiceFile.url} target="_blank" rel="noopener">
-            {invoiceFile.filename}
-          </Link>
+          <AttachmentButton
+            label={invoiceFile.filename}
+            onClick={() => openLink(invoiceFile.url)}
+          />
         )}
         {hasExistingInvoice && (
           <Box>
             <Typography variant="caption">
-              Creating a new Invoice will overwrite the existing one.
+              {intl.formatMessage({
+                id: "app.vendor.poInvoice.uploadAnother.helperText",
+              })}
             </Typography>
           </Box>
         )}

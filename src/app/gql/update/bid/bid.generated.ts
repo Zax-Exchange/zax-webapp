@@ -25,6 +25,13 @@ export type UpdateProjectBidMutationVariables = Types.Exact<{
 
 export type UpdateProjectBidMutation = { __typename?: 'Mutation', updateProjectBid: boolean };
 
+export type ResubmitProjectBidMutationVariables = Types.Exact<{
+  data: Types.ResubmitProjectBidInput;
+}>;
+
+
+export type ResubmitProjectBidMutation = { __typename?: 'Mutation', resubmitProjectBid: boolean };
+
 
 export const UpdateProjectBidPermissionsDocument = gql`
     mutation updateProjectBidPermissions($data: UpdateProjectBidPermissionsInput!) {
@@ -119,3 +126,34 @@ export function useUpdateProjectBidMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateProjectBidMutationHookResult = ReturnType<typeof useUpdateProjectBidMutation>;
 export type UpdateProjectBidMutationResult = Apollo.MutationResult<UpdateProjectBidMutation>;
 export type UpdateProjectBidMutationOptions = Apollo.BaseMutationOptions<UpdateProjectBidMutation, UpdateProjectBidMutationVariables>;
+export const ResubmitProjectBidDocument = gql`
+    mutation resubmitProjectBid($data: ResubmitProjectBidInput!) {
+  resubmitProjectBid(data: $data)
+}
+    `;
+export type ResubmitProjectBidMutationFn = Apollo.MutationFunction<ResubmitProjectBidMutation, ResubmitProjectBidMutationVariables>;
+
+/**
+ * __useResubmitProjectBidMutation__
+ *
+ * To run a mutation, you first call `useResubmitProjectBidMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResubmitProjectBidMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resubmitProjectBidMutation, { data, loading, error }] = useResubmitProjectBidMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useResubmitProjectBidMutation(baseOptions?: Apollo.MutationHookOptions<ResubmitProjectBidMutation, ResubmitProjectBidMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResubmitProjectBidMutation, ResubmitProjectBidMutationVariables>(ResubmitProjectBidDocument, options);
+      }
+export type ResubmitProjectBidMutationHookResult = ReturnType<typeof useResubmitProjectBidMutation>;
+export type ResubmitProjectBidMutationResult = Apollo.MutationResult<ResubmitProjectBidMutation>;
+export type ResubmitProjectBidMutationOptions = Apollo.BaseMutationOptions<ResubmitProjectBidMutation, ResubmitProjectBidMutationVariables>;

@@ -33,6 +33,7 @@ import ProjectChat from "../chat/ProjectChat";
 import React from "react";
 import {
   BidRemark,
+  BidStatus,
   CreateProjectBidComponentInput,
   ProjectBidComponent,
   ProjectComponent,
@@ -51,8 +52,9 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { Edit } from "@mui/icons-material";
+import { ChangeCircleOutlined, Edit } from "@mui/icons-material";
 import {
+  useResubmitProjectBidMutation,
   useUpdateProjectBidComponentsMutation,
   useUpdateProjectBidMutation,
 } from "../../gql/update/bid/bid.generated";
@@ -63,6 +65,8 @@ import { useCreateProjectBidComponentsMutation } from "../../gql/create/bid/bid.
 import UploadRemark from "./UploadRemark";
 import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 import PermissionDenied from "../../Utils/PermissionDenied";
+import AttachmentButton from "../../Utils/AttachmentButton";
+import { openLink } from "../../Utils/openLink";
 
 type BidComponent = {
   quantityPrices: QuantityPrice[];
@@ -181,6 +185,15 @@ const VendorProjectDetail = () => {
     },
   ] = useCreateProjectBidComponentsMutation();
 
+  const [
+    resubmitBid,
+    {
+      loading: resubmitBidLoading,
+      error: resubmitBidError,
+      data: resubmitBidData,
+    },
+  ] = useResubmitProjectBidMutation();
+
   useEffect(() => {
     if (isEditMode) {
       initializeBidComponents();
@@ -188,7 +201,7 @@ const VendorProjectDetail = () => {
   }, [isEditMode]);
 
   useEffect(() => {
-    if (getVendorDetailError || getVendorProjectError) {
+    if (getVendorDetailError || getVendorProjectError || resubmitBidError) {
       if (getVendorProjectError?.message === "permission denied") {
         setPermissionError(true);
       } else {
@@ -199,7 +212,7 @@ const VendorProjectDetail = () => {
         setSnackbarOpen(true);
       }
     }
-  }, [getVendorDetailError, getVendorProjectError]);
+  }, [getVendorDetailError, getVendorProjectError, resubmitBidError]);
 
   useEffect(() => {
     if (getVendorProjectData && getVendorProjectData.getVendorProject) {
@@ -207,6 +220,20 @@ const VendorProjectDetail = () => {
     }
   }, [getVendorProjectData]);
 
+  const resubmitProjectBid = async () => {
+    if (getVendorProjectData && getVendorProjectData.getVendorProject) {
+      await resubmitBid({
+        variables: {
+          data: {
+            projectBidId: getVendorProjectData.getVendorProject.bidInfo.id,
+          },
+        },
+        onCompleted() {
+          getVendorProjectRefetch();
+        },
+      });
+    }
+  };
   const initializeBidComponents = () => {
     if (getVendorProjectData && getVendorProjectData.getVendorProject) {
       const projectComponents =
@@ -306,6 +333,7 @@ const VendorProjectDetail = () => {
       });
     }
   };
+
   const componentTabOnChange = (
     event: React.SyntheticEvent,
     newTab: number
@@ -814,9 +842,32 @@ const VendorProjectDetail = () => {
                 </Button>
               </>
             ) : (
-              <IconButton onClick={() => setIsEditMode(true)}>
-                <Edit />
-              </IconButton>
+              <>
+                {bidInfo.status === BidStatus.Outdated && (
+                  <IconButton onClick={resubmitProjectBid}>
+                    <Tooltip
+                      arrow
+                      title={intl.formatMessage({
+                        id: "app.vendor.projectDetail.resubmitBid",
+                      })}
+                      placement="top"
+                    >
+                      <ChangeCircleOutlined />
+                    </Tooltip>
+                  </IconButton>
+                )}
+                <IconButton onClick={() => setIsEditMode(true)}>
+                  <Tooltip
+                    arrow
+                    title={intl.formatMessage({
+                      id: "app.vendor.projectDetail.editBid",
+                    })}
+                    placement="top"
+                  >
+                    <Edit />
+                  </Tooltip>
+                </IconButton>
+              </>
             )}
           </Box>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -879,19 +930,10 @@ const VendorProjectDetail = () => {
 
           {!!remarkFile && (
             <Box display="flex">
-              <Link
-                href={remarkFile.url}
-                target="_blank"
-                rel="noopener"
-                sx={{
-                  ":first-child": {
-                    ml: 0,
-                  },
-                  ml: 1,
-                }}
-              >
-                {remarkFile.filename}
-              </Link>
+              <AttachmentButton
+                label={remarkFile.filename}
+                onClick={() => openLink(remarkFile.url)}
+              />
             </Box>
           )}
         </Box>
@@ -902,12 +944,9 @@ const VendorProjectDetail = () => {
   const isLoading =
     getVendorProjectLoading ||
     getVendorDetailLoading ||
+    resubmitBidLoading ||
     updateProjectBidComponentsLoading ||
     createProjectBidComponentsLoading;
-
-  if (isLoading) {
-    return <FullScreenLoading />;
-  }
 
   if (permissionError) {
     return (
@@ -919,6 +958,7 @@ const VendorProjectDetail = () => {
 
   return (
     <Container>
+      {isLoading && <FullScreenLoading />}
       <Box textAlign="left">
         <IconButton onClick={() => navigate(-1)}>
           <KeyboardBackspaceIcon style={{ color: "rgb(43, 52, 89)" }} />

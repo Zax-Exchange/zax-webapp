@@ -37,10 +37,12 @@ import {
   PRODUCT_NAME_PAPER_TRAY,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
+import AttachmentButton from "../../../../Utils/AttachmentButton";
 import {
   isValidAlphanumeric,
   isValidFloat,
 } from "../../../../Utils/inputValidators";
+import { openLink } from "../../../../Utils/openLink";
 import UploadDesign from "../../UploadDesign";
 import ColorDropdown from "../common/ColorDropdown";
 import DimensionsInput from "../common/DimensionsInput";
@@ -487,9 +489,10 @@ const GuidedInsideSpec = ({
               {componentDesigns?.map((file, i) => {
                 return (
                   <Box>
-                    <Link href={file.url} target="_blank" rel="noopener">
-                      {file.filename}
-                    </Link>
+                    <AttachmentButton
+                      label={file.filename}
+                      onClick={() => openLink(file.url)}
+                    />
                     <IconButton onClick={() => deleteDesign(file.fileId, i)}>
                       <Cancel fontSize="small" />
                     </IconButton>
