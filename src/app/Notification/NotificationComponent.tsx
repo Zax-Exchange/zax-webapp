@@ -18,6 +18,7 @@ import {
   List,
   Paper,
   Popover,
+  Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -55,7 +56,6 @@ const ListItem = styled(MuiListItem)(({ theme }: any) => ({
   ":hover": {
     backgroundColor: "#eee",
     cursor: "pointer",
-    borderRadius: 4,
   },
 }));
 
@@ -95,7 +95,13 @@ const NotificationComponent = () => {
     socket.on(
       ReceiveEventType.USER_NOTIFICATIONS,
       (notifications: Notification[]) => {
-        setNotifications(notifications);
+        setNotifications(
+          notifications.sort((a, b) => {
+            return (
+              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+            );
+          })
+        );
       }
     );
 
@@ -174,7 +180,7 @@ const NotificationComponent = () => {
           alignItems="center"
           width={300}
           maxHeight={400}
-          sx={{ overflow: "scroll" }}
+          sx={{ overflow: "scroll", p: 0 }}
         >
           {!!notifications.length && (
             <>
@@ -186,13 +192,22 @@ const NotificationComponent = () => {
                   clear all
                 </Button>
               </Box>
-              <List sx={{ padding: 0 }}>
+              <List sx={{ p: 0 }}>
                 {notifications.map((noti, i) => {
                   return (
-                    <ListItem onClick={() => notificationOnClick(noti)}>
-                      <Typography variant="caption">
+                    <ListItem
+                      onClick={() => notificationOnClick(noti)}
+                      sx={{ p: 0 }}
+                    >
+                      <Box
+                        width={300}
+                        boxSizing="border-box"
+                        display="flex"
+                        justifyContent="center"
+                        p={2}
+                      >
                         {noti.data.message}
-                      </Typography>
+                      </Box>
                     </ListItem>
                   );
                 })}

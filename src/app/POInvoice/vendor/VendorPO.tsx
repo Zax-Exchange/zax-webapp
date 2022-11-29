@@ -27,6 +27,7 @@ import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import { useGetVendorPosQuery } from "../../gql/get/vendor/vendor.generated";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import FullScreenLoading from "../../Utils/Loading";
 import { openLink } from "../../Utils/openLink";
 import UploadInvoiceModal from "./modals/UploadInvoiceModal";
 
@@ -94,7 +95,7 @@ const VendorPO = () => {
         </Box>
       </Box>
       <Box>
-        {getVendorPosLoading && <CircularProgress />}
+        {getVendorPosLoading && <FullScreenLoading />}
         {!!getVendorPosData && !!getVendorPosData.getVendorPos.length && (
           <TableContainer component={Paper}>
             <Table>

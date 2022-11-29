@@ -1426,7 +1426,8 @@ export type UpdateProjectData = {
 
 export type UpdateProjectInput = {
   componentIdsToDelete: Array<Scalars['String']>;
-  componentsData: Array<UpdateProjectComponentData>;
+  componentsForCreate: Array<CreateProjectComponentInput>;
+  componentsForUpdate: Array<UpdateProjectComponentData>;
   projectData: UpdateProjectData;
 };
 

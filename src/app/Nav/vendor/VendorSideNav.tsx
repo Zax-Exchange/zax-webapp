@@ -1,6 +1,7 @@
 import {
   Home,
   Logout,
+  ReceiptLong,
   ReceiptLongRounded,
   Settings,
   TextSnippet,
@@ -88,7 +89,7 @@ export default function VendorSideNav({
           >
             <ListItemButton>
               <ListItemIcon>
-                <ReceiptLongRounded />
+                <ReceiptLong />
               </ListItemIcon>
               <ListItemText
                 primary={intl.formatMessage({

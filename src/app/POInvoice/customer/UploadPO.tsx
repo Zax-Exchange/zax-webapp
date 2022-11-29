@@ -34,7 +34,7 @@ const UploadPO = ({
       setSnackbar({
         severity: "success",
         message: intl.formatMessage({
-          id: "app.vendor.uploadPurchaseOrder.success",
+          id: "app.customer.poInvoice.uploadPO.success",
         }),
       });
       setSnackbarOpen(true);

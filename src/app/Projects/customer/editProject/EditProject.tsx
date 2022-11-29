@@ -99,14 +99,6 @@ const EditProject = () => {
   const [updateProjectMutation, { loading: updateProjectLoading }] =
     useUpdateProjectMutation();
 
-  const [
-    createProjectComponentsMutation,
-    {
-      loading: createProjectComponentsLoading,
-      error: createProjectComponentsError,
-    },
-  ] = useCreateProjectComponentsMutation();
-
   // use get customer project here so we can check whether user has permission or not
   const {
     data: getCustomerProjectData,
@@ -139,7 +131,8 @@ const EditProject = () => {
         comments: "",
       },
       componentIdsToDelete: [],
-      componentsData: [],
+      componentsForCreate: [],
+      componentsForUpdate: [],
     });
 
   const [components, setComponents] = useState<
@@ -503,7 +496,8 @@ const EditProject = () => {
           variables: {
             data: {
               ...updateProjectInput,
-              componentsData: compsForUpdate,
+              componentsForUpdate: compsForUpdate,
+              componentsForCreate: compsForCreate,
               componentIdsToDelete: removedComponents
                 .filter((comp) => {
                   // only existing components are sent for deletion
@@ -516,11 +510,6 @@ const EditProject = () => {
                   (comp) => (comp as UpdateProjectComponentData).componentId
                 ),
             },
-          },
-        }),
-        createProjectComponentsMutation({
-          variables: {
-            data: compsForCreate,
           },
         }),
       ]);
@@ -591,7 +580,7 @@ const EditProject = () => {
     );
   };
 
-  const isLoading = updateProjectLoading || createProjectComponentsLoading;
+  const isLoading = updateProjectLoading;
 
   if (getCustomerProjectError) {
     return null;

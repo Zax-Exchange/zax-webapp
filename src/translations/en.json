@@ -301,6 +301,7 @@
   "app.customer.poInvoice.createSuccess": "PO Created!",
   "app.customer.poInvoice.uploadPO": "Upload Purchase Order",
   "app.customer.poInvoice.uploadPO.tooltip": "Select Purchase Order File",
+  "app.customer.poInvoice.uploadPO.success": "Purchase Order Uploaded!",
   "app.customer.poInvoice.uploadAnother": "Upload Another PO",
   "app.customer.poInvoice.uploadAnother.helperText": "Creating a new PO will overwrite the existing one.",
   "app.customer.poInvoice.selectProject": "Select Project",
