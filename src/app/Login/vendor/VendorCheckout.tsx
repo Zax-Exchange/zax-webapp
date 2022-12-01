@@ -127,7 +127,7 @@ const VendorCheckout = ({
           variables: {
             data: {
               ...companyData,
-              leadTime: companyData.leadTime as number,
+              leadTime: parseInt(companyData.leadTime as string),
             },
           },
         });

@@ -149,45 +149,41 @@ const CustomerPO = () => {
                       {customerPO.poDetails?.map((poDetail) => {
                         return (
                           <TableRow>
-                            <TableCell align="center" width="25%">
-                              <Box
-                                onClick={() =>
-                                  projectNameOnClick(
-                                    customerPO.projectInfo.projectId
-                                  )
-                                }
-                                sx={{
-                                  ":hover": {
-                                    cursor: "pointer",
-                                    backgroundColor: "#eee",
-                                  },
-                                  borderRadius: "4px",
-                                }}
-                              >
-                                <Typography variant="caption">
-                                  {customerPO.projectInfo.projectName}
-                                </Typography>
-                              </Box>
+                            <TableCell
+                              align="center"
+                              width="25%"
+                              onClick={() =>
+                                projectNameOnClick(
+                                  customerPO.projectInfo.projectId
+                                )
+                              }
+                              sx={{
+                                ":hover": {
+                                  cursor: "pointer",
+                                  backgroundColor: "#f9f9f9",
+                                  fontWeight: 600,
+                                },
+                                borderRadius: "4px",
+                              }}
+                            >
+                              {customerPO.projectInfo.projectName}
                             </TableCell>
-                            <TableCell align="center" width="25%">
-                              <Box
-                                onClick={() =>
-                                  vendorNameOnClick(
-                                    poDetail.vendorInfo.companyId
-                                  )
-                                }
-                                sx={{
-                                  ":hover": {
-                                    cursor: "pointer",
-                                    backgroundColor: "#eee",
-                                  },
-                                  borderRadius: "4px",
-                                }}
-                              >
-                                <Typography variant="caption">
-                                  {poDetail.vendorInfo.companyName}
-                                </Typography>
-                              </Box>
+                            <TableCell
+                              align="center"
+                              width="25%"
+                              onClick={() =>
+                                vendorNameOnClick(poDetail.vendorInfo.companyId)
+                              }
+                              sx={{
+                                ":hover": {
+                                  cursor: "pointer",
+                                  backgroundColor: "#f9f9f9",
+                                  fontWeight: 600,
+                                },
+                                borderRadius: "4px",
+                              }}
+                            >
+                              {poDetail.vendorInfo.companyName}
                             </TableCell>
                             <TableCell align="center" width="25%">
                               <AttachmentButton

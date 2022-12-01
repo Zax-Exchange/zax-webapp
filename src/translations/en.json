@@ -31,6 +31,10 @@
   "app.general.yes": "Yes",
   "app.general.no": "No",
   "app.general.ok": "OK",
+  "app.general.email": "Email",
+  "app.general.password": "Password",
+  "app.general.tokenExpired": "Token Expired!",
+  "app.general.send": "Send",
 
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",
@@ -41,6 +45,7 @@
   "app.general.input.invalidError": "Invalid input.",
   "app.general.input.emptyError": "Field cannot be empty.",
   
+  "app.general.button.login": "Login",
   "app.routes.loggedOut.getStarted": "Get Started",
   "app.routes.loggedIn.home": "Home",
   "app.routes.loggedIn.projects": "Projects",
@@ -54,6 +59,13 @@
   "app.signup.reviewCompany": "Review Company Info",
   "app.signup.requestToJoin.success": "Join request has been sent to company admins!",
 
+  "app.login.resetPassword.success": "Password reset success!",
+  "app.login.forgotPassword": "Forgot Password",
+  "app.login.forgotPassword.send": "Send Reset Link",
+  "app.login.resetPassword": "Reset Password",
+  "app.login.newPassword": "New Password",
+  "app.login.forgotPassword.linkSent": "If email exists, we will send a reset link.",
+  
   "app.product.purpose.labeling": "Artwork / Labeling",
   "app.product.purpose.sealing": "Sealing / Closure",
   "app.product.shape.square": "Square",

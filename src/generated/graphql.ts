@@ -521,7 +521,9 @@ export type Mutation = {
   inviteUser: Scalars['Boolean'];
   requestToJoin: Scalars['Boolean'];
   reset: Scalars['Boolean'];
+  resetPassword?: Maybe<Scalars['Boolean']>;
   resubmitProjectBid: Scalars['Boolean'];
+  sendPasswordResetLink: Scalars['Boolean'];
   updateCompanyPlan: Scalars['Boolean'];
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
@@ -669,8 +671,18 @@ export type MutationResetArgs = {
 };
 
 
+export type MutationResetPasswordArgs = {
+  data: ResetPasswordInput;
+};
+
+
 export type MutationResubmitProjectBidArgs = {
   data: ResubmitProjectBidInput;
+};
+
+
+export type MutationSendPasswordResetLinkArgs = {
+  data: SendPasswordResetLinkInput;
 };
 
 
@@ -1301,6 +1313,12 @@ export type RequestToJoinInput = {
   email: Scalars['String'];
 };
 
+export type ResetPasswordInput = {
+  password: Scalars['String'];
+  token: Scalars['String'];
+  userId: Scalars['String'];
+};
+
 export type ResubmitProjectBidInput = {
   projectBidId: Scalars['String'];
 };
@@ -1319,6 +1337,10 @@ export type SearchVendorCompanyInput = {
   moqMax?: InputMaybe<Scalars['String']>;
   moqMin?: InputMaybe<Scalars['String']>;
   userInput: Scalars['String'];
+};
+
+export type SendPasswordResetLinkInput = {
+  email: Scalars['String'];
 };
 
 export type StripeSubscription = {

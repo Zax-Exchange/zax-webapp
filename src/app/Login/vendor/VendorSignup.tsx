@@ -215,24 +215,16 @@ const VendorSignup = () => {
         isAllowed = isValidInt(val);
         break;
       case "leadTime":
-        const month = parseInt(val, 10);
-        isAllowed = isValidInt(val) && month > 0 && month <= 18;
+        isAllowed = isValidInt(val);
         break;
       default:
         break;
     }
     if (isAllowed) {
-      if (e.target.name === "leadTime") {
-        setValues({
-          ...values,
-          [e.target.name]: parseInt(val, 10),
-        });
-      } else {
-        setValues({
-          ...values,
-          [e.target.name]: val,
-        });
-      }
+      setValues({
+        ...values,
+        [e.target.name]: val,
+      });
     }
   };
 

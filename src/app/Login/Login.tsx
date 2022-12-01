@@ -19,8 +19,11 @@ import React from "react";
 import { LoggedInUser } from "../../generated/graphql";
 import { useLoginLazyQuery } from "../gql/utils/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
+import { useIntl } from "react-intl";
+import { LOGGED_OUT_ROUTES } from "../constants/loggedOutRoutes";
 
 const Login = () => {
+  const intl = useIntl();
   const { user, login, logout } = useContext(AuthContext);
   const [userLogin, { error, loading, data }] = useLoginLazyQuery();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
@@ -69,35 +72,51 @@ const Login = () => {
     }
   };
 
+  const forgotPasswordOnClick = () => {
+    navigate(LOGGED_OUT_ROUTES.FORGOT_PASSWORD);
+  };
+
   return (
     <Fade in={true} timeout={500}>
       <Container maxWidth="sm">
         <Paper elevation={2} sx={{ padding: 3 }}>
           <Container>
             <Typography variant="h6" sx={{ mb: 5 }}>
-              Log in
+              {intl.formatMessage({ id: "app.general.login" })}
             </Typography>
             <Stack spacing={2} textAlign="right">
               <TextField
                 type="email"
-                label="email"
+                label={intl.formatMessage({ id: "app.general.email" })}
                 name="email"
                 value={values.email}
                 onChange={onChange}
               ></TextField>
               <TextField
                 type="password"
-                label="password"
+                label={intl.formatMessage({ id: "app.general.password" })}
                 name="password"
                 value={values.password}
                 onChange={onChange}
               ></TextField>
+              <Typography
+                variant="caption"
+                onClick={forgotPasswordOnClick}
+                sx={{
+                  ":hover": {
+                    cursor: "pointer",
+                    textDecorationLine: "underline",
+                  },
+                }}
+              >
+                {intl.formatMessage({ id: "app.login.forgotPassword" })}
+              </Typography>
               <LoadingButton
                 loading={loading}
                 variant="outlined"
                 onClick={loginHandler}
               >
-                Login
+                {intl.formatMessage({ id: "app.general.button.login" })}
               </LoadingButton>
             </Stack>
           </Container>

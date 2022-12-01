@@ -78,7 +78,7 @@ const UploadPOModal = ({
     variables: {
       data: {
         userId: user!.id,
-        permissions: [ProjectPermission.Editor, ProjectPermission.Owner],
+        // permissions: [ProjectPermission.Editor, ProjectPermission.Owner],
       },
     },
     fetchPolicy: "no-cache",

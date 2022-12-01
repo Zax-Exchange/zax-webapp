@@ -131,25 +131,24 @@ const VendorPO = () => {
                             <TableCell align="center" width="25%">
                               {poDetail.customerInfo.companyName}
                             </TableCell>
-                            <TableCell align="center" width="25%">
-                              <Box
-                                onClick={() =>
-                                  projectNameOnClick(
-                                    vendorPO.projectInfo.projectId
-                                  )
-                                }
-                                sx={{
-                                  ":hover": {
-                                    cursor: "pointer",
-                                    backgroundColor: "#eee",
-                                  },
-                                  borderRadius: "4px",
-                                }}
-                              >
-                                <Typography variant="caption">
-                                  {vendorPO.projectInfo.projectName}
-                                </Typography>
-                              </Box>
+                            <TableCell
+                              align="center"
+                              width="25%"
+                              onClick={() =>
+                                projectNameOnClick(
+                                  vendorPO.projectInfo.projectId
+                                )
+                              }
+                              sx={{
+                                ":hover": {
+                                  cursor: "pointer",
+                                  backgroundColor: "#f9f9f9",
+                                  fontWeight: 600,
+                                },
+                                borderRadius: "4px",
+                              }}
+                            >
+                              {vendorPO.projectInfo.projectName}
                             </TableCell>
                             <TableCell align="center" width="25%">
                               <AttachmentButton

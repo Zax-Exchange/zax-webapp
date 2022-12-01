@@ -42,6 +42,9 @@ import ProjectDetail from "./app/Projects/ProjectDetail";
 import EditProject from "./app/Projects/customer/editProject/EditProject";
 import Projects from "./app/Projects/Projects";
 import POInvoice from "./app/POInvoice/POInvoice";
+import { LOGGED_OUT_ROUTES } from "./app/constants/loggedOutRoutes";
+import ForgotPassword from "./app/Login/ForgotPassword";
+import ResetPassword from "./app/Login/ResetPassword";
 
 const theme = createTheme({
   palette: {
@@ -292,7 +295,7 @@ function App() {
 
                   {/* logged out routes */}
                   <Route
-                    path="/login"
+                    path={LOGGED_OUT_ROUTES.LOGIN}
                     element={
                       <LoggedOutRoute>
                         <Login />
@@ -300,7 +303,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/company-signup"
+                    path={LOGGED_OUT_ROUTES.COMPANY_SIGNUP}
                     element={
                       <LoggedOutRoute>
                         <CompanySignup />
@@ -308,7 +311,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/user-signup/:companyId"
+                    path={LOGGED_OUT_ROUTES.USER_SIGNUP}
                     element={
                       <LoggedOutRoute>
                         <UserSignup />
@@ -316,7 +319,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/vendor-signup"
+                    path={LOGGED_OUT_ROUTES.VENDOR_SIGNUP}
                     element={
                       <LoggedOutRoute>
                         <VendorSignup />
@@ -324,10 +327,26 @@ function App() {
                     }
                   />
                   <Route
-                    path="/customer-signup"
+                    path={LOGGED_OUT_ROUTES.CUSTOMER_SIGNUP}
                     element={
                       <LoggedOutRoute>
                         <CustomerSignup />
+                      </LoggedOutRoute>
+                    }
+                  />
+                  <Route
+                    path={LOGGED_OUT_ROUTES.FORGOT_PASSWORD}
+                    element={
+                      <LoggedOutRoute>
+                        <ForgotPassword />
+                      </LoggedOutRoute>
+                    }
+                  />
+                  <Route
+                    path={LOGGED_OUT_ROUTES.RESET_PASSWORD}
+                    element={
+                      <LoggedOutRoute>
+                        <ResetPassword />
                       </LoggedOutRoute>
                     }
                   />

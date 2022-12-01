@@ -33,3 +33,15 @@ const REQUEST_TO_JOIN_COMPANY = gql`
     requestToJoin(data: $data)
   }
 `
+
+const SEND_FORGOT_PASSWORD_LINK = gql`
+  mutation sendPasswordResetLink($data: SendPasswordResetLinkInput!) {
+    sendPasswordResetLink(data: $data)
+  }
+`
+
+const RESET_PASSWORD = gql`
+  mutation resetPassword($data: ResetPasswordInput!) {
+    resetPassword(data: $data)
+  }
+`
