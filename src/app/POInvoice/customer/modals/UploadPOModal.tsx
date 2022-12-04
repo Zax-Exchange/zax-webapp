@@ -98,28 +98,32 @@ const UploadPOModal = ({
 
   useEffect(() => {
     if (projectId) {
-      getProjectBidsForPo({
-        variables: {
-          data: {
-            projectId,
+      try {
+        getProjectBidsForPo({
+          variables: {
+            data: {
+              projectId,
+            },
           },
-        },
-        fetchPolicy: "no-cache",
-      });
+          fetchPolicy: "no-cache",
+        });
+      } catch (error) {}
     }
   }, [projectId]);
 
   useEffect(() => {
     if (projectId && projectBidId) {
-      getPO({
-        variables: {
-          data: {
-            projectId,
-            projectBidId,
+      try {
+        getPO({
+          variables: {
+            data: {
+              projectId,
+              projectBidId,
+            },
           },
-        },
-        fetchPolicy: "network-only",
-      });
+          fetchPolicy: "network-only",
+        });
+      } catch (error) {}
     }
   }, [projectId, projectBidId]);
 
@@ -253,6 +257,7 @@ const UploadPOModal = ({
         <Box>
           {!!getProjectBidsForPoData && (
             <Autocomplete
+              disabled={!projectId}
               openOnFocus
               options={
                 getProjectBidsForPoData.getProjectBidsForPo as ProjectBidForPo[]

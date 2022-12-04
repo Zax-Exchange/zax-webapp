@@ -56,20 +56,31 @@ function Message({
       <Box pl={3} pr={3}>
         {message && (
           <Box display="flex" sx={{ alignItems: "center" }}>
-            <img src={message.user?.image} height={35} width={35} alt="logo" />
-            <Typography
-              variant="subtitle2"
-              sx={{ marginRight: "8px", marginLeft: "8px" }}
-            >
-              {message.user!.name}
-            </Typography>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              fontSize="0.7em"
-            >
-              {(message.created_at! as Date).toLocaleTimeString()}
-            </Typography>
+            <Box display="flex">
+              <Box>
+                <img
+                  src={message.user?.image}
+                  height={35}
+                  width={35}
+                  alt="logo"
+                />
+              </Box>
+              <Box display="flex" alignItems="center">
+                <Typography
+                  variant="subtitle2"
+                  sx={{ marginRight: "8px", marginLeft: "8px" }}
+                >
+                  {message.user!.name}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  fontSize="0.7em"
+                >
+                  {(message.created_at! as Date).toLocaleTimeString()}
+                </Typography>
+              </Box>
+            </Box>
           </Box>
         )}
         {message &&

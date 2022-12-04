@@ -148,7 +148,9 @@ const CustomerPO = () => {
                     <>
                       {customerPO.poDetails?.map((poDetail) => {
                         return (
-                          <TableRow>
+                          <TableRow
+                            sx={{ ":hover": { backgroundColor: "#fafafa" } }}
+                          >
                             <TableCell
                               align="center"
                               width="25%"
@@ -160,7 +162,7 @@ const CustomerPO = () => {
                               sx={{
                                 ":hover": {
                                   cursor: "pointer",
-                                  backgroundColor: "#f9f9f9",
+                                  backgroundColor: "#f2f2f2",
                                   fontWeight: 600,
                                 },
                                 borderRadius: "4px",
@@ -177,7 +179,7 @@ const CustomerPO = () => {
                               sx={{
                                 ":hover": {
                                   cursor: "pointer",
-                                  backgroundColor: "#f9f9f9",
+                                  backgroundColor: "#f2f2f2",
                                   fontWeight: 600,
                                 },
                                 borderRadius: "4px",

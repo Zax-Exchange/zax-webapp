@@ -1,5 +1,5 @@
 import "./App.scss";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Nav from "./app/Nav/Nav";
 import Home from "./app/Home/Home";
@@ -157,8 +157,16 @@ const theme = createTheme({
 
 function App() {
   const { CustomSnackbar } = useCustomSnackbar();
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
+  useEffect(() => {
+    document.addEventListener("logout", () => {
+      logout();
+    });
+    return () => {
+      document.removeEventListener("logout", () => {});
+    };
+  }, []);
   return (
     <IntlProvider locale="en" messages={en}>
       <ThemeProvider theme={theme}>

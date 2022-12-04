@@ -99,18 +99,20 @@ const Login = () => {
                 value={values.password}
                 onChange={onChange}
               ></TextField>
-              <Typography
-                variant="caption"
-                onClick={forgotPasswordOnClick}
-                sx={{
-                  ":hover": {
-                    cursor: "pointer",
-                    textDecorationLine: "underline",
-                  },
-                }}
-              >
-                {intl.formatMessage({ id: "app.login.forgotPassword" })}
-              </Typography>
+              <Box>
+                <Typography
+                  variant="caption"
+                  onClick={forgotPasswordOnClick}
+                  sx={{
+                    ":hover": {
+                      cursor: "pointer",
+                      textDecorationLine: "underline",
+                    },
+                  }}
+                >
+                  {intl.formatMessage({ id: "app.login.forgotPassword" })}
+                </Typography>
+              </Box>
               <LoadingButton
                 loading={loading}
                 variant="outlined"

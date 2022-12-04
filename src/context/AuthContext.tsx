@@ -41,7 +41,10 @@ const AuthContext = createContext({
   logout: () => void;
 });
 
-const authReducer = (state: SessionState, action: any) => {
+const authReducer = (
+  state: SessionState,
+  action: { type: string; payload: LoggedInUser | null }
+) => {
   switch (action.type) {
     case "LOGIN":
       return {
