@@ -73,7 +73,6 @@ export const PROJECT_FRAGMENT = gql`
       deliveryAddress
       targetPrice
       orderQuantities
-      comments
       status
       createdAt
       updatedAt

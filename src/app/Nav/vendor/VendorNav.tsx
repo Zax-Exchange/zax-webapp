@@ -1,4 +1,11 @@
-import { Box, IconButton, Toolbar } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  IconButton,
+  Toolbar,
+} from "@mui/material";
 import React, { useState } from "react";
 import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import NotificationComponent from "../../Notification/NotificationComponent";
@@ -7,10 +14,17 @@ import logo from "../../../static/logo2.png";
 import { useNavigate } from "react-router-dom";
 import VendorSideNav from "./VendorSideNav";
 import { Menu } from "@mui/icons-material";
+import { useIntl } from "react-intl";
+import GenerateProjectCreationLinkModal from "./modals/GenerateProjectCreationLinkModal";
 
 const VendorNav = () => {
+  const intl = useIntl();
   const navigate = useNavigate();
   const [sideNavOpen, setSideNavOpen] = useState(false);
+  const [
+    generateProjectCreationLinkModalOpen,
+    setGenerateProjectCreationLinkModalOpen,
+  ] = useState(false);
 
   const renderHamburger = () => {
     return (
@@ -44,9 +58,28 @@ const VendorNav = () => {
         {renderHamburger()}
         {renderLogo()}
         <SearchBar />
-        <Box sx={{ flexGrow: 2 }}></Box>
+        <Box display="flex" flexGrow={1} justifyContent="flex-end">
+          <Button
+            onClick={() => setGenerateProjectCreationLinkModalOpen(true)}
+            variant="outlined"
+            sx={{ borderRadius: 40 }}
+          >
+            {intl.formatMessage({
+              id: "app.vendor.generateProjectCreationLink.create",
+            })}
+          </Button>
+        </Box>
+
         <NotificationComponent />
       </Toolbar>
+      <Dialog
+        open={generateProjectCreationLinkModalOpen}
+        onClose={() => setGenerateProjectCreationLinkModalOpen(false)}
+      >
+        <DialogContent>
+          <GenerateProjectCreationLinkModal />
+        </DialogContent>
+      </Dialog>
       <VendorSideNav
         sideNavOpen={sideNavOpen}
         setSideNavOpen={setSideNavOpen}

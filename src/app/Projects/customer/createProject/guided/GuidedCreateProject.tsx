@@ -102,7 +102,6 @@ export default function GuidedCreateProject() {
     deliveryDate: new Date().toISOString().split("T")[0],
     targetPrice: "",
     orderQuantities: [],
-    comments: "",
     components: [],
   });
 

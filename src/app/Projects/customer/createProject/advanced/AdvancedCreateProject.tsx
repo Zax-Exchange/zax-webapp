@@ -128,7 +128,6 @@ const AdvancedCreateProject = () => {
     deliveryDate: new Date().toISOString().split("T")[0],
     targetPrice: "",
     orderQuantities: [],
-    comments: "",
     components: [],
   });
 
@@ -336,7 +335,6 @@ const AdvancedCreateProject = () => {
 
     switch (e.target.name as keyof CreateProjectInput) {
       case "name":
-      case "comments":
         isAllowed = isValidAlphanumeric(val);
         break;
       case "orderQuantities":
@@ -362,7 +360,6 @@ const AdvancedCreateProject = () => {
   const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
       const attr = key as keyof CreateProjectInput;
-      if (attr === "comments") continue;
       if (attr === "targetPrice") {
         if (!projectData.targetPrice) return true;
         continue;
@@ -601,19 +598,6 @@ const AdvancedCreateProject = () => {
                   renderOption={() => null}
                 />
               </Box>
-            </ListItem>
-            <ListItem>
-              <TextField
-                autoComplete="new-password"
-                multiline
-                draggable
-                label={intl.formatMessage({
-                  id: "app.project.attribute.comments",
-                })}
-                onChange={projectInputOnChange}
-                name="comments"
-                value={projectData.comments}
-              />
             </ListItem>
           </Stack>
         </Container>

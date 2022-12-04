@@ -357,18 +357,6 @@ const CustomerProjectDetail = () => {
                       {projectData.updatedAt.slice(0, 10)}
                     </Typography>
                   </ProjectDetailListItem>
-
-                  {!!projectData.comments && (
-                    <ProjectDetailListItem>
-                      {renderAttributeTitle(
-                        intl.formatMessage({
-                          id: "app.project.attribute.comments",
-                        })
-                      )}
-
-                      {renderProjectField("comments", projectData.comments)}
-                    </ProjectDetailListItem>
-                  )}
                 </List>
               </Box>
             </Paper>

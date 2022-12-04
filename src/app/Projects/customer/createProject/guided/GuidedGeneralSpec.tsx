@@ -51,7 +51,6 @@ export default function GuidedGeneralSpec({
 
     switch (attr) {
       case "name":
-      case "comments":
         isAllowed = isValidAlphanumeric(val);
         break;
       case "orderQuantities":
@@ -270,19 +269,6 @@ export default function GuidedGeneralSpec({
               );
             }}
             renderOption={() => null}
-          />
-        </ListItem>
-
-        <ListItem>
-          <TextField
-            autoComplete="new-password"
-            multiline
-            label={intl.formatMessage({
-              id: "app.project.attribute.comments",
-            })}
-            onChange={projectInputOnChange}
-            name="comments"
-            value={projectData.comments}
           />
         </ListItem>
       </Stack>

@@ -128,7 +128,6 @@ const EditProject = () => {
         deliveryDate: new Date().toISOString().split("T")[0],
         targetPrice: "",
         orderQuantities: [],
-        comments: "",
       },
       componentIdsToDelete: [],
       componentsForCreate: [],
@@ -298,7 +297,6 @@ const EditProject = () => {
 
       for (let attr of Object.keys(projectData)) {
         const key: keyof UpdateProjectData = attr as keyof UpdateProjectData;
-        if (key === "comments") continue;
 
         if (typeof projectData[key] === "string") {
           if (projectData[key] === "") {
@@ -419,7 +417,6 @@ const EditProject = () => {
 
     switch (e.target.name as keyof CreateProjectInput) {
       case "name":
-      case "comments":
         isAllowed = isValidAlphanumeric(val);
         break;
       case "orderQuantities":
@@ -830,13 +827,6 @@ const EditProject = () => {
                   renderOption={() => null}
                 />
               </Box>
-            </ListItem>
-            <ListItem>
-              {renderTextField(
-                "comments",
-                projectData.comments || "",
-                intl.formatMessage({ id: "app.project.attribute.comments" })
-              )}
             </ListItem>
           </Stack>
         </Container>

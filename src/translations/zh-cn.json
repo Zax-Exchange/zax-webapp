@@ -98,7 +98,6 @@
   "app.project.attribute.deliveryAddress": "交件地址",
   "app.project.attribute.targetPrice": "預估金額",
   "app.project.attribute.orderQuantities": "報價數量",
-  "app.project.attribute.comments": "評論",
   "app.project.status.open": "開放競標",
   "app.project.status.inProgress": "進行中",
   "app.project.status.completed": "已完成",

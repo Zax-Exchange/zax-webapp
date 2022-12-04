@@ -65,7 +65,7 @@
   "app.login.resetPassword": "Reset Password",
   "app.login.newPassword": "New Password",
   "app.login.forgotPassword.linkSent": "If email exists, we will send a reset link.",
-  
+
   "app.product.purpose.labeling": "Artwork / Labeling",
   "app.product.purpose.sealing": "Sealing / Closure",
   "app.product.shape.square": "Square",
@@ -183,7 +183,6 @@
   "app.project.attribute.deliveryAddress": "Delivery Address",
   "app.project.attribute.targetPrice": "Target Price Per Unit",
   "app.project.attribute.orderQuantities": "Order Quantities",
-  "app.project.attribute.comments": "Comments",
   "app.project.status.open": "Open",
   "app.project.status.inProgress": "In progress",
   "app.project.status.completed": "Completed",
@@ -354,6 +353,9 @@
   "app.vendor.projectDetail.resubmitBid": "Resubmit Your Bid",
   "app.vendor.projectDetail.editBid": "Edit Bid",
   
+  "app.vendor.generateProjectCreationLink.create": "Generate Project Link",
+  "app.vendor.generateProjectCreationLink.title": "Send Project Creation Link",
+
   "app.search.applyFilters": "Apply Filters",
   "app.search.clearFilters": "Clear Filters",
   "app.search.resultsTitle": "Search Results",

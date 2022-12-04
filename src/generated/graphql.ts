@@ -171,7 +171,6 @@ export type CreateProjectComponentSpecInput = {
 
 export type CreateProjectInput = {
   category: Scalars['String'];
-  comments: Scalars['String'];
   components: Array<CreateProjectComponentInput>;
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
@@ -274,7 +273,6 @@ export type CustomerProject = ProjectInterface & {
   __typename?: 'CustomerProject';
   bids?: Maybe<Array<ProjectBid>>;
   category: Scalars['String'];
-  comments: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
@@ -801,7 +799,6 @@ export type PermissionedCompany = {
 export type PermissionedProject = ProjectInterface & {
   __typename?: 'PermissionedProject';
   category: Scalars['String'];
-  comments: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
@@ -920,7 +917,6 @@ export type ProductDimensionInput = {
 export type Project = ProjectInterface & {
   __typename?: 'Project';
   category: Scalars['String'];
-  comments: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
@@ -1051,7 +1047,6 @@ export type ProjectDesign = FileInterface & {
 
 export type ProjectInterface = {
   category: Scalars['String'];
-  comments: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   createdAt: Scalars['Date'];
@@ -1436,7 +1431,6 @@ export type UpdateProjectComponentSpecData = {
 
 export type UpdateProjectData = {
   category: Scalars['String'];
-  comments?: InputMaybe<Scalars['String']>;
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   name: Scalars['String'];
@@ -1590,7 +1584,6 @@ export type VendorProject = ProjectInterface & {
   __typename?: 'VendorProject';
   bidInfo: PermissionedProjectBid;
   category: Scalars['String'];
-  comments: Scalars['String'];
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
