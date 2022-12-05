@@ -1,3 +1,4 @@
+import { Edit, Cancel, Restore } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
@@ -23,42 +24,31 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import React, { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { AuthContext } from "../../../../context/AuthContext";
 import {
   CreateProjectComponentInput,
   CreateProjectInput,
-  ProjectCreationMode,
   ProjectDesign,
-  ProjectPermission,
   UpdateProjectComponentData,
   UpdateProjectData,
-  UpdateProjectInput,
-} from "../../../../generated/graphql";
+  UpdateGuestProjectInput,
+} from "../../../generated/graphql";
+import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
+import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
 import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../../constants/loggedInRoutes";
-import { useDeleteProjectDesignMutation } from "../../../gql/delete/project/project.generated";
-import {
-  useGetCustomerProjectLazyQuery,
-  useGetCustomerProjectQuery,
-} from "../../../gql/get/customer/customer.generated";
-import { useUpdateProjectMutation } from "../../../gql/update/project/project.generated";
-import useCustomSnackbar from "../../../Utils/CustomSnackbar";
+  useUpdateGuestProjectMutation,
+  useUpdateProjectMutation,
+} from "../../gql/update/project/project.generated";
+import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
+import CreateOrUpdateComponentModal from "../../Projects/customer/editProject/modals/CreateOrUpdateComponentModal";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import {
   isValidAlphanumeric,
   isValidFloat,
   isValidInt,
-} from "../../../Utils/inputValidators";
-import FullScreenLoading from "../../../Utils/Loading";
-import ProjectCategoryDropdown from "../../../Utils/ProjectCategoryDropdown";
-import GoogleMapAutocomplete from "../../../Utils/GoogleMapAutocomplete";
-import { ArrowBack, Cancel, Edit, Restore } from "@mui/icons-material";
-import ComponentSpecDetail from "../../common/ComponentSpecDetail";
-import CreateProjectComponentModal from "../createProject/advanced/modals/CreateProjectComponentModal";
-import { useGetProjectDetailQuery } from "../../../gql/get/project/project.generated";
-import CreateOrUpdateComponentModal from "./modals/CreateOrUpdateComponentModal";
-import PermissionDenied from "../../../Utils/PermissionDenied";
+} from "../../Utils/inputValidators";
+import FullScreenLoading from "../../Utils/Loading";
+import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
 
 type EditProjectErrors = Record<keyof UpdateProjectData, boolean>;
 
@@ -84,27 +74,29 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const EditProject = () => {
+const GuestEditProject = ({
+  projectId,
+  setProjectUpdated,
+}: {
+  projectId: string;
+  setProjectUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const intl = useIntl();
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
-  const { projectId } = useParams();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const [updateProjectMutation, { loading: updateProjectLoading }] =
-    useUpdateProjectMutation();
+    useUpdateGuestProjectMutation();
 
   // use get customer project here so we can check whether user has permission or not
   const {
-    data: getCustomerProjectData,
-    loading: getCustomerProjectLoading,
-    error: getCustomerProjectError,
-  } = useGetCustomerProjectQuery({
+    data: getProjectDetailData,
+    loading: getProjectDetailLoading,
+    error: getProjectDetailError,
+  } = useGetProjectDetailQuery({
     variables: {
       data: {
         projectId: projectId || "",
-        userId: user!.id,
       },
     },
     fetchPolicy: "no-cache",
@@ -114,9 +106,9 @@ const EditProject = () => {
     useDeleteProjectDesignMutation();
 
   const [updateProjectInput, setUpdateProjectInput] =
-    useState<UpdateProjectInput>({
+    useState<UpdateGuestProjectInput>({
       projectData: {
-        projectId: projectId || "",
+        projectId: projectId,
         name: "",
         deliveryAddress: "",
         category: "",
@@ -175,26 +167,18 @@ const EditProject = () => {
   const [permissionError, setPermissionError] = useState(false);
 
   useEffect(() => {
-    if (getCustomerProjectError) {
+    if (getProjectDetailError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [getCustomerProjectError]);
+  }, [getProjectDetailError]);
 
   // initialize all project data
   useEffect(() => {
-    if (getCustomerProjectData && getCustomerProjectData.getCustomerProject) {
-      if (
-        getCustomerProjectData.getCustomerProject.permission ===
-        ProjectPermission.Viewer
-      ) {
-        setPermissionError(true);
-        return;
-      }
-
+    if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
       const {
         id: projectId,
         name,
@@ -205,7 +189,7 @@ const EditProject = () => {
         deliveryDate,
         orderQuantities,
         components,
-      } = getCustomerProjectData.getCustomerProject;
+      } = getProjectDetailData.getProjectDetail;
 
       const sanitizedComponents: UpdateProjectComponentData[] = components.map(
         (comp) => {
@@ -262,7 +246,7 @@ const EditProject = () => {
         });
       });
     }
-  }, [getCustomerProjectData]);
+  }, [getProjectDetailData]);
 
   // Leverage useEffect to set error flags for project detail edit mode.
   useEffect(() => {
@@ -466,7 +450,7 @@ const EditProject = () => {
       for (let comp of components) {
         if (isComponentOfUpdateType(comp)) {
           const existing =
-            getCustomerProjectData!.getCustomerProject.components.find(
+            getProjectDetailData!.getProjectDetail!.components.find(
               (existingComp) =>
                 existingComp.id ===
                 (comp as UpdateProjectComponentData).componentId
@@ -504,33 +488,16 @@ const EditProject = () => {
         }),
       ]);
 
-      const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
-
-      dest[1] = projectId!;
-
-      navigate(`${dest.join("")}`);
-
-      setSnackbar({
-        severity: "success",
-        message: "Project updated.",
-      });
+      setProjectUpdated(true);
     } catch (e) {
       setSnackbar({
         severity: "error",
         message: intl.formatMessage({ id: "app.general.network.error" }),
       });
-    } finally {
       setSnackbarOpen(true);
     }
   };
 
-  const cancelEdit = () => {
-    const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
-
-    dest[1] = projectId || "";
-
-    navigate(`${dest.join("")}`);
-  };
   const handleAddressOnChange = (deliveryAddress: string) => {
     setUpdateProjectInput((prev) => ({
       ...prev,
@@ -572,20 +539,12 @@ const EditProject = () => {
 
   const isLoading = updateProjectLoading;
 
-  if (getCustomerProjectError) {
+  if (getProjectDetailError) {
     return null;
   }
 
-  if (getCustomerProjectLoading) {
+  if (getProjectDetailLoading) {
     return <FullScreenLoading />;
-  }
-
-  if (permissionError) {
-    return (
-      <Dialog open={true}>
-        <PermissionDenied />
-      </Dialog>
-    );
   }
 
   const { projectData } = updateProjectInput;
@@ -593,11 +552,7 @@ const EditProject = () => {
   return (
     <>
       {isLoading && <FullScreenLoading />}
-      <Box display="flex">
-        <IconButton onClick={cancelEdit}>
-          <ArrowBack />
-        </IconButton>
-      </Box>
+
       <Paper sx={{ padding: 5 }}>
         <Box display="flex" mb={4}>
           <Typography variant="h6" textAlign="left" flexGrow={1}>
@@ -952,4 +907,4 @@ const EditProject = () => {
   );
 };
 
-export default EditProject;
+export default GuestEditProject;

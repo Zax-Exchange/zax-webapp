@@ -45,6 +45,8 @@ import POInvoice from "./app/POInvoice/POInvoice";
 import { LOGGED_OUT_ROUTES } from "./app/constants/loggedOutRoutes";
 import ForgotPassword from "./app/Login/ForgotPassword";
 import ResetPassword from "./app/Login/ResetPassword";
+import GuestProject from "./app/LoggedOut/GuestProject/GuestProject";
+import VendorGuestProjectDetail from "./app/Projects/vendor/VendorGuestProjectDetail";
 
 const theme = createTheme({
   palette: {
@@ -299,6 +301,14 @@ function App() {
                       </RequireAuth>
                     }
                   />
+                  <Route
+                    path={VENDOR_ROUTES.GUEST_PROJECT_DETAIL}
+                    element={
+                      <RequireAuth isAllowed={user?.isVendor}>
+                        <VendorGuestProjectDetail />
+                      </RequireAuth>
+                    }
+                  />
                   {/* END VENDOR PATH */}
 
                   {/* logged out routes */}
@@ -339,6 +349,14 @@ function App() {
                     element={
                       <LoggedOutRoute>
                         <CustomerSignup />
+                      </LoggedOutRoute>
+                    }
+                  />
+                  <Route
+                    path={LOGGED_OUT_ROUTES.GUEST_PROJECT}
+                    element={
+                      <LoggedOutRoute>
+                        <GuestProject />
                       </LoggedOutRoute>
                     }
                   />

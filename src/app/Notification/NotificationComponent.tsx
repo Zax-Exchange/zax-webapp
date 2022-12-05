@@ -151,6 +151,13 @@ const NotificationComponent = () => {
 
       navigate(`${dest.join("")}`);
     }
+    if (noti.notificationType === NotificationType.GUEST_PROJECT) {
+      const dest = VENDOR_ROUTES.GUEST_PROJECT_DETAIL.split(":");
+
+      dest[1] = noti.data.projectId!;
+
+      navigate(`${dest.join("")}`);
+    }
     if (noti.notificationType === NotificationType.PO_INVOICE) {
       navigate(GENERAL_ROUTES.PO_INVOICE);
     }

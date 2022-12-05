@@ -18,12 +18,12 @@ export type CreateProjectMutationVariables = Types.Exact<{
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createProject: boolean };
 
-export type CreateProjectComponentsMutationVariables = Types.Exact<{
-  data: Array<Types.CreateProjectComponentInput> | Types.CreateProjectComponentInput;
+export type CreateGuestProjectMutationVariables = Types.Exact<{
+  data: Types.CreateGuestProjectInput;
 }>;
 
 
-export type CreateProjectComponentsMutation = { __typename?: 'Mutation', createProjectComponents: boolean };
+export type CreateGuestProjectMutation = { __typename?: 'Mutation', createGuestProject: boolean };
 
 
 export const CreateProjectBidDocument = gql`
@@ -88,34 +88,34 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
-export const CreateProjectComponentsDocument = gql`
-    mutation createProjectComponents($data: [CreateProjectComponentInput!]!) {
-  createProjectComponents(data: $data)
+export const CreateGuestProjectDocument = gql`
+    mutation createGuestProject($data: CreateGuestProjectInput!) {
+  createGuestProject(data: $data)
 }
     `;
-export type CreateProjectComponentsMutationFn = Apollo.MutationFunction<CreateProjectComponentsMutation, CreateProjectComponentsMutationVariables>;
+export type CreateGuestProjectMutationFn = Apollo.MutationFunction<CreateGuestProjectMutation, CreateGuestProjectMutationVariables>;
 
 /**
- * __useCreateProjectComponentsMutation__
+ * __useCreateGuestProjectMutation__
  *
- * To run a mutation, you first call `useCreateProjectComponentsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateProjectComponentsMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateGuestProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGuestProjectMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createProjectComponentsMutation, { data, loading, error }] = useCreateProjectComponentsMutation({
+ * const [createGuestProjectMutation, { data, loading, error }] = useCreateGuestProjectMutation({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useCreateProjectComponentsMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectComponentsMutation, CreateProjectComponentsMutationVariables>) {
+export function useCreateGuestProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateGuestProjectMutation, CreateGuestProjectMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateProjectComponentsMutation, CreateProjectComponentsMutationVariables>(CreateProjectComponentsDocument, options);
+        return Apollo.useMutation<CreateGuestProjectMutation, CreateGuestProjectMutationVariables>(CreateGuestProjectDocument, options);
       }
-export type CreateProjectComponentsMutationHookResult = ReturnType<typeof useCreateProjectComponentsMutation>;
-export type CreateProjectComponentsMutationResult = Apollo.MutationResult<CreateProjectComponentsMutation>;
-export type CreateProjectComponentsMutationOptions = Apollo.BaseMutationOptions<CreateProjectComponentsMutation, CreateProjectComponentsMutationVariables>;
+export type CreateGuestProjectMutationHookResult = ReturnType<typeof useCreateGuestProjectMutation>;
+export type CreateGuestProjectMutationResult = Apollo.MutationResult<CreateGuestProjectMutation>;
+export type CreateGuestProjectMutationOptions = Apollo.BaseMutationOptions<CreateGuestProjectMutation, CreateGuestProjectMutationVariables>;

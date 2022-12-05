@@ -25,6 +25,13 @@ export type CreateInvoiceMutationVariables = Types.Exact<{
 
 export type CreateInvoiceMutation = { __typename?: 'Mutation', createInvoice: boolean };
 
+export type CreateGuestProjectLinkMutationVariables = Types.Exact<{
+  data: Types.CreateGuestProjectLinkInput;
+}>;
+
+
+export type CreateGuestProjectLinkMutation = { __typename?: 'Mutation', createGuestProjectLink: boolean };
+
 
 export const CreateVendorDocument = gql`
     mutation createVendor($data: CreateVendorInput!) {
@@ -122,3 +129,34 @@ export function useCreateInvoiceMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateInvoiceMutationHookResult = ReturnType<typeof useCreateInvoiceMutation>;
 export type CreateInvoiceMutationResult = Apollo.MutationResult<CreateInvoiceMutation>;
 export type CreateInvoiceMutationOptions = Apollo.BaseMutationOptions<CreateInvoiceMutation, CreateInvoiceMutationVariables>;
+export const CreateGuestProjectLinkDocument = gql`
+    mutation createGuestProjectLink($data: CreateGuestProjectLinkInput!) {
+  createGuestProjectLink(data: $data)
+}
+    `;
+export type CreateGuestProjectLinkMutationFn = Apollo.MutationFunction<CreateGuestProjectLinkMutation, CreateGuestProjectLinkMutationVariables>;
+
+/**
+ * __useCreateGuestProjectLinkMutation__
+ *
+ * To run a mutation, you first call `useCreateGuestProjectLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGuestProjectLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGuestProjectLinkMutation, { data, loading, error }] = useCreateGuestProjectLinkMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateGuestProjectLinkMutation(baseOptions?: Apollo.MutationHookOptions<CreateGuestProjectLinkMutation, CreateGuestProjectLinkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGuestProjectLinkMutation, CreateGuestProjectLinkMutationVariables>(CreateGuestProjectLinkDocument, options);
+      }
+export type CreateGuestProjectLinkMutationHookResult = ReturnType<typeof useCreateGuestProjectLinkMutation>;
+export type CreateGuestProjectLinkMutationResult = Apollo.MutationResult<CreateGuestProjectLinkMutation>;
+export type CreateGuestProjectLinkMutationOptions = Apollo.BaseMutationOptions<CreateGuestProjectLinkMutation, CreateGuestProjectLinkMutationVariables>;

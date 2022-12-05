@@ -31,49 +31,34 @@ import {
   Chip,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../../../context/AuthContext";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useLocation, useNavigate } from "react-router-dom";
-import FullScreenLoading from "../../../../Utils/Loading";
+import React from "react";
+import { v4 as uuidv4 } from "uuid";
+import Edit from "@mui/icons-material/Edit";
+import { useIntl } from "react-intl";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
+import {
+  CreateGuestProjectInput,
+  ProjectCreationMode,
+  ProjectDesign,
+} from "../../../generated/graphql";
 import {
   isValidAlphanumeric,
   isValidFloat,
   isValidInt,
-} from "../../../../Utils/inputValidators";
-import GoogleMapAutocomplete from "../../../../Utils/GoogleMapAutocomplete";
-import UploadDesign from "../../UploadDesign";
-import React from "react";
-
-import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../../../constants/loggedInRoutes";
-import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
-import {
-  useGetCustomerProjectLazyQuery,
-  useGetCustomerProjectsLazyQuery,
-} from "../../../../gql/get/customer/customer.generated";
-import {
-  CreateProjectComponentInput,
-  CreateProjectComponentSpecInput,
-  CreateProjectInput,
-  ProjectCreationMode,
-  ProjectDesign,
-} from "../../../../../generated/graphql";
-import CreateProjectComponentModal from "./modals/CreateProjectComponentModal";
-import CancelIcon from "@mui/icons-material/Cancel";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { useIntl } from "react-intl";
-import ComponentSpecDetail from "../../../common/ComponentSpecDetail";
-import ProjectCategoryDropdown from "../../../../Utils/ProjectCategoryDropdown";
-import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
-import { v4 as uuidv4 } from "uuid";
-import Edit from "@mui/icons-material/Edit";
+} from "../../Utils/inputValidators";
+import { useCreateGuestProjectMutation } from "../../gql/create/project/project.generated";
+import FullScreenLoading from "../../Utils/Loading";
+import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
+import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
+import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
+import { Cancel } from "@mui/icons-material";
+import CreateProjectComponentModal from "../../Projects/customer/createProject/advanced/modals/CreateProjectComponentModal";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -97,28 +82,31 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const AdvancedCreateProject = () => {
+const GuestAdvamcedCreate = ({
+  projectId,
+  setProjectCreated,
+}: {
+  projectId: string;
+  setProjectCreated: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const intl = useIntl();
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const location = useLocation();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [createProjectMutation, { loading: createProjectLoading }] =
-    useCreateProjectMutation();
-
-  const [
-    getCustomerProject,
-    {
-      data: getCustomerProjectData,
-      loading: getCustomerProjectLoading,
-      error: getCustomerProjectError,
-    },
-  ] = useGetCustomerProjectLazyQuery();
 
   const [deleteDesign, { error: deleteDesignError }] =
     useDeleteProjectDesignMutation();
 
-  const [projectData, setProjectData] = useState<Partial<CreateProjectInput>>({
+  const [
+    createGuestProject,
+    {
+      loading: createGuestProjectLoading,
+      error: createGuestProjectError,
+      data: createGuestProjectData,
+    },
+  ] = useCreateGuestProjectMutation();
+
+  const [projectData, setProjectData] = useState<
+    Partial<CreateGuestProjectInput>
+  >({
     name: "",
     deliveryAddress: "",
     category: "",
@@ -151,86 +139,6 @@ const AdvancedCreateProject = () => {
     string[]
   >([]);
 
-  // get project data if user chooses to import
-  useEffect(() => {
-    const projectId: string | undefined = (location.state as any)?.projectId;
-    if (projectId) {
-      getCustomerProject({
-        variables: {
-          data: {
-            projectId,
-            userId: user!.id,
-          },
-        },
-        fetchPolicy: "no-cache",
-      });
-    }
-  }, [location.state]);
-
-  // initialize import-able fields if user chooses to import
-  useEffect(() => {
-    if (getCustomerProjectData && getCustomerProjectData.getCustomerProject) {
-      const {
-        name,
-        deliveryAddress,
-        category,
-        totalWeight,
-        targetPrice,
-        deliveryDate,
-        orderQuantities,
-        components,
-      } = getCustomerProjectData.getCustomerProject;
-
-      const sanitizedComponents: CreateProjectComponentInput[] = components.map(
-        (comp) => {
-          const copySpec: any = JSON.parse(JSON.stringify(comp.componentSpec));
-          const copyComp: any = JSON.parse(JSON.stringify(comp));
-
-          // get rid of ids and typenames so data between getProjectData and createProjectData is uniform
-          delete copyComp.__typename;
-          delete copyComp.id;
-          delete copyComp.projectId;
-          delete copyComp.designs;
-          delete copySpec.id;
-          delete copySpec.__typename;
-          delete copySpec.dimension.__typename;
-
-          if (copySpec.postProcess) {
-            for (let process of copySpec.postProcess) {
-              delete process.__typename;
-              if (process.estimatedArea) {
-                delete process.estimatedArea.__typename;
-              }
-              if (process.numberOfColors) {
-                delete process.numberOfColors.__typename;
-              }
-            }
-          }
-
-          return {
-            ...copyComp,
-            componentSpec: copySpec,
-          } as CreateProjectComponentInput;
-        }
-      );
-
-      setProjectData((prev) => ({
-        ...prev,
-        name,
-        deliveryAddress,
-        category,
-        totalWeight,
-        deliveryDate,
-        targetPrice,
-        orderQuantities,
-        components: sanitizedComponents,
-      }));
-
-      // initialize empty design arrays for each component
-      setComponentsDesigns([...Array(components.length)].map(() => []));
-    }
-  }, [getCustomerProjectData]);
-
   useEffect(() => {
     if (temporaryDesignIdsToDelete.length && !componentModalOpen) {
       Promise.all(
@@ -239,6 +147,7 @@ const AdvancedCreateProject = () => {
       setTemporaryDesignIdsToDelete([]);
     }
   }, [temporaryDesignIdsToDelete, componentModalOpen]);
+
   // Switch tab for components detail section.
   const componentTabOnChange = (
     event: React.SyntheticEvent,
@@ -311,7 +220,7 @@ const AdvancedCreateProject = () => {
     let val: string | number = e.target.value;
     let isAllowed = true;
 
-    switch (e.target.name as keyof CreateProjectInput) {
+    switch (e.target.name as keyof CreateGuestProjectInput) {
       case "name":
         isAllowed = isValidAlphanumeric(val);
         break;
@@ -337,7 +246,7 @@ const AdvancedCreateProject = () => {
   // check if create project button should be disabled
   const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
-      const attr = key as keyof CreateProjectInput;
+      const attr = key as keyof CreateGuestProjectInput;
       if (attr === "targetPrice") {
         if (!projectData.targetPrice) return true;
         continue;
@@ -355,28 +264,22 @@ const AdvancedCreateProject = () => {
 
   const createProject = async () => {
     try {
-      await createProjectMutation({
+      await createGuestProject({
         variables: {
           data: {
-            ...(projectData as CreateProjectInput),
-            userId: user!.id,
+            ...(projectData as CreateGuestProjectInput),
+            projectId,
             creationMode: ProjectCreationMode.Advanced,
           },
         },
       });
 
-      navigate(GENERAL_ROUTES.PROJECTS);
-
-      setSnackbar({
-        severity: "success",
-        message: "Project created.",
-      });
+      setProjectCreated(true);
     } catch (e) {
       setSnackbar({
         severity: "error",
         message: "Something went wrong. Please try again later.",
       });
-    } finally {
       setSnackbarOpen(true);
     }
   };
@@ -388,7 +291,7 @@ const AdvancedCreateProject = () => {
     });
   };
 
-  const isLoading = createProjectLoading || getCustomerProjectLoading;
+  const isLoading = createGuestProjectLoading;
 
   return (
     <>
@@ -622,7 +525,7 @@ const AdvancedCreateProject = () => {
                     arrow
                   >
                     <IconButton onClick={() => removeComponent(i)}>
-                      <CancelIcon />
+                      <Cancel />
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -678,4 +581,4 @@ const AdvancedCreateProject = () => {
   );
 };
 
-export default AdvancedCreateProject;
+export default GuestAdvamcedCreate;

@@ -28,6 +28,20 @@ export type GetVendorProjectsQueryVariables = Types.Exact<{
 
 export type GetVendorProjectsQuery = { __typename?: 'Query', getVendorProjects: Array<{ __typename?: 'VendorProjectOverview', id: string, userId: string, bidId: string, bidStatus: Types.BidStatus, companyName: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: string, totalWeight: string, category: string, permission: Types.ProjectPermission, createdAt: any, updatedAt: any }> };
 
+export type GetVendorGuestProjectsQueryVariables = Types.Exact<{
+  data: Types.GetVendorGuestProjectsInput;
+}>;
+
+
+export type GetVendorGuestProjectsQuery = { __typename?: 'Query', getVendorGuestProjects: Array<{ __typename?: 'VendorGuestProjectOverview', id: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: string, totalWeight: string, category: string, permission: Types.ProjectPermission, guestEmail: string, createdAt: any, updatedAt: any }> };
+
+export type GetVendorGuestProjectQueryVariables = Types.Exact<{
+  data: Types.GetVendorGuestProjectInput;
+}>;
+
+
+export type GetVendorGuestProjectQuery = { __typename?: 'Query', getVendorGuestProject?: { __typename?: 'VendorGuestProject', permission: Types.ProjectPermission, guestEmail: string, id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
+
 export type SearchVendorCompaniesQueryVariables = Types.Exact<{
   data: Types.SearchVendorCompanyInput;
 }>;
@@ -191,6 +205,94 @@ export function useGetVendorProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetVendorProjectsQueryHookResult = ReturnType<typeof useGetVendorProjectsQuery>;
 export type GetVendorProjectsLazyQueryHookResult = ReturnType<typeof useGetVendorProjectsLazyQuery>;
 export type GetVendorProjectsQueryResult = Apollo.QueryResult<GetVendorProjectsQuery, GetVendorProjectsQueryVariables>;
+export const GetVendorGuestProjectsDocument = gql`
+    query getVendorGuestProjects($data: GetVendorGuestProjectsInput!) {
+  getVendorGuestProjects(data: $data) {
+    id
+    name
+    deliveryDate
+    deliveryAddress
+    targetPrice
+    orderQuantities
+    status
+    totalWeight
+    category
+    permission
+    guestEmail
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetVendorGuestProjectsQuery__
+ *
+ * To run a query within a React component, call `useGetVendorGuestProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVendorGuestProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVendorGuestProjectsQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetVendorGuestProjectsQuery(baseOptions: Apollo.QueryHookOptions<GetVendorGuestProjectsQuery, GetVendorGuestProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVendorGuestProjectsQuery, GetVendorGuestProjectsQueryVariables>(GetVendorGuestProjectsDocument, options);
+      }
+export function useGetVendorGuestProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVendorGuestProjectsQuery, GetVendorGuestProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVendorGuestProjectsQuery, GetVendorGuestProjectsQueryVariables>(GetVendorGuestProjectsDocument, options);
+        }
+export type GetVendorGuestProjectsQueryHookResult = ReturnType<typeof useGetVendorGuestProjectsQuery>;
+export type GetVendorGuestProjectsLazyQueryHookResult = ReturnType<typeof useGetVendorGuestProjectsLazyQuery>;
+export type GetVendorGuestProjectsQueryResult = Apollo.QueryResult<GetVendorGuestProjectsQuery, GetVendorGuestProjectsQueryVariables>;
+export const GetVendorGuestProjectDocument = gql`
+    query getVendorGuestProject($data: GetVendorGuestProjectInput!) {
+  getVendorGuestProject(data: $data) {
+    ...ProjectFragment
+    permission
+    guestEmail
+    components {
+      ...ProjectComponentFragment
+    }
+  }
+}
+    ${ProjectFragmentFragmentDoc}
+${ProjectComponentFragmentFragmentDoc}`;
+
+/**
+ * __useGetVendorGuestProjectQuery__
+ *
+ * To run a query within a React component, call `useGetVendorGuestProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVendorGuestProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVendorGuestProjectQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetVendorGuestProjectQuery(baseOptions: Apollo.QueryHookOptions<GetVendorGuestProjectQuery, GetVendorGuestProjectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVendorGuestProjectQuery, GetVendorGuestProjectQueryVariables>(GetVendorGuestProjectDocument, options);
+      }
+export function useGetVendorGuestProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVendorGuestProjectQuery, GetVendorGuestProjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVendorGuestProjectQuery, GetVendorGuestProjectQueryVariables>(GetVendorGuestProjectDocument, options);
+        }
+export type GetVendorGuestProjectQueryHookResult = ReturnType<typeof useGetVendorGuestProjectQuery>;
+export type GetVendorGuestProjectLazyQueryHookResult = ReturnType<typeof useGetVendorGuestProjectLazyQuery>;
+export type GetVendorGuestProjectQueryResult = Apollo.QueryResult<GetVendorGuestProjectQuery, GetVendorGuestProjectQueryVariables>;
 export const SearchVendorCompaniesDocument = gql`
     query searchVendorCompanies($data: SearchVendorCompanyInput!) {
   searchVendorCompanies(data: $data) {

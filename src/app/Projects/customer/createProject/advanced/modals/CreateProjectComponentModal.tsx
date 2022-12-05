@@ -114,13 +114,15 @@ const CreateProjectComponentModal = ({
   existingDesigns,
   defaultComponentIndex,
 }: {
-  setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
+  setProjectData: React.Dispatch<
+    React.SetStateAction<Partial<CreateProjectInput>>
+  >;
   setComponentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setComponentsDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[][]>>;
   setComponentIndexToEdit: React.Dispatch<React.SetStateAction<number | null>>;
   setTemporaryDesignIdsToDelete: React.Dispatch<React.SetStateAction<string[]>>;
   componentModalOnClose: () => void;
-  projectData: CreateProjectInput;
+  projectData: Partial<CreateProjectInput>;
   existingDesigns?: ProjectDesign[];
   defaultComponentIndex?: number;
 }) => {
@@ -157,7 +159,7 @@ const CreateProjectComponentModal = ({
 
   useEffect(() => {
     if (defaultComponentIndex !== undefined) {
-      const comp = projectData.components[defaultComponentIndex];
+      const comp = projectData.components![defaultComponentIndex];
       setComponentData(comp);
       setComponentSpec(comp.componentSpec);
       setComponentDesigns(existingDesigns ? existingDesigns : []);
@@ -187,7 +189,7 @@ const CreateProjectComponentModal = ({
     // add component to projectData
     setProjectData({
       ...projectData,
-      components: [...projectData.components, comp],
+      components: [...projectData.components!, comp],
     });
 
     setComponentsDesigns((prev) => [...prev, componentDesigns]);
@@ -205,7 +207,7 @@ const CreateProjectComponentModal = ({
         ...componentSpec,
       },
     };
-    const components = [...projectData.components];
+    const components = [...projectData.components!];
     components[defaultComponentIndex!] = comp;
     // add component to projectData
     setProjectData({
@@ -316,7 +318,7 @@ const CreateProjectComponentModal = ({
     const getDefaultProduct = () => {
       if (defaultComponentIndex !== undefined) {
         return productValueToLabelMap[
-          projectData.components[defaultComponentIndex].componentSpec
+          projectData.components![defaultComponentIndex].componentSpec
             .productName
         ];
       }

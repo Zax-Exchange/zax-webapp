@@ -18,6 +18,13 @@ export type UpdateProjectMutationVariables = Types.Exact<{
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: boolean };
 
+export type UpdateGuestProjectMutationVariables = Types.Exact<{
+  data: Types.UpdateGuestProjectInput;
+}>;
+
+
+export type UpdateGuestProjectMutation = { __typename?: 'Mutation', updateGuestProject: boolean };
+
 
 export const UpdateProjectPermissionsDocument = gql`
     mutation updateProjectPermissions($data: UpdateProjectPermissionsInput!) {
@@ -81,3 +88,34 @@ export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
 export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
 export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export const UpdateGuestProjectDocument = gql`
+    mutation updateGuestProject($data: UpdateGuestProjectInput!) {
+  updateGuestProject(data: $data)
+}
+    `;
+export type UpdateGuestProjectMutationFn = Apollo.MutationFunction<UpdateGuestProjectMutation, UpdateGuestProjectMutationVariables>;
+
+/**
+ * __useUpdateGuestProjectMutation__
+ *
+ * To run a mutation, you first call `useUpdateGuestProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGuestProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGuestProjectMutation, { data, loading, error }] = useUpdateGuestProjectMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateGuestProjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGuestProjectMutation, UpdateGuestProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGuestProjectMutation, UpdateGuestProjectMutationVariables>(UpdateGuestProjectDocument, options);
+      }
+export type UpdateGuestProjectMutationHookResult = ReturnType<typeof useUpdateGuestProjectMutation>;
+export type UpdateGuestProjectMutationResult = Apollo.MutationResult<UpdateGuestProjectMutation>;
+export type UpdateGuestProjectMutationOptions = Apollo.BaseMutationOptions<UpdateGuestProjectMutation, UpdateGuestProjectMutationVariables>;

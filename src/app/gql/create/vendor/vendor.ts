@@ -20,3 +20,9 @@ const CREATE_INVOICE = gql`
     createInvoice(data: $data)
   }
 `
+
+const CREATE_GUEST_PROJECT = gql`
+  mutation createGuestProjectLink($data: CreateGuestProjectLinkInput!) {
+    createGuestProjectLink(data: $data)
+  }
+`

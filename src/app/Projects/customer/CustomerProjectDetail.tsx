@@ -27,6 +27,7 @@ import {
   InputAdornment,
   InputProps,
   Autocomplete,
+  Dialog,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -70,6 +71,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
 import { useGetProjectChangelogQuery } from "../../gql/get/project/project.generated";
+import PermissionDenied from "../../Utils/PermissionDenied";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -104,6 +106,7 @@ const CustomerProjectDetail = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const [permissionedDenied, setPermissionDenied] = useState(false);
 
   const [selectedChangelogVersion, setSelectedChangelogVersion] = useState<
     number | null
@@ -145,11 +148,15 @@ const CustomerProjectDetail = () => {
   // For snackbar display purposes based on update mutation status
   useEffect(() => {
     if (getProjectError) {
-      setSnackbar({
-        message: intl.formatMessage({ id: "app.general.network.error" }),
-        severity: "error",
-      });
-      setSnackbarOpen(true);
+      if (getProjectError.message.includes("permission denied")) {
+        setPermissionDenied(true);
+      } else {
+        setSnackbar({
+          message: intl.formatMessage({ id: "app.general.network.error" }),
+          severity: "error",
+        });
+        setSnackbarOpen(true);
+      }
     }
   }, [getProjectError]);
 
@@ -217,6 +224,14 @@ const CustomerProjectDetail = () => {
   const isLoading = getProjectLoading || getProjectChangelogLoading;
 
   if (isLoading) return <FullScreenLoading />;
+
+  if (permissionedDenied) {
+    return (
+      <Dialog open={true}>
+        <PermissionDenied />
+      </Dialog>
+    );
+  }
 
   const projectData = getProjectData?.getCustomerProject;
   const bids = projectData?.bids;

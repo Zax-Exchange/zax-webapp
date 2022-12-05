@@ -8,6 +8,7 @@ import {
   MenuList,
   MenuItem,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -21,8 +22,12 @@ import {
 } from "../../../generated/graphql";
 import VendorProjectOverviewCard from "./VendorProjectOverviewCard";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { useGetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
+import {
+  useGetVendorGuestProjectsQuery,
+  useGetVendorProjectsQuery,
+} from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
+import GuestProjectOverviewCard from "./VendorGuestProjectOverviewCard";
 
 const VendorProjects = () => {
   const intl = useIntl();
@@ -43,7 +48,20 @@ const VendorProjects = () => {
         userId,
       },
     },
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: "no-cache",
+  });
+
+  const {
+    data: getVendorGuestProjectsData,
+    error: getVendorGuestProjectsError,
+    loading: getVendorGuestProjectsLoading,
+  } = useGetVendorGuestProjectsQuery({
+    variables: {
+      data: {
+        userId,
+      },
+    },
+    fetchPolicy: "no-cache",
   });
 
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
@@ -60,14 +78,14 @@ const VendorProjects = () => {
   }, [getVendorProjectsData]);
 
   useEffect(() => {
-    if (getVendorProjectsError) {
+    if (getVendorProjectsError || getVendorGuestProjectsError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [getVendorProjectsError]);
+  }, [getVendorProjectsError, getVendorGuestProjectsError]);
   const sortByDeliveryDate = () => {
     let proj = [...projects];
     proj = proj.sort(
@@ -115,7 +133,12 @@ const VendorProjects = () => {
     sortOnClose();
   };
 
-  if (getVendorProjectsLoading) {
+  const isLoading =
+    getVendorProjectsLoading ||
+    getVendorGuestProjectsLoading ||
+    isProjectPageLoading;
+
+  if (isLoading) {
     return (
       <Container>
         <FullScreenLoading />
@@ -123,13 +146,12 @@ const VendorProjects = () => {
     );
   }
 
-  if (getVendorProjectsData) {
+  if (getVendorProjectsData && getVendorGuestProjectsData) {
     return (
       <Container
         className="user-projects-container"
         sx={{ position: "relative" }}
       >
-        {isProjectPageLoading && <FullScreenLoading />}
         <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
           <Typography variant="subtitle2">
             {intl.formatMessage({ id: "app.vendor.projects.yourBids" })}
@@ -179,6 +201,11 @@ const VendorProjects = () => {
                 </>
               );
             })}
+            {getVendorGuestProjectsData.getVendorGuestProjects.map(
+              (project) => {
+                return <GuestProjectOverviewCard project={project} />;
+              }
+            )}
           </Grid>
         </Fade>
       </Container>

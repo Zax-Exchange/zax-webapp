@@ -110,6 +110,7 @@ const GET_PROJECT_DETAIL = gql`
   query getProjectDetail($data: GetProjectDetailInput!) {
     getProjectDetail(data: $data) {
       ...ProjectFragment
+      guestEmail
       components {
         ...ProjectComponentFragment
       }

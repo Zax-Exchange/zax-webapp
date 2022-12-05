@@ -11,3 +11,9 @@ const UPDATE_PROJECT = gql`
     updateProject(data: $data)
   }
 `
+
+const UPDATE_GUEST_PROJECT = gql`
+  mutation updateGuestProject($data: UpdateGuestProjectInput!) {
+    updateGuestProject(data: $data)
+  }
+`

@@ -15,15 +15,15 @@ import { useNavigate } from "react-router-dom";
 import VendorSideNav from "./VendorSideNav";
 import { Menu } from "@mui/icons-material";
 import { useIntl } from "react-intl";
-import GenerateProjectCreationLinkModal from "./modals/GenerateProjectCreationLinkModal";
+import GenerateGuestProjectLinkModal from "./modals/GenerateGuestProjectLinkModal";
 
 const VendorNav = () => {
   const intl = useIntl();
   const navigate = useNavigate();
   const [sideNavOpen, setSideNavOpen] = useState(false);
   const [
-    generateProjectCreationLinkModalOpen,
-    setGenerateProjectCreationLinkModalOpen,
+    generateGuestProjectLinkModalOpen,
+    setGenerateGuestProjectLinkModalOpen,
   ] = useState(false);
 
   const renderHamburger = () => {
@@ -60,12 +60,12 @@ const VendorNav = () => {
         <SearchBar />
         <Box display="flex" flexGrow={1} justifyContent="flex-end">
           <Button
-            onClick={() => setGenerateProjectCreationLinkModalOpen(true)}
+            onClick={() => setGenerateGuestProjectLinkModalOpen(true)}
             variant="outlined"
             sx={{ borderRadius: 40 }}
           >
             {intl.formatMessage({
-              id: "app.vendor.generateProjectCreationLink.create",
+              id: "app.vendor.guestProject.create",
             })}
           </Button>
         </Box>
@@ -73,11 +73,15 @@ const VendorNav = () => {
         <NotificationComponent />
       </Toolbar>
       <Dialog
-        open={generateProjectCreationLinkModalOpen}
-        onClose={() => setGenerateProjectCreationLinkModalOpen(false)}
+        open={generateGuestProjectLinkModalOpen}
+        onClose={() => setGenerateGuestProjectLinkModalOpen(false)}
       >
         <DialogContent>
-          <GenerateProjectCreationLinkModal />
+          <GenerateGuestProjectLinkModal
+            setGenerateGuestProjectLinkModalOpen={
+              setGenerateGuestProjectLinkModalOpen
+            }
+          />
         </DialogContent>
       </Dialog>
       <VendorSideNav

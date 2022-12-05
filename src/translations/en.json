@@ -6,7 +6,7 @@
   "app.general.customer": "Customer",
   "app.general.network.error": "Something went wrong. Please try again later.",
   "app.general.permission.denied.title": "Permission denied",
-  "app.general.permission.denied.content": "Please contact company admin to grant permission.",
+  "app.general.permission.denied.content": "You do not have permission to view this project.",
   "app.general.confirm": "Confirm",
   "app.general.create": "Create",
   "app.general.cancel": "Cancel",
@@ -174,6 +174,7 @@
   "app.plan.attribute.tier.premium": "Premium",
   "app.plan.attribute.tier.business": "Business",
 
+  "app.project.type.guestProject": "Guest Project",
   "app.project.attribute.name": "Project Name",
   "app.project.attribute.category": "Category",
   "app.project.attribute.totalWeight": "Estimated Total Weight",
@@ -183,9 +184,12 @@
   "app.project.attribute.deliveryAddress": "Delivery Address",
   "app.project.attribute.targetPrice": "Target Price Per Unit",
   "app.project.attribute.orderQuantities": "Order Quantities",
+  "app.project.attribute.creationMode": "Creation Mode",
+  "app.project.attribute.guestEmail": "Guest Email",
   "app.project.status.open": "Open",
   "app.project.status.inProgress": "In progress",
   "app.project.status.completed": "Completed",
+  "app.project.status.incomplete": "Incomplete",
   "app.project.status.closed": "Closed",
 
   "app.bid.attribute.quantity": "Quantity",
@@ -353,9 +357,13 @@
   "app.vendor.projectDetail.resubmitBid": "Resubmit Your Bid",
   "app.vendor.projectDetail.editBid": "Edit Bid",
   
-  "app.vendor.generateProjectCreationLink.create": "Generate Project Link",
-  "app.vendor.generateProjectCreationLink.title": "Send Project Creation Link",
+  "app.vendor.guestProject.create": "Generate Project Link",
+  "app.vendor.guestProject.modal.title": "Send Project Creation Link",
+  "app.vendor.guestProject.linkSent": "Project link sent successfully!",
 
+  "app.guestProject.created": "Your project has been created and sent to the vendor! You can close this window now.",
+  "app.guestProject.updated": "Your project has been updated! You can close this window now.",
+  
   "app.search.applyFilters": "Apply Filters",
   "app.search.clearFilters": "Clear Filters",
   "app.search.resultsTitle": "Search Results",

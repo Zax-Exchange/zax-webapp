@@ -24,4 +24,5 @@ export enum VENDOR_ROUTES {
 
   // do not use directly when using navigate() since it contains variable
   SEARCH_PROJECT_DETAIL = "/search-project-detail/:projectId",
+  GUEST_PROJECT_DETAIL = "/guest-project-detail/:projectId"
 }

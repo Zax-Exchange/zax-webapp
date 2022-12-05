@@ -12,8 +12,8 @@ const CREATE_PROJECT = gql`
   }
 `;
 
-const CREATE_PROJECT_COMPONENTS = gql`
-  mutation createProjectComponents($data: [CreateProjectComponentInput!]!) {
-    createProjectComponents(data: $data)
+const CREATE_GUEST_PROJECT = gql`
+mutation createGuestProject($data: CreateGuestProjectInput!) {
+    createGuestProject(data: $data)
   }
 `

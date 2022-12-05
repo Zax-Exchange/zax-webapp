@@ -26,7 +26,8 @@ export enum NotificationType {
   SYSTEM = "SYSTEM",
   COMPANY = "COMPANY",
   PROJECT = "PROJECT",
-  PO_INVOICE = "PO_INVOICE"
+  GUEST_PROJECT = "GUEST_PROJECT",
+  PO_INVOICE = "PO_INVOICE",
 }
 
 export enum EmitEventType {

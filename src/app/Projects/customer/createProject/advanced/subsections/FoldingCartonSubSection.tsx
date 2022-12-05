@@ -175,16 +175,6 @@ const FoldingCartonSubSection = ({
           </ListItem>
           <ListItem>
             {renderAutocompleteDropdown(
-              FOLDING_CARTON_BOX_STYLES,
-              "boxStyle",
-              intl.formatMessage({
-                id: "app.component.attribute.boxStyle",
-              }),
-              "folding-carton-box-style"
-            )}
-          </ListItem>
-          <ListItem>
-            {renderAutocompleteDropdown(
               FOLDING_CARTON_MATERIALS,
               "material",
               intl.formatMessage({

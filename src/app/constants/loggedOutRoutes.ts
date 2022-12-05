@@ -5,5 +5,6 @@ export enum LOGGED_OUT_ROUTES {
   COMPANY_SIGNUP = "/company-signup",
   USER_SIGNUP = "/user-signup/:companyId",
   VENDOR_SIGNUP = "/vendor-signup",
-  CUSTOMER_SIGNUP = "/customer-signup"
+  CUSTOMER_SIGNUP = "/customer-signup",
+  GUEST_PROJECT = "/guest-project/:projectId"
 }

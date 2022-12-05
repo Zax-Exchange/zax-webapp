@@ -65,6 +65,40 @@ const GET_VENDOR_PROJECTS = gql`
   }
 `;
 
+const GET_VENDOR_GUEST_PROJECTS = gql`
+query getVendorGuestProjects($data: GetVendorGuestProjectsInput!) {
+    getVendorGuestProjects(data: $data) {
+      id
+      name
+      deliveryDate
+      deliveryAddress
+      targetPrice
+      orderQuantities
+      status
+      totalWeight
+      category
+      permission
+      guestEmail
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+const GET_VENDOR_GUEST_PROJECT = gql`
+  ${PROJECT_FRAGMENT}
+  ${PROJECT_COMPONENT_FRAGMENT}
+  query getVendorGuestProject($data: GetVendorGuestProjectInput!) {
+    getVendorGuestProject(data: $data) {
+      ...ProjectFragment
+      permission
+      guestEmail
+      components {
+       ...ProjectComponentFragment
+      }
+    }
+  }
+`
 const SEARCH_VENDOR_COMPANIES = gql`
   query searchVendorCompanies($data: SearchVendorCompanyInput!) {
     searchVendorCompanies(data: $data) {
@@ -118,3 +152,4 @@ ${FILE_FRAGMENT}
     }
   }
 `
+
