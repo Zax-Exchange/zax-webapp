@@ -17,6 +17,7 @@ import SortIcon from "@mui/icons-material/Sort";
 import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
 import {
+  ProjectStatus,
   VendorProject,
   VendorProjectOverview,
 } from "../../../generated/graphql";
@@ -201,11 +202,11 @@ const VendorProjects = () => {
                 </>
               );
             })}
-            {getVendorGuestProjectsData.getVendorGuestProjects.map(
-              (project) => {
+            {getVendorGuestProjectsData.getVendorGuestProjects
+              .filter((project) => project.status !== ProjectStatus.Incomplete)
+              .map((project) => {
                 return <GuestProjectOverviewCard project={project} />;
-              }
-            )}
+              })}
           </Grid>
         </Fade>
       </Container>

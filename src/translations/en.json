@@ -363,7 +363,11 @@
 
   "app.guestProject.created": "Your project has been created and sent to the vendor! You can close this window now.",
   "app.guestProject.updated": "Your project has been updated! You can close this window now.",
-  
+  "app.guestProject.verifyModal.title": "Verify Your Email",
+  "app.guestProject.verifyModal.helperText": "Enter the same email that received the link.",
+  "app.guestProject.verifyModal.verify.error": "The email you entered is not the same with the one associated this project.",
+  "app.guestProject.verifyModal.verify": "Verify",
+
   "app.search.applyFilters": "Apply Filters",
   "app.search.clearFilters": "Clear Filters",
   "app.search.resultsTitle": "Search Results",

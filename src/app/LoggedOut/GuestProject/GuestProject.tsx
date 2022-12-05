@@ -1,12 +1,20 @@
 import { CheckCircleOutline } from "@mui/icons-material";
 import {
   Box,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  TextField,
   Typography,
 } from "@mui/material";
+import { validate } from "email-validator";
 import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useParams } from "react-router-dom";
@@ -38,6 +46,9 @@ const GuestProject = () => {
   const [creationMode, setCreationMode] = useState(
     ProjectCreationMode.Advanced
   );
+  const [email, setEmail] = useState("");
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerifyFailed, setEmailVerifyFailed] = useState(false);
 
   const [projectCreated, setProjectCreated] = useState(false);
   const [projectUpdated, setProjectUpdated] = useState(false);
@@ -51,6 +62,16 @@ const GuestProject = () => {
       setSnackbarOpen(true);
     }
   }, [getProjectDetailError]);
+
+  const verifyEmail = () => {
+    if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
+      if (getProjectDetailData.getProjectDetail.guestEmail === email) {
+        setEmailVerified(true);
+      } else {
+        setEmailVerifyFailed(true);
+      }
+    }
+  };
 
   const renderCreationModeDropdown = () => {
     return (
@@ -86,8 +107,49 @@ const GuestProject = () => {
       </Box>
     );
   };
+
   if (getProjectDetailLoading) {
     return <FullScreenLoading />;
+  }
+
+  if (!emailVerified) {
+    return (
+      <Dialog open={true} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {intl.formatMessage({ id: "app.guestProject.verifyModal.title" })}
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            label={intl.formatMessage({ id: "app.general.email" })}
+            error={!!emailVerifyFailed}
+            helperText={
+              emailVerifyFailed
+                ? intl.formatMessage({
+                    id: "app.guestProject.verifyModal.verify.error",
+                  })
+                : intl.formatMessage({
+                    id: "app.guestProject.verifyModal.helperText",
+                  })
+            }
+            sx={{ mt: 2, width: "100%" }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={verifyEmail}
+            variant="contained"
+            disabled={!validate(email)}
+          >
+            {intl.formatMessage({
+              id: "app.guestProject.verifyModal.verify",
+            })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
   }
 
   let res: JSX.Element | null = null;
