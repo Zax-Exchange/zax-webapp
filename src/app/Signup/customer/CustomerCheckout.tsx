@@ -8,7 +8,9 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
 import { useEffect, useState } from "react";
+import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
+import { StripePaymentIntent } from "../../../generated/graphql";
 import { useCreateCustomerMutation } from "../../gql/create/customer/customer.generated";
 import {
   useUpdateCompanyPlanSubscriptionInfoMutation,
@@ -20,23 +22,22 @@ import { CustomerSignupData, CustomerSignupPage } from "./CustomerSignup";
 
 const CustomerCheckout = ({
   setCurrentPage,
-  companyData,
-  subscriptionId,
   setIsLoading,
+  companyData,
+  stripePaymentIntent,
 }: {
   setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
-  companyData: CustomerSignupData;
-  subscriptionId: string;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  companyData: CustomerSignupData;
+  stripePaymentIntent: StripePaymentIntent;
 }) => {
+  const intl = useIntl();
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [updateCompanyPlanSuccess, setUpdateCompanyPlanSuccess] =
-    useState(false);
-  const [updateCompanyStatusSuccess, setUpdateCompanyStatusSuccess] =
     useState(false);
 
   // this is a flag to trigger useEffect in case user needs to retry
@@ -54,8 +55,6 @@ const CustomerCheckout = ({
   const [updateCompanyPlanSubscriptionInfoMutation] =
     useUpdateCompanyPlanSubscriptionInfoMutation();
 
-  const [updateCompanyStatusMutation] = useUpdateCompanyStatusMutation();
-
   useEffect(() => {
     setIsLoading(true);
   }, []);
@@ -67,69 +66,40 @@ const CustomerCheckout = ({
   }, [stripe, elements]);
 
   useEffect(() => {
-    const submit = async () => {
-      setIsLoading(true);
-      try {
-        if (paymentSuccess && !updateCompanyPlanSuccess) {
-          await updateCompanyPlanSubscriptionInfoMutation({
+    const createCustomer = async () => {
+      if (paymentSuccess) {
+        try {
+          setIsLoading(true);
+          await createCustomerMutation({
             variables: {
               data: {
-                subscriptionId,
+                ...companyData,
+                stripeCustomerInfo: {
+                  subscriptionId: stripePaymentIntent.subscriptionId,
+                  customerId: stripePaymentIntent.customerId,
+                },
               },
             },
           });
-          setUpdateCompanyPlanSuccess(true);
-        }
-
-        if (updateCompanyPlanSuccess && !updateCompanyStatusSuccess) {
-          if (createCustomerData && createCustomerData.createCustomer) {
-            const companyId = createCustomerData.createCustomer;
-
-            await updateCompanyStatusMutation({
-              variables: {
-                data: {
-                  companyId,
-                  isActive: true,
-                },
-              },
-            });
-          }
-          setUpdateCompanyStatusSuccess(true);
           setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
+        } catch (error) {
+          setSnackbar({
+            severity: "error",
+            message: intl.formatMessage({ id: "app.general.network.error" }),
+          });
+          setSnackbarOpen(true);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        setSnackbar({
-          severity: "error",
-          message: "Something went wrong. Please try again later.",
-        });
-        setSnackbarOpen(true);
       }
-
-      setIsLoading(false);
     };
-    if (submitClicked > 1) {
-    }
-    submit();
-  }, [
-    submitClicked,
-    paymentSuccess,
-    updateCompanyPlanSuccess,
-    updateCompanyStatusSuccess,
-  ]);
+    createCustomer();
+  }, [paymentSuccess]);
 
-  const handleSubmit = async () => {
+  const finishPayment = async () => {
     try {
       // TODO: review this to make it more robust (should guarantee company and payment are both successful)
       setIsLoading(true);
-      if (!createCustomerData) {
-        await createCustomerMutation({
-          variables: {
-            data: {
-              ...companyData,
-            },
-          },
-        });
-      }
       if (stripe && elements && !paymentSuccess) {
         const { error } = await stripe.confirmPayment({
           elements,
@@ -143,7 +113,7 @@ const CustomerCheckout = ({
         }
       }
     } catch (error: any) {
-      let message = "Something went wrong. Please try again later.";
+      let message = intl.formatMessage({ id: "app.general.network.error" });
       if (error.type === "card_error") {
         message = error.message;
       }
@@ -152,13 +122,13 @@ const CustomerCheckout = ({
         message,
       });
       setSnackbarOpen(true);
+    } finally {
+      setIsLoading(false);
     }
-    setSubmitClicked((count) => count + 1);
   };
 
   return (
     <>
-      {(!stripe || !elements || createCustomerLoading) && <FullScreenLoading />}
       <PaymentElement />
 
       <Container
@@ -178,7 +148,7 @@ const CustomerCheckout = ({
         >
           Back
         </Button>
-        <Button variant="contained" onClick={handleSubmit}>
+        <Button variant="contained" onClick={finishPayment}>
           Finish and Pay
         </Button>
       </Container>

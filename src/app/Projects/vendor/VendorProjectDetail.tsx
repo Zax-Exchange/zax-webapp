@@ -948,6 +948,9 @@ const VendorProjectDetail = () => {
     updateProjectBidComponentsLoading ||
     createProjectBidComponentsLoading;
 
+  if (isLoading) {
+    return <FullScreenLoading />;
+  }
   if (permissionError) {
     return (
       <Dialog open={true}>
@@ -958,7 +961,6 @@ const VendorProjectDetail = () => {
 
   return (
     <Container>
-      {isLoading && <FullScreenLoading />}
       <Box textAlign="left">
         <IconButton onClick={() => navigate(-1)}>
           <KeyboardBackspaceIcon style={{ color: "rgb(43, 52, 89)" }} />

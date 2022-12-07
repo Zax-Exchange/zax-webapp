@@ -142,6 +142,7 @@ const GuestProject = () => {
             onClick={verifyEmail}
             variant="contained"
             disabled={!validate(email)}
+            sx={{ mr: 2, mb: 2 }}
           >
             {intl.formatMessage({
               id: "app.guestProject.verifyModal.verify",

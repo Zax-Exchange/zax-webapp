@@ -25,7 +25,7 @@ import {
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
-import { Country } from "../../Login/customer/CustomerSignup";
+import { Country } from "../../Signup/customer/CustomerSignup";
 import { validate } from "email-validator";
 import { useUpdateCustomerInfoMutation } from "../../gql/update/customer/customer.generated";
 import { useGetCustomerDetailQuery } from "../../gql/get/customer/customer.generated";

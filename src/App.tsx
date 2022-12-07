@@ -14,11 +14,11 @@ import CustomerProjectDetail from "./app/Projects/customer/CustomerProjectDetail
 import RequireAuth from "./app/Auth/RequireAuth";
 import Login from "./app/Login/Login";
 import UserSignup from "./app/Login/UserSignup";
-import VendorSignup from "./app/Login/vendor/VendorSignup";
-import CompanySignup from "./app/Login/CompanySignup";
+import VendorSignup from "./app/Signup/vendor/VendorSignup";
+import CompanySignup from "./app/Signup/CompanySignup";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./app/ErrorBoundary/ErrorBoundary";
-import CustomerSignup from "./app/Login/customer/CustomerSignup";
+import CustomerSignup from "./app/Signup/customer/CustomerSignup";
 import VendorProjectDetail from "./app/Projects/vendor/VendorProjectDetail";
 import { ThemeProvider } from "@mui/system";
 import AdvancedCreateProject from "./app/Projects/customer/createProject/advanced/AdvancedCreateProject";

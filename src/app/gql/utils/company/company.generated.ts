@@ -18,12 +18,12 @@ export type GetAllPendingJoinRequestsQueryVariables = Types.Exact<{
 
 export type GetAllPendingJoinRequestsQuery = { __typename?: 'Query', getAllPendingJoinRequests: Array<string> };
 
-export type DeletePendingJoinRequestMutationVariables = Types.Exact<{
-  data: Types.DeletePendingJoinRequestInput;
+export type DeletePendingJoinRequestsMutationVariables = Types.Exact<{
+  data: Array<Types.DeletePendingJoinRequestInput> | Types.DeletePendingJoinRequestInput;
 }>;
 
 
-export type DeletePendingJoinRequestMutation = { __typename?: 'Mutation', deletePendingJoinRequest: boolean };
+export type DeletePendingJoinRequestsMutation = { __typename?: 'Mutation', deletePendingJoinRequests: boolean };
 
 
 export const CheckCompanyNameDocument = gql`
@@ -92,34 +92,34 @@ export function useGetAllPendingJoinRequestsLazyQuery(baseOptions?: Apollo.LazyQ
 export type GetAllPendingJoinRequestsQueryHookResult = ReturnType<typeof useGetAllPendingJoinRequestsQuery>;
 export type GetAllPendingJoinRequestsLazyQueryHookResult = ReturnType<typeof useGetAllPendingJoinRequestsLazyQuery>;
 export type GetAllPendingJoinRequestsQueryResult = Apollo.QueryResult<GetAllPendingJoinRequestsQuery, GetAllPendingJoinRequestsQueryVariables>;
-export const DeletePendingJoinRequestDocument = gql`
-    mutation deletePendingJoinRequest($data: DeletePendingJoinRequestInput!) {
-  deletePendingJoinRequest(data: $data)
+export const DeletePendingJoinRequestsDocument = gql`
+    mutation deletePendingJoinRequests($data: [DeletePendingJoinRequestInput!]!) {
+  deletePendingJoinRequests(data: $data)
 }
     `;
-export type DeletePendingJoinRequestMutationFn = Apollo.MutationFunction<DeletePendingJoinRequestMutation, DeletePendingJoinRequestMutationVariables>;
+export type DeletePendingJoinRequestsMutationFn = Apollo.MutationFunction<DeletePendingJoinRequestsMutation, DeletePendingJoinRequestsMutationVariables>;
 
 /**
- * __useDeletePendingJoinRequestMutation__
+ * __useDeletePendingJoinRequestsMutation__
  *
- * To run a mutation, you first call `useDeletePendingJoinRequestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeletePendingJoinRequestMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeletePendingJoinRequestsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePendingJoinRequestsMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deletePendingJoinRequestMutation, { data, loading, error }] = useDeletePendingJoinRequestMutation({
+ * const [deletePendingJoinRequestsMutation, { data, loading, error }] = useDeletePendingJoinRequestsMutation({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useDeletePendingJoinRequestMutation(baseOptions?: Apollo.MutationHookOptions<DeletePendingJoinRequestMutation, DeletePendingJoinRequestMutationVariables>) {
+export function useDeletePendingJoinRequestsMutation(baseOptions?: Apollo.MutationHookOptions<DeletePendingJoinRequestsMutation, DeletePendingJoinRequestsMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeletePendingJoinRequestMutation, DeletePendingJoinRequestMutationVariables>(DeletePendingJoinRequestDocument, options);
+        return Apollo.useMutation<DeletePendingJoinRequestsMutation, DeletePendingJoinRequestsMutationVariables>(DeletePendingJoinRequestsDocument, options);
       }
-export type DeletePendingJoinRequestMutationHookResult = ReturnType<typeof useDeletePendingJoinRequestMutation>;
-export type DeletePendingJoinRequestMutationResult = Apollo.MutationResult<DeletePendingJoinRequestMutation>;
-export type DeletePendingJoinRequestMutationOptions = Apollo.BaseMutationOptions<DeletePendingJoinRequestMutation, DeletePendingJoinRequestMutationVariables>;
+export type DeletePendingJoinRequestsMutationHookResult = ReturnType<typeof useDeletePendingJoinRequestsMutation>;
+export type DeletePendingJoinRequestsMutationResult = Apollo.MutationResult<DeletePendingJoinRequestsMutation>;
+export type DeletePendingJoinRequestsMutationOptions = Apollo.BaseMutationOptions<DeletePendingJoinRequestsMutation, DeletePendingJoinRequestsMutationVariables>;

@@ -35,6 +35,8 @@ import ChangePassword from "./ChangePassword";
 import ChangePlan from "./ChangePlan";
 import CurrentPlan from "./CurrentPlan";
 import React from "react";
+import { useIntl } from "react-intl";
+import { UserPower } from "../../generated/graphql";
 
 const NoWrapListItemText = styled(
   (props: ListItemTextProps & { text: string }) => {
@@ -81,7 +83,9 @@ const SettingsTitleTypography = styled((props: TypographyProps) => {
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
+  const intl = useIntl();
   const power = user!.power;
+  const isAdmin = power === UserPower.Admin;
   const [view, setView] = useState<string | null>(null);
 
   const [expanded, setExpanded] = useState<string | boolean>("");
@@ -162,7 +166,7 @@ const Settings = () => {
               >
                 <SettingsAccordionSummary>
                   <SettingsTitleTypography>
-                    Company Settings
+                    {intl.formatMessage({ id: "app.settings.companySettings" })}
                   </SettingsTitleTypography>
                 </SettingsAccordionSummary>
                 <AccordionDetails>
@@ -172,7 +176,11 @@ const Settings = () => {
                       onClick={() => setView("edit-company-profile")}
                     >
                       <ListItemButton>
-                        <NoWrapListItemText text="Edit company profile"></NoWrapListItemText>
+                        <NoWrapListItemText
+                          text={intl.formatMessage({
+                            id: "app.settings.companySettings.editCompanyProfile",
+                          })}
+                        ></NoWrapListItemText>
                       </ListItemButton>
                     </ListItem>
 
@@ -203,7 +211,9 @@ const Settings = () => {
               >
                 <SettingsAccordionSummary>
                   <SettingsTitleTypography>
-                    Manage Company Users
+                    {intl.formatMessage({
+                      id: "app.settings.manageCompanyUsers",
+                    })}
                   </SettingsTitleTypography>
                 </SettingsAccordionSummary>
                 <AccordionDetails>
@@ -213,7 +223,11 @@ const Settings = () => {
                       onClick={() => setView("invite-users")}
                     >
                       <ListItemButton>
-                        <NoWrapListItemText text="Invite users"></NoWrapListItemText>
+                        <NoWrapListItemText
+                          text={intl.formatMessage({
+                            id: "app.settings.manageCompanyUsers.manageInvitations",
+                          })}
+                        ></NoWrapListItemText>
                       </ListItemButton>
                     </ListItem>
 
@@ -222,7 +236,11 @@ const Settings = () => {
                       onClick={() => setView("deactivate-users")}
                     >
                       <ListItemButton>
-                        <NoWrapListItemText text="Deactivate users"></NoWrapListItemText>
+                        <NoWrapListItemText
+                          text={intl.formatMessage({
+                            id: "app.settings.manageCompanyUsers.deactivateUsers",
+                          })}
+                        ></NoWrapListItemText>
                       </ListItemButton>
                     </ListItem>
 

@@ -1,4 +1,4 @@
-import { Country } from "../Login/customer/CustomerSignup";
+import { Country } from "../Signup/customer/CustomerSignup";
 
 export const countries: Country[] = [
   { code: 'AD', label: 'Andorra', phone: '376' },

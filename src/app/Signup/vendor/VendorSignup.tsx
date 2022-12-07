@@ -28,13 +28,14 @@ import { validate } from "email-validator";
 import VendorPlanSelection from "./VendorPlanSelection";
 import VendorCompanyReview from "./VendorCompanyReview";
 import { isValidInt } from "../../Utils/inputValidators";
-import { Country, StripeData } from "../customer/CustomerSignup";
+import { Country } from "../customer/CustomerSignup";
 import React from "react";
 import VendorCheckout from "./VendorCheckout";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { useCreateStripeCustomerMutation } from "../../gql/create/company/company.generated";
 import { useCreateVendorSubscriptionMutation } from "../../gql/create/vendor/vendor.generated";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
+import { useCreateStripeCustomerInStripeMutation } from "../../gql/create/company/company.generated";
+import { StripePaymentIntent } from "../../../generated/graphql";
 
 export type VendorSignupData = {
   name: string;
@@ -91,7 +92,7 @@ const VendorSignup = () => {
       loading: createStripeCustomerLoading,
       error: createStripeCustomerError,
     },
-  ] = useCreateStripeCustomerMutation();
+  ] = useCreateStripeCustomerInStripeMutation();
 
   const [
     createVendorSubscriptionMutation,
@@ -155,14 +156,13 @@ const VendorSignup = () => {
     customerId: "",
     subscriptionId: "",
     clientSecret: "",
-  } as StripeData);
+  } as StripePaymentIntent);
 
   // set stripeData.customerId once createStripeCustomer succeeds
   useEffect(() => {
     if (createStripeCustomerData) {
       setStripeData({
-        ...stripeData,
-        customerId: createStripeCustomerData.createStripeCustomer,
+        ...createStripeCustomerData.createStripeCustomerInStripe,
       });
     }
   }, [createStripeCustomerData]);
@@ -190,9 +190,6 @@ const VendorSignup = () => {
     return !previousPlanIds.includes(values.planId);
   };
   const isValidStripeData = () => {
-    for (let key in stripeData) {
-      if (!stripeData[key as keyof StripeData]) return false;
-    }
     return true;
   };
   // goes to review page once user selects a plan
@@ -295,6 +292,7 @@ const VendorSignup = () => {
           variables: {
             data: {
               email: values.userEmail,
+              priceId: subscriptionInfo.subscriptionPriceId,
             },
           },
         });
@@ -302,7 +300,7 @@ const VendorSignup = () => {
         await createVendorSubscriptionMutation({
           variables: {
             data: {
-              stripeCustomerId: data!.createStripeCustomer,
+              stripeCustomerId: data!.createStripeCustomerInStripe.customerId,
               subscriptionPriceId: subscriptionInfo.subscriptionPriceId,
               perUserPriceId: subscriptionInfo.perUserPriceId,
             },

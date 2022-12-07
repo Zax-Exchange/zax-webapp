@@ -1,5 +1,6 @@
 import { Box, Button } from "@mui/material";
 import React from "react";
+import { useIntl } from "react-intl";
 import { CustomerSignupPage } from "./customer/CustomerSignup";
 
 const JoinOrCreateCompany = ({
@@ -7,19 +8,20 @@ const JoinOrCreateCompany = ({
 }: {
   setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
 }) => {
+  const intl = useIntl();
   return (
-    <Box>
+    <Box display="flex" justifyContent="space-around">
       <Button
         variant="outlined"
         onClick={() => setCurrentPage(CustomerSignupPage.JOIN)}
       >
-        Join a company
+        {intl.formatMessage({ id: "app.signup.joinACompany" })}
       </Button>
       <Button
         variant="outlined"
         onClick={() => setCurrentPage(CustomerSignupPage.EMAIL_PAGE)}
       >
-        Create a new company
+        {intl.formatMessage({ id: "app.signup.createNewCompany" })}
       </Button>
     </Box>
   );

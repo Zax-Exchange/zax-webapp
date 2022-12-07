@@ -145,8 +145,9 @@ const JoinCompany = () => {
         onClick={sendRequestToCompany}
         disabled={shouldDisableRequestButton()}
         loading={requestToJoinLoading}
+        sx={{ mt: 2 }}
       >
-        Request To Join
+        {intl.formatMessage({ id: "app.signup.requestToJoin" })}
       </LoadingButton>
     </Box>
   );

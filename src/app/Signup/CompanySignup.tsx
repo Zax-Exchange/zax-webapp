@@ -19,12 +19,15 @@ import { gql, useMutation } from "@apollo/client";
 import vendor from "../../static/vendor.svg";
 import customer from "../../static/customer.svg";
 import React from "react";
+import { LOGGED_OUT_ROUTES } from "../constants/loggedOutRoutes";
 
 const CompanySignup = () => {
   const navigate = useNavigate();
 
-  const signupHandler = (path: string) => {
-    navigate(`/${path}`);
+  const companyTypeOnClick = (
+    path: LOGGED_OUT_ROUTES.VENDOR_SIGNUP | LOGGED_OUT_ROUTES.CUSTOMER_SIGNUP
+  ) => {
+    navigate(path);
   };
 
   return (
@@ -36,7 +39,11 @@ const CompanySignup = () => {
       <Box sx={{ display: "flex", justifyContent: "space-around" }}>
         <Fade in={true}>
           <Card elevation={4}>
-            <CardActionArea onClick={() => signupHandler("vendor-signup")}>
+            <CardActionArea
+              onClick={() =>
+                companyTypeOnClick(LOGGED_OUT_ROUTES.VENDOR_SIGNUP)
+              }
+            >
               <CardMedia
                 component="img"
                 height="250"
@@ -58,7 +65,11 @@ const CompanySignup = () => {
 
         <Fade in={true}>
           <Card elevation={4}>
-            <CardActionArea onClick={() => signupHandler("customer-signup")}>
+            <CardActionArea
+              onClick={() =>
+                companyTypeOnClick(LOGGED_OUT_ROUTES.CUSTOMER_SIGNUP)
+              }
+            >
               <CardMedia component="img" height="250" src={customer} />
               <CardContent>
                 <Typography

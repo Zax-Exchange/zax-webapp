@@ -1,10 +1,11 @@
 { 
   "app.error.signup.duplicateJoinRequest": "You have requested to join this company already.",
-  "app.error.signup.existingUser": "This email has been used already.",
-  
+  "app.error.signup.existingUser": "This email has already been used.",
+
   "app.general.vendor": "Vendor",
   "app.general.customer": "Customer",
   "app.general.network.error": "Something went wrong. Please try again later.",
+  "app.general.network.success": "Action completed.",
   "app.general.permission.denied.title": "Permission denied",
   "app.general.permission.denied.content": "You do not have permission to view this project.",
   "app.general.confirm": "Confirm",
@@ -57,7 +58,12 @@
   "app.signup.pickAPlan": "Pick a plan for your company",
   "app.signup.completePayment": "Complete Payment Information",
   "app.signup.reviewCompany": "Review Company Info",
+  "app.signup.requestToJoin": "Request to join",
   "app.signup.requestToJoin.success": "Join request has been sent to company admins!",
+  "app.signup.duplicateEmail": "This email has been taken.",
+  "app.signup.createAccount": "Create User Account",
+  "app.signup.joinACompany": "Join a company",
+  "app.signup.createNewCompany": "Create a new company",
 
   "app.login.resetPassword.success": "Password reset success!",
   "app.login.forgotPassword": "Forgot Password",
@@ -371,5 +377,20 @@
   "app.search.applyFilters": "Apply Filters",
   "app.search.clearFilters": "Clear Filters",
   "app.search.resultsTitle": "Search Results",
-  "app.search.noResults": "Sorry, but we could not find any projects based on your search terms. Try searching for other products!"
+  "app.search.noResults": "Sorry, but we could not find any projects based on your search terms. Try searching for other products!",
+
+  "app.settings.companySettings": "Company Settings",
+  "app.settings.companySettings.editCompanyProfile": "Edit Company Profile",
+  "app.settings.manageCompanyUsers": "Manage Company Users",
+
+  "app.settings.manageCompanyUsers.manageInvitations": "Manage Invitations",
+  "app.settings.manageCompanyUsers.manageInvitations.directInvitation": "Direct Invitation",
+  "app.settings.manageCompanyUsers.manageInvitations.sendInvitation": "Send Invitation",
+  "app.settings.manageCompanyUsers.manageInvitations.pendingRequests": "Pending Requests",
+  "app.settings.manageCompanyUsers.manageInvitations.noPendingRequests": "No pending requests at the moment.",
+  "app.settings.manageCompanyUsers.manageInvitations.acceptAll": "Accept and send invitations to all selected requests",
+  "app.settings.manageCompanyUsers.manageInvitations.declineAll": "Decline and remove all selected requests",
+  "app.settings.manageCompanyUsers.manageInvitations.invitationSent": "Invitation sent!",
+
+  "app.settings.manageCompanyUsers.deactivateUsers": "Deactivate Users"
 }

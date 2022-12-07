@@ -27,11 +27,13 @@ import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import CustomerCheckout from "./CustomerCheckout";
-import { useCreateStripeCustomerMutation } from "../../gql/create/company/company.generated";
+import { useCreateStripeCustomerInStripeMutation } from "../../gql/create/company/company.generated";
 import { useCreateCustomerSubscriptionMutation } from "../../gql/create/customer/customer.generated";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
 import JoinOrCreateCompany from "../JoinOrCreateCompany";
 import JoinCompany from "../JoinCompany";
+import { StripePaymentIntent } from "../../../generated/graphql";
+import { useIntl } from "react-intl";
 
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
@@ -69,12 +71,6 @@ export type SubscriptionInfo = {
   billingFrequency: string;
 };
 
-export type StripeData = {
-  customerId: string;
-  subscriptionId: string;
-  clientSecret: string;
-};
-
 export type Country = {
   code: string;
   label: string;
@@ -82,26 +78,16 @@ export type Country = {
   suggested?: boolean;
 };
 const CustomerSignup = () => {
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  const intl = useIntl();
   const [
-    createStripeCustomerMutation,
+    createStripeCustomerInStripe,
     {
-      data: createStripeCustomerData,
-      loading: createStripeCustomerLoading,
+      data: createStripeCustomerInStripeData,
+      loading: createStripeCustomerInStripeLoading,
       error: createStripeCustomerError,
     },
-  ] = useCreateStripeCustomerMutation();
-
-  const [
-    createCustomerSubscriptionMutation,
-    {
-      data: createSubscriptionData,
-      loading: createSubscriptionLoading,
-      error: createSubscriptionError,
-    },
-  ] = useCreateCustomerSubscriptionMutation();
+  ] = useCreateStripeCustomerInStripeMutation();
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
     variables: {
@@ -113,7 +99,7 @@ const CustomerSignup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
 
-  const { setSnackbar, setSnackbarOpen, CustomSnackbar } = useCustomSnackbar();
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [subscriptionInfo, setSubscriptionInfo] = useState({
     price: "",
     priceId: "",
@@ -123,13 +109,11 @@ const CustomerSignup = () => {
   const [currentPage, setCurrentPage] = useState(
     CustomerSignupPage.JOIN_OR_CREATE
   );
-  const [stripeData, setStripeData] = useState({
+  const [stripePaymentIntent, setStripePaymentIntent] = useState({
     customerId: "",
     subscriptionId: "",
     clientSecret: "",
-  } as StripeData);
-
-  const [previousPlanIds, setPreviousPlanIds] = useState<string[]>([]);
+  } as StripePaymentIntent);
 
   const [values, setValues] = useState({
     name: "",
@@ -146,42 +130,10 @@ const CustomerSignup = () => {
     userEmail: "",
   } as CustomerSignupData);
 
-  useEffect(() => {
-    if (createStripeCustomerData) {
-      setStripeData({
-        ...stripeData,
-        customerId: createStripeCustomerData.createStripeCustomer,
-      });
-    }
-  }, [createStripeCustomerData]);
-
-  useEffect(() => {
-    if (isValidStripeData() && !shouldRerunMutation()) {
-      return;
-    }
-    if (createSubscriptionData) {
-      setStripeData({
-        ...stripeData,
-        subscriptionId:
-          createSubscriptionData.createCustomerSubscription.subscriptionId,
-        clientSecret:
-          createSubscriptionData.createCustomerSubscription.clientSecret,
-      });
-      setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
-      setPreviousPlanIds([...previousPlanIds, values.planId]);
-    }
-  }, [createSubscriptionData]);
-
-  const shouldRerunMutation = () => {
-    return !previousPlanIds.includes(values.planId);
+  const paymentIntentCreated = () => {
+    return Object.values(stripePaymentIntent).every((v) => !!v);
   };
 
-  const isValidStripeData = () => {
-    for (let key in stripeData) {
-      if (!stripeData[key as keyof StripeData]) return false;
-    }
-    return true;
-  };
   const selectPlan = (planId: string) => {
     setValues({
       ...values,
@@ -229,24 +181,20 @@ const CustomerSignup = () => {
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
-      if (createSubscriptionData && !shouldRerunMutation()) {
-        setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
-        return;
-      }
+      // TODO: once customer plan contains only one plan, refactor this so that we don't create so many new customer payment intents in stripe
       try {
-        const { data } = await createStripeCustomerMutation({
+        const { data } = await createStripeCustomerInStripe({
           variables: {
             data: {
               email: values.userEmail,
+              priceId: subscriptionInfo.priceId,
             },
           },
         });
-        await createCustomerSubscriptionMutation({
-          variables: {
-            priceId: subscriptionInfo.priceId,
-            stripeCustomerId: data!.createStripeCustomer,
-          },
+        setStripePaymentIntent({
+          ...data!.createStripeCustomerInStripe,
         });
+        setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
       } catch (error: any) {
         setSnackbar({
           severity: "error",
@@ -402,7 +350,7 @@ const CustomerSignup = () => {
         <Fade in={true} mountOnEnter unmountOnExit appear>
           <div>
             <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
-              Pick a plan for your company
+              {intl.formatMessage({ id: "app.signup.pickAPlan" })}
             </Typography>
             <Stack direction="row" justifyContent="space-around">
               {getAllPlansData &&
@@ -440,7 +388,7 @@ const CustomerSignup = () => {
       return (
         <Elements
           stripe={stripePromise}
-          options={{ clientSecret: stripeData.clientSecret }}
+          options={{ clientSecret: stripePaymentIntent.clientSecret }}
         >
           <Typography
             variant="subtitle2"
@@ -448,12 +396,12 @@ const CustomerSignup = () => {
             textAlign="left"
             fontSize="1.2em"
           >
-            Complete Payment Information
+            {intl.formatMessage({ id: "app.signup.completePayment" })}
           </Typography>
           <CustomerCheckout
             setCurrentPage={setCurrentPage}
             companyData={values}
-            subscriptionId={stripeData.subscriptionId}
+            stripePaymentIntent={stripePaymentIntent}
             setIsLoading={setIsLoading}
           />
         </Elements>
@@ -465,9 +413,9 @@ const CustomerSignup = () => {
 
   return (
     <Container maxWidth="lg">
-      {(createStripeCustomerLoading ||
-        createSubscriptionLoading ||
-        isLoading) && <FullScreenLoading />}
+      {(createStripeCustomerInStripeLoading || isLoading) && (
+        <FullScreenLoading />
+      )}
       <Paper sx={{ padding: 8, position: "relative" }}>
         {renderCompanySignupFlow()}
       </Paper>

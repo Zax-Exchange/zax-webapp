@@ -16,14 +16,14 @@ export type LoginQueryVariables = Types.Exact<{
 }>;
 
 
-export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, power: Types.UserPower, name: string, email: string, token: string, notificationToken: string, chatToken: string } };
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoggedInUser', id: string, companyId: string, isVendor: boolean, power: Types.UserPower, name: string, email: string, token: string, chatToken: string } };
 
-export type InviteUserMutationVariables = Types.Exact<{
-  data: Types.InviteUserInput;
+export type InviteUsersMutationVariables = Types.Exact<{
+  data: Array<Types.InviteUserInput> | Types.InviteUserInput;
 }>;
 
 
-export type InviteUserMutation = { __typename?: 'Mutation', inviteUser: boolean };
+export type InviteUsersMutation = { __typename?: 'Mutation', inviteUsers: boolean };
 
 export type RequestToJoinMutationVariables = Types.Exact<{
   data: Types.RequestToJoinInput;
@@ -90,7 +90,6 @@ export const LoginDocument = gql`
     name
     email
     token
-    notificationToken
     chatToken
   }
 }
@@ -123,37 +122,37 @@ export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Logi
 export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
 export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
 export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
-export const InviteUserDocument = gql`
-    mutation inviteUser($data: InviteUserInput!) {
-  inviteUser(data: $data)
+export const InviteUsersDocument = gql`
+    mutation inviteUsers($data: [InviteUserInput!]!) {
+  inviteUsers(data: $data)
 }
     `;
-export type InviteUserMutationFn = Apollo.MutationFunction<InviteUserMutation, InviteUserMutationVariables>;
+export type InviteUsersMutationFn = Apollo.MutationFunction<InviteUsersMutation, InviteUsersMutationVariables>;
 
 /**
- * __useInviteUserMutation__
+ * __useInviteUsersMutation__
  *
- * To run a mutation, you first call `useInviteUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInviteUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteUsersMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [inviteUserMutation, { data, loading, error }] = useInviteUserMutation({
+ * const [inviteUsersMutation, { data, loading, error }] = useInviteUsersMutation({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useInviteUserMutation(baseOptions?: Apollo.MutationHookOptions<InviteUserMutation, InviteUserMutationVariables>) {
+export function useInviteUsersMutation(baseOptions?: Apollo.MutationHookOptions<InviteUsersMutation, InviteUsersMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<InviteUserMutation, InviteUserMutationVariables>(InviteUserDocument, options);
+        return Apollo.useMutation<InviteUsersMutation, InviteUsersMutationVariables>(InviteUsersDocument, options);
       }
-export type InviteUserMutationHookResult = ReturnType<typeof useInviteUserMutation>;
-export type InviteUserMutationResult = Apollo.MutationResult<InviteUserMutation>;
-export type InviteUserMutationOptions = Apollo.BaseMutationOptions<InviteUserMutation, InviteUserMutationVariables>;
+export type InviteUsersMutationHookResult = ReturnType<typeof useInviteUsersMutation>;
+export type InviteUsersMutationResult = Apollo.MutationResult<InviteUsersMutation>;
+export type InviteUsersMutationOptions = Apollo.BaseMutationOptions<InviteUsersMutation, InviteUsersMutationVariables>;
 export const RequestToJoinDocument = gql`
     mutation requestToJoin($data: RequestToJoinInput!) {
   requestToJoin(data: $data)

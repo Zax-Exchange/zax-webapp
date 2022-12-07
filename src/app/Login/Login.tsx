@@ -62,14 +62,7 @@ const Login = () => {
         },
         fetchPolicy: "no-cache",
       });
-    } catch (e) {
-      console.log(e);
-      setSnackbar({
-        message: "Incorrect email/password.",
-        severity: "error",
-      });
-      setSnackbarOpen(true);
-    }
+    } catch (e) {}
   };
 
   const forgotPasswordOnClick = () => {

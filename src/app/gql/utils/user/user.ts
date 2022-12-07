@@ -16,15 +16,14 @@ const USER_LOGIN = gql`
       name
       email
       token
-      notificationToken
       chatToken
     }
   }
 `;
 
-const INVITE_USER = gql`
-  mutation inviteUser($data: InviteUserInput!) {
-    inviteUser(data: $data)
+const INVITE_USERS = gql`
+  mutation inviteUsers($data: [InviteUserInput!]!) {
+    inviteUsers(data: $data)
   }
 `;
 

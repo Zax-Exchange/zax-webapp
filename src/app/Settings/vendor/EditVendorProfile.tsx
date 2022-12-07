@@ -16,7 +16,7 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetVendorDetailQuery } from "../../gql/get/vendor/vendor.generated";
 
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
-import { Country } from "../../Login/customer/CustomerSignup";
+import { Country } from "../../Signup/customer/CustomerSignup";
 import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
 import { validate } from "email-validator";

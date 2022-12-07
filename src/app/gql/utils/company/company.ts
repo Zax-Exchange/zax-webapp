@@ -12,8 +12,8 @@ const GET_ALL_PENDING_JOIN_REQUESTS = gql`
   }
 `
 
-const DELETE_PENDING_JOIN_REQUEST = gql`
-  mutation deletePendingJoinRequest($data: DeletePendingJoinRequestInput!) {
-    deletePendingJoinRequest(data: $data)
+const DELETE_PENDING_JOIN_REQUESTS = gql`
+  mutation deletePendingJoinRequests($data: [DeletePendingJoinRequestInput!]!) {
+    deletePendingJoinRequests(data: $data)
   }
 `

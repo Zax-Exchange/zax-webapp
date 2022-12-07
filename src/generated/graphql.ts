@@ -111,6 +111,7 @@ export type CreateCustomerInput = {
   name: Scalars['String'];
   phone: Scalars['String'];
   planId: Scalars['String'];
+  stripeCustomerInfo: StripeCustomerInfo;
   userEmail: Scalars['String'];
 };
 
@@ -206,8 +207,9 @@ export type CreatePurchaseOrderInput = {
   purchaseOrderId: Scalars['String'];
 };
 
-export type CreateStripeCustomerInput = {
+export type CreateStripeCustomerInStripeInput = {
   email: Scalars['String'];
+  priceId: Scalars['String'];
 };
 
 export type CreateUserInput = {
@@ -518,7 +520,6 @@ export type LoggedInUser = {
   id: Scalars['String'];
   isVendor: Scalars['Boolean'];
   name: Scalars['String'];
-  notificationToken: Scalars['String'];
   power: UserPower;
   token: Scalars['String'];
 };
@@ -535,20 +536,20 @@ export type Mutation = {
   createProjectBid: Scalars['Boolean'];
   createProjectBidComponents: Scalars['Boolean'];
   createPurchaseOrder: Scalars['Boolean'];
-  createStripeCustomer: Scalars['String'];
+  createStripeCustomerInStripe: StripePaymentIntent;
   createUser: LoggedInUser;
   createVendor: Scalars['String'];
   createVendorSubscription: StripeSubscription;
   deactivateUser: Scalars['Boolean'];
   deleteBidRemark: Scalars['Boolean'];
   deleteInvoice: Scalars['Boolean'];
-  deletePendingJoinRequest: Scalars['Boolean'];
+  deletePendingJoinRequests: Scalars['Boolean'];
   deleteProject: Scalars['Boolean'];
   deleteProjectBidPermissions: Scalars['Boolean'];
   deleteProjectDesign: Scalars['Boolean'];
   deleteProjectPermissions: Scalars['Boolean'];
   deletePurchaseOrder: Scalars['Boolean'];
-  inviteUser: Scalars['Boolean'];
+  inviteUsers: Scalars['Boolean'];
   requestToJoin: Scalars['Boolean'];
   reset: Scalars['Boolean'];
   resetPassword?: Maybe<Scalars['Boolean']>;
@@ -627,8 +628,8 @@ export type MutationCreatePurchaseOrderArgs = {
 };
 
 
-export type MutationCreateStripeCustomerArgs = {
-  data: CreateStripeCustomerInput;
+export type MutationCreateStripeCustomerInStripeArgs = {
+  data: CreateStripeCustomerInStripeInput;
 };
 
 
@@ -662,8 +663,8 @@ export type MutationDeleteInvoiceArgs = {
 };
 
 
-export type MutationDeletePendingJoinRequestArgs = {
-  data: DeletePendingJoinRequestInput;
+export type MutationDeletePendingJoinRequestsArgs = {
+  data: Array<DeletePendingJoinRequestInput>;
 };
 
 
@@ -692,8 +693,8 @@ export type MutationDeletePurchaseOrderArgs = {
 };
 
 
-export type MutationInviteUserArgs = {
-  data: InviteUserInput;
+export type MutationInviteUsersArgs = {
+  data: Array<InviteUserInput>;
 };
 
 
@@ -1400,6 +1401,18 @@ export type SearchVendorCompanyInput = {
 
 export type SendPasswordResetLinkInput = {
   email: Scalars['String'];
+};
+
+export type StripeCustomerInfo = {
+  customerId: Scalars['String'];
+  subscriptionId: Scalars['String'];
+};
+
+export type StripePaymentIntent = {
+  __typename?: 'StripePaymentIntent';
+  clientSecret: Scalars['String'];
+  customerId: Scalars['String'];
+  subscriptionId: Scalars['String'];
 };
 
 export type StripeSubscription = {
