@@ -47,7 +47,7 @@ const Login = () => {
     }
     if (error) {
       setSnackbar({
-        message: "Incorrect email/password.",
+        message: error.message,
         severity: "error",
       });
       setSnackbarOpen(true);

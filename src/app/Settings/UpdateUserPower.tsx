@@ -128,6 +128,7 @@ const UpdateUserPower = () => {
           }
           isOptionEqualToValue={(option, value) => option.id === value.id}
           value={selectedUsers}
+          disableCloseOnSelect
           onChange={(e, v) => {
             setSelectedUsers(v);
           }}

@@ -125,6 +125,7 @@ const CustomerDeactivateUsers = () => {
           onChange={(e, v) => {
             setSelectedUsers(v);
           }}
+          disableCloseOnSelect
           renderInput={(params) => (
             <TextField
               {...params}

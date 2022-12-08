@@ -80,11 +80,6 @@ const NotificationComponent = () => {
   }, [anchorEl]);
 
   useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-    }
-
-    console.log("socket connected");
     socket.on("connect", () => {
       setIsConnected(true);
       socket.emit(EmitEventType.INIT_CONNECTION, {
@@ -123,6 +118,10 @@ const NotificationComponent = () => {
       }
     );
 
+    if (!socket.connected) {
+      socket.connect();
+    }
+
     socket.on("disconnect", () => {
       console.log("socket disconnected");
       setIsConnected(false);
@@ -135,7 +134,7 @@ const NotificationComponent = () => {
       socket.off("disconnect");
       socket.off("pong");
     };
-  }, [socket]);
+  }, []);
 
   const clearNotification = (id: string) => {
     socket.emit(EmitEventType.CLEAR, {

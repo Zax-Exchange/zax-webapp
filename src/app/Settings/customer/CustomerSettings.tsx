@@ -1,4 +1,4 @@
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, OpenInNew } from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
@@ -24,7 +24,7 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext, useState } from "react";
 import { useIntl } from "react-intl";
 import { AuthContext } from "../../../context/AuthContext";
@@ -37,6 +37,10 @@ import InviteUsers from "./CustomerManageInvitations";
 import UpdateBillingEmail from "../UpdateBillingEmail";
 import EditCustomerProfile from "./EditCustomerProfile";
 import UpdateUserPower from "../UpdateUserPower";
+import ViewStatements from "../ViewStatements";
+import { useGetStatementsLazyQuery } from "../../gql/get/subscription/subscription.generated";
+import { openLink } from "../../Utils/openLink";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 enum CUSTOMER_SETTINGS_ROUTE {
   CHANGE_PASSWORD = "CHANGE_PASSWORD",
@@ -46,7 +50,7 @@ enum CUSTOMER_SETTINGS_ROUTE {
   DEACTIVATE_USERS = "DEACTIVATE_USERS",
   UPDATE_USER_POWER = "UPDATE_USER_POWER",
   UPDATE_BILLING_EMAIL = "UPDATE_BILLING_EMAIL",
-  VIEW_INVOICES = "VIEW_INVOICES",
+  VIEW_STATEMENTS = "VIEW_STATEMENTS",
 }
 
 const NoWrapListItemText = styled(
@@ -97,10 +101,43 @@ const CustomerSettings = () => {
   const intl = useIntl();
   const power = user!.power;
   const isAdmin = power === UserPower.Admin;
-
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [expanded, setExpanded] = useState<string | boolean>("");
   const [settingView, setSettingView] = useState<null | JSX.Element>(null);
 
+  const [
+    getStatements,
+    {
+      loading: getStatementsLoading,
+      data: getStatementsData,
+      error: getStatementsError,
+    },
+  ] = useGetStatementsLazyQuery({
+    variables: {
+      data: {
+        companyId: user!.companyId,
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (getStatementsError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getStatementsError]);
+
+  const fetchAndOpenStatementLink = async () => {
+    try {
+      const { data } = await getStatements();
+      if (data) {
+        openLink(data.getStatements);
+      }
+    } catch (error) {}
+  };
   const handleChange =
     (panel: string) =>
     (event: React.SyntheticEvent<Element, Event>, newExpanded: boolean) => {
@@ -318,14 +355,11 @@ const CustomerSettings = () => {
 
                       <ListItem
                         disableGutters
-                        onClick={() =>
-                          renderSettingsView(
-                            CUSTOMER_SETTINGS_ROUTE.VIEW_INVOICES
-                          )
-                        }
+                        onClick={fetchAndOpenStatementLink}
                       >
                         <ListItemButton>
                           <NoWrapListItemText text="View statements"></NoWrapListItemText>
+                          <OpenInNew color="action" />
                         </ListItemButton>
                       </ListItem>
                     </Stack>
