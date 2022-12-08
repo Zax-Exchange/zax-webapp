@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { validate } from "email-validator";
 import React from "react";
 
+/** ADMIN VIEW */
 const UpdateBillingEmail = () => {
   const { user } = useContext(AuthContext);
 

@@ -4,25 +4,37 @@ import * as Types from '../../../../generated/graphql';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type UserFragment_GenericUser_Fragment = { __typename?: 'GenericUser', id: string, name: string, email: string, companyId: string, isVendor: boolean, power: Types.UserPower };
+
+export type UserFragment_LoggedInUser_Fragment = { __typename?: 'LoggedInUser', id: string, name: string, email: string, companyId: string, isVendor: boolean, power: Types.UserPower };
+
+export type UserFragmentFragment = UserFragment_GenericUser_Fragment | UserFragment_LoggedInUser_Fragment;
+
 export type GetUserQueryVariables = Types.Exact<{
   data: Types.GetUserInput;
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, name: string, email: string, companyId: string, status?: Types.UserStatus | null } };
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'GenericUser', status: Types.UserStatus, id: string, name: string, email: string, companyId: string, isVendor: boolean, power: Types.UserPower } };
 
-
+export const UserFragmentFragmentDoc = gql`
+    fragment UserFragment on UserInterface {
+  id
+  name
+  email
+  companyId
+  isVendor
+  power
+}
+    `;
 export const GetUserDocument = gql`
     query getUser($data: GetUserInput!) {
   getUser(data: $data) {
-    id
-    name
-    email
-    companyId
+    ...UserFragment
     status
   }
 }
-    `;
+    ${UserFragmentFragmentDoc}`;
 
 /**
  * __useGetUserQuery__

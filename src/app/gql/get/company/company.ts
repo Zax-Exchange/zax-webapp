@@ -1,11 +1,12 @@
 import { gql } from "@apollo/client";
+import { USER_FRAGMENT } from "../user/user";
 
 const GET_ALL_USERS_WITHIN_COMPANY = gql`
+${USER_FRAGMENT}
   query getAllUsersWithinCompany($data: GetAllUsersWithinCompanyInput!) {
     getAllUsersWithinCompany(data: $data) {
-      id
-      email
-      name
+      ...UserFragment
+      status
     }
   }
 `;

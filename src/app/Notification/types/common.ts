@@ -28,6 +28,7 @@ export enum NotificationType {
   PROJECT = "PROJECT",
   GUEST_PROJECT = "GUEST_PROJECT",
   PO_INVOICE = "PO_INVOICE",
+  LOG_OUT = "LOG_OUT"
 }
 
 export enum EmitEventType {
@@ -39,5 +40,6 @@ export enum EmitEventType {
 
 export enum ReceiveEventType {
   USER_NOTIFICATIONS = "USER_NOTIFICATIONS",
-  NEW_NOTIFICATION = "NEW_NOTIFICATION"
+  NEW_NOTIFICATION = "NEW_NOTIFICATION",
+  SERVER_SENT_ACTIONS = "SERVER_SENT_ACTIONS"
 }

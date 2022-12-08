@@ -30,6 +30,7 @@ import { validate } from "email-validator";
 import { useUpdateCustomerInfoMutation } from "../../gql/update/customer/customer.generated";
 import { useGetCustomerDetailQuery } from "../../gql/get/customer/customer.generated";
 
+/** ADMIN VIEW */
 const EditCustomerProfile = () => {
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();

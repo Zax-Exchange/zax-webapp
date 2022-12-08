@@ -35,6 +35,7 @@ const DetailTypography = styled((props: TypographyProps) => (
   <Typography {...props} variant="caption" />
 ))();
 
+/** ADMIN VIEW */
 const CurrentPlan = () => {
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();

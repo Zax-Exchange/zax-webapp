@@ -19,6 +19,7 @@ import {
   CustomerProjectOverview,
   ProjectPermission,
   UserProjectPermission,
+  UserStatus,
 } from "../../../../generated/graphql";
 import { useDeleteProjectPermissionsMutation } from "../../../gql/delete/project/project.generated";
 import { useGetAllUsersWithinCompanyQuery } from "../../../gql/get/company/company.generated";
@@ -103,6 +104,7 @@ const CustomerPermissionModal = ({
     variables: {
       data: {
         companyId: loggedInUser!.companyId,
+        userStatus: [UserStatus.Active],
       },
     },
   });

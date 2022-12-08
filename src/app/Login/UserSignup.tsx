@@ -22,6 +22,8 @@ import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { useIntl } from "react-intl";
 import { validate } from "email-validator";
 
+// TODO: refactor url/route
+// TODO: intl
 const UserSignup = () => {
   const intl = useIntl();
   const { login } = useContext(AuthContext);

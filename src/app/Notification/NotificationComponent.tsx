@@ -42,7 +42,10 @@ import {
 } from "./types/common";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8080", { transports: ["websocket"] });
+const socket = io("http://localhost:8080", {
+  transports: ["websocket"],
+  autoConnect: false,
+});
 
 const ListItem = styled(MuiListItem)(({ theme }: any) => ({
   display: "flex",
@@ -81,9 +84,8 @@ const NotificationComponent = () => {
       socket.connect();
     }
 
+    console.log("socket connected");
     socket.on("connect", () => {
-      console.log("socket connected");
-
       setIsConnected(true);
       socket.emit(EmitEventType.INIT_CONNECTION, {
         userId: user!.id,
@@ -111,11 +113,20 @@ const NotificationComponent = () => {
         setNotifications((prev) => [notification, ...prev]);
       }
     );
+
+    socket.on(
+      ReceiveEventType.SERVER_SENT_ACTIONS,
+      (notification: Notification) => {
+        if (notification.notificationType === NotificationType.LOG_OUT) {
+          document.dispatchEvent(new CustomEvent("logout"));
+        }
+      }
+    );
+
     socket.on("disconnect", () => {
       console.log("socket disconnected");
       setIsConnected(false);
     });
-
     return () => {
       console.log("noti dismount");
       socket.disconnect();
@@ -124,7 +135,7 @@ const NotificationComponent = () => {
       socket.off("disconnect");
       socket.off("pong");
     };
-  }, []);
+  }, [socket]);
 
   const clearNotification = (id: string) => {
     socket.emit(EmitEventType.CLEAR, {

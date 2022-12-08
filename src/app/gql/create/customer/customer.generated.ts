@@ -9,7 +9,7 @@ export type CreateCustomerMutationVariables = Types.Exact<{
 }>;
 
 
-export type CreateCustomerMutation = { __typename?: 'Mutation', createCustomer: string };
+export type CreateCustomerMutation = { __typename?: 'Mutation', createCustomer: boolean };
 
 export type CreateCustomerSubscriptionMutationVariables = Types.Exact<{
   priceId: Types.Scalars['String'];

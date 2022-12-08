@@ -6,6 +6,7 @@ import { useGetAllPlansQuery } from "../gql/get/company/company.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 
+/** ADMIN VIEW */
 const ChangePlan = () => {
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();

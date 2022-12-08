@@ -23,6 +23,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import {
   ProjectPermission,
   UserProjectPermission,
+  UserStatus,
   VendorProjectOverview,
 } from "../../../../generated/graphql";
 import { AuthContext } from "../../../../context/AuthContext";
@@ -109,6 +110,7 @@ const VendorPermissionModal = ({
     variables: {
       data: {
         companyId: loggedInUser!.companyId,
+        userStatus: [UserStatus.Active],
       },
     },
   });

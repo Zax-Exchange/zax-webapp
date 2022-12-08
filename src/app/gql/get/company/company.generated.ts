@@ -2,6 +2,7 @@
 import * as Types from '../../../../generated/graphql';
 
 import { gql } from '@apollo/client';
+import { UserFragmentFragmentDoc } from '../user/user.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetAllUsersWithinCompanyQueryVariables = Types.Exact<{
@@ -9,7 +10,7 @@ export type GetAllUsersWithinCompanyQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetAllUsersWithinCompanyQuery = { __typename?: 'Query', getAllUsersWithinCompany: Array<{ __typename?: 'User', id: string, email: string, name: string }> };
+export type GetAllUsersWithinCompanyQuery = { __typename?: 'Query', getAllUsersWithinCompany: Array<{ __typename?: 'GenericUser', status: Types.UserStatus, id: string, name: string, email: string, companyId: string, isVendor: boolean, power: Types.UserPower }> };
 
 export type GetCompanyPlanDetailQueryVariables = Types.Exact<{
   data: Types.GetCompanyPlanDetailInput;
@@ -29,12 +30,11 @@ export type GetAllPlansQuery = { __typename?: 'Query', getAllPlans: Array<{ __ty
 export const GetAllUsersWithinCompanyDocument = gql`
     query getAllUsersWithinCompany($data: GetAllUsersWithinCompanyInput!) {
   getAllUsersWithinCompany(data: $data) {
-    id
-    email
-    name
+    ...UserFragment
+    status
   }
 }
-    `;
+    ${UserFragmentFragmentDoc}`;
 
 /**
  * __useGetAllUsersWithinCompanyQuery__

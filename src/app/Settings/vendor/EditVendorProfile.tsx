@@ -25,6 +25,7 @@ import { UpdateVendorInfoInput } from "../../../generated/graphql";
 import { ALL_PRODUCT_NAMES } from "../../constants/products";
 import { TranslatableAttribute } from "../../../type/common";
 
+/** ADMIN VIEW */
 const EditVendorProfile = () => {
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();

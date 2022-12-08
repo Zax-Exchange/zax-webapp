@@ -36,6 +36,9 @@
   "app.general.password": "Password",
   "app.general.tokenExpired": "Token Expired!",
   "app.general.send": "Send",
+  "app.general.userPower.admin": "Admin",
+  "app.general.userPower.user": "Normal User",
+  
 
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",
@@ -379,10 +382,12 @@
   "app.search.resultsTitle": "Search Results",
   "app.search.noResults": "Sorry, but we could not find any projects based on your search terms. Try searching for other products!",
 
+  "app.settings.accountSettings": "Account Settings",
+  "app.settings.manageBillingInfo": "Manage Billing Info",
   "app.settings.companySettings": "Company Settings",
   "app.settings.companySettings.editCompanyProfile": "Edit Company Profile",
-  "app.settings.manageCompanyUsers": "Manage Company Users",
 
+  "app.settings.manageCompanyUsers": "Manage Company Users",
   "app.settings.manageCompanyUsers.manageInvitations": "Manage Invitations",
   "app.settings.manageCompanyUsers.manageInvitations.directInvitation": "Direct Invitation",
   "app.settings.manageCompanyUsers.manageInvitations.sendInvitation": "Send Invitation",
@@ -391,6 +396,13 @@
   "app.settings.manageCompanyUsers.manageInvitations.acceptAll": "Accept and send invitations to all selected requests",
   "app.settings.manageCompanyUsers.manageInvitations.declineAll": "Decline and remove all selected requests",
   "app.settings.manageCompanyUsers.manageInvitations.invitationSent": "Invitation sent!",
+  "app.settings.manageCompanyUsers.deactivateUsers": "Deactivate Users",
+  "app.settings.manageCompanyUsers.deactivateUsers.deactivate": "Deactivate",
+  "app.settings.manageCompanyUsers.deactivateUsers.modal.title": "Are you sure you want to deactivate the selected users?",
+  "app.settings.manageCompanyUsers.deactivateUsers.modal.content": "Once deactivated, the accounts will become inactive immediately. Any unused portion of the remaining billing cycle will be credited back to your account in the next cycle.",
+  "app.settings.manageCompanyUsers.updateUserPower": "Update User Power",
+  "app.settings.manageCompanyUsers.updateUserPower.makeAdmin": "Make Admin",
+  "app.settings.manageCompanyUsers.updateUserPower.makeNormal": "Make Normal User"
 
-  "app.settings.manageCompanyUsers.deactivateUsers": "Deactivate Users"
+  
 }

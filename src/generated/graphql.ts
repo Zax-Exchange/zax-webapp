@@ -329,7 +329,8 @@ export type CustomerProjectOverview = {
 };
 
 export type DeactivateUserInput = {
-  email: Scalars['String'];
+  companyId: Scalars['String'];
+  userIds: Array<Scalars['String']>;
 };
 
 export type DeleteBidRemarkInput = {
@@ -376,6 +377,17 @@ export type FileInterface = {
   url: Scalars['String'];
 };
 
+export type GenericUser = UserInterface & {
+  __typename?: 'GenericUser';
+  companyId: Scalars['String'];
+  email: Scalars['String'];
+  id: Scalars['String'];
+  isVendor: Scalars['Boolean'];
+  name: Scalars['String'];
+  power: UserPower;
+  status: UserStatus;
+};
+
 export type GetAllPendingJoinRequestsInput = {
   companyId: Scalars['String'];
 };
@@ -386,6 +398,7 @@ export type GetAllPlansInput = {
 
 export type GetAllUsersWithinCompanyInput = {
   companyId: Scalars['String'];
+  userStatus: Array<UserStatus>;
 };
 
 export type GetCompanyDetailInput = {
@@ -512,7 +525,7 @@ export enum InvoiceStatus {
   Void = 'VOID'
 }
 
-export type LoggedInUser = {
+export type LoggedInUser = UserInterface & {
   __typename?: 'LoggedInUser';
   chatToken: Scalars['String'];
   companyId: Scalars['String'];
@@ -527,7 +540,7 @@ export type LoggedInUser = {
 export type Mutation = {
   __typename?: 'Mutation';
   cancelStripeSubscription: Scalars['Boolean'];
-  createCustomer: Scalars['String'];
+  createCustomer: Scalars['Boolean'];
   createCustomerSubscription: StripeSubscription;
   createGuestProject: Scalars['Boolean'];
   createGuestProjectLink: Scalars['Boolean'];
@@ -540,7 +553,7 @@ export type Mutation = {
   createUser: LoggedInUser;
   createVendor: Scalars['String'];
   createVendorSubscription: StripeSubscription;
-  deactivateUser: Scalars['Boolean'];
+  deactivateCustomerUser: Scalars['Boolean'];
   deleteBidRemark: Scalars['Boolean'];
   deleteInvoice: Scalars['Boolean'];
   deletePendingJoinRequests: Scalars['Boolean'];
@@ -648,7 +661,7 @@ export type MutationCreateVendorSubscriptionArgs = {
 };
 
 
-export type MutationDeactivateUserArgs = {
+export type MutationDeactivateCustomerUserArgs = {
   data: DeactivateUserInput;
 };
 
@@ -789,7 +802,7 @@ export type MutationUpdateUserPasswordArgs = {
 
 
 export type MutationUpdateUserPowerArgs = {
-  data: UpdateUserPowerInput;
+  data: Array<UpdateUserPowerInput>;
 };
 
 
@@ -1178,7 +1191,7 @@ export type Query = {
   checkUserEmail: Scalars['Boolean'];
   getAllPendingJoinRequests: Array<Scalars['String']>;
   getAllPlans: Array<Plan>;
-  getAllUsersWithinCompany: Array<User>;
+  getAllUsersWithinCompany: Array<GenericUser>;
   getCompanyDetail?: Maybe<CompanyDetail>;
   getCompanyPlanDetail: CompanyPlanDetail;
   getCustomerDetail: CustomerDetail;
@@ -1196,7 +1209,7 @@ export type Query = {
   getProjectDetail?: Maybe<Project>;
   getProjectUsers: Array<UserProjectPermission>;
   getPurchaseOrder?: Maybe<PurchaseOrder>;
-  getUser: User;
+  getUser: GenericUser;
   getVendorDetail?: Maybe<VendorDetail>;
   getVendorGuestProject?: Maybe<VendorGuestProject>;
   getVendorGuestProjects: Array<VendorGuestProjectOverview>;
@@ -1577,15 +1590,13 @@ export type UpdateVendorInfoInput = {
   products: Array<Scalars['String']>;
 };
 
-export type User = {
-  __typename?: 'User';
+export type UserInterface = {
   companyId: Scalars['String'];
   email: Scalars['String'];
   id: Scalars['String'];
   isVendor: Scalars['Boolean'];
   name: Scalars['String'];
   power: UserPower;
-  status?: Maybe<UserStatus>;
 };
 
 export type UserLoginInput = {

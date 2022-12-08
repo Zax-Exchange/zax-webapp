@@ -5,3 +5,9 @@ const UPDATE_USER_PASSWORD = gql`
     updateUserPassword(data: $data)
   }
 `;
+
+const UPDATE_USER_POWER = gql`
+  mutation updateUserPower($data: [UpdateUserPowerInput!]!) {
+    updateUserPower(data: $data)
+  }
+`
