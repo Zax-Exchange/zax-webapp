@@ -401,10 +401,6 @@ export type GetAllUsersWithinCompanyInput = {
   userStatus: Array<UserStatus>;
 };
 
-export type GetBillingEmailInput = {
-  companyId: Scalars['String'];
-};
-
 export type GetCompanyDetailInput = {
   companyId: Scalars['String'];
 };
@@ -478,7 +474,7 @@ export type GetPurchaseOrderInput = {
   projectId: Scalars['String'];
 };
 
-export type GetStatementsInput = {
+export type GetStatementsLinkInput = {
   companyId: Scalars['String'];
 };
 
@@ -576,7 +572,6 @@ export type Mutation = {
   resetPassword?: Maybe<Scalars['Boolean']>;
   resubmitProjectBid: Scalars['Boolean'];
   sendPasswordResetLink: Scalars['Boolean'];
-  updateBillingEmail?: Maybe<Scalars['Boolean']>;
   updateCompanyPlan: Scalars['Boolean'];
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
@@ -742,11 +737,6 @@ export type MutationResubmitProjectBidArgs = {
 
 export type MutationSendPasswordResetLinkArgs = {
   data: SendPasswordResetLinkInput;
-};
-
-
-export type MutationUpdateBillingEmailArgs = {
-  data: UpdateBillingEmailInput;
 };
 
 
@@ -1206,7 +1196,6 @@ export type Query = {
   getAllPendingJoinRequests: Array<Scalars['String']>;
   getAllPlans: Array<Plan>;
   getAllUsersWithinCompany: Array<GenericUser>;
-  getBillingEmail: Scalars['String'];
   getCompanyDetail?: Maybe<CompanyDetail>;
   getCompanyPlanDetail: CompanyPlanDetail;
   getCustomerDetail: CustomerDetail;
@@ -1224,7 +1213,7 @@ export type Query = {
   getProjectDetail?: Maybe<Project>;
   getProjectUsers: Array<UserProjectPermission>;
   getPurchaseOrder?: Maybe<PurchaseOrder>;
-  getStatements: Scalars['String'];
+  getStatementsLink: Scalars['String'];
   getUser: GenericUser;
   getVendorDetail?: Maybe<VendorDetail>;
   getVendorGuestProject?: Maybe<VendorGuestProject>;
@@ -1260,11 +1249,6 @@ export type QueryGetAllPlansArgs = {
 
 export type QueryGetAllUsersWithinCompanyArgs = {
   data: GetAllUsersWithinCompanyInput;
-};
-
-
-export type QueryGetBillingEmailArgs = {
-  data: GetBillingEmailInput;
 };
 
 
@@ -1353,8 +1337,8 @@ export type QueryGetPurchaseOrderArgs = {
 };
 
 
-export type QueryGetStatementsArgs = {
-  data: GetStatementsInput;
+export type QueryGetStatementsLinkArgs = {
+  data: GetStatementsLinkInput;
 };
 
 
@@ -1458,11 +1442,6 @@ export type StripeSubscription = {
   __typename?: 'StripeSubscription';
   clientSecret: Scalars['String'];
   subscriptionId: Scalars['String'];
-};
-
-export type UpdateBillingEmailInput = {
-  companyId: Scalars['String'];
-  email: Scalars['String'];
 };
 
 export type UpdateCompanyPlanInput = {

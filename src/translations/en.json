@@ -384,10 +384,7 @@
 
   "app.settings.accountSettings": "Account Settings",
   "app.settings.manageBillingInfo": "Manage Billing Info",
-
-  "app.settings.manageBillingInfo.updateBillingEmail": "Update Billing Email",
-  "app.settings.manageBillingInfo.updateBillingEmail.duplicateEmailError": "Billing email must be unique!",
-  
+   "app.settings.manageBillingInfo.viewStatements": "View/Update Billing Info",
   "app.settings.companySettings": "Company Settings",
   "app.settings.companySettings.editCompanyProfile": "Edit Company Profile",
 

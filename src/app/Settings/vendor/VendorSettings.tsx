@@ -34,7 +34,6 @@ import ChangePlan from "../ChangePlan";
 import DeactivateUsers from "../customer/CustomerDeactivateUsers";
 import ManageInvitations from "../customer/CustomerManageInvitations";
 import InviteUsers from "../customer/CustomerManageInvitations";
-import UpdateBillingEmail from "../UpdateBillingEmail";
 import EditVendorProfile from "./EditVendorProfile";
 
 const NoWrapListItemText = styled(
@@ -111,9 +110,6 @@ const VendorSettings = () => {
 
     if (view === "deactivate-users") {
       return <DeactivateUsers />;
-    }
-    if (view === "update-billing-email") {
-      return <UpdateBillingEmail />;
     }
     // if (view === "change-plan") {
     //   return <ChangePlan />;

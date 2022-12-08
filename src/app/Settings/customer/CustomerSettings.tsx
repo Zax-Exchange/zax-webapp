@@ -34,13 +34,12 @@ import ChangePlan from "../ChangePlan";
 import CustomerDeactivateUsers from "./CustomerDeactivateUsers";
 import CustomerManageInvitations from "./CustomerManageInvitations";
 import InviteUsers from "./CustomerManageInvitations";
-import UpdateBillingEmail from "../UpdateBillingEmail";
 import EditCustomerProfile from "./EditCustomerProfile";
 import UpdateUserPower from "../UpdateUserPower";
-import ViewStatements from "../ViewStatements";
-import { useGetStatementsLazyQuery } from "../../gql/get/subscription/subscription.generated";
 import { openLink } from "../../Utils/openLink";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { useGetStatementsLinkLazyQuery } from "../../gql/get/subscription/subscription.generated";
+import FullScreenLoading from "../../Utils/Loading";
 
 enum CUSTOMER_SETTINGS_ROUTE {
   CHANGE_PASSWORD = "CHANGE_PASSWORD",
@@ -49,7 +48,6 @@ enum CUSTOMER_SETTINGS_ROUTE {
   MANAGE_INVITATIONS = "MANAGE_INVITATIONS",
   DEACTIVATE_USERS = "DEACTIVATE_USERS",
   UPDATE_USER_POWER = "UPDATE_USER_POWER",
-  UPDATE_BILLING_EMAIL = "UPDATE_BILLING_EMAIL",
   VIEW_STATEMENTS = "VIEW_STATEMENTS",
 }
 
@@ -112,7 +110,7 @@ const CustomerSettings = () => {
       data: getStatementsData,
       error: getStatementsError,
     },
-  ] = useGetStatementsLazyQuery({
+  ] = useGetStatementsLinkLazyQuery({
     variables: {
       data: {
         companyId: user!.companyId,
@@ -134,7 +132,7 @@ const CustomerSettings = () => {
     try {
       const { data } = await getStatements();
       if (data) {
-        openLink(data.getStatements);
+        openLink(data.getStatementsLink);
       }
     } catch (error) {}
   };
@@ -159,18 +157,18 @@ const CustomerSettings = () => {
     if (view === CUSTOMER_SETTINGS_ROUTE.DEACTIVATE_USERS) {
       setSettingView(<CustomerDeactivateUsers />);
     }
-    if (view === CUSTOMER_SETTINGS_ROUTE.UPDATE_BILLING_EMAIL) {
-      setSettingView(<UpdateBillingEmail />);
-    }
 
     if (view === CUSTOMER_SETTINGS_ROUTE.UPDATE_USER_POWER) {
       setSettingView(<UpdateUserPower />);
     }
   };
 
+  const isLoading = getStatementsLoading;
+
   return (
     <Fade in={true} timeout={500}>
       <Container maxWidth="lg">
+        {isLoading && <FullScreenLoading />}
         <Grid container spacing={2.5}>
           <Grid item xs={3.5}>
             <Paper sx={{ borderRadius: 1 }}>
@@ -342,23 +340,14 @@ const CustomerSettings = () => {
 
                       <ListItem
                         disableGutters
-                        onClick={() =>
-                          renderSettingsView(
-                            CUSTOMER_SETTINGS_ROUTE.UPDATE_BILLING_EMAIL
-                          )
-                        }
-                      >
-                        <ListItemButton>
-                          <NoWrapListItemText text="Update billing email"></NoWrapListItemText>
-                        </ListItemButton>
-                      </ListItem>
-
-                      <ListItem
-                        disableGutters
                         onClick={fetchAndOpenStatementLink}
                       >
                         <ListItemButton>
-                          <NoWrapListItemText text="View statements"></NoWrapListItemText>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.manageBillingInfo.viewStatements",
+                            })}
+                          ></NoWrapListItemText>
                           <OpenInNew color="action" />
                         </ListItemButton>
                       </ListItem>
