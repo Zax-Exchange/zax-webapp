@@ -263,7 +263,7 @@ const SearchProjectDetail = () => {
     }));
   };
 
-  const componentSamplingFeeOnChange = (
+  const componentFeeOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     componentInd: number,
     type: "samplingFee" | "toolingFee"
@@ -433,7 +433,7 @@ const SearchProjectDetail = () => {
                       <TableCell>
                         <BidInputPriceTextField
                           onChange={(e) =>
-                            componentSamplingFeeOnChange(
+                            componentFeeOnChange(
                               e,
                               componentIndex,
                               "samplingFee"
@@ -461,7 +461,7 @@ const SearchProjectDetail = () => {
                         <TableCell>
                           <BidInputPriceTextField
                             onChange={(e) =>
-                              componentSamplingFeeOnChange(
+                              componentFeeOnChange(
                                 e,
                                 componentIndex,
                                 "toolingFee"

@@ -207,9 +207,15 @@ export type CreatePurchaseOrderInput = {
   purchaseOrderId: Scalars['String'];
 };
 
-export type CreateStripeCustomerInStripeInput = {
+export type CreateStripeCustomerInStripeForCustomerInput = {
   email: Scalars['String'];
   priceId: Scalars['String'];
+};
+
+export type CreateStripeCustomerInStripeForVendorInput = {
+  email: Scalars['String'];
+  perUserPriceId: Scalars['String'];
+  subscriptionPriceId: Scalars['String'];
 };
 
 export type CreateUserInput = {
@@ -235,6 +241,7 @@ export type CreateVendorInput = {
   phone: Scalars['String'];
   planId: Scalars['String'];
   products: Array<Scalars['String']>;
+  stripeCustomerInfo: StripeCustomerInfo;
   userEmail: Scalars['String'];
 };
 
@@ -553,7 +560,8 @@ export type Mutation = {
   createProjectBid: Scalars['Boolean'];
   createProjectBidComponents: Scalars['Boolean'];
   createPurchaseOrder: Scalars['Boolean'];
-  createStripeCustomerInStripe: StripePaymentIntent;
+  createStripeCustomerInStripeForCustomer: StripePaymentIntent;
+  createStripeCustomerInStripeForVendor: StripePaymentIntent;
   createUser: LoggedInUser;
   createVendor: Scalars['String'];
   createVendorSubscription: StripeSubscription;
@@ -645,8 +653,13 @@ export type MutationCreatePurchaseOrderArgs = {
 };
 
 
-export type MutationCreateStripeCustomerInStripeArgs = {
-  data: CreateStripeCustomerInStripeInput;
+export type MutationCreateStripeCustomerInStripeForCustomerArgs = {
+  data: CreateStripeCustomerInStripeForCustomerInput;
+};
+
+
+export type MutationCreateStripeCustomerInStripeForVendorArgs = {
+  data: CreateStripeCustomerInStripeForVendorInput;
 };
 
 

@@ -1,4 +1,4 @@
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, OpenInNew } from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
@@ -24,16 +24,21 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext, useState } from "react";
 import { useIntl } from "react-intl";
 import { AuthContext } from "../../../context/AuthContext";
 import { UserPower } from "../../../generated/graphql";
+import { useGetStatementsLinkLazyQuery } from "../../gql/get/subscription/subscription.generated";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { openLink } from "../../Utils/openLink";
 import ChangePassword from "../ChangePassword";
 import ChangePlan from "../ChangePlan";
+import CustomerDeactivateUsers from "../customer/CustomerDeactivateUsers";
 import DeactivateUsers from "../customer/CustomerDeactivateUsers";
-import ManageInvitations from "../customer/CustomerManageInvitations";
-import InviteUsers from "../customer/CustomerManageInvitations";
+import ManageInvitations from "../ManageInvitations";
+import InviteUsers from "../ManageInvitations";
+import UpdateUserPower from "../UpdateUserPower";
 import EditVendorProfile from "./EditVendorProfile";
 
 const NoWrapListItemText = styled(
@@ -79,14 +84,60 @@ const SettingsTitleTypography = styled((props: TypographyProps) => {
   fontSize: 16,
 }));
 
+enum VENDOR_SETTINGS_ROUTE {
+  CHANGE_PASSWORD = "CHANGE_PASSWORD",
+  EDIT_COMPANY_PROFILE = "EDIT_COMPANY_PROFILE",
+  UPLOAD_CERTIFICATIONS = "UPLOAD_CERTIFICATIONS",
+  DEACTIVATE_COMPANY = "DEACTIVATE_COMPANY",
+  MANAGE_INVITATIONS = "MANAGE_INVITATIONS",
+  DEACTIVATE_USERS = "DEACTIVATE_USERS",
+  UPDATE_USER_POWER = "UPDATE_USER_POWER",
+  VIEW_STATEMENTS = "VIEW_STATEMENTS",
+}
 const VendorSettings = () => {
   const { user } = useContext(AuthContext);
   const intl = useIntl();
   const power = user!.power;
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isAdmin = power === UserPower.Admin;
-  const [view, setView] = useState<string | null>(null);
+  const [settingView, setSettingView] = useState<null | JSX.Element>(null);
 
   const [expanded, setExpanded] = useState<string | boolean>("");
+
+  const [
+    getStatements,
+    {
+      loading: getStatementsLoading,
+      data: getStatementsData,
+      error: getStatementsError,
+    },
+  ] = useGetStatementsLinkLazyQuery({
+    variables: {
+      data: {
+        companyId: user!.companyId,
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
+
+  useEffect(() => {
+    if (getStatementsError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getStatementsError]);
+
+  const fetchAndOpenStatementLink = async () => {
+    try {
+      const { data } = await getStatements();
+      if (data) {
+        openLink(data.getStatementsLink);
+      }
+    } catch (error) {}
+  };
 
   const handleChange =
     (panel: string) =>
@@ -94,30 +145,25 @@ const VendorSettings = () => {
       setExpanded(newExpanded ? panel : false);
     };
 
-  const renderSettingsView = () => {
-    if (!view) return null;
-
-    if (view === "change-password") {
-      return <ChangePassword />;
+  const renderSettingsView = (view: VENDOR_SETTINGS_ROUTE) => {
+    if (view === VENDOR_SETTINGS_ROUTE.CHANGE_PASSWORD) {
+      setSettingView(<ChangePassword />);
     }
 
-    if (view === "edit-company-profile") {
-      return <EditVendorProfile />;
+    if (view === VENDOR_SETTINGS_ROUTE.EDIT_COMPANY_PROFILE) {
+      setSettingView(<EditVendorProfile />);
     }
-    if (view === "manage-invitations") {
-      return <ManageInvitations />;
+    if (view === VENDOR_SETTINGS_ROUTE.MANAGE_INVITATIONS) {
+      setSettingView(<ManageInvitations />);
     }
 
-    if (view === "deactivate-users") {
-      return <DeactivateUsers />;
+    if (view === VENDOR_SETTINGS_ROUTE.DEACTIVATE_USERS) {
+      setSettingView(<CustomerDeactivateUsers />);
     }
-    // if (view === "change-plan") {
-    //   return <ChangePlan />;
-    // }
 
-    // if (view === "view-current-plan") {
-    //   return <CurrentPlan />;
-    // }
+    if (view === VENDOR_SETTINGS_ROUTE.UPDATE_USER_POWER) {
+      setSettingView(<UpdateUserPower />);
+    }
   };
 
   return (
@@ -132,7 +178,7 @@ const VendorSettings = () => {
               >
                 <SettingsAccordionSummary>
                   <SettingsTitleTypography>
-                    Account Settings
+                    {intl.formatMessage({ id: "app.settings.accountSettings" })}
                   </SettingsTitleTypography>
                 </SettingsAccordionSummary>
                 <AccordionDetails>
@@ -145,10 +191,18 @@ const VendorSettings = () => {
 
                     <ListItem
                       disableGutters
-                      onClick={() => setView("change-password")}
+                      onClick={() =>
+                        renderSettingsView(
+                          VENDOR_SETTINGS_ROUTE.CHANGE_PASSWORD
+                        )
+                      }
                     >
                       <ListItemButton>
-                        <NoWrapListItemText text="Change password"></NoWrapListItemText>
+                        <NoWrapListItemText
+                          text={intl.formatMessage({
+                            id: "app.settings.accountSettings.changePassword",
+                          })}
+                        ></NoWrapListItemText>
                       </ListItemButton>
                     </ListItem>
                   </Stack>
@@ -168,7 +222,11 @@ const VendorSettings = () => {
                   <Stack>
                     <ListItem
                       disableGutters
-                      onClick={() => setView("edit-company-profile")}
+                      onClick={() =>
+                        renderSettingsView(
+                          VENDOR_SETTINGS_ROUTE.EDIT_COMPANY_PROFILE
+                        )
+                      }
                     >
                       <ListItemButton>
                         <NoWrapListItemText
@@ -179,7 +237,7 @@ const VendorSettings = () => {
                       </ListItemButton>
                     </ListItem>
 
-                    <ListItem disableGutters>
+                    {/* <ListItem disableGutters>
                       <ListItemButton>
                         <NoWrapListItemText text="Upload certifications"></NoWrapListItemText>
                       </ListItemButton>
@@ -195,7 +253,7 @@ const VendorSettings = () => {
                       <ListItemButton>
                         <NoWrapListItemText text="Deactivate company"></NoWrapListItemText>
                       </ListItemButton>
-                    </ListItem>
+                    </ListItem> */}
                   </Stack>
                 </AccordionDetails>
               </SettingsAccordion>
@@ -215,7 +273,11 @@ const VendorSettings = () => {
                   <Stack>
                     <ListItem
                       disableGutters
-                      onClick={() => setView("manage-invitations")}
+                      onClick={() =>
+                        renderSettingsView(
+                          VENDOR_SETTINGS_ROUTE.MANAGE_INVITATIONS
+                        )
+                      }
                     >
                       <ListItemButton>
                         <NoWrapListItemText
@@ -228,7 +290,11 @@ const VendorSettings = () => {
 
                     <ListItem
                       disableGutters
-                      onClick={() => setView("deactivate-users")}
+                      onClick={() =>
+                        renderSettingsView(
+                          VENDOR_SETTINGS_ROUTE.DEACTIVATE_USERS
+                        )
+                      }
                     >
                       <ListItemButton>
                         <NoWrapListItemText
@@ -241,10 +307,18 @@ const VendorSettings = () => {
 
                     <ListItem
                       disableGutters
-                      onClick={() => setView("update-user-status")}
+                      onClick={() =>
+                        renderSettingsView(
+                          VENDOR_SETTINGS_ROUTE.UPDATE_USER_POWER
+                        )
+                      }
                     >
                       <ListItemButton>
-                        <NoWrapListItemText text="Update user status"></NoWrapListItemText>
+                        <NoWrapListItemText
+                          text={intl.formatMessage({
+                            id: "app.settings.manageCompanyUsers.updateUserPower",
+                          })}
+                        ></NoWrapListItemText>
                       </ListItemButton>
                     </ListItem>
                   </Stack>
@@ -257,53 +331,24 @@ const VendorSettings = () => {
               >
                 <SettingsAccordionSummary>
                   <SettingsTitleTypography>
-                    Manage Billing
+                    {intl.formatMessage({
+                      id: "app.settings.manageBillingInfo",
+                    })}
                   </SettingsTitleTypography>
                 </SettingsAccordionSummary>
                 <AccordionDetails>
                   <Stack>
                     <ListItem
                       disableGutters
-                      onClick={() => setView("view-current-plan")}
+                      onClick={fetchAndOpenStatementLink}
                     >
                       <ListItemButton>
-                        <NoWrapListItemText text="View current plan"></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem
-                      disableGutters
-                      onClick={() => setView("update-billing-email")}
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText text="Update billing email"></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem
-                      disableGutters
-                      onClick={() => setView("update-billing-card")}
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText text="Update billing card"></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem
-                      disableGutters
-                      onClick={() => setView("view-statements")}
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText text="View statements"></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem
-                      disableGutters
-                      onClick={() => setView("change-plan")}
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText text="Change plan"></NoWrapListItemText>
+                        <NoWrapListItemText
+                          text={intl.formatMessage({
+                            id: "app.settings.manageBillingInfo.viewStatements",
+                          })}
+                        ></NoWrapListItemText>
+                        <OpenInNew color="action" />
                       </ListItemButton>
                     </ListItem>
                   </Stack>
@@ -313,7 +358,7 @@ const VendorSettings = () => {
           </Grid>
           <Grid item xs={8}>
             <Paper sx={{ minHeight: 200, padding: 2 }}>
-              <Box minHeight={200}>{renderSettingsView()}</Box>
+              <Box minHeight={200}>{settingView}</Box>
             </Paper>
           </Grid>
         </Grid>

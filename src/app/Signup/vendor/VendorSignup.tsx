@@ -10,6 +10,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  Fade,
 } from "@mui/material";
 import { MouseEventHandler, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,10 +33,12 @@ import { Country } from "../customer/CustomerSignup";
 import React from "react";
 import VendorCheckout from "./VendorCheckout";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { useCreateVendorSubscriptionMutation } from "../../gql/create/vendor/vendor.generated";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
-import { useCreateStripeCustomerInStripeMutation } from "../../gql/create/company/company.generated";
 import { StripePaymentIntent } from "../../../generated/graphql";
+import { useIntl } from "react-intl";
+import { useCreateStripeCustomerInStripeForVendorMutation } from "../../gql/create/company/company.generated";
+import JoinOrCreateCompany from "../JoinOrCreateCompany";
+import JoinCompany from "../JoinCompany";
 
 export type VendorSignupData = {
   name: string;
@@ -47,7 +50,7 @@ export type VendorSignupData = {
   isActive: boolean;
   isVendor: boolean;
   isVerified: boolean;
-  leadTime: string | number;
+  leadTime: string;
   locations: string[];
   moq: string;
   products: string[];
@@ -68,6 +71,8 @@ export type MoqDetail = {
 };
 
 export const VendorSignupPage = {
+  JOIN: "JOIN",
+  JOIN_OR_CREATE: "JOIN_OR_CREATE",
   EMAIL_PAGE: "EMAIL_PAGE",
   COMPANY_INFO_PAGE: "COMPANY_INFO_PAGE",
   VENDOR_INFO_PAGE: "VENDOR_INFO_PAGE",
@@ -83,7 +88,7 @@ const stripePromise = loadStripe(
 );
 
 const VendorSignup = () => {
-  const { user } = useContext(AuthContext);
+  const intl = useIntl();
 
   const [
     createStripeCustomerMutation,
@@ -92,16 +97,7 @@ const VendorSignup = () => {
       loading: createStripeCustomerLoading,
       error: createStripeCustomerError,
     },
-  ] = useCreateStripeCustomerInStripeMutation();
-
-  const [
-    createVendorSubscriptionMutation,
-    {
-      data: createSubscriptionData,
-      loading: createSubscriptionLoading,
-      error: createSubscriptionError,
-    },
-  ] = useCreateVendorSubscriptionMutation();
+  ] = useCreateStripeCustomerInStripeForVendorMutation();
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
     variables: {
@@ -111,13 +107,12 @@ const VendorSignup = () => {
     },
   });
 
-  const [currentPage, setCurrentPage] = useState(VendorSignupPage.EMAIL_PAGE);
+  const [currentPage, setCurrentPage] = useState(
+    VendorSignupPage.JOIN_OR_CREATE
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
   const [companySize, setCompanySize] = useState("");
-
-  // determines whether createSubscription should run
-  const [previousPlanIds, setPreviousPlanIds] = useState([] as string[]);
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -144,6 +139,12 @@ const VendorSignup = () => {
     max: "",
   } as MoqDetail);
 
+  const [stripePaymentIntent, setStripePaymentIntent] = useState({
+    customerId: "",
+    subscriptionId: "",
+    clientSecret: "",
+  } as StripePaymentIntent);
+
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const [subscriptionInfo, setSubscriptionInfo] = useState({
@@ -152,43 +153,15 @@ const VendorSignup = () => {
     billingFrequency: "",
   } as VendorSubscriptionInfo);
 
-  const [stripeData, setStripeData] = useState({
-    customerId: "",
-    subscriptionId: "",
-    clientSecret: "",
-  } as StripePaymentIntent);
-
-  // set stripeData.customerId once createStripeCustomer succeeds
+  // set stripePaymentIntent.customerId once createStripeCustomer succeeds
   useEffect(() => {
     if (createStripeCustomerData) {
-      setStripeData({
-        ...createStripeCustomerData.createStripeCustomerInStripe,
+      setStripePaymentIntent({
+        ...createStripeCustomerData.createStripeCustomerInStripeForVendor,
       });
     }
   }, [createStripeCustomerData]);
 
-  // set stripeData.subscriptionId/clientSecret once createSubscription succeeds and proceed to payment page
-  useEffect(() => {
-    // don't run if we already have valid stripe data so back button can work correctly from payment page
-    if (isValidStripeData() && !shouldRerunMutation()) {
-      return;
-    }
-    if (createSubscriptionData) {
-      setStripeData({
-        ...stripeData,
-        subscriptionId:
-          createSubscriptionData.createVendorSubscription.subscriptionId,
-        clientSecret:
-          createSubscriptionData.createVendorSubscription.clientSecret,
-      });
-      setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
-      setPreviousPlanIds([...previousPlanIds, values.planId]);
-    }
-  }, [createSubscriptionData]);
-
-  const shouldRerunMutation = () => {
-    return !previousPlanIds.includes(values.planId);
-  };
   const isValidStripeData = () => {
     return true;
   };
@@ -267,7 +240,9 @@ const VendorSignup = () => {
   };
 
   const nextPage = async () => {
-    if (currentPage === VendorSignupPage.EMAIL_PAGE) {
+    if (currentPage === VendorSignupPage.JOIN_OR_CREATE) {
+      setCurrentPage(VendorSignupPage.EMAIL_PAGE);
+    } else if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
     } else if (currentPage === VendorSignupPage.COMPANY_INFO_PAGE) {
       setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
@@ -282,30 +257,20 @@ const VendorSignup = () => {
     } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(VendorSignupPage.REVIEW_PAGE);
     } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
-      if (createSubscriptionData && !shouldRerunMutation()) {
-        // if subscription created already and theres no change to email & selected plan, go to next page directly
-        setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
-        return;
-      }
       try {
         const { data } = await createStripeCustomerMutation({
           variables: {
             data: {
               email: values.userEmail,
-              priceId: subscriptionInfo.subscriptionPriceId,
-            },
-          },
-        });
-
-        await createVendorSubscriptionMutation({
-          variables: {
-            data: {
-              stripeCustomerId: data!.createStripeCustomerInStripe.customerId,
               subscriptionPriceId: subscriptionInfo.subscriptionPriceId,
               perUserPriceId: subscriptionInfo.perUserPriceId,
             },
           },
         });
+        setStripePaymentIntent({
+          ...data!.createStripeCustomerInStripeForVendor,
+        });
+        setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
       } catch (error: any) {
         setSnackbar({
           severity: "error",
@@ -318,8 +283,14 @@ const VendorSignup = () => {
 
   const previousPage = () => {
     switch (currentPage) {
-      case VendorSignupPage.EMAIL_PAGE:
+      case VendorSignupPage.JOIN_OR_CREATE:
         navigate(-1);
+        break;
+      case VendorSignupPage.JOIN:
+        setCurrentPage(VendorSignupPage.JOIN_OR_CREATE);
+        break;
+      case VendorSignupPage.EMAIL_PAGE:
+        setCurrentPage(VendorSignupPage.JOIN_OR_CREATE);
         break;
       case VendorSignupPage.COMPANY_INFO_PAGE:
         setCurrentPage(VendorSignupPage.EMAIL_PAGE);
@@ -347,7 +318,7 @@ const VendorSignup = () => {
   const renderNavigationButtons = (isValidInput: boolean) => {
     const backButton = (
       <Button variant="outlined" onClick={previousPage}>
-        Back
+        {intl.formatMessage({ id: "app.general.back" })}
       </Button>
     );
     const nextButton = (
@@ -356,13 +327,18 @@ const VendorSignup = () => {
         onClick={nextPage}
         disabled={!isValidInput || shouldDisableNext}
       >
-        Next
+        {intl.formatMessage({ id: "app.general.next" })}
       </Button>
     );
 
     let buttons = [];
-    if (currentPage === VendorSignupPage.EMAIL_PAGE) {
-      buttons = [nextButton];
+    if (
+      currentPage === VendorSignupPage.JOIN_OR_CREATE ||
+      currentPage === VendorSignupPage.JOIN
+    ) {
+      buttons = [backButton];
+    } else if (currentPage === VendorSignupPage.EMAIL_PAGE) {
+      buttons = [backButton, nextButton];
     } else if (
       currentPage === VendorSignupPage.PLAN_SELECTION_PAGE ||
       currentPage === VendorSignupPage.COMPANY_SIZE_PAGE
@@ -389,6 +365,25 @@ const VendorSignup = () => {
   };
 
   const renderCompanySignupFlow = () => {
+    if (currentPage === VendorSignupPage.JOIN_OR_CREATE) {
+      return (
+        <Fade in={true} mountOnEnter unmountOnExit>
+          <div>
+            <JoinOrCreateCompany setCurrentPage={setCurrentPage} />
+            {renderNavigationButtons(true)}
+          </div>
+        </Fade>
+      );
+    } else if (currentPage === VendorSignupPage.JOIN) {
+      return (
+        <Fade in={true} mountOnEnter unmountOnExit>
+          <div>
+            <JoinCompany />
+            {renderNavigationButtons(true)}
+          </div>
+        </Fade>
+      );
+    }
     if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       return (
         <>
@@ -534,7 +529,7 @@ const VendorSignup = () => {
       return (
         <Elements
           stripe={stripePromise}
-          options={{ clientSecret: stripeData.clientSecret }}
+          options={{ clientSecret: stripePaymentIntent.clientSecret }}
         >
           <Typography
             variant="subtitle2"
@@ -542,12 +537,12 @@ const VendorSignup = () => {
             textAlign="left"
             fontSize="1.2em"
           >
-            Complete Payment Information
+            {intl.formatMessage({ id: "app.signup.completePayment" })}
           </Typography>
           <VendorCheckout
             setCurrentPage={setCurrentPage}
             companyData={values}
-            subscriptionId={stripeData.subscriptionId}
+            stripePaymentIntent={stripePaymentIntent}
             setIsLoading={setIsLoading}
           />
         </Elements>
@@ -559,9 +554,7 @@ const VendorSignup = () => {
 
   return (
     <Container maxWidth="lg">
-      {(createStripeCustomerLoading ||
-        createSubscriptionLoading ||
-        isLoading) && <FullScreenLoading />}
+      {(createStripeCustomerLoading || isLoading) && <FullScreenLoading />}
       <Paper sx={{ padding: 8, position: "relative" }}>
         {/* <CustomSnackbar
           severity={snackbar.severity}

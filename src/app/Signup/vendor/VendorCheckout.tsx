@@ -7,7 +7,9 @@ import {
 } from "@stripe/react-stripe-js";
 import React from "react";
 import { useEffect, useState } from "react";
+import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
+import { StripePaymentIntent } from "../../../generated/graphql";
 import { useCreateVendorMutation } from "../../gql/create/vendor/vendor.generated";
 import {
   useUpdateCompanyPlanSubscriptionInfoMutation,
@@ -21,27 +23,21 @@ import { VendorSignupData, VendorSignupPage } from "./VendorSignup";
 const VendorCheckout = ({
   setCurrentPage,
   companyData,
-  subscriptionId,
+  stripePaymentIntent,
   setIsLoading,
 }: {
   setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
   companyData: VendorSignupData;
-  subscriptionId: string;
+  stripePaymentIntent: StripePaymentIntent;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const intl = useIntl();
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [updateCompanyPlanSuccess, setUpdateCompanyPlanSuccess] =
-    useState(false);
-  const [updateCompanyStatusSuccess, setUpdateCompanyStatusSuccess] =
-    useState(false);
-
-  // this is a flag to trigger useEffect in case user needs to retry
-  const [submitClicked, setSubmitClicked] = useState(0);
 
   const [
     createVendorMutation,
@@ -51,11 +47,6 @@ const VendorCheckout = ({
       error: createVendorError,
     },
   ] = useCreateVendorMutation();
-
-  const [updateCompanyPlanSubscriptionInfoMutation] =
-    useUpdateCompanyPlanSubscriptionInfoMutation();
-
-  const [updateCompanyStatusMutation] = useUpdateCompanyStatusMutation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -68,70 +59,42 @@ const VendorCheckout = ({
   }, [stripe, elements]);
 
   useEffect(() => {
-    const submit = async () => {
-      setIsLoading(true);
-      try {
-        if (paymentSuccess && !updateCompanyPlanSuccess) {
-          await updateCompanyPlanSubscriptionInfoMutation({
+    const createVendor = async () => {
+      if (paymentSuccess) {
+        try {
+          setIsLoading(true);
+          await createVendorMutation({
             variables: {
               data: {
-                subscriptionId,
-              },
-            },
-          });
-          setUpdateCompanyPlanSuccess(true);
-        }
-
-        if (updateCompanyPlanSuccess && !updateCompanyStatusSuccess) {
-          if (createVendorData && createVendorData.createVendor) {
-            const companyId = createVendorData.createVendor;
-
-            await updateCompanyStatusMutation({
-              variables: {
-                data: {
-                  companyId,
-                  isActive: true,
+                ...companyData,
+                leadTime: parseInt(companyData.leadTime),
+                stripeCustomerInfo: {
+                  subscriptionId: stripePaymentIntent.subscriptionId,
+                  customerId: stripePaymentIntent.customerId,
                 },
               },
-            });
-          }
-          setUpdateCompanyStatusSuccess(true);
+            },
+            fetchPolicy: "no-cache",
+          });
           setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
+        } catch (error) {
+          setSnackbar({
+            severity: "error",
+            message: intl.formatMessage({ id: "app.general.network.error" }),
+          });
+          setSnackbarOpen(true);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        setSnackbar({
-          severity: "error",
-          message: "Something went wrong. Please try again later.",
-        });
-        setSnackbarOpen(true);
       }
-
-      setIsLoading(false);
     };
-    if (submitClicked > 1) {
-    }
-    submit();
-  }, [
-    submitClicked,
-    paymentSuccess,
-    updateCompanyPlanSuccess,
-    updateCompanyStatusSuccess,
-  ]);
+    createVendor();
+  }, [paymentSuccess]);
 
-  const handleSubmit = async () => {
+  const finishPayment = async () => {
     try {
       // TODO: review this to make it more robust (should guarantee company and payment are both successful)
       setIsLoading(true);
-      if (!createVendorData) {
-        await createVendorMutation({
-          variables: {
-            data: {
-              ...companyData,
-              leadTime: parseInt(companyData.leadTime as string),
-            },
-          },
-        });
-      }
       if (stripe && elements && !paymentSuccess) {
         const { error } = await stripe.confirmPayment({
           elements,
@@ -145,7 +108,7 @@ const VendorCheckout = ({
         }
       }
     } catch (error: any) {
-      let message = "Something went wrong. Please try again later.";
+      let message = intl.formatMessage({ id: "app.general.network.error" });
       if (error.type === "card_error") {
         message = error.message;
       }
@@ -154,8 +117,9 @@ const VendorCheckout = ({
         message,
       });
       setSnackbarOpen(true);
+    } finally {
+      setIsLoading(false);
     }
-    setSubmitClicked((count) => count + 1);
   };
 
   return (
@@ -178,10 +142,10 @@ const VendorCheckout = ({
           variant="outlined"
           onClick={() => setCurrentPage(VendorSignupPage.REVIEW_PAGE)}
         >
-          Back
+          {intl.formatMessage({ id: "app.general.back" })}
         </Button>
-        <Button variant="contained" onClick={handleSubmit}>
-          Finish and Pay
+        <Button variant="contained" onClick={finishPayment}>
+          {intl.formatMessage({ id: "app.signup.finishAndPay" })}
         </Button>
       </Container>
     </>

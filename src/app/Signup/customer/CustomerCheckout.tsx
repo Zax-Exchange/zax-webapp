@@ -37,11 +37,6 @@ const CustomerCheckout = ({
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [updateCompanyPlanSuccess, setUpdateCompanyPlanSuccess] =
-    useState(false);
-
-  // this is a flag to trigger useEffect in case user needs to retry
-  const [submitClicked, setSubmitClicked] = useState(0);
 
   const [
     createCustomerMutation,
@@ -51,9 +46,6 @@ const CustomerCheckout = ({
       error: createCustomerError,
     },
   ] = useCreateCustomerMutation();
-
-  const [updateCompanyPlanSubscriptionInfoMutation] =
-    useUpdateCompanyPlanSubscriptionInfoMutation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -80,6 +72,7 @@ const CustomerCheckout = ({
                 },
               },
             },
+            fetchPolicy: "no-cache",
           });
           setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
         } catch (error) {
@@ -146,10 +139,10 @@ const CustomerCheckout = ({
           variant="outlined"
           onClick={() => setCurrentPage(CustomerSignupPage.REVIEW_PAGE)}
         >
-          Back
+          {intl.formatMessage({ id: "app.general.back" })}
         </Button>
         <Button variant="contained" onClick={finishPayment}>
-          Finish and Pay
+          {intl.formatMessage({ id: "app.signup.finishAndPay" })}
         </Button>
       </Container>
     </>

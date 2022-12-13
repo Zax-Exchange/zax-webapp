@@ -27,7 +27,7 @@ import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import CustomerCheckout from "./CustomerCheckout";
-import { useCreateStripeCustomerInStripeMutation } from "../../gql/create/company/company.generated";
+import { useCreateStripeCustomerInStripeForCustomerMutation } from "../../gql/create/company/company.generated";
 import { useCreateCustomerSubscriptionMutation } from "../../gql/create/customer/customer.generated";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
 import JoinOrCreateCompany from "../JoinOrCreateCompany";
@@ -87,7 +87,7 @@ const CustomerSignup = () => {
       loading: createStripeCustomerInStripeLoading,
       error: createStripeCustomerError,
     },
-  ] = useCreateStripeCustomerInStripeMutation();
+  ] = useCreateStripeCustomerInStripeForCustomerMutation();
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
     variables: {
@@ -96,6 +96,7 @@ const CustomerSignup = () => {
       },
     },
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
 
@@ -181,7 +182,7 @@ const CustomerSignup = () => {
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
     } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
-      // TODO: once customer plan contains only one plan, refactor this so that we don't create so many new customer payment intents in stripe
+      // TODO: since customer plan contains only one plan, refactor this so that we don't create so many new customer payment intents in stripe
       try {
         const { data } = await createStripeCustomerInStripe({
           variables: {
@@ -192,7 +193,7 @@ const CustomerSignup = () => {
           },
         });
         setStripePaymentIntent({
-          ...data!.createStripeCustomerInStripe,
+          ...data!.createStripeCustomerInStripeForCustomer,
         });
         setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
       } catch (error: any) {
@@ -241,7 +242,7 @@ const CustomerSignup = () => {
   const renderNavigationButtons = (isValidInput: boolean) => {
     const backButton = (
       <Button key="back" variant="outlined" onClick={previousPage}>
-        Back
+        {intl.formatMessage({ id: "app.general.back" })}
       </Button>
     );
     const nextButton = (
@@ -251,7 +252,7 @@ const CustomerSignup = () => {
         onClick={nextPage}
         disabled={!isValidInput || shouldDisableNext}
       >
-        Next
+        {intl.formatMessage({ id: "app.general.next" })}
       </Button>
     );
 

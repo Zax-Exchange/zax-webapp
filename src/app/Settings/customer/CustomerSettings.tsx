@@ -32,8 +32,8 @@ import { UserPower } from "../../../generated/graphql";
 import ChangePassword from "../ChangePassword";
 import ChangePlan from "../ChangePlan";
 import CustomerDeactivateUsers from "./CustomerDeactivateUsers";
-import CustomerManageInvitations from "./CustomerManageInvitations";
-import InviteUsers from "./CustomerManageInvitations";
+import CustomerManageInvitations from "../ManageInvitations";
+import InviteUsers from "../ManageInvitations";
 import EditCustomerProfile from "./EditCustomerProfile";
 import UpdateUserPower from "../UpdateUserPower";
 import { openLink } from "../../Utils/openLink";
@@ -44,7 +44,7 @@ import FullScreenLoading from "../../Utils/Loading";
 enum CUSTOMER_SETTINGS_ROUTE {
   CHANGE_PASSWORD = "CHANGE_PASSWORD",
   EDIT_COMPANY_PROFILE = "EDIT_COMPANY_PROFILE",
-  DEACTIVE_COMPANY = "DEACTIVE_COMPANY",
+  DEACTIVATE_COMPANY = "DEACTIVATE_COMPANY",
   MANAGE_INVITATIONS = "MANAGE_INVITATIONS",
   DEACTIVATE_USERS = "DEACTIVATE_USERS",
   UPDATE_USER_POWER = "UPDATE_USER_POWER",
@@ -116,6 +116,7 @@ const CustomerSettings = () => {
         companyId: user!.companyId,
       },
     },
+    fetchPolicy: "no-cache",
   });
 
   useEffect(() => {
@@ -198,7 +199,11 @@ const CustomerSettings = () => {
                       }
                     >
                       <ListItemButton>
-                        <NoWrapListItemText text="Change password"></NoWrapListItemText>
+                        <NoWrapListItemText
+                          text={intl.formatMessage({
+                            id: "app.settings.accountSettings.changePassword",
+                          })}
+                        ></NoWrapListItemText>
                       </ListItemButton>
                     </ListItem>
                   </Stack>
@@ -236,11 +241,11 @@ const CustomerSettings = () => {
                         </ListItemButton>
                       </ListItem>
 
-                      <ListItem disableGutters>
+                      {/* <ListItem disableGutters>
                         <ListItemButton>
                           <NoWrapListItemText text="Deactivate company"></NoWrapListItemText>
                         </ListItemButton>
-                      </ListItem>
+                      </ListItem> */}
                     </Stack>
                   </AccordionDetails>
                 </SettingsAccordion>

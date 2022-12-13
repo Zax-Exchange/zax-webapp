@@ -67,6 +67,7 @@
   "app.signup.createAccount": "Create User Account",
   "app.signup.joinACompany": "Join a company",
   "app.signup.createNewCompany": "Create a new company",
+  "app.signup.finishAndPay": "Finish & Pay",
 
   "app.login.resetPassword.success": "Password reset success!",
   "app.login.forgotPassword": "Forgot Password",
@@ -383,8 +384,10 @@
   "app.search.noResults": "Sorry, but we could not find any projects based on your search terms. Try searching for other products!",
 
   "app.settings.accountSettings": "Account Settings",
-  "app.settings.manageBillingInfo": "Manage Billing Info",
-   "app.settings.manageBillingInfo.viewStatements": "View/Update Billing Info",
+  "app.settings.accountSettings.changePassword": "Change Password",
+  
+  "app.settings.manageBillingInfo": "Manage Subscription/Billing",
+   "app.settings.manageBillingInfo.viewStatements": "Subscription & Billing",
   "app.settings.companySettings": "Company Settings",
   "app.settings.companySettings.editCompanyProfile": "Edit Company Profile",
 

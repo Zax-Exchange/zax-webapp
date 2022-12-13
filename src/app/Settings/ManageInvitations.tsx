@@ -18,21 +18,21 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { validate } from "email-validator";
 
-import { AuthContext } from "../../../context/AuthContext";
-import FullScreenLoading from "../../Utils/Loading";
-import { LoggedInUser } from "../../../generated/graphql";
-import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import { AuthContext } from "../../context/AuthContext";
+import FullScreenLoading from "../Utils/Loading";
+import { LoggedInUser } from "../../generated/graphql";
+import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { LoadingButton } from "@mui/lab";
 import {
   useDeletePendingJoinRequestsMutation,
   useGetAllPendingJoinRequestsQuery,
-} from "../../gql/utils/company/company.generated";
-import { useInviteUsersMutation } from "../../gql/utils/user/user.generated";
+} from "../gql/utils/company/company.generated";
+import { useInviteUsersMutation } from "../gql/utils/user/user.generated";
 import { DoneAll, PlaylistAddCheck, PlaylistRemove } from "@mui/icons-material";
 import { useIntl } from "react-intl";
 
 /** ADMIN VIEW */
-const CustomerManageInvitations = () => {
+const ManageInvitations = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
@@ -351,4 +351,4 @@ const CustomerManageInvitations = () => {
   );
 };
 
-export default CustomerManageInvitations;
+export default ManageInvitations;
