@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useEffect, useState } from "react";
+import { useIntl } from "react-intl";
 import { countries } from "../constants/countries";
 import { useCheckCompanyNameLazyQuery } from "../gql/utils/company/company.generated";
 import { Country, CustomerSignupData } from "./customer/CustomerSignup";
@@ -24,6 +25,7 @@ const CompanyInfo = ({
   countryOnChange: (countryObj: Country | null) => void;
   setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const intl = useIntl();
   const [checkCompanyNameQuery, { data, loading, error }] =
     useCheckCompanyNameLazyQuery();
 
@@ -114,12 +116,12 @@ const CompanyInfo = ({
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
-        Enter your company information
+        {intl.formatMessage({ id: "app.signup.companyInfo.pageTitle" })}
       </Typography>
       <Stack spacing={3} textAlign="right">
         <TextField
           required
-          label="Company name"
+          label={intl.formatMessage({ id: "app.company.attribute.name" })}
           type="text"
           name="name"
           value={values.name}
@@ -132,16 +134,22 @@ const CompanyInfo = ({
         ></TextField>
         <TextField
           required
-          label="Company Contact Email"
+          label={intl.formatMessage({
+            id: "app.company.attribute.contactEmail",
+          })}
           type="email"
           name="contactEmail"
           value={values.contactEmail}
           onChange={onChange}
-          helperText="This will be visible to others for contacting."
+          helperText={intl.formatMessage({
+            id: "app.signup.companyInfo.contactEmail.helperText",
+          })}
         ></TextField>
         <TextField
           required
-          label="Company phone number"
+          label={intl.formatMessage({
+            id: "app.company.attribute.phone",
+          })}
           inputProps={{ pattern: "[0-9]*" }}
           type="tel"
           name="phone"
@@ -149,7 +157,9 @@ const CompanyInfo = ({
           onChange={onChange}
         ></TextField>
         <TextField
-          label="Company fax"
+          label={intl.formatMessage({
+            id: "app.company.attribute.fax",
+          })}
           inputProps={{ pattern: "[0-9]*" }}
           type="tel"
           name="fax"
@@ -157,7 +167,9 @@ const CompanyInfo = ({
           onChange={onChange}
         ></TextField>
         <TextField
-          label="Company website url"
+          label={intl.formatMessage({
+            id: "app.company.attribute.companyUrl",
+          })}
           type="url"
           name="companyUrl"
           value={values.companyUrl}

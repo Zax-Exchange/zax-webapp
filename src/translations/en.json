@@ -57,10 +57,19 @@
   "app.routes.loggedIn.newProject": "New Project",
   "app.routes.loggedIn.poInvoice": "PO / Invoice",
 
-  "app.signup.billingEmail.helperText": "We will use this email to send billing information.",
+  "app.signup.companySignup.pageTitle": "Select Your Company Type",
+  "app.signup.companySignup.asCustomer": "Sign-up as Customer",
+  "app.signup.companySignup.asVendor": "Sign-up as Vendor",
+  "app.signup.billingEmail.helperText": "We will use this email to send billing & sign-up information.",
+  "app.signup.billingEmail.pageTitle": "Let's start with your email",
+  "app.signup.companyInfo.pageTitle": "Enter Your Company Information",
+  "app.signup.companyInfo.contactEmail.helperText": "This will be visible to others for contacting.",
+  "app.signup.vendorInfo.pageTitle": "Since your a vendor, we're going to need a little more information.",
+  "app.signup.vendorInfo.products.helperText": "This helps customers to find your company easier.",
+  "app.signup.vendorInfo.leadTime.placeholder": "Typical lead time (in months)",
   "app.signup.pickAPlan": "Pick a plan for your company",
   "app.signup.completePayment": "Complete Payment Information",
-  "app.signup.reviewCompany": "Review Company Info",
+  "app.signup.reviewCompany": "Review Company Information",
   "app.signup.requestToJoin": "Request to join",
   "app.signup.requestToJoin.success": "Join request has been sent to company admins!",
   "app.signup.duplicateEmail": "This email has been taken.",
@@ -68,6 +77,7 @@
   "app.signup.joinACompany": "Join a company",
   "app.signup.createNewCompany": "Create a new company",
   "app.signup.finishAndPay": "Finish & Pay",
+  "app.signup.pricingDetail": "Pricing Detail",
 
   "app.login.resetPassword.success": "Password reset success!",
   "app.login.forgotPassword": "Forgot Password",
@@ -166,6 +176,7 @@
   "app.product.name.corrugateTray": "Corrugate Tray",
   "app.product.name.booklet": "Booklet",
 
+
   "app.company.attribute.companyName": "Company Name",
   "app.company.attribute.contactEmail": "Contact Email",
   "app.company.attribute.billingEmail": "Billing Email",
@@ -178,6 +189,8 @@
   "app.company.attribute.memberSince": "Member since",
 
   "app.vendor.attribute.moq": "Minimum Order Quantity",
+  "app.vendor.attribute.moq.min": "MOQ min",
+  "app.vendor.attribute.moq.max": "MOQ max",
   "app.vendor.attribute.leadTime": "Lead Time",
   "app.vendor.attribute.products": "Manufacturing Products",
   "app.vendor.attribute.locations": "Factory Locations",

@@ -20,10 +20,11 @@ import vendor from "../../static/vendor.svg";
 import customer from "../../static/customer.svg";
 import React from "react";
 import { LOGGED_OUT_ROUTES } from "../constants/loggedOutRoutes";
+import { useIntl } from "react-intl";
 
 const CompanySignup = () => {
   const navigate = useNavigate();
-
+  const intl = useIntl();
   const companyTypeOnClick = (
     path: LOGGED_OUT_ROUTES.VENDOR_SIGNUP | LOGGED_OUT_ROUTES.CUSTOMER_SIGNUP
   ) => {
@@ -33,7 +34,7 @@ const CompanySignup = () => {
   return (
     <Container maxWidth="md">
       <Typography variant="h6" sx={{ marginBottom: 4 }}>
-        Select Your Company Type
+        {intl.formatMessage({ id: "app.signup.companySignup.pageTitle" })}
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "space-around" }}>
@@ -56,7 +57,9 @@ const CompanySignup = () => {
                   fontSize="1.3em"
                   fontWeight={500}
                 >
-                  Sign up as vendor
+                  {intl.formatMessage({
+                    id: "app.signup.companySignup.asVendor",
+                  })}
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -77,7 +80,9 @@ const CompanySignup = () => {
                   fontSize="1.3em"
                   fontWeight={500}
                 >
-                  Sign up as customer
+                  {intl.formatMessage({
+                    id: "app.signup.companySignup.asCustomer",
+                  })}
                 </Typography>
               </CardContent>
             </CardActionArea>

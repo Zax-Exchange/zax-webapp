@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { Container, List, Stack, Typography } from "@mui/material";
 import MuiListItem from "@mui/material/ListItem";
 import React from "react";
+import { useIntl } from "react-intl";
 import { GetAllPlansQuery } from "../../gql/get/company/company.generated";
 import { CustomerSignupData, SubscriptionInfo } from "./CustomerSignup";
 
@@ -23,6 +24,7 @@ const CustomerCompanyReview = ({
   getAllPlansData: GetAllPlansQuery;
   subscriptionInfo: SubscriptionInfo;
 }) => {
+  const intl = useIntl();
   const plan = getAllPlansData!.getAllPlans!.find(
     (plan) => plan!.id === values.planId
   );
@@ -35,45 +37,73 @@ const CustomerCompanyReview = ({
         fontSize="1.2em"
         sx={{ marginBottom: 4 }}
       >
-        Review your company information
+        {intl.formatMessage({ id: "app.signup.reviewCompany" })}
       </Typography>
       <Container maxWidth="sm" disableGutters sx={{ margin: 0 }}>
         <List>
           <ListItem>
-            <Typography variant="subtitle2">Billing Email</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.company.attribute.billingEmail" })}
+            </Typography>
             <Typography variant="caption">{values.userEmail}</Typography>
           </ListItem>
           <ListItem>
-            <Typography variant="subtitle2">Company Name</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.company.attribute.companyName" })}
+            </Typography>
             <Typography variant="caption">{values.name}</Typography>
           </ListItem>
           <ListItem>
-            <Typography variant="subtitle2">Company Contact Email</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.company.attribute.contactEmail" })}
+            </Typography>
             <Typography variant="caption">{values.contactEmail}</Typography>
           </ListItem>
           <ListItem>
-            <Typography variant="subtitle2">Company Phone</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.company.attribute.phone" })}
+            </Typography>
             <Typography variant="caption">{values.phone}</Typography>
           </ListItem>
           <ListItem>
-            <Typography variant="subtitle2">Company Country</Typography>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.company.attribute.country" })}
+            </Typography>
             <Typography variant="caption">{values.country}</Typography>
           </ListItem>
           {values.companyUrl && (
             <ListItem>
-              <Typography variant="subtitle2">Company URL</Typography>
+              <Typography variant="subtitle2">
+                {intl.formatMessage({
+                  id: "app.company.attribute.companyUrl",
+                })}
+              </Typography>
               <Typography variant="caption">{values.companyUrl}</Typography>
             </ListItem>
           )}
 
           {values.fax && (
             <ListItem>
-              <Typography variant="subtitle2">Company Fax</Typography>
+              <Typography variant="subtitle2">
+                {intl.formatMessage({
+                  id: "app.company.attribute.fax",
+                })}
+              </Typography>
               <Typography variant="caption">{values.fax}</Typography>
             </ListItem>
           )}
 
           <ListItem>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.signup.pricingDetail" })}
+            </Typography>
+            <Typography variant="caption">
+              ${subscriptionInfo.price} /{" "}
+              {intl.formatMessage({ id: "app.general.month" })}
+            </Typography>
+          </ListItem>
+
+          {/* <ListItem>
             <Typography variant="subtitle2">Selected Plan</Typography>
             <Typography variant="caption">{plan!.tier} Plan</Typography>
           </ListItem>
@@ -83,7 +113,7 @@ const CustomerCompanyReview = ({
             <Typography variant="caption">
               ${subscriptionInfo.price} {subscriptionInfo.billingFrequency}
             </Typography>
-          </ListItem>
+          </ListItem> */}
         </List>
       </Container>
     </>

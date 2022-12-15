@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
 import { useState } from "react";
+import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../type/common";
 import { countries } from "../../constants/countries";
 import { ALL_PRODUCT_NAMES } from "../../constants/products";
@@ -23,6 +24,7 @@ const VendorInfo = ({
   setMoqDetail: React.Dispatch<React.SetStateAction<MoqDetail>>;
   moqDetail: MoqDetail;
 }) => {
+  const intl = useIntl();
   const [product, setProduct] = useState("");
 
   const locationOnChange = (locations: { label: string }[]) => {
@@ -138,7 +140,9 @@ const VendorInfo = ({
               ...params.inputProps,
               autoComplete: "new-password",
             }}
-            helperText="This helps customers to find your company easier."
+            helperText={intl.formatMessage({
+              id: "app.signup.vendorInfo.products.helperText",
+            })}
             InputLabelProps={{
               sx: {
                 fontSize: 16,
@@ -154,13 +158,15 @@ const VendorInfo = ({
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }}>
-        Since your a vendor, we're going to need a little more information.
+        {intl.formatMessage({ id: "app.signup.vendorInfo.pageTitle" })}
       </Typography>
       <Stack spacing={3} textAlign="right">
         <TextField
-          label="Typical lead time"
+          label={intl.formatMessage({ id: "app.vendor.attribute.leadTime" })}
           type="text"
-          placeholder="Typical lead time (in months)"
+          placeholder={intl.formatMessage({
+            id: "app.signup.vendorInfo.leadTime.placeholder",
+          })}
           name="leadTime"
           value={values.leadTime}
           onChange={onChange}
@@ -169,7 +175,7 @@ const VendorInfo = ({
         <Box display="flex">
           <TextField
             sx={{ mr: 2, flexBasis: "35%" }}
-            label="Minimum order quantity min"
+            label={intl.formatMessage({ id: "app.vendor.attribute.moq.min" })}
             name="min"
             value={moqDetail.min}
             onChange={moqOnChange}
@@ -177,7 +183,7 @@ const VendorInfo = ({
           ></TextField>
           <TextField
             sx={{ flexBasis: "35%" }}
-            label="Minimum order quantity max"
+            label={intl.formatMessage({ id: "app.vendor.attribute.moq.max" })}
             name="max"
             value={moqDetail.max}
             onChange={moqOnChange}

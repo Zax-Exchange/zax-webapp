@@ -80,7 +80,9 @@ const VendorPlanSelection = ({
           <PlanListItem>
             <Typography variant="subtitle2">Price</Typography>
             {monthly && (
-              <Typography variant="overline">${monthly.price}/month</Typography>
+              <Typography variant="overline">
+                ${monthly.price} / Month
+              </Typography>
             )}
             {/* <Typography variant="overline">
               ${monthly.price}/month or ${annual.price}/year (10% off) + $

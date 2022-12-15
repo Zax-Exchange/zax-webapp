@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useEffect } from "react";
+import { useIntl } from "react-intl";
 import { useCheckUserEmailLazyQuery } from "../gql/utils/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 
@@ -19,6 +20,7 @@ const EmailPage = ({
   userEmail: string;
   setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const intl = useIntl();
   const [checkUserEmailQuery, { data, loading, error }] =
     useCheckUserEmailLazyQuery();
 
@@ -26,7 +28,7 @@ const EmailPage = ({
 
   const renderEmailHelperText = () => {
     if ((data && !data.checkUserEmail) || !data) {
-      return "This should be an email that we can send billing information to.";
+      return "This should be an email that we can send billing & sign-up information to.";
     }
     return "Email taken.";
   };
@@ -69,17 +71,19 @@ const EmailPage = ({
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
-        Let's start with your email
+        {intl.formatMessage({ id: "app.signup.billingEmail.pageTitle" })}
       </Typography>
       <Stack spacing={2} textAlign="right">
         <Fade in={true}>
           <TextField
-            label="Billing Email"
+            label={intl.formatMessage({ id: "app.general.email" })}
             type="email"
             name="userEmail"
             value={userEmail}
-            onChange={emailOnChange}
-            helperText={renderEmailHelperText()}
+            onChange={(e) => onChange(e as React.ChangeEvent<HTMLInputElement>)}
+            helperText={intl.formatMessage({
+              id: "app.signup.billingEmail.helperText",
+            })}
             error={shouldError()}
             InputProps={{
               endAdornment: loading && <CircularProgress size={20} />,
