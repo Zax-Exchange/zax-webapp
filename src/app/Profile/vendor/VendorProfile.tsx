@@ -81,7 +81,7 @@ const VendorProfile = () => {
   const [vendorData, setVendorData] = useState<VendorDetail | null>(null);
   const [currentTab, setCurrentTab] = useState(0);
 
-  const VENDOR_PROFILE_TABS: TranslatableAttribute[] = [
+  const VENDOR_PROFILE_TABS = [
     {
       label: intl.formatMessage({ id: "app.vendorProfile.tab.companyInfo" }),
       value: "companyInfo",

@@ -37,6 +37,7 @@ const ColorDropdown = ({
     <Autocomplete
       sx={{ width: 200 }}
       options={ALL_COLORS}
+      getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
       autoHighlight
       value={getDefaultValue()}
       onChange={(e, v) => {

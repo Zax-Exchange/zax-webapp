@@ -7,13 +7,16 @@ import { client } from "./ApolloClient/client";
 import { BrowserRouter } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
+import { LocaleContextProvider } from "./context/LocaleContext";
 
 const app = (
   <AuthProvider>
     <BrowserRouter>
       <React.StrictMode>
         <ApolloProvider client={client}>
-          <App />
+          <LocaleContextProvider>
+            <App />
+          </LocaleContextProvider>
         </ApolloProvider>
       </React.StrictMode>
     </BrowserRouter>

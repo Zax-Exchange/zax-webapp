@@ -198,6 +198,7 @@ const GuidedOutsideSpec = ({
       <Autocomplete
         sx={{ width: 200 }}
         options={GUIDED_PROJECT_FINISH}
+        getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
         value={getDefaultFinish()}
         onChange={(e, v) => {
@@ -334,7 +335,9 @@ const GuidedOutsideSpec = ({
         {componentSpec.boxStyle ? (
           <Box>
             <Typography variant="caption">
-              {productValueToLabelMap[componentSpec.boxStyle].label}
+              {intl.formatMessage({
+                id: productValueToLabelMap[componentSpec.boxStyle].labelId,
+              })}
             </Typography>
             <IconButton
               onClick={() => setBoxStyleModalOpen(true)}
@@ -369,6 +372,9 @@ const GuidedOutsideSpec = ({
         <Autocomplete
           sx={{ width: 200 }}
           options={GUIDED_PROJECT_ALL_POST_PROCESS}
+          getOptionLabel={(option) =>
+            intl.formatMessage({ id: option.labelId })
+          }
           autoHighlight
           multiple
           value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
@@ -428,6 +434,9 @@ const GuidedOutsideSpec = ({
         <Autocomplete
           sx={{ width: 200 }}
           options={GUIDED_PROJECT_OUTSIDE_PRODUCTS}
+          getOptionLabel={(option) =>
+            intl.formatMessage({ id: option.labelId })
+          }
           autoHighlight
           value={getDefaultBoxType()}
           onChange={(e, v) => {

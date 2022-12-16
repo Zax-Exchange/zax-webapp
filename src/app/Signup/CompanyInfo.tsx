@@ -121,7 +121,9 @@ const CompanyInfo = ({
       <Stack spacing={3} textAlign="right">
         <TextField
           required
-          label={intl.formatMessage({ id: "app.company.attribute.name" })}
+          label={intl.formatMessage({
+            id: "app.company.attribute.companyName",
+          })}
           type="text"
           name="name"
           value={values.name}

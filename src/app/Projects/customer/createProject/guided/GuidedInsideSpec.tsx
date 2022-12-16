@@ -164,6 +164,9 @@ const GuidedInsideSpec = ({
         <Autocomplete
           sx={{ width: 250 }}
           options={GUIDED_PROJECT_INSIDE_PRODUCTS}
+          getOptionLabel={(option) =>
+            intl.formatMessage({ id: option.labelId })
+          }
           autoHighlight
           value={getDefaultInsideTray()}
           onChange={(e, v) => {
@@ -215,6 +218,9 @@ const GuidedInsideSpec = ({
         <Autocomplete
           sx={{ width: 200 }}
           options={GUIDED_PROJECT_ALL_POST_PROCESS}
+          getOptionLabel={(option) =>
+            intl.formatMessage({ id: option.labelId })
+          }
           autoHighlight
           multiple
           value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
@@ -387,6 +393,9 @@ const GuidedInsideSpec = ({
           <Autocomplete
             sx={{ width: 200 }}
             options={MOLDED_FIBER_MANUFACTURING_PROCESSES}
+            getOptionLabel={(option) =>
+              intl.formatMessage({ id: option.labelId })
+            }
             autoHighlight
             value={getLabel()}
             onChange={(e, v) => {

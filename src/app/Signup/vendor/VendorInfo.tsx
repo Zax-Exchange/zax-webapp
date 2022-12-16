@@ -80,6 +80,7 @@ const VendorInfo = ({
         sx={{ width: 300 }}
         options={countries}
         autoHighlight
+        disableCloseOnSelect
         getOptionLabel={(option) => option.label}
         isOptionEqualToValue={(option, val) => option.label === val.label}
         onChange={(e, v) => locationOnChange(v)}
@@ -127,9 +128,11 @@ const VendorInfo = ({
         id="products-select"
         sx={{ width: 400 }}
         options={ALL_PRODUCT_NAMES}
+        getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
         inputValue={product}
         onChange={(e, v) => addProduct(v)}
+        disableCloseOnSelect
         multiple
         renderInput={(params) => (
           <TextField

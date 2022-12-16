@@ -50,6 +50,7 @@ const StickerSubSection = ({
       <Autocomplete
         sx={{ width: 200 }}
         options={options}
+        getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
         value={getDefaultValue()}
         onChange={(e, v) => {

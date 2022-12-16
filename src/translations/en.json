@@ -419,7 +419,8 @@
   "app.settings.manageCompanyUsers.deactivateUsers.modal.content": "Once deactivated, the accounts will become inactive immediately. Any unused portion of the remaining billing cycle will be credited back to your account in the next cycle.",
   "app.settings.manageCompanyUsers.updateUserPower": "Update User Power",
   "app.settings.manageCompanyUsers.updateUserPower.makeAdmin": "Make Admin",
-  "app.settings.manageCompanyUsers.updateUserPower.makeNormal": "Make Normal User"
+  "app.settings.manageCompanyUsers.updateUserPower.makeNormal": "Make Normal User",
 
-  
+  "app.locale.en": "English",
+  "app.locale.zh-cn": "简体中文"
 }

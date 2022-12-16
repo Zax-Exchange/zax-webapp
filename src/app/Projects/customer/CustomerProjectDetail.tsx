@@ -432,7 +432,7 @@ const CustomerProjectDetail = () => {
           </Grid>
         </Grid>
 
-        <Box mt={2}>
+        {/* <Box mt={2}>
           <Box>
             <Typography variant="h6">
               {intl.formatMessage({
@@ -442,7 +442,7 @@ const CustomerProjectDetail = () => {
           </Box>
 
           <Box></Box>
-        </Box>
+        </Box> */}
       </Container>
     );
   }

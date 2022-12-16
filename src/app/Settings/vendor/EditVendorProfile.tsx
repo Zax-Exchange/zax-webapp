@@ -24,9 +24,11 @@ import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.gene
 import { UpdateVendorInfoInput } from "../../../generated/graphql";
 import { ALL_PRODUCT_NAMES } from "../../constants/products";
 import { TranslatableAttribute } from "../../../type/common";
+import { useIntl } from "react-intl";
 
 /** ADMIN VIEW */
 const EditVendorProfile = () => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const {
@@ -247,7 +249,9 @@ const EditVendorProfile = () => {
           id="products-select"
           sx={{ width: 400 }}
           options={ALL_PRODUCT_NAMES}
-          getOptionLabel={(option) => option.label}
+          getOptionLabel={(option) =>
+            intl.formatMessage({ id: option.labelId })
+          }
           autoHighlight
           defaultValue={[...getDefaultManufacturingProducts()]}
           onChange={(e, v) => productOnChange(v)}

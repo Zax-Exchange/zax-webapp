@@ -109,7 +109,9 @@ export default function ComponentSpecDetail({
         </TableCell>
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[productName].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[productName].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -235,7 +237,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[flute].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[flute].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -271,7 +275,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[manufacturingProcess].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[manufacturingProcess].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -289,7 +295,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[material].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[material].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -309,7 +317,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[materialSource].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[materialSource].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -400,7 +410,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[finish].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[finish].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -420,7 +432,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[outsideMaterial].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[outsideMaterial].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -440,7 +454,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[outsideMaterialSource].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[outsideMaterialSource].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -460,7 +476,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[outsideFinish].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[outsideFinish].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -498,7 +516,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[insideMaterial].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[insideMaterial].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -518,7 +538,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[insideMaterialSource].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[insideMaterialSource].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>
@@ -538,7 +560,9 @@ export default function ComponentSpecDetail({
 
         <TableCell>
           <Typography variant="caption">
-            {productValueToLabelMap[insideFinish].label}
+            {intl.formatMessage({
+              id: productValueToLabelMap[insideFinish].labelId,
+            })}
           </Typography>
         </TableCell>
       </TableRow>

@@ -29,6 +29,7 @@ const BoxStyleDropdown = ({
     <Autocomplete
       sx={{ width: 300 }}
       options={options}
+      getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
       autoHighlight
       value={getDefaultValue()}
       onChange={(e, v) => {

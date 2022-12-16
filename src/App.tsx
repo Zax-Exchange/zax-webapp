@@ -1,5 +1,5 @@
 import "./App.scss";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Nav from "./app/Nav/Nav";
 import Home from "./app/Home/Home";
@@ -47,6 +47,12 @@ import ForgotPassword from "./app/Login/ForgotPassword";
 import ResetPassword from "./app/Login/ResetPassword";
 import GuestProject from "./app/LoggedOut/GuestProject/GuestProject";
 import VendorGuestProjectDetail from "./app/Projects/vendor/VendorGuestProjectDetail";
+import Footer from "./app/Footer/Footer";
+import {
+  Locale,
+  LocaleContext,
+  LocaleContextProvider,
+} from "./context/LocaleContext";
 
 const theme = createTheme({
   palette: {
@@ -157,8 +163,19 @@ const theme = createTheme({
   },
 });
 
+const getIntlFile = (locale: Locale) => {
+  switch (locale) {
+    case "en":
+      return en;
+    case "zh-cn":
+      return zhCn;
+  }
+  return undefined;
+};
+
 function App() {
   const { CustomSnackbar } = useCustomSnackbar();
+  const { locale } = useContext(LocaleContext);
   const { user, logout } = useContext(AuthContext);
 
   useEffect(() => {
@@ -169,220 +186,220 @@ function App() {
       document.removeEventListener("logout", () => {});
     };
   }, []);
+
   return (
-    <IntlProvider locale="en" messages={en}>
-      <ThemeProvider theme={theme}>
-        <SnackbarContextProvider>
-          <div className="App" style={{ minWidth: "960px" }}>
-            <ErrorBoundary FallbackComponent={ErrorFallback}>
-              <CustomSnackbar />
-              <Nav />
-              <Container maxWidth="xl" sx={{ mb: 12, pt: 12 }}>
-                <Routes>
-                  {/* START COMMON PATH */}
-                  <Route
-                    path={GENERAL_ROUTES.ARBITRARY}
-                    element={
-                      <RequireAuth isAllowed={true}>
-                        <Home />
-                      </RequireAuth>
-                    }
-                  />
+    <ThemeProvider theme={theme}>
+      <SnackbarContextProvider>
+        <div className="App" style={{ minWidth: "960px" }}>
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <CustomSnackbar />
+            <Nav />
+            <Container maxWidth="xl" sx={{ mb: 12, pt: 12 }}>
+              <Routes>
+                {/* START COMMON PATH */}
+                <Route
+                  path={GENERAL_ROUTES.ARBITRARY}
+                  element={
+                    <RequireAuth isAllowed={true}>
+                      <Home />
+                    </RequireAuth>
+                  }
+                />
 
-                  <Route
-                    path={GENERAL_ROUTES.HOME}
-                    element={
-                      <RequireAuth isAllowed={true}>
-                        <Home />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={GENERAL_ROUTES.PROFILE}
-                    element={
-                      <RequireAuth isAllowed={true}>
-                        <Profile />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={GENERAL_ROUTES.PROJECT_DETAIL}
-                    element={
-                      <RequireAuth isAllowed={true}>
-                        <ProjectDetail />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={GENERAL_ROUTES.PROJECTS}
-                    element={
-                      <RequireAuth isAllowed={true}>
-                        <Projects />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={GENERAL_ROUTES.PO_INVOICE}
-                    element={
-                      <RequireAuth isAllowed={true}>
-                        <POInvoice />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={GENERAL_ROUTES.SETTINGS}
-                    element={
-                      <RequireAuth isAllowed={true}>
-                        <Settings />
-                      </RequireAuth>
-                    }
-                  />
-                  {/* END COMMON PATH */}
+                <Route
+                  path={GENERAL_ROUTES.HOME}
+                  element={
+                    <RequireAuth isAllowed={true}>
+                      <Home />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={GENERAL_ROUTES.PROFILE}
+                  element={
+                    <RequireAuth isAllowed={true}>
+                      <Profile />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={GENERAL_ROUTES.PROJECT_DETAIL}
+                  element={
+                    <RequireAuth isAllowed={true}>
+                      <ProjectDetail />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={GENERAL_ROUTES.PROJECTS}
+                  element={
+                    <RequireAuth isAllowed={true}>
+                      <Projects />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={GENERAL_ROUTES.PO_INVOICE}
+                  element={
+                    <RequireAuth isAllowed={true}>
+                      <POInvoice />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={GENERAL_ROUTES.SETTINGS}
+                  element={
+                    <RequireAuth isAllowed={true}>
+                      <Settings />
+                    </RequireAuth>
+                  }
+                />
+                {/* END COMMON PATH */}
 
-                  {/* START CUSTOMER PATH */}
-                  <Route
-                    path={CUSTOMER_ROUTES.EDIT_PROJECT}
-                    element={
-                      <RequireAuth isAllowed={!user?.isVendor}>
-                        <EditProject />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={CUSTOMER_ROUTES.SEARCH_RESULTS}
-                    element={
-                      <RequireAuth isAllowed={!user?.isVendor}>
-                        <CustomerSearchResults />
-                      </RequireAuth>
-                    }
-                  />
+                {/* START CUSTOMER PATH */}
+                <Route
+                  path={CUSTOMER_ROUTES.EDIT_PROJECT}
+                  element={
+                    <RequireAuth isAllowed={!user?.isVendor}>
+                      <EditProject />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={CUSTOMER_ROUTES.SEARCH_RESULTS}
+                  element={
+                    <RequireAuth isAllowed={!user?.isVendor}>
+                      <CustomerSearchResults />
+                    </RequireAuth>
+                  }
+                />
 
-                  <Route
-                    path={CUSTOMER_ROUTES.GUIDED_CREATE_PROJECT}
-                    element={
-                      <RequireAuth isAllowed={!user?.isVendor}>
-                        <GuidedCreateProject />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={CUSTOMER_ROUTES.ADVANCED_CREATE_PROJECT}
-                    element={
-                      <RequireAuth isAllowed={!user?.isVendor}>
-                        <AdvancedCreateProject />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={CUSTOMER_ROUTES.VENDOR_PROFILE}
-                    element={
-                      <RequireAuth isAllowed={!user?.isVendor}>
-                        <VendorProfile />
-                      </RequireAuth>
-                    }
-                  />
-                  {/* END CUSTOMER PATH */}
+                <Route
+                  path={CUSTOMER_ROUTES.GUIDED_CREATE_PROJECT}
+                  element={
+                    <RequireAuth isAllowed={!user?.isVendor}>
+                      <GuidedCreateProject />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={CUSTOMER_ROUTES.ADVANCED_CREATE_PROJECT}
+                  element={
+                    <RequireAuth isAllowed={!user?.isVendor}>
+                      <AdvancedCreateProject />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={CUSTOMER_ROUTES.VENDOR_PROFILE}
+                  element={
+                    <RequireAuth isAllowed={!user?.isVendor}>
+                      <VendorProfile />
+                    </RequireAuth>
+                  }
+                />
+                {/* END CUSTOMER PATH */}
 
-                  {/* START VENDOR PATH */}
-                  <Route
-                    path={VENDOR_ROUTES.SEARCH_RESULTS}
-                    element={
-                      <RequireAuth isAllowed={user?.isVendor}>
-                        <VendorSearchResults />
-                      </RequireAuth>
-                    }
-                  />
+                {/* START VENDOR PATH */}
+                <Route
+                  path={VENDOR_ROUTES.SEARCH_RESULTS}
+                  element={
+                    <RequireAuth isAllowed={user?.isVendor}>
+                      <VendorSearchResults />
+                    </RequireAuth>
+                  }
+                />
 
-                  <Route
-                    path={VENDOR_ROUTES.SEARCH_PROJECT_DETAIL}
-                    element={
-                      <RequireAuth isAllowed={user?.isVendor}>
-                        <SearchProjectDetail />
-                      </RequireAuth>
-                    }
-                  />
-                  <Route
-                    path={VENDOR_ROUTES.GUEST_PROJECT_DETAIL}
-                    element={
-                      <RequireAuth isAllowed={user?.isVendor}>
-                        <VendorGuestProjectDetail />
-                      </RequireAuth>
-                    }
-                  />
-                  {/* END VENDOR PATH */}
+                <Route
+                  path={VENDOR_ROUTES.SEARCH_PROJECT_DETAIL}
+                  element={
+                    <RequireAuth isAllowed={user?.isVendor}>
+                      <SearchProjectDetail />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={VENDOR_ROUTES.GUEST_PROJECT_DETAIL}
+                  element={
+                    <RequireAuth isAllowed={user?.isVendor}>
+                      <VendorGuestProjectDetail />
+                    </RequireAuth>
+                  }
+                />
+                {/* END VENDOR PATH */}
 
-                  {/* logged out routes */}
-                  <Route
-                    path={LOGGED_OUT_ROUTES.LOGIN}
-                    element={
-                      <LoggedOutRoute>
-                        <Login />
-                      </LoggedOutRoute>
-                    }
-                  />
-                  <Route
-                    path={LOGGED_OUT_ROUTES.COMPANY_SIGNUP}
-                    element={
-                      <LoggedOutRoute>
-                        <CompanySignup />
-                      </LoggedOutRoute>
-                    }
-                  />
-                  <Route
-                    path={LOGGED_OUT_ROUTES.USER_SIGNUP}
-                    element={
-                      <LoggedOutRoute>
-                        <UserSignup />
-                      </LoggedOutRoute>
-                    }
-                  />
-                  <Route
-                    path={LOGGED_OUT_ROUTES.VENDOR_SIGNUP}
-                    element={
-                      <LoggedOutRoute>
-                        <VendorSignup />
-                      </LoggedOutRoute>
-                    }
-                  />
-                  <Route
-                    path={LOGGED_OUT_ROUTES.CUSTOMER_SIGNUP}
-                    element={
-                      <LoggedOutRoute>
-                        <CustomerSignup />
-                      </LoggedOutRoute>
-                    }
-                  />
-                  <Route
-                    path={LOGGED_OUT_ROUTES.GUEST_PROJECT}
-                    element={
-                      <LoggedOutRoute>
-                        <GuestProject />
-                      </LoggedOutRoute>
-                    }
-                  />
-                  <Route
-                    path={LOGGED_OUT_ROUTES.FORGOT_PASSWORD}
-                    element={
-                      <LoggedOutRoute>
-                        <ForgotPassword />
-                      </LoggedOutRoute>
-                    }
-                  />
-                  <Route
-                    path={LOGGED_OUT_ROUTES.RESET_PASSWORD}
-                    element={
-                      <LoggedOutRoute>
-                        <ResetPassword />
-                      </LoggedOutRoute>
-                    }
-                  />
-                </Routes>
-              </Container>
-            </ErrorBoundary>
-          </div>
-        </SnackbarContextProvider>
-      </ThemeProvider>
-    </IntlProvider>
+                {/* logged out routes */}
+                <Route
+                  path={LOGGED_OUT_ROUTES.LOGIN}
+                  element={
+                    <LoggedOutRoute>
+                      <Login />
+                    </LoggedOutRoute>
+                  }
+                />
+                <Route
+                  path={LOGGED_OUT_ROUTES.COMPANY_SIGNUP}
+                  element={
+                    <LoggedOutRoute>
+                      <CompanySignup />
+                    </LoggedOutRoute>
+                  }
+                />
+                <Route
+                  path={LOGGED_OUT_ROUTES.USER_SIGNUP}
+                  element={
+                    <LoggedOutRoute>
+                      <UserSignup />
+                    </LoggedOutRoute>
+                  }
+                />
+                <Route
+                  path={LOGGED_OUT_ROUTES.VENDOR_SIGNUP}
+                  element={
+                    <LoggedOutRoute>
+                      <VendorSignup />
+                    </LoggedOutRoute>
+                  }
+                />
+                <Route
+                  path={LOGGED_OUT_ROUTES.CUSTOMER_SIGNUP}
+                  element={
+                    <LoggedOutRoute>
+                      <CustomerSignup />
+                    </LoggedOutRoute>
+                  }
+                />
+                <Route
+                  path={LOGGED_OUT_ROUTES.GUEST_PROJECT}
+                  element={
+                    <LoggedOutRoute>
+                      <GuestProject />
+                    </LoggedOutRoute>
+                  }
+                />
+                <Route
+                  path={LOGGED_OUT_ROUTES.FORGOT_PASSWORD}
+                  element={
+                    <LoggedOutRoute>
+                      <ForgotPassword />
+                    </LoggedOutRoute>
+                  }
+                />
+                <Route
+                  path={LOGGED_OUT_ROUTES.RESET_PASSWORD}
+                  element={
+                    <LoggedOutRoute>
+                      <ResetPassword />
+                    </LoggedOutRoute>
+                  }
+                />
+              </Routes>
+            </Container>
+            <Footer />
+          </ErrorBoundary>
+        </div>
+      </SnackbarContextProvider>
+    </ThemeProvider>
   );
 }
 

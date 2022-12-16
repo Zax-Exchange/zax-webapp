@@ -57,37 +57,34 @@ const CustomerCheckout = ({
     }
   }, [stripe, elements]);
 
-  useEffect(() => {
-    const createCustomer = async () => {
-      if (paymentSuccess) {
-        try {
-          setIsLoading(true);
-          await createCustomerMutation({
-            variables: {
-              data: {
-                ...companyData,
-                stripeCustomerInfo: {
-                  subscriptionId: stripePaymentIntent.subscriptionId,
-                  customerId: stripePaymentIntent.customerId,
-                },
+  const createCustomer = async () => {
+    if (paymentSuccess) {
+      try {
+        setIsLoading(true);
+        await createCustomerMutation({
+          variables: {
+            data: {
+              ...companyData,
+              stripeCustomerInfo: {
+                subscriptionId: stripePaymentIntent.subscriptionId,
+                customerId: stripePaymentIntent.customerId,
               },
             },
-            fetchPolicy: "no-cache",
-          });
-          setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
-        } catch (error) {
-          setSnackbar({
-            severity: "error",
-            message: intl.formatMessage({ id: "app.general.network.error" }),
-          });
-          setSnackbarOpen(true);
-        } finally {
-          setIsLoading(false);
-        }
+          },
+          fetchPolicy: "no-cache",
+        });
+        setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
+      } catch (error) {
+        setSnackbar({
+          severity: "error",
+          message: intl.formatMessage({ id: "app.general.network.error" }),
+        });
+        setSnackbarOpen(true);
+      } finally {
+        setIsLoading(false);
       }
-    };
-    createCustomer();
-  }, [paymentSuccess]);
+    }
+  };
 
   const finishPayment = async () => {
     try {
@@ -103,7 +100,10 @@ const CustomerCheckout = ({
           throw error;
         } else {
           setPaymentSuccess(true);
+          await createCustomer();
         }
+      } else if (paymentSuccess) {
+        await createCustomer();
       }
     } catch (error: any) {
       let message = intl.formatMessage({ id: "app.general.network.error" });

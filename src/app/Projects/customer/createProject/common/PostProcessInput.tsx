@@ -162,7 +162,9 @@ const PostProcessInput = ({
                 sx={{ width: 180, mb: 2 }}
                 options={ALL_PRINTING_METHODS}
                 autoHighlight
-                getOptionLabel={(option) => option.label}
+                getOptionLabel={(option) =>
+                  intl.formatMessage({ id: option.labelId })
+                }
                 value={getPrintingMethodLabel()}
                 onChange={(e, v) => {
                   if (!v) {
@@ -372,7 +374,9 @@ const PostProcessInput = ({
             sx={{ width: 180, mr: 2 }}
             options={postProcessOptions}
             autoHighlight
-            getOptionLabel={(option) => option.label}
+            getOptionLabel={(option) =>
+              intl.formatMessage({ id: option.labelId })
+            }
             value={getPostProcessNameLabel()}
             onChange={(e, v) => {
               if (!v) {

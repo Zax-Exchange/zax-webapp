@@ -58,38 +58,35 @@ const VendorCheckout = ({
     }
   }, [stripe, elements]);
 
-  useEffect(() => {
-    const createVendor = async () => {
-      if (paymentSuccess) {
-        try {
-          setIsLoading(true);
-          await createVendorMutation({
-            variables: {
-              data: {
-                ...companyData,
-                leadTime: parseInt(companyData.leadTime),
-                stripeCustomerInfo: {
-                  subscriptionId: stripePaymentIntent.subscriptionId,
-                  customerId: stripePaymentIntent.customerId,
-                },
+  const createVendor = async () => {
+    if (paymentSuccess) {
+      try {
+        setIsLoading(true);
+        await createVendorMutation({
+          variables: {
+            data: {
+              ...companyData,
+              leadTime: parseInt(companyData.leadTime),
+              stripeCustomerInfo: {
+                subscriptionId: stripePaymentIntent.subscriptionId,
+                customerId: stripePaymentIntent.customerId,
               },
             },
-            fetchPolicy: "no-cache",
-          });
-          setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
-        } catch (error) {
-          setSnackbar({
-            severity: "error",
-            message: intl.formatMessage({ id: "app.general.network.error" }),
-          });
-          setSnackbarOpen(true);
-        } finally {
-          setIsLoading(false);
-        }
+          },
+          fetchPolicy: "no-cache",
+        });
+        setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
+      } catch (error) {
+        setSnackbar({
+          severity: "error",
+          message: intl.formatMessage({ id: "app.general.network.error" }),
+        });
+        setSnackbarOpen(true);
+      } finally {
+        setIsLoading(false);
       }
-    };
-    createVendor();
-  }, [paymentSuccess]);
+    }
+  };
 
   const finishPayment = async () => {
     try {
@@ -105,7 +102,10 @@ const VendorCheckout = ({
           throw error;
         } else {
           setPaymentSuccess(true);
+          await createVendor();
         }
+      } else if (paymentSuccess) {
+        await createVendor();
       }
     } catch (error: any) {
       let message = intl.formatMessage({ id: "app.general.network.error" });
@@ -124,7 +124,6 @@ const VendorCheckout = ({
 
   return (
     <>
-      {(!stripe || !elements || createVendorLoading) && <FullScreenLoading />}
       <PaymentElement />
 
       <Container

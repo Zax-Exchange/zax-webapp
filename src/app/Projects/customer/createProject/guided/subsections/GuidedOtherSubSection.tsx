@@ -180,6 +180,7 @@ const GuidedOtherSubSection = ({
         options={options}
         autoHighlight
         value={getDefaultValue()}
+        getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         onChange={(e, v) => {
           const value = v ? v.value : "";
 
@@ -221,6 +222,9 @@ const GuidedOtherSubSection = ({
         <Autocomplete
           sx={{ width: 200 }}
           options={GUIDED_PROJECT_ALL_POST_PROCESS}
+          getOptionLabel={(option) =>
+            intl.formatMessage({ id: option.labelId })
+          }
           autoHighlight
           multiple
           value={GUIDED_PROJECT_ALL_POST_PROCESS.filter((p) => {
@@ -275,6 +279,7 @@ const GuidedOtherSubSection = ({
       <Autocomplete
         sx={{ width: 200 }}
         options={GUIDED_PROJECT_OTHER_PRODUCTS}
+        getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
         value={getDefaultProduct()}
         onChange={(e, v) => {

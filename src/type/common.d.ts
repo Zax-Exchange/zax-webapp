@@ -1,5 +1,5 @@
 export type TranslatableAttribute = {
-  label: string;
+  labelId: string;
   value: string;
   isDefault?: boolean
   code?: string;

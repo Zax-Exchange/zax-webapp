@@ -111,6 +111,9 @@ const RigidBoxSubSection = ({
         <Autocomplete
           sx={{ width }}
           options={options}
+          getOptionLabel={(option) =>
+            intl.formatMessage({ id: option.labelId })
+          }
           autoHighlight
           value={getDefaultValue()}
           onChange={(e, v) => {

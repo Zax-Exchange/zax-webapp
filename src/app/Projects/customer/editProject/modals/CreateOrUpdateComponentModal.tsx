@@ -282,6 +282,7 @@ const CreateOrUpdateComponentModal = ({
       <Autocomplete
         sx={{ width: 200 }}
         options={ALL_PRODUCT_NAMES}
+        getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
         defaultValue={getDefaultProduct()}
         onChange={(e, v) => {

@@ -42,6 +42,7 @@ const CorrugateTraySubSection = ({
       <Autocomplete
         sx={{ width: 200 }}
         options={CORRUGATE_BOX_FLUTES}
+        getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
         value={getDefaultValue()}
         onChange={(e, v) => {
