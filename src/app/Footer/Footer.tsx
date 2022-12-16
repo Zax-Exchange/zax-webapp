@@ -1,5 +1,12 @@
 import { Copyright, Language } from "@mui/icons-material";
-import { Box, IconButton, Menu, MenuItem, MenuList } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  MenuList,
+  Typography,
+} from "@mui/material";
 import React, { useContext, useState } from "react";
 import { useIntl } from "react-intl";
 import {
@@ -73,7 +80,7 @@ const Footer = () => {
         }}
       >
         <Copyright fontSize="small" sx={{ fontSize: "13px", mr: 1 }} />
-        2023, Zax Exchange LLC
+        <Typography variant="caption">2023, Zax Exchange LLC</Typography>
       </Box>
     </Box>
   );
