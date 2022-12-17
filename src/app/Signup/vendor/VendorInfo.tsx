@@ -105,7 +105,7 @@ const VendorInfo = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Factory locations"
+            label={intl.formatMessage({ id: "app.vendor.attribute.locations" })}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password", // disable autocomplete and autofill
@@ -137,7 +137,7 @@ const VendorInfo = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Manufacturing products"
+            label={intl.formatMessage({ id: "app.vendor.attribute.products" })}
             value={product}
             inputProps={{
               ...params.inputProps,

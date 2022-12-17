@@ -161,7 +161,7 @@ const GuestProject = () => {
       if (creationMode === ProjectCreationMode.Advanced) {
         res = (
           <>
-            {renderCreationModeDropdown()}
+            {/* {renderCreationModeDropdown()} */}
             <GuestAdvancedCreate
               setProjectCreated={setProjectCreated}
               projectId={projectId!}

@@ -97,7 +97,7 @@ const CompanyInfo = ({
           <TextField
             required
             {...params}
-            label="Company location"
+            label={intl.formatMessage({ id: "app.company.attribute.country" })}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password", // disable autocomplete and autofill

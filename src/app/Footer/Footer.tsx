@@ -34,7 +34,6 @@ const Footer = () => {
   return (
     <Box
       sx={{
-        display: "flex",
         position: "fixed",
         width: "100%",
         bottom: 0,
@@ -43,44 +42,49 @@ const Footer = () => {
         height: "40px",
       }}
     >
-      <IconButton
-        onClick={(e) => setLocaleMenuAnchor(e.currentTarget)}
-        sx={{ ml: 2 }}
-      >
-        <Language color="primary" />
-      </IconButton>
-      <Menu
-        id="locale-menu"
-        anchorEl={localeMenuAnchor}
-        open={localeMenuOpen}
-        onClose={() => setLocaleMenuAnchor(null)}
-        // PaperProps={{
-        //   style: {
-        //     maxHeight: "120px",
-        //   },
-        // }}
-      >
-        <MenuList dense sx={{ padding: "4px 0 4px" }}>
-          {SUPPORTED_LOCALES.map((locale) => {
-            return (
-              <MenuItem onClick={() => setLocaleOnClick(locale)}>
-                {intl.formatMessage({ id: `app.locale.${locale}` })}
-              </MenuItem>
-            );
-          })}
-        </MenuList>
-      </Menu>
+      <Box sx={{ display: "flex" }}>
+        <IconButton
+          onClick={(e) => setLocaleMenuAnchor(e.currentTarget)}
+          sx={{ ml: 2 }}
+        >
+          <Language color="primary" />
+        </IconButton>
+        <Menu
+          id="locale-menu"
+          anchorEl={localeMenuAnchor}
+          open={localeMenuOpen}
+          onClose={() => setLocaleMenuAnchor(null)}
+          // PaperProps={{
+          //   style: {
+          //     maxHeight: "120px",
+          //   },
+          // }}
+        >
+          <MenuList dense sx={{ padding: "4px 0 4px" }}>
+            {SUPPORTED_LOCALES.map((locale) => {
+              return (
+                <MenuItem onClick={() => setLocaleOnClick(locale)}>
+                  {intl.formatMessage({ id: `app.locale.${locale}` })}
+                </MenuItem>
+              );
+            })}
+          </MenuList>
+        </Menu>
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          marginLeft: "auto",
-          mr: 1,
-        }}
-      >
-        <Copyright fontSize="small" sx={{ fontSize: "13px", mr: 1 }} />
-        <Typography variant="caption">2023, Zax Exchange LLC</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            marginLeft: "auto",
+            mr: 1,
+            fontSize: "13px",
+          }}
+        >
+          <Copyright fontSize="small" sx={{ fontSize: "13px", mr: 1 }} />
+          <Typography variant="caption" fontSize="13px">
+            2023, Zax Exchange LLC
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

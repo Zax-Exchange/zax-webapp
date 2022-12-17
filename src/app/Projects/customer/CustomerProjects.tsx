@@ -142,9 +142,9 @@ const CustomerProjects = () => {
           <Typography variant="subtitle2">
             {intl.formatMessage({ id: "app.customer.projects.title" })}
           </Typography>
-          <IconButton onClick={sortOnClick}>
+          {/* <IconButton onClick={sortOnClick}>
             <SortIcon />
-          </IconButton>
+          </IconButton> */}
         </Box>
 
         <Menu

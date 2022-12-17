@@ -1,6 +1,7 @@
 import { Container, List, Typography } from "@mui/material";
 import React from "react";
 import { useIntl } from "react-intl";
+import { productValueToLabelMap } from "../../constants/products";
 import { GetAllPlansQuery } from "../../gql/get/company/company.generated";
 
 import { ListItem } from "../customer/CustomerCompanyReview";
@@ -111,7 +112,13 @@ const VendorCompanyReview = ({
               {intl.formatMessage({ id: "app.vendor.attribute.products" })}
             </Typography>
             <Typography variant="caption">
-              {values.products.join(",")}
+              {values.products
+                .map((product) => {
+                  return intl.formatMessage({
+                    id: productValueToLabelMap[product].labelId,
+                  });
+                })
+                .join(",")}
             </Typography>
           </ListItem>
 

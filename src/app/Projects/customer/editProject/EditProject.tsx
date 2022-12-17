@@ -512,7 +512,9 @@ const EditProject = () => {
 
       setSnackbar({
         severity: "success",
-        message: "Project updated.",
+        message: intl.formatMessage({
+          id: "app.customer.editProject.update.success",
+        }),
       });
     } catch (e) {
       setSnackbar({

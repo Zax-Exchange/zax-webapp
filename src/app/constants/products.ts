@@ -414,6 +414,46 @@ labelId:"app.component.attribute.color.red",
   value: "Red",
 }
 
+export const COLOR_GREEN: TranslatableAttribute = {
+labelId:"app.component.attribute.color.green",
+  value: "Green",
+}
+
+export const COLOR_YELLOW: TranslatableAttribute = {
+labelId:"app.component.attribute.color.yellow",
+  value: "Yellow",
+}
+
+export const COLOR_ORANGE: TranslatableAttribute = {
+labelId:"app.component.attribute.color.orange",
+  value: "Orange",
+}
+
+export const COLOR_BLUE: TranslatableAttribute = {
+labelId:"app.component.attribute.color.blue",
+  value: "Blue",
+}
+
+export const COLOR_PURPLE: TranslatableAttribute = {
+labelId:"app.component.attribute.color.purple",
+  value: "Purple",
+}
+
+export const COLOR_PINK: TranslatableAttribute = {
+labelId:"app.component.attribute.color.pink",
+  value: "Pink",
+}
+
+export const COLOR_BROWN: TranslatableAttribute = {
+labelId:"app.component.attribute.color.brown",
+  value: "Brown",
+}
+
+export const COLOR_GREY: TranslatableAttribute = {
+labelId:"app.component.attribute.color.grey",
+  value: "Grey",
+}
+
 export const COLOR_WHITE: TranslatableAttribute = {
 labelId:"app.component.attribute.color.white",
   value: "White",
@@ -449,6 +489,14 @@ export const ALL_PRINTING_METHODS = [
 
 export const ALL_COLORS = [
   COLOR_RED,
+  COLOR_PINK,
+  COLOR_ORANGE,
+  COLOR_YELLOW,
+  COLOR_GREEN,
+  COLOR_BLUE,
+  COLOR_PURPLE,
+  COLOR_BROWN,
+  COLOR_GREY,
   COLOR_BLACK,
   COLOR_WHITE
 ]
@@ -821,7 +869,16 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
 
   [COLOR_RED.value]: COLOR_RED,
   [COLOR_BLACK.value]:   COLOR_BLACK,
-  [COLOR_WHITE.value]:   COLOR_WHITE
+  [COLOR_WHITE.value]:   COLOR_WHITE,
+
+  [COLOR_PINK.value]: COLOR_PINK, 
+  [COLOR_ORANGE.value]:   COLOR_ORANGE, 
+  [COLOR_YELLOW.value]:   COLOR_YELLOW, 
+  [COLOR_GREEN.value]:   COLOR_GREEN, 
+  [COLOR_BLUE.value]:   COLOR_BLUE, 
+  [COLOR_PURPLE.value]:   COLOR_PURPLE, 
+  [COLOR_BROWN.value]:   COLOR_BROWN, 
+  [COLOR_GREY.value]:   COLOR_GREY, 
 }
 
 

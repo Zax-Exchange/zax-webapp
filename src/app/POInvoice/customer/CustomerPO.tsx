@@ -106,7 +106,7 @@ const CustomerPO = () => {
         mb={2}
       >
         <Box>
-          <Typography variant="h6">
+          <Typography variant="subtitle2">
             {intl.formatMessage({ id: "app.routes.loggedIn.poInvoice" })}
           </Typography>
         </Box>

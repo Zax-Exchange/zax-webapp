@@ -157,9 +157,9 @@ const VendorProjects = () => {
           <Typography variant="subtitle2">
             {intl.formatMessage({ id: "app.vendor.projects.yourBids" })}
           </Typography>
-          <IconButton onClick={sortOnClick}>
+          {/* <IconButton onClick={sortOnClick}>
             <SortIcon />
-          </IconButton>
+          </IconButton> */}
         </Box>
 
         <Menu
