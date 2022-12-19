@@ -464,6 +464,11 @@ labelId:"app.component.attribute.color.black",
   value: "Black",
 }
 
+export const COLOR_GOLD: TranslatableAttribute = {
+labelId:"app.component.attribute.color.gold",
+  value: "Gold",
+}
+
 
 /** Below are combinations of attributes based on different flows/products*/
 
@@ -498,7 +503,8 @@ export const ALL_COLORS = [
   COLOR_BROWN,
   COLOR_GREY,
   COLOR_BLACK,
-  COLOR_WHITE
+  COLOR_WHITE,
+  COLOR_GOLD
 ]
 
 // Guided Project Creation data
@@ -870,7 +876,7 @@ export const productValueToLabelMap: Record<string, TranslatableAttribute> = {
   [COLOR_RED.value]: COLOR_RED,
   [COLOR_BLACK.value]:   COLOR_BLACK,
   [COLOR_WHITE.value]:   COLOR_WHITE,
-
+  [COLOR_GOLD.value]: COLOR_GOLD,
   [COLOR_PINK.value]: COLOR_PINK, 
   [COLOR_ORANGE.value]:   COLOR_ORANGE, 
   [COLOR_YELLOW.value]:   COLOR_YELLOW, 

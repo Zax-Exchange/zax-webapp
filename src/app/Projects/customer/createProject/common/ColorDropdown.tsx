@@ -12,7 +12,7 @@ const ColorDropdown = ({
   setColor,
   color,
   componentSpec,
-  displayLabel = false,
+  displayLabel = true,
 }: {
   setComponentSpec?: React.Dispatch<
     React.SetStateAction<CreateProjectComponentSpecInput>

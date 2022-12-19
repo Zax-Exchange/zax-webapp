@@ -132,7 +132,10 @@ export default function ComponentSpecDetail({
           </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="caption">{output.join("x")} mm</Typography>
+          <Typography variant="caption">
+            {output.join("x")}
+            {intl.formatMessage({ id: "app.general.unit.mm" })}
+          </Typography>
         </TableCell>
       </TableRow>
     );
@@ -220,7 +223,10 @@ export default function ComponentSpecDetail({
         </TableCell>
 
         <TableCell>
-          <Typography variant="caption">{parseFloat(thickness)} mm</Typography>
+          <Typography variant="caption">
+            {parseFloat(thickness)}{" "}
+            {intl.formatMessage({ id: "app.general.unit.mm" })}
+          </Typography>
         </TableCell>
       </TableRow>
     );
@@ -256,7 +262,11 @@ export default function ComponentSpecDetail({
         </TableCell>
 
         <TableCell>
-          <Typography variant="caption">{color}</Typography>
+          <Typography variant="caption">
+            {intl.formatMessage({
+              id: productValueToLabelMap[color].labelId,
+            })}
+          </Typography>
         </TableCell>
       </TableRow>
     );
@@ -360,8 +370,10 @@ export default function ComponentSpecDetail({
                           })} `
                       : ""}
 
-                    {process.postProcessName}
-
+                    {intl.formatMessage({
+                      id: productValueToLabelMap[process.postProcessName]
+                        .labelId,
+                    })}
                     {process.numberOfColors
                       ? ` ${intl.formatMessage({
                           id: "app.component.postProcess.printing.numberOfColors",
@@ -382,12 +394,16 @@ export default function ComponentSpecDetail({
                     {process.color
                       ? ` ${intl.formatMessage({
                           id: "app.component.postProcess.foilStamp.color",
-                        })}: ${process.color}`
+                        })}: ${intl.formatMessage({
+                          id: productValueToLabelMap[process.color].labelId,
+                        })}`
                       : ""}
                     {estimatedArea.length
                       ? ` ${intl.formatMessage({
                           id: "app.component.postProcess.estimatedArea",
-                        })}: ${estimatedArea.join("x")}mm`
+                        })}: ${estimatedArea.join("x")}${intl.formatMessage({
+                          id: "app.general.unit.mm",
+                        })}`
                       : ""}
                   </Typography>
                 </ListItem>
@@ -497,7 +513,11 @@ export default function ComponentSpecDetail({
         </TableCell>
 
         <TableCell>
-          <Typography variant="caption">{outsideColor}</Typography>
+          <Typography variant="caption">
+            {intl.formatMessage({
+              id: productValueToLabelMap[outsideColor].labelId,
+            })}
+          </Typography>
         </TableCell>
       </TableRow>
     );
@@ -581,7 +601,11 @@ export default function ComponentSpecDetail({
         </TableCell>
 
         <TableCell>
-          <Typography variant="caption">{insideColor}</Typography>
+          <Typography variant="caption">
+            {intl.formatMessage({
+              id: productValueToLabelMap[insideColor].labelId,
+            })}
+          </Typography>
         </TableCell>
       </TableRow>
     );

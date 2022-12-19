@@ -30,6 +30,7 @@ import {
 } from "../../../../constants/products";
 import {
   isValidAlphanumeric,
+  isValidFloat,
   isValidInt,
 } from "../../../../Utils/inputValidators";
 import ColorDropdown from "./ColorDropdown";
@@ -75,8 +76,10 @@ const PostProcessInput = ({
     let isAllowed = false;
     const attr = e.target.name as keyof PostProcessDetail;
     switch (attr) {
-      case "numberOfColors":
       case "fontSize":
+        isAllowed = isValidFloat(val);
+        break;
+      case "numberOfColors":
         isAllowed = isValidInt(val);
         break;
       case "color":
@@ -301,6 +304,18 @@ const PostProcessInput = ({
             label={intl.formatMessage({
               id: "app.component.postProcess.emboss.fontSize",
             })}
+            helperText={`*
+              ${intl.formatMessage({
+                id: "app.general.unit",
+              })}
+              : ${intl.formatMessage({ id: "app.general.unit.mm" })}`}
+            FormHelperTextProps={{
+              sx: {
+                fontStyle: "italic",
+                m: 0,
+                fontSize: "0.8rem",
+              },
+            }}
             onChange={inputOnChange}
             name="fontSize"
             value={postProcess.fontSize}
@@ -369,7 +384,7 @@ const PostProcessInput = ({
         </IconButton>
       </Box>
       <Box>
-        <Box mb={2} display="flex">
+        <Box mb={3} display="flex">
           <Autocomplete
             sx={{ width: 180, mr: 2 }}
             options={postProcessOptions}
@@ -435,6 +450,7 @@ const PostProcessInput = ({
                 return (
                   <TextField
                     {...params}
+                    label={intl.formatMessage({ id: "app.component.side" })}
                     inputProps={{
                       ...params.inputProps,
                       autoComplete: "new-password", // disable autocomplete and autofill

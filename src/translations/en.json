@@ -48,8 +48,12 @@
   "app.general.input.dateError": "Invalid date.",
   "app.general.input.invalidError": "Invalid input.",
   "app.general.input.emptyError": "Field cannot be empty.",
-  
+  "app.general.unit.mm": "mm",
+  "app.general.unit.px": "px",
+  "app.general.unit": "unit",
+
   "app.general.button.login": "Login",
+
   "app.routes.loggedOut.getStarted": "Get Started",
   "app.routes.loggedIn.home": "Home",
   "app.routes.loggedIn.projects": "Projects",
@@ -246,6 +250,7 @@
   "app.component.attribute.flute": "Flute Type",
   "app.component.attribute.color": "Color",
   "app.component.attribute.color.white": "White",
+  "app.component.attribute.color.gold": "Gold",
   "app.component.attribute.color.black": "Black",
   "app.component.attribute.color.red": "Red",
   "app.component.attribute.color.pink": "Pink",
@@ -280,6 +285,7 @@
   "app.component.postProcess.foilStamp.color": "Color",
   "app.component.postProcess.estimatedArea": "Estimated Area",
   "app.component.postProcess.add": "Add Post Process",
+  "app.component.side": "Side",
 
   "app.customer.projects.title": "Your Projects",
   "app.customer.projects.sortBy": "Sort By",
@@ -304,6 +310,7 @@
   "app.customer.createProject.creationModeModalTitle": "Please select below how you would like to configure your project.",
   "app.customer.createProject.selectBoxStyle": "Select Box Style",
   "app.customer.createProject.noDesignPlaceholder": "No designs uploaded yet.",
+
 
   "app.customer.editProject.restoreComponent": "Restore Component",
   "app.customer.editProject.removedComponents": "Removed Components",
@@ -333,7 +340,7 @@
   "app.customer.createProject.advancedCreate.helperText": "This option is for users who knows exactly what they want and would like to configure the project detail themselves. This option includes technical terms that vendors use across the industry.",
   "app.customer.createProject.import": "Import",
   "app.customer.createProject.importFromExisting": "Import from existing projects below",
-
+  
   "app.customer.projectDetail.bid.menu.viewVendorProfile": "View vendor profile",
   "app.customer.projectDetail.bid.menu.openConversation": "Open conversation",
   "app.customer.projectDetail.bid.menu.exportToPdf": "Export to pdf",

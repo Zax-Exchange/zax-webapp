@@ -661,7 +661,6 @@ const SearchProjectDetail = () => {
                     {intl.formatMessage({
                       id: "app.project.attribute.orderQuantities",
                     })}
-                    s
                   </Typography>
                   <Typography variant="caption" component="p">
                     {orderQuantities.join(", ")}

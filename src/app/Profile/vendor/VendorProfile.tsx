@@ -337,9 +337,14 @@ const VendorProfile = () => {
                         variant: "subtitle2",
                       }
                     )}
-                    {renderTypography(leadTime, {
-                      variant: "caption",
-                    })}
+                    {renderTypography(
+                      `${leadTime} ${intl.formatMessage({
+                        id: "app.general.month",
+                      })}`,
+                      {
+                        variant: "caption",
+                      }
+                    )}
                   </CompanyInfoListItem>
                 }
               </List>

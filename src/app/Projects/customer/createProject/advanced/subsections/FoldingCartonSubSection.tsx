@@ -37,6 +37,7 @@ import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
 import BoxStyleDropdown from "./common/BoxStyleDropdown";
+import ThicknessInput from "../../common/ThicknessInput";
 
 type FoldingCartonPostProcessDetail = {
   postProcessName: string;
@@ -165,15 +166,11 @@ const FoldingCartonSubSection = ({
             />
           </ListItem>
           <ListItem>
-            <TextField
-              key="folding-carton-thickness"
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.thickness",
-              })}
-              onChange={componentSpecOnChange}
-              name="thickness"
-              value={componentSpec.thickness}
+            <ThicknessInput
+              thickness={componentSpec.thickness || ""}
+              setThickness={(thickness) =>
+                setComponentSpec((prev) => ({ ...prev, thickness }))
+              }
             />
           </ListItem>
           <ListItem>

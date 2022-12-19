@@ -38,6 +38,7 @@ import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
 import BoxStyleDropdown from "./common/BoxStyleDropdown";
+import ThicknessInput from "../../common/ThicknessInput";
 
 const CorrugateBoxSubSection = ({
   setComponentSpec,
@@ -170,19 +171,11 @@ const CorrugateBoxSubSection = ({
             />
           </ListItem>
           <ListItem>
-            <TextField
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.thickness",
-              })}
-              onChange={componentSpecOnChange}
-              name="thickness"
-              value={componentSpec.thickness}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">mm</InputAdornment>
-                ),
-              }}
+            <ThicknessInput
+              thickness={componentSpec.thickness || ""}
+              setThickness={(thickness) =>
+                setComponentSpec((prev) => ({ ...prev, thickness }))
+              }
             />
           </ListItem>
           <ListItem>
@@ -233,8 +226,7 @@ const CorrugateBoxSubSection = ({
               intl.formatMessage({
                 id: "app.component.attribute.outsideFinish",
               }),
-              "corrugate-outside-finish",
-              "If unsure, we recommend Uncoated."
+              "corrugate-outside-finish"
             )}
           </ListItem>
         </Stack>
@@ -253,8 +245,7 @@ const CorrugateBoxSubSection = ({
               intl.formatMessage({
                 id: "app.component.attribute.insideFinish",
               }),
-              "corrugate-inside-finish",
-              "If unsure, we recommend Uncoated."
+              "corrugate-inside-finish"
             )}
           </ListItem>
         </Stack>

@@ -35,6 +35,7 @@ import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
 import ColorDropdown from "../../common/ColorDropdown";
+import ThicknessInput from "../../common/ThicknessInput";
 
 const MoldedFiberSubSection = ({
   setComponentSpec,
@@ -154,15 +155,11 @@ const MoldedFiberSubSection = ({
             />
           </ListItem>
           <ListItem>
-            <TextField
-              key="molded-fiber-thickness"
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.thickness",
-              })}
-              onChange={componentSpecOnChange}
-              name="thickness"
-              value={componentSpec.thickness}
+            <ThicknessInput
+              thickness={componentSpec.thickness || ""}
+              setThickness={(thickness) =>
+                setComponentSpec((prev) => ({ ...prev, thickness }))
+              }
             />
           </ListItem>
           <ListItem>

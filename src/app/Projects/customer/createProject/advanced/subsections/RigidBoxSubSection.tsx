@@ -38,6 +38,7 @@ import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
 import BoxStyleDropdown from "./common/BoxStyleDropdown";
+import ThicknessInput from "../../common/ThicknessInput";
 
 type RigidBoxPostProcessDetail = {
   postProcessName: string;
@@ -172,14 +173,11 @@ const RigidBoxSubSection = ({
             />
           </ListItem>
           <ListItem>
-            <TextField
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.thickness",
-              })}
-              onChange={componentSpecOnChange}
-              name="thickness"
-              value={componentSpec.thickness}
+            <ThicknessInput
+              thickness={componentSpec.thickness || ""}
+              setThickness={(thickness) =>
+                setComponentSpec((prev) => ({ ...prev, thickness }))
+              }
             />
           </ListItem>
         </Stack>
@@ -197,8 +195,7 @@ const RigidBoxSubSection = ({
               "outsideMaterial",
               intl.formatMessage({
                 id: "app.component.attribute.outsideMaterial",
-              }),
-              "If unsure, we recommend C2S."
+              })
             )}
           </ListItem>
           <ListItem>
@@ -207,8 +204,7 @@ const RigidBoxSubSection = ({
               "outsideMaterialSource",
               intl.formatMessage({
                 id: "app.component.attribute.outsideMaterialSource",
-              }),
-              "If unsure, we recoomend Standard."
+              })
             )}
           </ListItem>
           <ListItem>
@@ -217,8 +213,7 @@ const RigidBoxSubSection = ({
               "outsideFinish",
               intl.formatMessage({
                 id: "app.component.attribute.outsideFinish",
-              }),
-              "If unsure, we recoomend SHIT."
+              })
             )}
           </ListItem>
         </Stack>

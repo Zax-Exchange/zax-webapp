@@ -1,5 +1,6 @@
 import { Box, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useIntl } from "react-intl";
 import {
   CreateProjectComponentSpecInput,
   PostProcessDetailInput,
@@ -15,6 +16,7 @@ const DimensionsInput = ({
   dimension: ProductDimension | null | undefined;
   setDimension: (data: ProductDimension) => void;
 }) => {
+  const intl = useIntl();
   const dimensionOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     let isAllowed = isValidFloat(val);
@@ -42,6 +44,18 @@ const DimensionsInput = ({
             width: 80,
             mr: 2,
           }}
+          helperText={`*
+              ${intl.formatMessage({
+                id: "app.general.unit",
+              })}
+              : ${intl.formatMessage({ id: "app.general.unit.mm" })}`}
+          FormHelperTextProps={{
+            sx: {
+              fontStyle: "italic",
+              m: 0,
+              fontSize: "0.8rem",
+            },
+          }}
         />
         <TextField
           autoComplete="new-password"
@@ -66,11 +80,6 @@ const DimensionsInput = ({
             }}
           />
         )}
-      </Box>
-      <Box>
-        <Typography variant="caption" fontSize="0.8rem">
-          <i>* units are all in mm</i>
-        </Typography>
       </Box>
     </Box>
   );

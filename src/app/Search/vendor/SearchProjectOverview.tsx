@@ -20,6 +20,7 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import BusinessIcon from "@mui/icons-material/Business";
 import CategoryIcon from "@mui/icons-material/Category";
 import { useIntl } from "react-intl";
+import { productValueToLabelMap } from "../../constants/products";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -72,7 +73,13 @@ const SearchProjectOverview = ({
                     <CategoryIcon />
                   </Tooltip>
                   <Typography variant="caption">
-                    {projectData.products.join(", ")}
+                    {projectData.products
+                      .map((product) =>
+                        intl.formatMessage({
+                          id: productValueToLabelMap[product].labelId,
+                        })
+                      )
+                      .join(", ")}
                   </Typography>
                 </ProjectOverviewListItem>
 

@@ -38,7 +38,6 @@
   "app.general.send": "发送",
   "app.general.userPower.admin": "管理员",
   "app.general.userPower.user": "一般用户",
-  
 
   "app.general.company.vendorName": "厂商名",
   "app.general.company.customerName": "客户名",
@@ -49,7 +48,11 @@
   "app.general.input.invalidError": "无效输入",
   "app.general.input.emptyError": "本栏不能为空",
   
+  "app.general.unit.mm": "毫米",
+  "app.general.unit": "单位",
+
   "app.general.button.login": "登入",
+
   "app.routes.loggedOut.getStarted": "Get Started",
   "app.routes.loggedIn.home": "主页",
   "app.routes.loggedIn.projects": "项目",
@@ -244,6 +247,7 @@
   "app.component.attribute.flute": "楞型",
   "app.component.attribute.color": "颜色",
   "app.component.attribute.color.white": "白",
+  "app.component.attribute.color.gold": "金",
   "app.component.attribute.color.black": "黑",
   "app.component.attribute.color.red": "红",
   "app.component.attribute.color.pink": "粉",
@@ -278,6 +282,7 @@
   "app.component.postProcess.foilStamp.color": "颜色",
   "app.component.postProcess.estimatedArea": "预估尺寸",
   "app.component.postProcess.add": "添加后期加工",
+  "app.component.side": "面",
 
   "app.customer.projects.title": "项目列表",
   "app.customer.projects.sortBy": "Sort By",

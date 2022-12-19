@@ -32,6 +32,7 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
 import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
+import ThicknessInput from "../../common/ThicknessInput";
 
 type SleevePostProcessDetail = {
   postProcessName: string;
@@ -156,14 +157,11 @@ const SleeveSubSection = ({
             />
           </ListItem>
           <ListItem>
-            <TextField
-              autoComplete="new-password"
-              label={intl.formatMessage({
-                id: "app.component.attribute.thickness",
-              })}
-              onChange={componentSpecOnChange}
-              name="thickness"
-              value={componentSpec.thickness}
+            <ThicknessInput
+              thickness={componentSpec.thickness || ""}
+              setThickness={(thickness) =>
+                setComponentSpec((prev) => ({ ...prev, thickness }))
+              }
             />
           </ListItem>
           <ListItem>
