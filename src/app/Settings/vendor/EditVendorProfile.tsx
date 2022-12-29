@@ -234,7 +234,7 @@ const EditVendorProfile = () => {
           <TextField
             required
             {...params}
-            label="Country"
+            label={intl.formatMessage({ id: "app.company.attribute.country" })}
             name="country"
             value={vendorData!.country}
             inputProps={{
@@ -400,7 +400,9 @@ const EditVendorProfile = () => {
             <TextField
               required
               {...params}
-              label="Factory locations"
+              label={intl.formatMessage({
+                id: "app.vendor.attribute.locations",
+              })}
               inputProps={{
                 ...params.inputProps,
                 autoComplete: "new-password", // disable autocomplete and autofill
@@ -498,7 +500,9 @@ const EditVendorProfile = () => {
             <TextField
               required
               InputLabelProps={{ shrink: true }}
-              label="Name"
+              label={intl.formatMessage({
+                id: "app.company.attribute.companyName",
+              })}
               name="name"
               value={vendorData!.name}
               onChange={onChange}
@@ -506,7 +510,9 @@ const EditVendorProfile = () => {
             <TextField
               required
               InputLabelProps={{ shrink: true }}
-              label="Contact Email"
+              label={intl.formatMessage({
+                id: "app.company.attribute.contactEmail",
+              })}
               name="contactEmail"
               value={vendorData!.contactEmail}
               onChange={onChange}
@@ -514,21 +520,23 @@ const EditVendorProfile = () => {
             <TextField
               required
               InputLabelProps={{ shrink: true }}
-              label="Phone"
+              label={intl.formatMessage({ id: "app.company.attribute.phone" })}
               name="phone"
               value={vendorData!.phone}
               onChange={onChange}
             />
             <TextField
               InputLabelProps={{ shrink: true }}
-              label="Fax"
+              label={intl.formatMessage({ id: "app.company.attribute.fax" })}
               name="fax"
               value={vendorData!.fax}
               onChange={onChange}
             />
             <TextField
               InputLabelProps={{ shrink: true }}
-              label="URL"
+              label={intl.formatMessage({
+                id: "app.company.attribute.companyUrl",
+              })}
               name="companyUrl"
               value={vendorData!.companyUrl}
               onChange={onChange}

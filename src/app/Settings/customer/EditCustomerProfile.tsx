@@ -29,9 +29,11 @@ import { Country } from "../../Signup/customer/CustomerSignup";
 import { validate } from "email-validator";
 import { useUpdateCustomerInfoMutation } from "../../gql/update/customer/customer.generated";
 import { useGetCustomerDetailQuery } from "../../gql/get/customer/customer.generated";
+import { useIntl } from "react-intl";
 
 /** ADMIN VIEW */
 const EditCustomerProfile = () => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const {
@@ -80,7 +82,7 @@ const EditCustomerProfile = () => {
     if (getCustomerDetailError) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
       setSnackbarOpen(true);
     }
@@ -147,7 +149,7 @@ const EditCustomerProfile = () => {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Country"
+            label={intl.formatMessage({ id: "app.company.attribute.country" })}
             name="country"
             value={customerData!.country}
             inputProps={{
@@ -212,13 +214,13 @@ const EditCustomerProfile = () => {
 
       setSnackbar({
         severity: "success",
-        message: "Company profile updated.",
+        message: intl.formatMessage({ id: "app.general.network.success" }),
       });
       getCustomerDetailRefetch();
     } catch (error) {
       setSnackbar({
         severity: "error",
-        message: "Could not perform action. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
     } finally {
       setSnackbarOpen(true);
@@ -232,7 +234,11 @@ const EditCustomerProfile = () => {
   return (
     <Container>
       {isLoading && <FullScreenLoading />}
-      <Typography variant="h6">Edit Company Profile</Typography>
+      <Typography variant="h6">
+        {intl.formatMessage({
+          id: "app.settings.companySettings.editCompanyProfile",
+        })}
+      </Typography>
 
       {customerData && (
         <>
@@ -240,7 +246,9 @@ const EditCustomerProfile = () => {
             <TextField
               required
               InputLabelProps={{ shrink: true }}
-              label="Name"
+              label={intl.formatMessage({
+                id: "app.company.attribute.companyName",
+              })}
               name="name"
               value={customerData.name}
               onChange={onChange}
@@ -248,7 +256,9 @@ const EditCustomerProfile = () => {
             <TextField
               required
               InputLabelProps={{ shrink: true }}
-              label="Contact Email"
+              label={intl.formatMessage({
+                id: "app.company.attribute.contactEmail",
+              })}
               name="contactEmail"
               value={customerData.contactEmail}
               onChange={onChange}
@@ -256,21 +266,23 @@ const EditCustomerProfile = () => {
             <TextField
               required
               InputLabelProps={{ shrink: true }}
-              label="Phone"
+              label={intl.formatMessage({ id: "app.company.attribute.phone" })}
               name="phone"
               value={customerData.phone}
               onChange={onChange}
             />
             <TextField
               InputLabelProps={{ shrink: true }}
-              label="Fax"
+              label={intl.formatMessage({ id: "app.company.attribute.fax" })}
               name="fax"
               value={customerData.fax}
               onChange={onChange}
             />
             <TextField
               InputLabelProps={{ shrink: true }}
-              label="URL"
+              label={intl.formatMessage({
+                id: "app.company.attribute.companyUrl",
+              })}
               name="companyUrl"
               value={customerData.companyUrl}
               onChange={onChange}
@@ -287,7 +299,7 @@ const EditCustomerProfile = () => {
                 disabled={shouldDisableUpdateButton()}
                 onClick={updateCompanyData}
               >
-                Update
+                {intl.formatMessage({ id: "app.general.update" })}
               </Button>
             </Container>
           </Stack>

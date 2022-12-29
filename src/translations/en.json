@@ -189,7 +189,7 @@
   "app.company.attribute.fax": "Fax",
   "app.company.attribute.country": "Country/Region",
   "app.company.attribute.verified": "Verified",
-  "app.company.attribute.companyUrl": "Company website",
+  "app.company.attribute.companyUrl": "Company Website URL",
   "app.company.attribute.memberSince": "Member since",
 
   "app.vendor.attribute.moq": "Minimum Order Quantity",
