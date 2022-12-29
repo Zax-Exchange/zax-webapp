@@ -158,8 +158,6 @@ const VendorProfile = () => {
       country,
       leadTime,
       locations,
-      moq,
-      products,
     } = vendorData;
     return (
       <Container>
@@ -282,7 +280,7 @@ const VendorProfile = () => {
                     })}
                   </CompanyInfoListItem>
                 }
-                {
+                {/* {
                   <CompanyInfoListItem>
                     {renderTypography(
                       intl.formatMessage({
@@ -311,7 +309,7 @@ const VendorProfile = () => {
                       variant: "caption",
                     })}
                   </CompanyInfoListItem>
-                }
+                } */}
                 {
                   <CompanyInfoListItem>
                     {renderTypography(

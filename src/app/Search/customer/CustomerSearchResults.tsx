@@ -30,6 +30,7 @@ import { useSearchCustomerProjectsLazyQuery } from "../../gql/get/project/projec
 import FullScreenLoading from "../../Utils/Loading";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import SearchCompanyOverview from "./SearchCompanyOverview";
+import { useIntl } from "react-intl";
 
 // Allowed search params, if user tempers the url we will not allow search request to fire
 const allowedParams = {
@@ -59,6 +60,7 @@ const initialFilters = {
 
 // TODO: figure out how to display accurate filters for locations
 const CustomerSearchResults = () => {
+  const intl = useIntl();
   const theme = useTheme();
   // location is used to extract query params
   const location = useLocation();
@@ -299,7 +301,7 @@ const CustomerSearchResults = () => {
           mt={2}
         >
           <Typography variant="subtitle2" textAlign="left">
-            Lead Time
+            {intl.formatMessage({ id: "app.vendor.attribute.leadTime" })}
           </Typography>
           <Typography
             variant="caption"
@@ -387,7 +389,7 @@ const CustomerSearchResults = () => {
           mt={2}
         >
           <Typography variant="subtitle2" textAlign="left">
-            Factory Locations
+            {intl.formatMessage({ id: "app.vendor.attribute.locations" })}
           </Typography>
         </Box>
         <FormGroup>
@@ -431,6 +433,7 @@ const CustomerSearchResults = () => {
     );
   };
 
+  // TODO: finish implementation since moq is now attached to vendor products
   const renderMoqFilters = () => {
     const moqMinOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setFilters({
@@ -483,7 +486,7 @@ const CustomerSearchResults = () => {
           <Box>
             <Box>
               <Box>{renderLeadTimeFilters()}</Box>
-              <Box>{renderMoqFilters()}</Box>
+              {/* <Box>{renderMoqFilters()}</Box> */}
               <Box>{renderFactoryLocationsFilter()}</Box>
             </Box>
           </Box>

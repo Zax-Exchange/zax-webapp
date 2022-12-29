@@ -34,7 +34,11 @@ import React from "react";
 import VendorCheckout from "./VendorCheckout";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
-import { StripePaymentIntent } from "../../../generated/graphql";
+import {
+  ProductAndMoq,
+  ProductAndMoqInput,
+  StripePaymentIntent,
+} from "../../../generated/graphql";
 import { useIntl } from "react-intl";
 import { useCreateStripeCustomerInStripeForVendorMutation } from "../../gql/create/company/company.generated";
 import JoinOrCreateCompany from "../JoinOrCreateCompany";
@@ -52,8 +56,7 @@ export type VendorSignupData = {
   isVerified: boolean;
   leadTime: string;
   locations: string[];
-  moq: string;
-  products: string[];
+  productsAndMoq: ProductAndMoqInput[];
   companyUrl: string;
   planId: string;
   userEmail: string;
@@ -127,17 +130,11 @@ const VendorSignup = () => {
     isVerified: false,
     leadTime: "",
     locations: [],
-    moq: "",
-    products: [],
+    productsAndMoq: [{ product: "", moq: "" }],
     companyUrl: "",
     planId: "",
     userEmail: "",
   } as VendorSignupData);
-
-  const [moqDetail, setMoqDetail] = useState({
-    min: "",
-    max: "",
-  } as MoqDetail);
 
   const [stripePaymentIntent, setStripePaymentIntent] = useState({
     customerId: "",
@@ -219,17 +216,41 @@ const VendorSignup = () => {
     });
   };
 
-  // used for determining if we should disable next button
-  const validateInputs = (fields: string[]) => {
-    for (let field of fields) {
-      if (field === "moq") {
-        if (moqDetail.min === "" || moqDetail.max === "") return false;
+  const deleteProductsAndMoq = (ind: number) => {
+    setValues((prev) => {
+      const allProductsAndMoq = [...prev.productsAndMoq];
+      allProductsAndMoq!.splice(ind, 1);
+      return {
+        ...prev,
+        productsAndMoq: allProductsAndMoq,
+      };
+    });
+  };
 
-        if (
-          parseInt(moqDetail.min as string, 10) >
-          parseInt(moqDetail.max as string, 10)
-        )
-          return false;
+  const addProductsAndMoq = () => {
+    const prevProductsAndMoq = [...values.productsAndMoq];
+    setValues((prev) => {
+      return {
+        ...prev,
+        productsAndMoq: [
+          ...prevProductsAndMoq,
+          {
+            product: "",
+            moq: "",
+          },
+        ],
+      };
+    });
+  };
+
+  // used for determining if we should disable next button
+  const validateInputs = (fields: (keyof VendorSignupData)[]) => {
+    for (let field of fields) {
+      if (field === "productsAndMoq") {
+        for (let productAndMoq of values.productsAndMoq) {
+          if (productAndMoq.moq === "" || productAndMoq.product === "")
+            return false;
+        }
         continue;
       }
       const val = values[field as keyof VendorSignupData];
@@ -249,7 +270,6 @@ const VendorSignup = () => {
     } else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
       setValues({
         ...values,
-        moq: [moqDetail.min, moqDetail.max].join("-"),
       });
       setCurrentPage(VendorSignupPage.COMPANY_SIZE_PAGE);
     } else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
@@ -418,11 +438,11 @@ const VendorSignup = () => {
             setValues={setValues}
             onChange={onChange}
             setShouldDisableNext={setShouldDisableNext}
-            setMoqDetail={setMoqDetail}
-            moqDetail={moqDetail}
+            addProductsAndMoq={addProductsAndMoq}
+            deleteProductsAndMoq={deleteProductsAndMoq}
           />
           {renderNavigationButtons(
-            validateInputs(["leadTime", "moq", "products", "locations"])
+            validateInputs(["leadTime", "productsAndMoq", "locations"])
           )}
         </>
       );

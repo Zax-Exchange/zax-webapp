@@ -1,10 +1,23 @@
-import { Autocomplete, Box, Stack, TextField, Typography } from "@mui/material";
+import { Cancel } from "@mui/icons-material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { useState } from "react";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../type/common";
 import { countries } from "../../constants/countries";
-import { ALL_PRODUCT_NAMES } from "../../constants/products";
+import {
+  ALL_PRODUCT_NAMES,
+  productValueToLabelMap,
+} from "../../constants/products";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import { Country } from "../customer/CustomerSignup";
 import { MoqDetail, VendorSignupData } from "./VendorSignup";
@@ -14,63 +27,24 @@ const VendorInfo = ({
   setValues,
   onChange,
   setShouldDisableNext,
-  setMoqDetail,
-  moqDetail,
+  addProductsAndMoq,
+  deleteProductsAndMoq,
 }: {
   values: VendorSignupData;
   setValues: React.Dispatch<React.SetStateAction<VendorSignupData>>;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
-  setMoqDetail: React.Dispatch<React.SetStateAction<MoqDetail>>;
-  moqDetail: MoqDetail;
+  addProductsAndMoq: () => void;
+  deleteProductsAndMoq: (ind: number) => void;
 }) => {
   const intl = useIntl();
-  const [product, setProduct] = useState("");
-
+  console.log(values.productsAndMoq);
   const locationOnChange = (locations: { label: string }[]) => {
     const locationLabels = locations.map((l) => l.label);
     setValues({
       ...values,
       locations: locationLabels,
     });
-  };
-
-  // used for controlling products input to now allow characters other than alphanumeric and white space chars
-  const productOnChange = (e: any) => {
-    const val = e.target.value || "";
-
-    if (isValidAlphanumeric(val)) {
-      setProduct(val);
-    }
-  };
-
-  const addProduct = (value: TranslatableAttribute[]) => {
-    const products = [...value].map((v) => v.value);
-    setValues({
-      ...values,
-      products,
-    });
-    setProduct("");
-  };
-
-  const moqOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-    switch (e.target.name) {
-      case "min":
-      case "max":
-        isAllowed = isValidInt(val);
-        break;
-      default:
-        break;
-    }
-
-    if (isAllowed) {
-      setMoqDetail({
-        ...moqDetail,
-        [e.target.name]: val,
-      });
-    }
   };
 
   const renderFactoryLocationDropdown = () => {
@@ -122,30 +96,63 @@ const VendorInfo = ({
     );
   };
 
-  const renderProductsropdown = () => {
+  const productMoqOnChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ind: number
+  ) => {
+    const val = e.target.value;
+    const isAllowed = isValidInt(val);
+    if (isAllowed) {
+      const prevProductAndMoq = values.productsAndMoq[ind];
+      prevProductAndMoq.moq = val;
+      const allProductsAndMoq = [...values.productsAndMoq];
+      allProductsAndMoq.splice(ind, 1, prevProductAndMoq);
+      setValues((prev) => ({
+        ...prev,
+        productsAndMoq: [...allProductsAndMoq],
+      }));
+    }
+  };
+
+  const renderProductsropdown = (ind: number) => {
+    const product = values.productsAndMoq[ind].product;
     return (
       <Autocomplete
-        id="products-select"
+        id={`productsAndMoqDropdown-${ind}`}
         sx={{ width: 400 }}
         options={ALL_PRODUCT_NAMES}
         getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
-        inputValue={product}
-        onChange={(e, v) => addProduct(v)}
-        disableCloseOnSelect
-        multiple
+        value={product ? productValueToLabelMap[product] : null}
+        getOptionDisabled={(option) => {
+          for (let produtcAndMoq of values.productsAndMoq) {
+            if (option.value === produtcAndMoq.product) return true;
+          }
+          return false;
+        }}
+        onChange={(e, v) => {
+          const productAndMoq = [...values.productsAndMoq][ind];
+
+          if (!v) {
+            productAndMoq.product = "";
+          } else {
+            productAndMoq.product = v.value;
+          }
+          const allProductsAndMoq = [...values.productsAndMoq];
+          allProductsAndMoq.splice(ind, 1, productAndMoq);
+          setValues((prev) => ({
+            ...prev,
+            productsAndMoq: [...allProductsAndMoq],
+          }));
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
             label={intl.formatMessage({ id: "app.vendor.attribute.products" })}
-            value={product}
             inputProps={{
               ...params.inputProps,
               autoComplete: "new-password",
             }}
-            helperText={intl.formatMessage({
-              id: "app.signup.vendorInfo.products.helperText",
-            })}
             InputLabelProps={{
               sx: {
                 fontSize: 16,
@@ -174,28 +181,39 @@ const VendorInfo = ({
           value={values.leadTime}
           onChange={onChange}
         ></TextField>
-
-        <Box display="flex">
-          <TextField
-            sx={{ mr: 2, flexBasis: "35%" }}
-            label={intl.formatMessage({ id: "app.vendor.attribute.moq.min" })}
-            name="min"
-            value={moqDetail.min}
-            onChange={moqOnChange}
-            helperText="e.g. 5000"
-          ></TextField>
-          <TextField
-            sx={{ flexBasis: "35%" }}
-            label={intl.formatMessage({ id: "app.vendor.attribute.moq.max" })}
-            name="max"
-            value={moqDetail.max}
-            onChange={moqOnChange}
-            helperText="e.g. 10000"
-          ></TextField>
-        </Box>
-
-        {renderProductsropdown()}
         {renderFactoryLocationDropdown()}
+
+        <Box display="flex" flexDirection="column">
+          {values.productsAndMoq.map((productAndMoq, i) => {
+            return (
+              <Box display="flex" mb={5} key={i}>
+                <Box mr={2}>{renderProductsropdown(i)}</Box>
+                <TextField
+                  label={intl.formatMessage({
+                    id: "app.vendor.attribute.moq",
+                  })}
+                  type="text"
+                  name="moq"
+                  value={productAndMoq.moq}
+                  onChange={(e) => productMoqOnChange(e, i)}
+                  sx={{ mr: 2 }}
+                />
+                {i !== 0 && (
+                  <IconButton onClick={() => deleteProductsAndMoq(i)}>
+                    <Cancel />
+                  </IconButton>
+                )}
+              </Box>
+            );
+          })}
+          {
+            <Box display="flex">
+              <Button variant="outlined" onClick={addProductsAndMoq}>
+                {intl.formatMessage({ id: "app.general.addMore" })}
+              </Button>
+            </Box>
+          }
+        </Box>
       </Stack>
     </>
   );

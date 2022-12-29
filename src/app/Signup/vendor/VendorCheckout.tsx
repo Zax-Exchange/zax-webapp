@@ -58,6 +58,12 @@ const VendorCheckout = ({
     }
   }, [stripe, elements]);
 
+  useEffect(() => {
+    if (paymentSuccess) {
+      createVendor();
+    }
+  }, [paymentSuccess]);
+
   const createVendor = async () => {
     if (paymentSuccess) {
       try {
@@ -102,7 +108,6 @@ const VendorCheckout = ({
           throw error;
         } else {
           setPaymentSuccess(true);
-          await createVendor();
         }
       } else if (paymentSuccess) {
         await createVendor();

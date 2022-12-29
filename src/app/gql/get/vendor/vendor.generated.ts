@@ -12,7 +12,7 @@ export type GetVendorDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorDetailQuery = { __typename?: 'Query', getVendorDetail?: { __typename?: 'VendorDetail', id: string, name: string, contactEmail: string, phone: string, logo?: string | null, country: string, isActive: boolean, companyUrl?: string | null, fax?: string | null, isVerified: boolean, locations: Array<string>, products: Array<string>, moq: string, leadTime: number } | null };
+export type GetVendorDetailQuery = { __typename?: 'Query', getVendorDetail?: { __typename?: 'VendorDetail', id: string, name: string, contactEmail: string, phone: string, logo?: string | null, country: string, isActive: boolean, companyUrl?: string | null, fax?: string | null, isVerified: boolean, locations: Array<string>, leadTime: number, productsAndMoq: Array<{ __typename?: 'ProductAndMoq', product: string, moq: string }> } | null };
 
 export type GetVendorProjectQueryVariables = Types.Exact<{
   data: Types.GetVendorProjectInput;
@@ -47,7 +47,7 @@ export type SearchVendorCompaniesQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, moq: string, leadTime: number }> };
+export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, leadTime: number }> };
 
 export type GetVendorPosQueryVariables = Types.Exact<{
   data: Types.GetVendorPosInput;
@@ -78,8 +78,10 @@ export const GetVendorDetailDocument = gql`
     fax
     isVerified
     locations
-    products
-    moq
+    productsAndMoq {
+      product
+      moq
+    }
     leadTime
   }
 }
@@ -304,7 +306,6 @@ export const SearchVendorCompaniesDocument = gql`
     isVerified
     locations
     products
-    moq
     leadTime
   }
 }

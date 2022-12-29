@@ -21,6 +21,7 @@ import styled from "@emotion/styled";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useNavigate } from "react-router-dom";
+import { useIntl } from "react-intl";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -36,6 +37,7 @@ const SearchCompanyOverview = ({
 }: {
   companyData: VendorOverview;
 }) => {
+  const intl = useIntl();
   const navigate = useNavigate();
   const openVendorDetail = () => {
     const dest = CUSTOMER_ROUTES.VENDOR_PROFILE.split(":");
@@ -77,16 +79,17 @@ const SearchCompanyOverview = ({
                     <AccessTimeIcon />
                   </Tooltip>
                   <Typography variant="caption">
-                    {companyData.leadTime} Months
+                    {companyData.leadTime}{" "}
+                    {intl.formatMessage({ id: "app.general.month" })}
                   </Typography>
                 </ProjectOverviewListItem>
 
-                <ProjectOverviewListItem>
+                {/* <ProjectOverviewListItem>
                   <Tooltip title="MOQ Range" arrow placement="top">
                     <TimelineIcon />
                   </Tooltip>
                   <Typography variant="caption">{companyData.moq}</Typography>
-                </ProjectOverviewListItem>
+                </ProjectOverviewListItem> */}
               </List>
             </Container>
           </CardContent>

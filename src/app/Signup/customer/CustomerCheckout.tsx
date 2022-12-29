@@ -57,6 +57,12 @@ const CustomerCheckout = ({
     }
   }, [stripe, elements]);
 
+  useEffect(() => {
+    if (paymentSuccess) {
+      createCustomer();
+    }
+  }, [paymentSuccess]);
+
   const createCustomer = async () => {
     if (paymentSuccess) {
       try {
@@ -100,7 +106,6 @@ const CustomerCheckout = ({
           throw error;
         } else {
           setPaymentSuccess(true);
-          await createCustomer();
         }
       } else if (paymentSuccess) {
         await createCustomer();

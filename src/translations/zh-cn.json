@@ -194,6 +194,7 @@
   "app.vendor.attribute.moq.max": "MOQ max",
   "app.vendor.attribute.leadTime": "项目用时",
   "app.vendor.attribute.products": "生产产品",
+  "app.vendor.attribute.productsAndMoq": "产品与最低订单数",
   "app.vendor.attribute.locations": "工厂地点",
   "app.plan.attribute.tier.premium": "Premium",
   "app.plan.attribute.tier.business": "Business",
@@ -391,8 +392,8 @@
   "app.vendor.projectDetail.resubmitBid": "重新提交",
   "app.vendor.projectDetail.editBid": "编辑竞标",
   
-  "app.vendor.guestProject.create": "生成项目链接",
-  "app.vendor.guestProject.modal.title": "发送项目链接",
+  "app.vendor.guestProject.create": "生成项目表格",
+  "app.vendor.guestProject.modal.title": "发送项目表格链接",
   "app.vendor.guestProject.linkSent": "链接已发送",
 
   "app.guestProject.created": "您的项目已被创建并发送给厂商，您现在可以关闭此窗口。",

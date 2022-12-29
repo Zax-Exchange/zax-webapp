@@ -198,6 +198,7 @@
   "app.vendor.attribute.leadTime": "Lead Time",
   "app.vendor.attribute.products": "Manufacturing Products",
   "app.vendor.attribute.locations": "Factory Locations",
+  "app.vendor.attribute.productsAndMoq": "Product And MOQ",
   "app.plan.attribute.tier.premium": "Premium",
   "app.plan.attribute.tier.business": "Business",
 
@@ -395,8 +396,8 @@
   "app.vendor.projectDetail.resubmitBid": "Resubmit Your Bid",
   "app.vendor.projectDetail.editBid": "Edit Bid",
   
-  "app.vendor.guestProject.create": "Generate Project Link",
-  "app.vendor.guestProject.modal.title": "Send Project Creation Link",
+  "app.vendor.guestProject.create": "Generate Project Form",
+  "app.vendor.guestProject.modal.title": "Send Project Form Link",
   "app.vendor.guestProject.linkSent": "Project link sent successfully!",
 
   "app.guestProject.created": "Your project has been created and sent to the vendor! You can close this window now.",

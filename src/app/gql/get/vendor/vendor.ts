@@ -18,8 +18,10 @@ const GET_VENDOR_DETAIL = gql`
       fax
       isVerified
       locations
-      products
-      moq
+      productsAndMoq {
+        product
+        moq
+      }
       leadTime
     }
   }
@@ -110,7 +112,6 @@ const SEARCH_VENDOR_COMPANIES = gql`
       isVerified
       locations
       products
-      moq
       leadTime
     }
   }

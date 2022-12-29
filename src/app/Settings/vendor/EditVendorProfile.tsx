@@ -69,8 +69,6 @@ const EditVendorProfile = () => {
         fax,
         leadTime,
         locations,
-        products,
-        moq,
       } = getVendorDetailData.getVendorDetail;
       setVendorData({
         companyId: user!.companyId,
@@ -83,8 +81,8 @@ const EditVendorProfile = () => {
         fax,
         leadTime,
         locations,
-        products,
-        moq,
+        products: [],
+        moq: "",
       });
     }
   }, [getVendorDetailData]);

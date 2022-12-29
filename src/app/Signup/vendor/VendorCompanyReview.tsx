@@ -1,4 +1,14 @@
-import { Container, List, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  List,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { useIntl } from "react-intl";
 import { productValueToLabelMap } from "../../constants/products";
@@ -103,23 +113,43 @@ const VendorCompanyReview = ({
           </ListItem>
           <ListItem>
             <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.vendor.attribute.moq" })}
+              {intl.formatMessage({
+                id: "app.vendor.attribute.productsAndMoq",
+              })}
             </Typography>
-            <Typography variant="caption">{values.moq}</Typography>
-          </ListItem>
-          <ListItem>
-            <Typography variant="subtitle2">
-              {intl.formatMessage({ id: "app.vendor.attribute.products" })}
-            </Typography>
-            <Typography variant="caption">
-              {values.products
-                .map((product) => {
-                  return intl.formatMessage({
-                    id: productValueToLabelMap[product].labelId,
-                  });
-                })
-                .join(",")}
-            </Typography>
+            <Box display="flex" flexDirection="column">
+              <TableContainer>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      {intl.formatMessage({
+                        id: "app.component.attribute.product",
+                      })}
+                    </TableCell>
+                    <TableCell>
+                      {intl.formatMessage({
+                        id: "app.vendor.attribute.moq",
+                      })}
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {values.productsAndMoq.map((productAndMoq) => {
+                    return (
+                      <TableRow>
+                        <TableCell>
+                          {intl.formatMessage({
+                            id: productValueToLabelMap[productAndMoq.product]
+                              .labelId,
+                          })}
+                        </TableCell>
+                        <TableCell>{productAndMoq.moq}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </TableContainer>
+            </Box>
           </ListItem>
 
           {plan && (
