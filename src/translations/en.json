@@ -193,8 +193,6 @@
   "app.company.attribute.memberSince": "Member since",
 
   "app.vendor.attribute.moq": "Minimum Order Quantity",
-  "app.vendor.attribute.moq.min": "MOQ min",
-  "app.vendor.attribute.moq.max": "MOQ max",
   "app.vendor.attribute.leadTime": "Lead Time",
   "app.vendor.attribute.products": "Manufacturing Products",
   "app.vendor.attribute.locations": "Factory Locations",
@@ -412,11 +410,12 @@
   "app.search.resultsTitle": "Search Results",
   "app.search.noResults": "Sorry, but we could not find any projects based on your search terms. Try searching for other products!",
 
+
   "app.settings.accountSettings": "Account Settings",
   "app.settings.accountSettings.changePassword": "Change Password",
   
   "app.settings.manageBillingInfo": "Manage Subscription/Billing",
-   "app.settings.manageBillingInfo.viewStatements": "Subscription & Billing",
+  "app.settings.manageBillingInfo.viewStatements": "Subscription & Billing",
   "app.settings.companySettings": "Company Settings",
   "app.settings.companySettings.editCompanyProfile": "Edit Company Profile",
 

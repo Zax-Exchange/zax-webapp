@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  IconButton,
   Stack,
   TextField,
   Typography,
@@ -21,10 +22,18 @@ import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
 import { validate } from "email-validator";
 import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.generated";
-import { UpdateVendorInfoInput } from "../../../generated/graphql";
-import { ALL_PRODUCT_NAMES } from "../../constants/products";
+import {
+  ProductAndMoq,
+  ProductAndMoqInput,
+  UpdateVendorInfoInput,
+} from "../../../generated/graphql";
+import {
+  ALL_PRODUCT_NAMES,
+  productValueToLabelMap,
+} from "../../constants/products";
 import { TranslatableAttribute } from "../../../type/common";
 import { useIntl } from "react-intl";
+import { Cancel } from "@mui/icons-material";
 
 /** ADMIN VIEW */
 const EditVendorProfile = () => {
@@ -69,7 +78,9 @@ const EditVendorProfile = () => {
         fax,
         leadTime,
         locations,
+        productsAndMoq,
       } = getVendorDetailData.getVendorDetail;
+
       setVendorData({
         companyId: user!.companyId,
         name,
@@ -81,8 +92,10 @@ const EditVendorProfile = () => {
         fax,
         leadTime,
         locations,
-        products: [],
-        moq: "",
+        productsAndMoq: productsAndMoq.map((productAndMoq) => ({
+          product: productAndMoq.product,
+          moq: productAndMoq.moq,
+        })),
       });
     }
   }, [getVendorDetailData]);
@@ -91,7 +104,7 @@ const EditVendorProfile = () => {
     if (getVendorDetailError) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
       setSnackbarOpen(true);
     }
@@ -126,6 +139,26 @@ const EditVendorProfile = () => {
     }
   };
 
+  const productMoqOnChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ind: number
+  ) => {
+    if (!vendorData) return;
+
+    const val = e.target.value;
+    const isAllowed = isValidInt(val);
+    if (isAllowed) {
+      const prevProductAndMoq = vendorData.productsAndMoq[ind];
+      prevProductAndMoq.moq = val;
+      const allProductsAndMoq = [...vendorData.productsAndMoq];
+      allProductsAndMoq.splice(ind, 1, prevProductAndMoq);
+      setVendorData((prev) => ({
+        ...prev!,
+        productsAndMoq: [...allProductsAndMoq],
+      }));
+    }
+  };
+
   const countryOnChange = (v: Country | null) => {
     // v could be null if user clears input field
     const country = v ? v.label : vendorData!.country;
@@ -135,20 +168,38 @@ const EditVendorProfile = () => {
     });
   };
 
-  const productOnChange = (productsList: TranslatableAttribute[]) => {
-    const products = productsList.map((p) => p.value);
-
-    setVendorData({
-      ...vendorData!,
-      products,
-    });
-  };
-
   const locationOnChange = (locations: { label: string }[]) => {
     const locationLabels = locations.map((l) => l.label);
     setVendorData({
       ...vendorData!,
       locations: locationLabels,
+    });
+  };
+
+  const deleteProductsAndMoq = (ind: number) => {
+    setVendorData((prev) => {
+      const allProductsAndMoq = [...prev!.productsAndMoq];
+      allProductsAndMoq!.splice(ind, 1);
+      return {
+        ...prev!,
+        productsAndMoq: allProductsAndMoq,
+      };
+    });
+  };
+
+  const addProductsAndMoq = () => {
+    const prevProductsAndMoq = [...vendorData!.productsAndMoq];
+    setVendorData((prev) => {
+      return {
+        ...prev!,
+        productsAndMoq: [
+          ...prevProductsAndMoq,
+          {
+            product: "",
+            moq: "",
+          },
+        ],
+      };
     });
   };
 
@@ -181,6 +232,7 @@ const EditVendorProfile = () => {
         )}
         renderInput={(params) => (
           <TextField
+            required
             {...params}
             label="Country"
             name="country"
@@ -197,72 +249,105 @@ const EditVendorProfile = () => {
 
   const shouldDisableUpdateButton = () => {
     // common non-required attributes
-    const isRequired = (field: string) => {
+    const isRequired = (field: keyof UpdateVendorInfoInput) => {
       switch (field) {
         case "contactEmail":
         case "name":
         case "phone":
         case "country":
-        case "products":
         case "locations":
-        case "moq":
         case "leadTime":
+        case "productsAndMoq":
           return true;
       }
       return false;
     };
 
     const isValid = (
-      field: string,
-      fieldValue: boolean | string | number | string[] | undefined | null
+      field: keyof UpdateVendorInfoInput,
+      fieldValue:
+        | boolean
+        | string
+        | number
+        | string[]
+        | ProductAndMoqInput[]
+        | undefined
+        | null
     ) => {
       switch (field) {
         case "contactEmail":
           return validate(fieldValue as string);
         case "name":
-        case "moq":
         case "phone":
         case "country":
         case "leadTime":
           return !!fieldValue;
-        case "products":
         case "locations":
-          return (fieldValue as string[]).length;
+          return !!(fieldValue as string[]).length;
+        case "productsAndMoq":
+          return (fieldValue as ProductAndMoqInput[]).every(
+            (productAndMoq) => !!productAndMoq.product && !!productAndMoq.moq
+          );
       }
       return false;
     };
 
     for (let key in vendorData) {
-      const fieldValue = vendorData![key as keyof UpdateVendorInfoInput];
-      if (isRequired(key) && !isValid(key, fieldValue)) return true;
+      const attr = key as keyof UpdateVendorInfoInput;
+      const fieldValue = vendorData![attr];
+
+      if (isRequired(attr) && !isValid(attr, fieldValue)) return true;
     }
 
     return false;
   };
 
   const renderVendorUpdateForm = () => {
-    const renderProductsDropdown = () => {
+    if (!vendorData) return null;
+    const renderProductsDropdown = (ind: number) => {
+      const product = vendorData.productsAndMoq[ind].product;
       return (
         <Autocomplete
-          id="products-select"
+          id={`productsAndMoqDropdown-${ind}`}
           sx={{ width: 400 }}
           options={ALL_PRODUCT_NAMES}
           getOptionLabel={(option) =>
             intl.formatMessage({ id: option.labelId })
           }
           autoHighlight
-          defaultValue={[...getDefaultManufacturingProducts()]}
-          onChange={(e, v) => productOnChange(v)}
-          multiple
+          value={product ? productValueToLabelMap[product] : null}
+          getOptionDisabled={(option) => {
+            for (let produtcAndMoq of vendorData.productsAndMoq) {
+              if (option.value === produtcAndMoq.product) return true;
+            }
+            return false;
+          }}
+          onChange={(e, v) => {
+            const productAndMoq = [...vendorData.productsAndMoq][ind];
+
+            if (!v) {
+              productAndMoq.product = "";
+            } else {
+              productAndMoq.product = v.value;
+            }
+            const allProductsAndMoq = [...vendorData.productsAndMoq];
+            allProductsAndMoq.splice(ind, 1, productAndMoq);
+            setVendorData((prev) => ({
+              ...prev!,
+              productsAndMoq: [...allProductsAndMoq],
+            }));
+          }}
           renderInput={(params) => (
             <TextField
+              required
               {...params}
-              label="Manufacturing products"
+              label={intl.formatMessage({
+                id: "app.vendor.attribute.products",
+              })}
               inputProps={{
                 ...params.inputProps,
                 autoComplete: "new-password",
               }}
-              helperText="This helps customers to find your company easier."
               InputLabelProps={{
                 sx: {
                   fontSize: 16,
@@ -275,17 +360,6 @@ const EditVendorProfile = () => {
       );
     };
 
-    const getDefaultManufacturingProducts = () => {
-      const res = [];
-      for (let p of ALL_PRODUCT_NAMES) {
-        for (let vendorProduct of vendorData!.products) {
-          if (p.value === vendorProduct) {
-            res.push(p);
-          }
-        }
-      }
-      return res;
-    };
     const getDefaultCompanyLocations = () => {
       const res = [];
       for (let country of countries) {
@@ -324,6 +398,7 @@ const EditVendorProfile = () => {
           )}
           renderInput={(params) => (
             <TextField
+              required
               {...params}
               label="Factory locations"
               inputProps={{
@@ -339,22 +414,42 @@ const EditVendorProfile = () => {
     return (
       <>
         <TextField
+          required
           InputLabelProps={{ shrink: true }}
-          label="Lead time"
+          label={intl.formatMessage({ id: "app.vendor.attribute.leadTime" })}
           name="leadTime"
           value={vendorData!.leadTime}
           onChange={onChange}
         />
-        <TextField
-          InputLabelProps={{ shrink: true }}
-          label="Minimum order quantity"
-          name="moq"
-          value={vendorData!.moq}
-          onChange={onChange}
-          helperText="e.g. 5000-10000, 6000-8000"
-        />
-        {renderProductsDropdown()}
         {renderFactoryLocationDropdown()}
+        {vendorData.productsAndMoq.map((productAndMoq, i) => {
+          return (
+            <Box display="flex" mb={5} key={i}>
+              <Box mr={2}>{renderProductsDropdown(i)}</Box>
+              <TextField
+                required
+                label={intl.formatMessage({
+                  id: "app.vendor.attribute.moq",
+                })}
+                type="text"
+                name="moq"
+                value={productAndMoq.moq}
+                onChange={(e) => productMoqOnChange(e, i)}
+                sx={{ mr: 2 }}
+              />
+              {i !== 0 && (
+                <IconButton onClick={() => deleteProductsAndMoq(i)}>
+                  <Cancel />
+                </IconButton>
+              )}
+            </Box>
+          );
+        })}
+        <Box display="flex">
+          <Button variant="outlined" onClick={addProductsAndMoq}>
+            {intl.formatMessage({ id: "app.general.addMore" })}
+          </Button>
+        </Box>
       </>
     );
   };
@@ -371,13 +466,13 @@ const EditVendorProfile = () => {
       });
       setSnackbar({
         severity: "success",
-        message: "Company profile updated.",
+        message: intl.formatMessage({ id: "app.general.network.success" }),
       });
       getVendorDetailRefetch();
     } catch (error) {
       setSnackbar({
         severity: "error",
-        message: "Could not perform action. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
     } finally {
       setSnackbarOpen(true);
@@ -391,7 +486,11 @@ const EditVendorProfile = () => {
   return (
     <Container>
       {isLoading && <FullScreenLoading />}
-      <Typography variant="h6">Edit Company Profile</Typography>
+      <Typography variant="h6">
+        {intl.formatMessage({
+          id: "app.settings.companySettings.editCompanyProfile",
+        })}
+      </Typography>
 
       {vendorData && (
         <>
@@ -450,7 +549,7 @@ const EditVendorProfile = () => {
                 disabled={shouldDisableUpdateButton()}
                 onClick={updateCompanyData}
               >
-                Update
+                {intl.formatMessage({ id: "app.general.update" })}
               </Button>
             </Container>
           </Stack>

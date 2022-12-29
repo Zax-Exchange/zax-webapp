@@ -38,7 +38,7 @@ const VendorInfo = ({
   deleteProductsAndMoq: (ind: number) => void;
 }) => {
   const intl = useIntl();
-  console.log(values.productsAndMoq);
+
   const locationOnChange = (locations: { label: string }[]) => {
     const locationLabels = locations.map((l) => l.label);
     setValues({
@@ -114,7 +114,7 @@ const VendorInfo = ({
     }
   };
 
-  const renderProductsropdown = (ind: number) => {
+  const renderProductsDropdown = (ind: number) => {
     const product = values.productsAndMoq[ind].product;
     return (
       <Autocomplete
@@ -187,7 +187,7 @@ const VendorInfo = ({
           {values.productsAndMoq.map((productAndMoq, i) => {
             return (
               <Box display="flex" mb={5} key={i}>
-                <Box mr={2}>{renderProductsropdown(i)}</Box>
+                <Box mr={2}>{renderProductsDropdown(i)}</Box>
                 <TextField
                   label={intl.formatMessage({
                     id: "app.vendor.attribute.moq",

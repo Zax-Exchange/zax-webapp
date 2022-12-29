@@ -1618,10 +1618,9 @@ export type UpdateVendorInfoInput = {
   leadTime: Scalars['Int'];
   locations: Array<Scalars['String']>;
   logo?: InputMaybe<Scalars['String']>;
-  moq: Scalars['String'];
   name: Scalars['String'];
   phone: Scalars['String'];
-  products: Array<Scalars['String']>;
+  productsAndMoq: Array<ProductAndMoqInput>;
 };
 
 export type UserInterface = {
