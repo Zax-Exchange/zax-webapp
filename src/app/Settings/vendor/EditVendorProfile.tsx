@@ -554,6 +554,7 @@ const EditVendorProfile = () => {
               disableGutters
             >
               <Button
+                variant="outlined"
                 disabled={shouldDisableUpdateButton()}
                 onClick={updateCompanyData}
               >

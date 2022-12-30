@@ -148,6 +148,7 @@ const EditCustomerProfile = () => {
         )}
         renderInput={(params) => (
           <TextField
+            required
             {...params}
             label={intl.formatMessage({ id: "app.company.attribute.country" })}
             name="country"
@@ -296,6 +297,7 @@ const EditCustomerProfile = () => {
               disableGutters
             >
               <Button
+                variant="outlined"
                 disabled={shouldDisableUpdateButton()}
                 onClick={updateCompanyData}
               >

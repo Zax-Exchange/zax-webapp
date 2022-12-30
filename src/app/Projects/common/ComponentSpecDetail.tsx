@@ -374,7 +374,9 @@ export default function ComponentSpecDetail({
                       id: productValueToLabelMap[process.postProcessName]
                         .labelId,
                     })}
-                    {process.numberOfColors
+                    {!!process.numberOfColors &&
+                    !!process.numberOfColors.c &&
+                    !!process.numberOfColors.t
                       ? ` ${intl.formatMessage({
                           id: "app.component.postProcess.printing.numberOfColors",
                         })}: ${process.numberOfColors.c}/${

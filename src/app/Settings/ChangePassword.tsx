@@ -8,12 +8,14 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useContext, useState } from "react";
+import { useIntl } from "react-intl";
 import { AuthContext } from "../../context/AuthContext";
 import { useUpdateUserPasswordMutation } from "../gql/update/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 
 const ChangePassword = () => {
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [
@@ -67,12 +69,18 @@ const ChangePassword = () => {
     <Container>
       {updateUserPasswordLoading && <FullScreenLoading />}
 
-      <Typography variant="h6">Change password</Typography>
+      <Typography variant="h6">
+        {intl.formatMessage({
+          id: "app.settings.accountSettings.changePassword",
+        })}
+      </Typography>
       <Stack spacing={4} sx={{ marginTop: 2 }}>
         <TextField
           required
           type="password"
-          label="Current password"
+          label={intl.formatMessage({
+            id: "app.settings.accountSettings.changePassword.currentPassword",
+          })}
           value={currentPassword}
           onChange={currentPasswordOnChange}
         />
@@ -80,7 +88,9 @@ const ChangePassword = () => {
         <TextField
           required
           type="password"
-          label="New password"
+          label={intl.formatMessage({
+            id: "app.settings.accountSettings.changePassword.newPassword",
+          })}
           value={newPassword}
           onChange={newPasswordOnChange}
         />
@@ -93,7 +103,7 @@ const ChangePassword = () => {
             disabled={!newPassword || !currentPassword}
             onClick={updatePassword}
           >
-            Update Password
+            {intl.formatMessage({ id: "app.general.update" })}
           </Button>
         </Container>
       </Stack>

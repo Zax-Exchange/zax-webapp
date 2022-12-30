@@ -174,7 +174,6 @@
   "app.product.name.corrugateBox": "Corrugate Box",
   "app.product.name.paperTube": "Paper Tube",
   "app.product.name.sticker": "Sticker",
-  "app.product.name.printing": "Printing",
   "app.product.name.moldedFiberTray": "Molded Fiber Tray",
   "app.product.name.paperTray": "Paper Tray",
   "app.product.name.corrugateTray": "Corrugate Tray",
@@ -413,7 +412,8 @@
 
   "app.settings.accountSettings": "Account Settings",
   "app.settings.accountSettings.changePassword": "Change Password",
-  
+  "app.settings.accountSettings.changePassword.currentPassword": "Current Password",
+  "app.settings.accountSettings.changePassword.newPassword": "New Password",
   "app.settings.manageBillingInfo": "Manage Subscription/Billing",
   "app.settings.manageBillingInfo.viewStatements": "Subscription & Billing",
   "app.settings.companySettings": "Company Settings",

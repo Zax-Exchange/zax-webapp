@@ -410,7 +410,9 @@
 
   "app.settings.accountSettings": "账号设置",
   "app.settings.accountSettings.changePassword": "更改密码",
-  
+  "app.settings.accountSettings.changePassword.currentPassword": "原本密码",
+  "app.settings.accountSettings.changePassword.newPassword": "新密码",
+
   "app.settings.manageBillingInfo": "管理订阅/账单信息",
    "app.settings.manageBillingInfo.viewStatements": "订阅以及账单",
   "app.settings.companySettings": "企业设置",
@@ -423,7 +425,7 @@
   "app.settings.manageCompanyUsers.manageInvitations.pendingRequests": "待办加入请求",
   "app.settings.manageCompanyUsers.manageInvitations.noPendingRequests": "暂无加入请求",
   "app.settings.manageCompanyUsers.manageInvitations.acceptAll": "接受并发送邀请链接",
-  "app.settings.manageCompanyUsers.manageInvitations.declineAll": "拒绝并移除请求",
+  "app.settings.manageCompanyUsers.manageInvitations.declineAll": "拒绝并移除",
   "app.settings.manageCompanyUsers.manageInvitations.invitationSent": "已发送邀请链接",
   "app.settings.manageCompanyUsers.deactivateUsers": "停用用户",
   "app.settings.manageCompanyUsers.deactivateUsers.deactivate": "停用",
