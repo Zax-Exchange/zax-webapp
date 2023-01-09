@@ -41,6 +41,7 @@ import {
   NotificationType,
 } from "./types/common";
 import { io } from "socket.io-client";
+import { useIntl } from "react-intl";
 
 const socket = io("http://localhost:8080", {
   transports: ["websocket"],
@@ -64,6 +65,7 @@ const ListItem = styled(MuiListItem)(({ theme }: any) => ({
 
 const NotificationComponent = () => {
   const navigate = useNavigate();
+  const intl = useIntl();
   const { user } = useContext(AuthContext);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -172,9 +174,50 @@ const NotificationComponent = () => {
       navigate(GENERAL_ROUTES.PO_INVOICE);
     }
 
+    if (noti.notificationType === NotificationType.COMPANY) {
+      navigate(GENERAL_ROUTES.SETTINGS);
+    }
     clearNotification(noti.notificationId);
   };
 
+  const renderNotificationMessage = (noti: Notification) => {
+    if (noti.notificationType === NotificationType.PROJECT) {
+      return intl.formatMessage(
+        { id: noti.data.message },
+        {
+          projectName: noti.data.projectName,
+        }
+      );
+    } else if (noti.notificationType === NotificationType.PO_INVOICE) {
+      return intl.formatMessage(
+        { id: noti.data.message },
+        {
+          projectName: noti.data.projectName,
+        }
+      );
+    } else if (noti.notificationType === NotificationType.GUEST_PROJECT) {
+      if (noti.data.projectName) {
+        return intl.formatMessage(
+          { id: noti.data.message },
+          {
+            projectName: noti.data.projectName,
+          }
+        );
+      }
+      return intl.formatMessage({ id: noti.data.message });
+    } else if (noti.notificationType === NotificationType.COMPANY) {
+      if (noti.data.userName) {
+        return intl.formatMessage(
+          { id: noti.data.message },
+          {
+            userName: noti.data.userName,
+          }
+        );
+      }
+      return intl.formatMessage({ id: noti.data.message });
+    }
+    return "";
+  };
   const renderNotifications = () => {
     return (
       <Popover
@@ -206,7 +249,7 @@ const NotificationComponent = () => {
                   sx={{ fontSize: "0.65em" }}
                   onClick={clearAllNotifications}
                 >
-                  clear all
+                  {intl.formatMessage({ id: "app.notification.clearAll" })}
                 </Button>
               </Box>
               <List sx={{ p: 0 }}>
@@ -223,7 +266,7 @@ const NotificationComponent = () => {
                         justifyContent="center"
                         p={2}
                       >
-                        {noti.data.message}
+                        {renderNotificationMessage(noti)}
                       </Box>
                     </ListItem>
                   );
@@ -234,7 +277,9 @@ const NotificationComponent = () => {
           {!notifications.length && (
             <ListItem>
               <Typography variant="caption">
-                No new notifications at this moment!
+                {intl.formatMessage({
+                  id: "app.notification.noNewNotifications",
+                })}
               </Typography>
             </ListItem>
           )}

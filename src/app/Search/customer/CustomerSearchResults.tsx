@@ -101,7 +101,7 @@ const CustomerSearchResults = () => {
   useEffect(() => {
     if (searchVendorsError) {
       setSnackbar({
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);

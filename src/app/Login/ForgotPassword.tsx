@@ -31,6 +31,11 @@ const ForgotPassword = () => {
     }
   }, [sendResetLinkError]);
 
+  const onEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      sendLink();
+    }
+  };
   const sendLink = async () => {
     try {
       await sendResetLink({
@@ -63,6 +68,7 @@ const ForgotPassword = () => {
                   id: "app.login.forgotPassword.linkSent",
                 })
               }
+              onKeyDown={onEnter}
             ></TextField>
             <LoadingButton
               disabled={!validate(email)}

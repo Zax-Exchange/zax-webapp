@@ -12,6 +12,7 @@ import {
   Menu,
   MenuList,
   MenuItem,
+  Tooltip,
 } from "@mui/material";
 import VendorBidModal from "./modals/VendorBidModal";
 import { useContext, useEffect, useState } from "react";
@@ -38,6 +39,7 @@ import {
   GENERAL_ROUTES,
 } from "../../constants/loggedInRoutes";
 import CreatePOModal from "./modals/CreatePOModal";
+import { ErrorOutline, EventAvailableOutlined } from "@mui/icons-material";
 
 type VendorBidOverviewMenuSelection =
   | "view-profile"
@@ -149,31 +151,29 @@ const VendorBidOverview = ({
   const renderPOMenuItem = () => {};
 
   const renderBidStatus = (status: BidStatus) => {
-    let res: string = "";
-
     switch (status) {
       case BidStatus.Open:
-        res = intl.formatMessage({ id: "app.bid.status.open" });
-        break;
+        return (
+          <Tooltip
+            title={intl.formatMessage({ id: "app.bid.status.open.tooltip" })}
+            placement="top"
+            arrow
+          >
+            <EventAvailableOutlined color="success" />
+          </Tooltip>
+        );
       case BidStatus.Outdated:
-        res = intl.formatMessage({ id: "app.bid.status.outdated" });
-        break;
-      case BidStatus.Accepted:
-        res = intl.formatMessage({ id: "app.bid.status.accepted" });
-        break;
-      case BidStatus.Rejected:
-        res = intl.formatMessage({ id: "app.bid.status.rejected" });
-        break;
-      case BidStatus.Expired:
-        res = intl.formatMessage({ id: "app.bid.status.expired" });
-        break;
-    }
-    if (res) {
-      return (
-        <Typography sx={{ fontSize: "12px" }}>
-          <i>{res}</i>
-        </Typography>
-      );
+        return (
+          <Tooltip
+            title={intl.formatMessage({
+              id: "app.bid.status.outdated.tooltip",
+            })}
+            placement="top"
+            arrow
+          >
+            <ErrorOutline color="warning" />
+          </Tooltip>
+        );
     }
     return null;
   };
@@ -239,11 +239,11 @@ const VendorBidOverview = ({
                 })}
               </MenuItem>
 
-              <MenuItem onClick={() => vendorBidMenuOnClick("export-to-pdf")}>
+              {/* <MenuItem onClick={() => vendorBidMenuOnClick("export-to-pdf")}>
                 {intl.formatMessage({
                   id: "app.customer.projectDetail.bid.menu.exportToPdf",
                 })}
-              </MenuItem>
+              </MenuItem> */}
 
               <MenuItem onClick={() => vendorBidMenuOnClick("create-po")}>
                 {intl.formatMessage({

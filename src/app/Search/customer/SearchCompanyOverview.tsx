@@ -22,6 +22,7 @@ import TimelineIcon from "@mui/icons-material/Timeline";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useNavigate } from "react-router-dom";
 import { useIntl } from "react-intl";
+import { productValueToLabelMap } from "../../constants/products";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -45,7 +46,7 @@ const SearchCompanyOverview = ({
 
     navigate(`${dest.join("")}`);
   };
-
+  console.log(companyData);
   return (
     <Container style={{ marginBottom: "10px" }}>
       <Card onClick={openVendorDetail} variant="elevation" elevation={2}>
@@ -61,7 +62,13 @@ const SearchCompanyOverview = ({
                     <CategoryIcon />
                   </Tooltip>
                   <Typography variant="caption">
-                    {companyData.products.join(", ")}
+                    {companyData.products
+                      .map((product) => {
+                        return intl.formatMessage({
+                          id: productValueToLabelMap[product].labelId,
+                        });
+                      })
+                      .join(",")}
                   </Typography>
                 </ProjectOverviewListItem>
 

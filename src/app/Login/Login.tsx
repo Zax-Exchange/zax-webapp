@@ -8,6 +8,7 @@ import {
   ThemeProvider,
   Fade,
   Paper,
+  useTheme,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useContext, useEffect } from "react";
@@ -23,6 +24,7 @@ import { useIntl } from "react-intl";
 import { LOGGED_OUT_ROUTES } from "../constants/loggedOutRoutes";
 
 const Login = () => {
+  const theme = useTheme();
   const intl = useIntl();
   const { user, login, logout } = useContext(AuthContext);
   const [userLogin, { error, loading, data }] = useLoginLazyQuery();
@@ -32,6 +34,10 @@ const Login = () => {
     email: "",
     password: "",
   });
+
+  const [credentialsError, setCredentialsError] = useState(false);
+  const [inactiveAccountError, setInactiveAccountError] = useState(false);
+  const [inactiveCompanyError, setInactiveCompanyError] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
@@ -46,16 +52,37 @@ const Login = () => {
       login(data.login as LoggedInUser);
     }
     if (error) {
-      setSnackbar({
-        message: error.message,
-        severity: "error",
-      });
-      setSnackbarOpen(true);
+      if (error.message === "incorrect credentials") {
+        setCredentialsError(true);
+      } else if (error.message === "inactive account") {
+        setInactiveAccountError(true);
+      } else if (error.message === "inactive company") {
+        setInactiveCompanyError(true);
+      } else {
+        setSnackbar({
+          message: intl.formatMessage({ id: "app.general.network.error" }),
+          severity: "error",
+        });
+        setSnackbarOpen(true);
+      }
     }
   }, [data, error]);
 
+  const resetErrors = () => {
+    setCredentialsError(false);
+    setInactiveAccountError(false);
+    setInactiveCompanyError(false);
+  };
+
+  const onEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      loginHandler();
+    }
+  };
+
   const loginHandler = async () => {
     try {
+      resetErrors();
       await userLogin({
         variables: {
           data: values,
@@ -67,6 +94,17 @@ const Login = () => {
 
   const forgotPasswordOnClick = () => {
     navigate(LOGGED_OUT_ROUTES.FORGOT_PASSWORD);
+  };
+
+  const getErrorHelperText = () => {
+    if (credentialsError) {
+      return intl.formatMessage({ id: "app.login.credentialsError" });
+    } else if (inactiveAccountError) {
+      return intl.formatMessage({ id: "app.login.inactiveAccountError" });
+    } else if (inactiveCompanyError) {
+      return intl.formatMessage({ id: "app.login.inactiveCompanyError" });
+    }
+    return "";
   };
 
   return (
@@ -84,6 +122,8 @@ const Login = () => {
                 name="email"
                 value={values.email}
                 onChange={onChange}
+                onKeyDown={onEnter}
+                error={credentialsError}
               ></TextField>
               <TextField
                 type="password"
@@ -91,6 +131,15 @@ const Login = () => {
                 name="password"
                 value={values.password}
                 onChange={onChange}
+                onKeyDown={onEnter}
+                error={credentialsError}
+                helperText={getErrorHelperText()}
+                FormHelperTextProps={{
+                  sx: {
+                    margin: 0,
+                    fontSize: "0.7em",
+                  },
+                }}
               ></TextField>
               <Box>
                 <Typography

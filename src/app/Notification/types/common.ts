@@ -6,6 +6,10 @@
 
 export interface NotificationData {
   message: string;
+  projectName?: string;
+  vendorName?: string;
+  customerName?: string;
+  userName?: string;
   projectId?: string;
 }
 

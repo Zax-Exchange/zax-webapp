@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import {
   Chip,
   Container,
+  DialogTitle,
   IconButton,
   List,
   Menu,
@@ -37,6 +38,7 @@ import { GENERAL_ROUTES, VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
 import VendorPermissionModal from "./modals/VendorPermissionModal";
+import { ErrorOutline, EventAvailableOutlined } from "@mui/icons-material";
 
 type ProjectMenuOption = "view-detail" | "share";
 
@@ -107,24 +109,28 @@ const VendorProjectOverviewCard = ({
     switch (project.bidStatus) {
       case BidStatus.Open:
         return (
-          <Chip
-            label={intl.formatMessage({ id: "app.bid.status.open" })}
-            color="primary"
-            size="small"
-          />
+          <Tooltip
+            title={intl.formatMessage({ id: "app.bid.status.open.tooltip" })}
+            placement="top"
+            arrow
+          >
+            <EventAvailableOutlined color="success" />
+          </Tooltip>
         );
       case BidStatus.Outdated:
         return (
-          <Chip
-            label={intl.formatMessage({ id: "app.bid.status.outdated" })}
-            color="warning"
-            size="small"
-          />
+          <Tooltip
+            title={intl.formatMessage({
+              id: "app.bid.status.outdated.tooltip",
+            })}
+            placement="top"
+            arrow
+          >
+            <ErrorOutline color="warning" />
+          </Tooltip>
         );
-
-      default:
-        return null;
     }
+    return null;
   };
 
   return (

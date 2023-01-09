@@ -1,9 +1,13 @@
+import { Cancel } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import {
   Autocomplete,
+  Box,
   Button,
   CircularProgress,
   Container,
   DialogActions,
+  IconButton,
   List,
   ListItem,
   MenuItem,
@@ -14,9 +18,11 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
+import { useIntl } from "react-intl";
 import { AuthContext } from "../../../../context/AuthContext";
 import {
   CustomerProjectOverview,
+  GenericUser,
   ProjectPermission,
   UserProjectPermission,
   UserStatus,
@@ -34,10 +40,11 @@ const CustomerPermissionModal = ({
   setPermissionModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   project: CustomerProjectOverview;
 }) => {
+  const intl = useIntl();
   const { user: loggedInUser } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isVendor = loggedInUser!.isVendor;
-  const [email, setEmail] = useState("");
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
 
   const [allProjectUsers, setAllProjectUsers] = useState<
     UserProjectPermission[]
@@ -100,23 +107,23 @@ const CustomerPermissionModal = ({
     });
   }, []);
 
-  const { data: getAllCompanyUsersData } = useGetAllUsersWithinCompanyQuery({
-    variables: {
-      data: {
-        companyId: loggedInUser!.companyId,
-        userStatus: [UserStatus.Active],
+  const { data: getAllCompanyUsersData, loading: getAllCompanyUsersLoading } =
+    useGetAllUsersWithinCompanyQuery({
+      variables: {
+        data: {
+          companyId: loggedInUser!.companyId,
+          userStatus: [UserStatus.Active],
+        },
       },
-    },
-  });
+      fetchPolicy: "no-cache",
+    });
 
   useEffect(() => {
-    const isDisabled =
-      getAllCompanyUsersData &&
-      !getAllCompanyUsersData!.getAllUsersWithinCompany!.find(
-        (user) => user!.email === email
-      );
-    setIsAddButtonDisabled(isDisabled!);
-  }, [email]);
+    if (getAllCompanyUsersData) {
+      const isDisabled = getAllCompanyUsersData && !selectedEmails.length;
+      setIsAddButtonDisabled(isDisabled);
+    }
+  }, [selectedEmails]);
 
   // this sets the email list for input dropdown
   useEffect(() => {
@@ -131,60 +138,63 @@ const CustomerPermissionModal = ({
     }
   }, [allProjectUsers, getAllCompanyUsersData]);
 
-  const shareHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const selectHandler = (email: string) => {
-    setEmail(email);
+  const selectHandler = (emails: string[]) => {
+    setSelectedEmails(emails);
   };
   const getUser = (email: string) => {
     return getAllCompanyUsersData!.getAllUsersWithinCompany!.find(
       (user) => user!.email === email
-    );
+    )!;
   };
 
   const addPermissionHandler = () => {
-    const user = getUser(email);
-
+    const selectedUsers: GenericUser[] = [];
+    for (let email of selectedEmails) {
+      selectedUsers.push(getUser(email));
+    }
     // update data that'll be sent to server
-    updateViewersEditorsList(user!.id, ProjectPermission.Viewer);
+    updateViewersEditorsList(
+      selectedUsers.map((user) => user.id),
+      ProjectPermission.Viewer
+    );
 
     // update data for display purpose
     setAllProjectUsers([
       ...allProjectUsers,
-      {
+      ...selectedUsers.map((user) => ({
         name: user!.name,
         email: user!.email,
         userId: user!.id,
         permission: ProjectPermission.Viewer,
-      },
+      })),
     ]);
 
-    setEmail("");
+    setSelectedEmails([]);
   };
 
   const updateViewersEditorsList = (
-    userId: string,
+    userIds: string[],
     permission: ProjectPermission
   ) => {
-    let viewers = [...toUpdate.viewers];
-    let editors = [...toUpdate.editors];
-    let toDelete = [...toUpdate.toDelete];
+    const viewers = [...toUpdate.viewers];
+    const editors = [...toUpdate.editors];
+    const toDelete = [...toUpdate.toDelete];
 
-    if (permission === ProjectPermission.Viewer) {
-      // user is previously editor
-      const ind = editors.indexOf(userId);
-      editors.splice(ind, 1);
-      viewers.push(userId);
-    } else {
-      const ind = viewers.indexOf(userId);
-      viewers.splice(ind, 1);
-      editors.push(userId);
-    }
-    const deleteInd = toDelete.indexOf(userId);
-    if (deleteInd >= 0) {
-      toDelete.splice(deleteInd, 1);
+    for (let id of userIds) {
+      if (permission === ProjectPermission.Viewer) {
+        // user is previously editor
+        const ind = editors.indexOf(id);
+        editors.splice(ind, 1);
+        viewers.push(id);
+      } else {
+        const ind = viewers.indexOf(id);
+        viewers.splice(ind, 1);
+        editors.push(id);
+      }
+      const deleteInd = toDelete.indexOf(id);
+      if (deleteInd >= 0) {
+        toDelete.splice(deleteInd, 1);
+      }
     }
 
     setToUpdate({
@@ -209,9 +219,9 @@ const CustomerPermissionModal = ({
     userId: string,
     permission: ProjectPermission
   ) => {
-    let viewers = [...toUpdate.viewers];
-    let editors = [...toUpdate.editors];
-    let toDelete = [...toUpdate.toDelete];
+    const viewers = [...toUpdate.viewers];
+    const editors = [...toUpdate.editors];
+    const toDelete = [...toUpdate.toDelete];
 
     if (permission === ProjectPermission.Editor) {
       // user is previously editor
@@ -251,7 +261,7 @@ const CustomerPermissionModal = ({
     });
     setAllProjectUsers(projectUsers);
 
-    updateViewersEditorsList(userId, permission);
+    updateViewersEditorsList([userId], permission);
   };
 
   const removePermissionHandler = (
@@ -296,7 +306,7 @@ const CustomerPermissionModal = ({
     } catch (error) {
       setSnackbar({
         severity: "error",
-        message: "Could not perform action. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
       setSnackbarOpen(true);
     } finally {
@@ -325,7 +335,9 @@ const CustomerPermissionModal = ({
                 </ListItem>
                 {data.permission === ProjectPermission.Owner && (
                   <ListItem>
-                    <Typography>OWNER</Typography>
+                    <Typography>
+                      {intl.formatMessage({ id: "app.permission.owner" })}
+                    </Typography>
                   </ListItem>
                 )}
                 {data.permission !== ProjectPermission.Owner && (
@@ -334,15 +346,16 @@ const CustomerPermissionModal = ({
                       autoWidth
                       onChange={(e) => selectPermissionHandler(e, data.userId)}
                       value={data.permission}
+                      sx={{ mr: 2 }}
                     >
                       <MenuItem value={ProjectPermission.Editor}>
-                        EDITOR
+                        {intl.formatMessage({ id: "app.permission.editor" })}
                       </MenuItem>
                       <MenuItem value={ProjectPermission.Viewer}>
-                        VIEWER
+                        {intl.formatMessage({ id: "app.permission.viewer" })}
                       </MenuItem>
                     </Select>
-                    <Button
+                    <IconButton
                       onClick={() =>
                         removePermissionHandler(
                           data.userId,
@@ -350,8 +363,8 @@ const CustomerPermissionModal = ({
                         )
                       }
                     >
-                      Remove
-                    </Button>
+                      <Cancel />
+                    </IconButton>
                   </ListItem>
                 )}
               </List>
@@ -366,56 +379,72 @@ const CustomerPermissionModal = ({
   // TODO: use isVendor
   return (
     <Container>
-      {isLoading && <CircularProgress />}
-
-      {!isLoading && (
-        <>
-          <Container style={{ display: "flex", justifyContent: "center" }}>
+      <>
+        <Box display="flex" justifyContent="space-around">
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
             <Autocomplete
-              sx={{ width: 300 }}
-              freeSolo
-              disableClearable
+              sx={{ width: 400 }}
+              loading={getAllCompanyUsersLoading}
+              multiple
               options={emailsList}
-              onChange={(e, v) => selectHandler(v)}
-              value={email}
+              disableCloseOnSelect
+              getOptionDisabled={(option) =>
+                !!allProjectUsers.find((u) => u.email === option)
+              }
+              onChange={(e, v) => {
+                selectHandler(v);
+              }}
+              value={selectedEmails}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Share with"
-                  InputProps={{
-                    ...params.InputProps,
-                    type: "search",
+                  label={intl.formatMessage({
+                    id: "app.permission.shareWith",
+                  })}
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password",
                   }}
-                  onChange={shareHandler}
-                  value={email}
+                  InputLabelProps={{
+                    sx: {
+                      fontSize: 16,
+                      top: -7,
+                    },
+                  }}
                 />
               )}
             />
+          </Box>
+          <Box>
             <Button
               variant="contained"
               style={{ marginLeft: "4px" }}
               onClick={addPermissionHandler}
               disabled={isAddButtonDisabled}
             >
-              Add
+              {intl.formatMessage({ id: "app.general.add" })}
             </Button>
-          </Container>
+          </Box>
+        </Box>
 
-          {renderPermissionedUsers()}
+        {renderPermissionedUsers()}
 
-          <DialogActions>
-            <Button onClick={savePermissionHandler} variant="contained">
-              Save
-            </Button>
-            <Button
-              onClick={() => setPermissionModalOpen(false)}
-              variant="outlined"
-            >
-              Cancel
-            </Button>
-          </DialogActions>
-        </>
-      )}
+        <DialogActions>
+          <LoadingButton
+            onClick={savePermissionHandler}
+            variant="contained"
+            loading={isLoading}
+          >
+            {intl.formatMessage({ id: "app.general.save" })}
+          </LoadingButton>
+          <Button
+            onClick={() => setPermissionModalOpen(false)}
+            variant="outlined"
+          >
+            {intl.formatMessage({ id: "app.general.cancel" })}
+          </Button>
+        </DialogActions>
+      </>
     </Container>
   );
 };

@@ -51,14 +51,16 @@ const ChangePassword = () => {
       });
       setSnackbar({
         severity: "success",
-        message: "Password updated.",
+        message: intl.formatMessage({ id: "app.general.network.success" }),
       });
       setCurrentPassword("");
       setNewPassword("");
     } catch (e) {
       setSnackbar({
         severity: "error",
-        message: "Incorrect passwords.",
+        message: intl.formatMessage({
+          id: "app.settings.accountSettings.changePassword.incorrectCurrentPassword",
+        }),
       });
     } finally {
       setSnackbarOpen(true);
@@ -102,6 +104,7 @@ const ChangePassword = () => {
           <Button
             disabled={!newPassword || !currentPassword}
             onClick={updatePassword}
+            variant="outlined"
           >
             {intl.formatMessage({ id: "app.general.update" })}
           </Button>

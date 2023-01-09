@@ -63,6 +63,15 @@ const UserSignup = () => {
     }
   }, [createUserError]);
 
+  const shouldDisableCreateButton = () => {
+    return !validate(values.email) || !values.password || !values.name;
+  };
+  const onEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" && !shouldDisableCreateButton()) {
+      createUserHandler();
+    }
+  };
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
       ...values,
@@ -100,14 +109,15 @@ const UserSignup = () => {
         <Stack spacing={2} textAlign="right">
           <TextField
             type="name"
-            placeholder="name"
+            placeholder={intl.formatMessage({ id: "app.general.name" })}
             name="name"
             value={values.name}
             onChange={onChange}
+            onKeyDown={onEnter}
           ></TextField>
           <TextField
             type="email"
-            placeholder="email"
+            placeholder={intl.formatMessage({ id: "app.general.email" })}
             name="email"
             value={values.email}
             onChange={onChange}
@@ -117,19 +127,21 @@ const UserSignup = () => {
                 ? intl.formatMessage({ id: "app.signup.duplicateEmail" })
                 : ""
             }
+            onKeyDown={onEnter}
           ></TextField>
           <TextField
             type="password"
-            placeholder="password"
+            placeholder={intl.formatMessage({ id: "app.general.password" })}
             name="password"
             value={values.password}
             onChange={onChange}
+            onKeyDown={onEnter}
           ></TextField>
 
           <Button
             variant="contained"
             onClick={createUserHandler}
-            disabled={!validate(values.email) || !values.password}
+            disabled={shouldDisableCreateButton()}
           >
             {intl.formatMessage({ id: "app.general.create" })}
           </Button>

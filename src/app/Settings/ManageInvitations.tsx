@@ -327,7 +327,7 @@ const ManageInvitations = () => {
             </Box>
 
             <TextField
-              label={intl.formatMessage({ id: "app.general.email" })}
+              placeholder={intl.formatMessage({ id: "app.general.email" })}
               value={email}
               onChange={emailOnChange}
               sx={{ width: "100%" }}

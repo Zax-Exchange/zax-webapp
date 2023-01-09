@@ -999,6 +999,7 @@ export const DEFAULT_PAPER_TRAY_SPEC: CreateProjectComponentSpecInput = {
     z: ""
   },
   includeArtworkInQuote: false,
+  color: ""
 }
 
 export const DEFAULT_CORRUGATE_TRAY_SPEC: CreateProjectComponentSpecInput = {
@@ -1008,6 +1009,9 @@ export const DEFAULT_CORRUGATE_TRAY_SPEC: CreateProjectComponentSpecInput = {
     y: "",
     z: ""
   },
+  flute: "",
+  color: "",
+  postProcess: [],
 }
 
 export const DEFAULT_STICKER_SPEC: CreateProjectComponentSpecInput = {

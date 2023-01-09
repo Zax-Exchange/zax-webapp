@@ -252,26 +252,25 @@ const CreateProjectComponentModal = ({
   // check if component modal add button should be disabled
   const shouldDisableComponentModalAddOrSaveButton = () => {
     // check each required spec is filled
-    return false;
 
     const isInvalidComponentDimension = () => {
+      if (!Object.keys(componentSpec).length) {
+        return true;
+      }
+      if (componentSpec.productName === PRODUCT_NAME_STICKER.value) {
+        if (!componentSpec.dimension.x || !componentSpec.dimension.y) {
+          return true;
+        }
+        return false;
+      }
       if (
-        !componentData.componentSpec ||
-        !componentData.componentSpec.productName
+        !componentSpec.dimension.x ||
+        !componentSpec.dimension.y ||
+        !componentSpec.dimension.z
       ) {
         return true;
       }
-
-      switch (componentData.componentSpec.productName) {
-        case PRODUCT_NAME_FOLDING_CARTON.value:
-          return (
-            Object.values(componentData.componentSpec.dimension).filter(
-              (d) => !!d
-            ).length !== 3
-          );
-        default:
-          return false;
-      }
+      return false;
     };
 
     const isInvalidComponentSpec = () => {

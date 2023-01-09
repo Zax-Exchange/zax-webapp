@@ -8,6 +8,11 @@ import {
   Paper,
   Stack,
   Tab,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Tabs,
   Tooltip,
   Typography,
@@ -27,6 +32,9 @@ import { TranslatableAttribute } from "../../../type/common";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import styled from "@emotion/styled";
 import MuiListItem from "@mui/material/ListItem";
+import { productValueToLabelMap } from "../../constants/products";
+import { Store } from "@mui/icons-material";
+import { openLink } from "../../Utils/openLink";
 
 type TypographyVariant =
   | "button"
@@ -86,16 +94,16 @@ const VendorProfile = () => {
       label: intl.formatMessage({ id: "app.vendorProfile.tab.companyInfo" }),
       value: "companyInfo",
     },
-    {
-      label: intl.formatMessage({ id: "app.vendorProfile.tab.certifications" }),
-      value: "certifications",
-    },
-    {
-      label: intl.formatMessage({
-        id: "app.vendorProfile.tab.productShowcase",
-      }),
-      value: "productShowcase",
-    },
+    // {
+    //   label: intl.formatMessage({ id: "app.vendorProfile.tab.certifications" }),
+    //   value: "certifications",
+    // },
+    // {
+    //   label: intl.formatMessage({
+    //     id: "app.vendorProfile.tab.productShowcase",
+    //   }),
+    //   value: "productShowcase",
+    // },
   ];
 
   const {
@@ -158,21 +166,17 @@ const VendorProfile = () => {
       country,
       leadTime,
       locations,
+      productsAndMoq,
     } = vendorData;
     return (
       <Container>
         <Box display="flex" flexDirection="row">
           <Box>
-            <img
-              src="https://media-exp1.licdn.com/dms/image/C4D0BAQHiNSL4Or29cg/company-logo_200_200/0/1519856215226?e=1672272000&v=beta&t=uDarHkbAqGPqXXIxMHqwHMuYnp7Qj69d6__4V0lDM5c"
-              height={112}
-              width={112}
-              alt="logo"
-            />
+            <Store sx={{ fontSize: "80px" }} color="primary" />
           </Box>
           <Box display="flex" flexDirection="row" alignItems="center" ml={2}>
             {renderTypography(name, { variant: "h5", fontWeight: 500 })}
-            {!isVerified && (
+            {isVerified && (
               <Tooltip
                 title={intl.formatMessage({
                   id: "app.company.attribute.verified",
@@ -254,10 +258,11 @@ const VendorProfile = () => {
                       }
                     )}
                     <Link
-                      href={companyUrl}
-                      rel="noopener"
-                      target="_blank"
-                      sx={{ textDecoration: "none" }}
+                      onClick={() => openLink(companyUrl)}
+                      sx={{
+                        textDecoration: "none",
+                        ":hover": { cursor: "pointer" },
+                      }}
                     >
                       {companyUrl}
                     </Link>
@@ -280,36 +285,6 @@ const VendorProfile = () => {
                     })}
                   </CompanyInfoListItem>
                 }
-                {/* {
-                  <CompanyInfoListItem>
-                    {renderTypography(
-                      intl.formatMessage({
-                        id: "app.vendor.attribute.products",
-                      }),
-                      {
-                        variant: "subtitle2",
-                      }
-                    )}
-                    {renderTypography(products, {
-                      variant: "caption",
-                    })}
-                  </CompanyInfoListItem>
-                }
-                {
-                  <CompanyInfoListItem>
-                    {renderTypography(
-                      intl.formatMessage({
-                        id: "app.vendor.attribute.moq",
-                      }),
-                      {
-                        variant: "subtitle2",
-                      }
-                    )}
-                    {renderTypography(moq, {
-                      variant: "caption",
-                    })}
-                  </CompanyInfoListItem>
-                } */}
                 {
                   <CompanyInfoListItem>
                     {renderTypography(
@@ -346,6 +321,54 @@ const VendorProfile = () => {
                   </CompanyInfoListItem>
                 }
               </List>
+              <List>
+                {
+                  <CompanyInfoListItem>
+                    {renderTypography(
+                      intl.formatMessage({
+                        id: "app.vendor.attribute.productsAndMoq",
+                      }),
+                      {
+                        variant: "subtitle2",
+                      }
+                    )}
+                    <Box display="flex" flexDirection="column">
+                      <TableContainer>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>
+                              {intl.formatMessage({
+                                id: "app.component.attribute.product",
+                              })}
+                            </TableCell>
+                            <TableCell>
+                              {intl.formatMessage({
+                                id: "app.vendor.attribute.moq",
+                              })}
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {productsAndMoq.map((productAndMoq) => {
+                            return (
+                              <TableRow>
+                                <TableCell>
+                                  {intl.formatMessage({
+                                    id: productValueToLabelMap[
+                                      productAndMoq.product
+                                    ].labelId,
+                                  })}
+                                </TableCell>
+                                <TableCell>{productAndMoq.moq}</TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </TableContainer>
+                    </Box>
+                  </CompanyInfoListItem>
+                }
+              </List>
             </Box>
           </TabPanel>
         </Paper>
@@ -353,7 +376,7 @@ const VendorProfile = () => {
     );
   }
 
-  return <Container>Could not find vendor.</Container>;
+  return null;
 };
 
 export default VendorProfile;
