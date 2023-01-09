@@ -118,7 +118,6 @@ const EditVendorProfile = () => {
       case "phone":
       case "fax":
         isAllowed = isValidInt(val);
-        console.log(isAllowed);
         break;
       case "leadTime":
         isAllowed = isValidInt(val);

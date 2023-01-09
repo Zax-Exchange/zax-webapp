@@ -24,6 +24,7 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import BusinessIcon from "@mui/icons-material/Business";
 import {
   BidStatus,
+  CustomerProjectOverview,
   Exact,
   GetVendorProjectsInput,
   InputMaybe,
@@ -41,6 +42,7 @@ import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
 import VendorPermissionModal from "./modals/VendorPermissionModal";
 import { AccountCircle } from "@mui/icons-material";
+import CustomerPermissionModal from "../customer/modals/CustomerPermissionModal";
 
 type ProjectMenuOption = "view-detail" | "share";
 
@@ -238,10 +240,10 @@ const VendorGuestProjectOverviewCard = ({
         fullWidth={true}
       >
         <DialogContent>
-          {/* <VendorPermissionModal
-            project={project}
+          <CustomerPermissionModal
+            projectId={project.id}
             setPermissionModalOpen={setPermissionModalOpen}
-          /> */}
+          />
         </DialogContent>
       </Dialog>
     </Grid>

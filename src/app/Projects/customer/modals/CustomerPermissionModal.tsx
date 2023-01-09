@@ -34,11 +34,11 @@ import { useUpdateProjectPermissionsMutation } from "../../../gql/update/project
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 
 const CustomerPermissionModal = ({
-  project,
+  projectId,
   setPermissionModalOpen,
 }: {
   setPermissionModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  project: CustomerProjectOverview;
+  projectId: string;
 }) => {
   const intl = useIntl();
   const { user: loggedInUser } = useContext(AuthContext);
@@ -93,7 +93,7 @@ const CustomerPermissionModal = ({
     getProjectUsers({
       variables: {
         data: {
-          projectId: project.id,
+          projectId: projectId,
         },
       },
       fetchPolicy: "no-cache",
@@ -283,12 +283,12 @@ const CustomerPermissionModal = ({
           data: {
             viewers: {
               userIds: toUpdate.viewers,
-              projectId: project.id,
+              projectId: projectId,
               permission: ProjectPermission.Viewer,
             },
             editors: {
               userIds: toUpdate.editors,
-              projectId: project.id,
+              projectId: projectId,
               permission: ProjectPermission.Editor,
             },
           },
@@ -298,7 +298,7 @@ const CustomerPermissionModal = ({
         variables: {
           data: {
             userIds: toUpdate.toDelete,
-            projectId: project.id,
+            projectId: projectId,
           },
         },
       });
@@ -312,11 +312,6 @@ const CustomerPermissionModal = ({
     } finally {
       setPermissionModalOpen(false);
     }
-  };
-
-  const isUserOwner = () => {
-    // not used for now
-    return project.permission === ProjectPermission.Owner;
   };
 
   const renderPermissionedUsers = () => {

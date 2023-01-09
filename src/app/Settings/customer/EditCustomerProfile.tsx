@@ -204,7 +204,6 @@ const EditCustomerProfile = () => {
 
     return false;
   };
-  // console.log({ shouldDisableUpdateButton: shouldDisableUpdateButton() });
   const updateCompanyData = async () => {
     try {
       await updateCustomerData({

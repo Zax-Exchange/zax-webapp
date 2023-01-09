@@ -43,6 +43,7 @@ import {
 import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import { useIntl } from "react-intl";
 import CustomerPermissionModal from "./modals/CustomerPermissionModal";
+import { Create } from "@mui/icons-material";
 
 type ProjectOverviewMenuOption = "view-detail" | "share" | "delete";
 
@@ -161,21 +162,21 @@ const CustomerProjectOverviewCard = ({
         >
           <MenuList dense sx={{ padding: "4px 0 4px" }}>
             <MenuItem onClick={() => projectMenuOnClick("view-detail")}>
-              View detail
+              {intl.formatMessage({ id: "app.general.viewDetail" })}
             </MenuItem>
 
             <MenuItem
               onClick={() => projectMenuOnClick("share")}
               disabled={!canShare()}
             >
-              Share
+              {intl.formatMessage({ id: "app.general.share" })}
             </MenuItem>
 
             <MenuItem
               onClick={() => projectMenuOnClick("delete")}
               disabled={!canDelete()}
             >
-              Delete
+              {intl.formatMessage({ id: "app.general.delete" })}
             </MenuItem>
           </MenuList>
         </Menu>
@@ -231,7 +232,9 @@ const CustomerProjectOverviewCard = ({
               >
                 <AttachMoneyIcon />
               </Tooltip>
-              <Typography variant="caption">${project.targetPrice}</Typography>
+              <Typography variant="caption">
+                {parseFloat(project.targetPrice)}
+              </Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
@@ -242,7 +245,7 @@ const CustomerProjectOverviewCard = ({
                 arrow
                 placement="top"
               >
-                <CalendarMonthIcon />
+                <Create />
               </Tooltip>
               <Typography variant="caption">{date}</Typography>
             </ProjectOverviewListItem>
@@ -268,7 +271,7 @@ const CustomerProjectOverviewCard = ({
       >
         <DialogContent>
           <CustomerPermissionModal
-            project={project}
+            projectId={project.id}
             setPermissionModalOpen={setPermissionModalOpen}
           />
         </DialogContent>

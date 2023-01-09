@@ -38,6 +38,7 @@ import {
   ProjectBidComponent,
   ProjectComponent,
   ProjectComponentSpec,
+  ProjectPermission,
   QuantityPrice,
   QuantityPriceInput,
   UpdateProjectBidComponentInput,
@@ -748,7 +749,13 @@ const VendorProjectDetail = () => {
             onClick={() => setChatOpen(true)}
             sx={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}
           >
-            <Tooltip title="Message Customer" arrow placement="top">
+            <Tooltip
+              title={intl.formatMessage({
+                id: "app.customer.projectDetail.bid.menu.openConversation",
+              })}
+              arrow
+              placement="top"
+            >
               <QuestionAnswerIcon sx={{ color: theme.palette.primary.light }} />
             </Tooltip>
           </IconButton>
@@ -823,53 +830,59 @@ const VendorProjectDetail = () => {
         </Paper>
 
         <Paper>
-          <Box p={1} display="flex" justifyContent="flex-end">
-            {isEditMode ? (
-              <>
-                <Button
-                  onClick={() => setIsEditMode(false)}
-                  variant="outlined"
-                  sx={{ mr: 2 }}
-                >
-                  {intl.formatMessage({
-                    id: "app.general.cancel",
-                  })}
-                </Button>
-                <Button onClick={updateBids} variant="contained" sx={{ mr: 2 }}>
-                  {intl.formatMessage({
-                    id: "app.vendor.projectDetail.updateBid",
-                  })}
-                </Button>
-              </>
-            ) : (
-              <>
-                {bidInfo.status === BidStatus.Outdated && (
-                  <IconButton onClick={resubmitProjectBid}>
+          {bidInfo.permission !== ProjectPermission.Viewer && (
+            <Box p={1} display="flex" justifyContent="flex-end">
+              {isEditMode ? (
+                <>
+                  <Button
+                    onClick={() => setIsEditMode(false)}
+                    variant="outlined"
+                    sx={{ mr: 2 }}
+                  >
+                    {intl.formatMessage({
+                      id: "app.general.cancel",
+                    })}
+                  </Button>
+                  <Button
+                    onClick={updateBids}
+                    variant="contained"
+                    sx={{ mr: 2 }}
+                  >
+                    {intl.formatMessage({
+                      id: "app.vendor.projectDetail.updateBid",
+                    })}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {bidInfo.status === BidStatus.Outdated && (
+                    <IconButton onClick={resubmitProjectBid}>
+                      <Tooltip
+                        arrow
+                        title={intl.formatMessage({
+                          id: "app.vendor.projectDetail.resubmitBid",
+                        })}
+                        placement="top"
+                      >
+                        <ChangeCircleOutlined />
+                      </Tooltip>
+                    </IconButton>
+                  )}
+                  <IconButton onClick={() => setIsEditMode(true)}>
                     <Tooltip
                       arrow
                       title={intl.formatMessage({
-                        id: "app.vendor.projectDetail.resubmitBid",
+                        id: "app.vendor.projectDetail.editBid",
                       })}
                       placement="top"
                     >
-                      <ChangeCircleOutlined />
+                      <Edit />
                     </Tooltip>
                   </IconButton>
-                )}
-                <IconButton onClick={() => setIsEditMode(true)}>
-                  <Tooltip
-                    arrow
-                    title={intl.formatMessage({
-                      id: "app.vendor.projectDetail.editBid",
-                    })}
-                    placement="top"
-                  >
-                    <Edit />
-                  </Tooltip>
-                </IconButton>
-              </>
-            )}
-          </Box>
+                </>
+              )}
+            </Box>
+          )}
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
               value={currentTab}

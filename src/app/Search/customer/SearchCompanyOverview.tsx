@@ -46,7 +46,6 @@ const SearchCompanyOverview = ({
 
     navigate(`${dest.join("")}`);
   };
-  console.log(companyData);
   return (
     <Container style={{ marginBottom: "10px" }}>
       <Card onClick={openVendorDetail} variant="elevation" elevation={2}>

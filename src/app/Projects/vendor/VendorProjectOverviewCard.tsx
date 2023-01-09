@@ -238,7 +238,9 @@ const VendorProjectOverviewCard = ({
               >
                 <AttachMoneyIcon />
               </Tooltip>
-              <Typography variant="caption">${project.targetPrice}</Typography>
+              <Typography variant="caption">
+                {parseFloat(project.targetPrice)}
+              </Typography>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>

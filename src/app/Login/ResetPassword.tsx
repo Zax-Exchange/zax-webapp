@@ -30,7 +30,6 @@ const ResetPassword = () => {
     if (token) {
       try {
         const decodedJwt = jwt(token) as JwtPayload;
-        // console.log(payload);
         if (decodedJwt.exp && decodedJwt.exp * 1000 < Date.now()) {
           setTokenExpired(true);
         }

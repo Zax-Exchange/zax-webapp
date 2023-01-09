@@ -26,6 +26,7 @@
   "app.general.back": "Back",
   "app.general.add": "Add",
   "app.general.remove": "Remove",
+  "app.general.delete": "Delete",
   "app.general.addMore": "Add More",
   "app.general.save": "Save",
   "app.general.update": "Update",

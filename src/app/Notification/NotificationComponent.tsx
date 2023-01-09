@@ -74,7 +74,6 @@ const NotificationComponent = () => {
 
   useEffect(() => {
     if (anchorEl) {
-      console.log("marking seen");
       socket.emit(EmitEventType.MARK_SEEN, {
         notificationIds: notifications.map((noti) => noti.notificationId),
       });
@@ -125,11 +124,9 @@ const NotificationComponent = () => {
     }
 
     socket.on("disconnect", () => {
-      console.log("socket disconnected");
       setIsConnected(false);
     });
     return () => {
-      console.log("noti dismount");
       socket.disconnect();
 
       socket.off("connect");

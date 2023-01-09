@@ -42,7 +42,6 @@ const CustomerProjects = () => {
     },
     fetchPolicy: "network-only",
   });
-  console.log(getCustomerProjectsData);
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
 
   const [sortMenuAnchor, setSortMenuAnchor] =

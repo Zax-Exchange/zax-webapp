@@ -81,15 +81,14 @@ const JoinCompany = () => {
         severity: "success",
       });
     } catch (error) {
-      console.log((error as Error).message);
-      if ((error as Error).message === "Duplicate requests") {
+      if ((error as Error).message === "duplicate email") {
         setSnackbar({
           message: intl.formatMessage({
             id: "app.error.signup.duplicateJoinRequest",
           }),
           severity: "error",
         });
-      } else if ((error as Error).message === "Existing user") {
+      } else if ((error as Error).message === "existing user") {
         setSnackbar({
           message: intl.formatMessage({
             id: "app.error.signup.existingUser",
