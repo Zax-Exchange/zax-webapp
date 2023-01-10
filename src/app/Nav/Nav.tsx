@@ -15,6 +15,7 @@ import {
   AppBar,
   Toolbar,
   ListItemIcon,
+  Divider,
 } from "@mui/material";
 import { Menu, Home, TextSnippet, Settings, Logout } from "@mui/icons-material";
 import { useContext, useState } from "react";
@@ -127,8 +128,10 @@ const Nav = () => {
         <AppBar
           sx={{
             backgroundColor: "white",
-            boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)",
+            // boxShadow: "0px -3px 10px 0px rgb(151 149 149 / 75%)",
+            boxShadow: 0,
             padding: "0 7% 0",
+            height: "64px",
           }}
         >
           {!user && renderLoggedOutNav()}
@@ -136,6 +139,39 @@ const Nav = () => {
           {user && !user.isVendor && <CustomerNav />}
           {/* <Button onClick={resetData}>RESET</Button> */}
         </AppBar>
+      </Box>
+      <Box
+        sx={{
+          marginTop: "65px",
+          borderTop: "1.5px solid rgb(237 103 4)",
+          lineHeight: 0,
+          position: "fixed",
+          width: "100%",
+          zIndex: 9,
+        }}
+      >
+        <Box
+          sx={{
+            borderBottomLeftRadius: "4px",
+            borderBottomRightRadius: "4px",
+            padding: "2px 8px",
+            backgroundColor: "rgb(237 103 4)",
+            display: "inline-block",
+            marginTop: "-1px",
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              fontSize: "10px",
+              lineHeight: "10px",
+              color: "#fff",
+              fontWeight: "700",
+            }}
+          >
+            BETA
+          </Typography>
+        </Box>
       </Box>
     </>
   );
