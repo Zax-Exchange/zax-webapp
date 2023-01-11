@@ -179,7 +179,6 @@ const VendorPO = () => {
                                   }
                                 >
                                   <Tooltip
-                                    arrow
                                     title={intl.formatMessage({
                                       id: "app.vendor.poInvoice.uploadAnother.tooltip",
                                     })}
@@ -204,7 +203,6 @@ const VendorPO = () => {
                                   }
                                 >
                                   <Tooltip
-                                    arrow
                                     title={intl.formatMessage({
                                       id: "app.vendor.poInvoice.upload.create",
                                     })}

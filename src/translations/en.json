@@ -41,6 +41,7 @@
   "app.general.userPower.admin": "Admin",
   "app.general.userPower.user": "Normal User",
   "app.general.name": "Name",
+  "app.general.incomplete": "Incomplete",
 
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",
@@ -53,6 +54,7 @@
   "app.general.unit.mm": "mm",
   "app.general.unit.px": "px",
   "app.general.unit": "unit",
+  "app.general.unit.g": "g",
 
   "app.general.button.login": "Login",
 
@@ -240,7 +242,7 @@
   "app.project.status.closed": "Closed",
 
   "app.bid.attribute.quantity": "Quantity",
-  "app.bid.attribute.price": "Price",
+  "app.bid.attribute.price": "Price Per Unit",
   "app.bid.attribute.samplingFee": "Sampling Fee",  
   "app.bid.attribute.toolingFee": "Tooling Fee",  
   "app.bid.attribute.bidRemark": "Additional Remarks",
@@ -362,7 +364,7 @@
   "app.customer.createProject.importFromExisting": "Import from existing projects below",
   
   "app.customer.projectDetail.bid.menu.viewVendorProfile": "View vendor profile",
-  "app.customer.projectDetail.bid.menu.openConversation": "Open conversation",
+  "app.customer.projectDetail.bid.menu.openConversation": "Open Conversation",
   "app.customer.projectDetail.bid.menu.exportToPdf": "Export to pdf",
   "app.customer.projectDetail.bid.menu.createPO": "Create PO",
   "app.customer.projectDetail.bid.menu.acceptBid": "Accept",
@@ -410,10 +412,13 @@
   "app.vendor.projectDetail.bidDetail": "Bid Detail",
   "app.vendor.projectDetail.updateBid": "Update Bid",
   "app.vendor.projectDetail.updateSuccess": "Update Success!",
+  "app.vendor.projectDetail.noBid": "You did not bid for this component.",
 
   "app.vendor.projects.yourBids": "Your Bids",
-  "app.vendor.projectDetail.resubmitBid": "Resubmit Your Bid",
+  "app.vendor.projectDetail.resubmitBid": "Resubmit bid if your bid still holds.",
   "app.vendor.projectDetail.editBid": "Edit Bid",
+  "app.vendor.projectDetail.editBid.createNewBidTooltip": "You did not bid on this component previously. If you wish to bid, simply fill out all below fields. Otherwise, you can leave them empty.",
+  "app.vendor.projectDetail.editBid.editBidTooltip": "You have bid on this already. To update your bid, simply edit the numbers below.",
   
   "app.vendor.guestProject.create": "Generate RFQ Form",
   "app.vendor.guestProject.modal.title": "Send RFQ Form Link",

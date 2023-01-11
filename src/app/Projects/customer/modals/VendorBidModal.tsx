@@ -81,15 +81,15 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
         <TableCell align="right">{parseFloat(row.price)}</TableCell>
 
         <TableCell align="right">
-          {row.isLast ? row.bidComponent.samplingFee : ""}
+          {row.isLast ? row.bidComponent.samplingFee : "-"}
         </TableCell>
 
         <TableCell align="right">
           {row.isLast
             ? row.bidComponent.toolingFee
               ? row.bidComponent.toolingFee
-              : "NA"
-            : ""}
+              : "-"
+            : "-"}
         </TableCell>
       </TableRow>
       {row.isLast && (
@@ -238,7 +238,6 @@ const VendorBidModal = ({
                   ))}
                 </TableBody>
                 <TableBody sx={{ height: 20 }} />
-                {/* {bidCompIndex !== bid.components.length - 1 && <Divider />} */}
               </>
             );
           })}

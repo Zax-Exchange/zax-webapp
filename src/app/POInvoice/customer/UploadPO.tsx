@@ -72,7 +72,6 @@ const UploadPO = ({
   return (
     <Tooltip
       placement="top"
-      arrow
       title={intl.formatMessage({
         id: "app.customer.poInvoice.uploadPO.tooltip",
       })}

@@ -35,6 +35,7 @@ import {
   BidRemark,
   BidStatus,
   CreateProjectBidComponentInput,
+  Project,
   ProjectBidComponent,
   ProjectComponent,
   ProjectComponentSpec,
@@ -42,6 +43,7 @@ import {
   QuantityPrice,
   QuantityPriceInput,
   UpdateProjectBidComponentInput,
+  VendorProject,
 } from "../../../generated/graphql";
 import {
   useGetVendorDetailQuery,
@@ -53,7 +55,13 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { ChangeCircleOutlined, Edit } from "@mui/icons-material";
+import {
+  ChangeCircleOutlined,
+  Edit,
+  ErrorOutline,
+  InfoOutlined,
+  Sync,
+} from "@mui/icons-material";
 import {
   useResubmitProjectBidMutation,
   useUpdateProjectBidComponentsMutation,
@@ -68,6 +76,7 @@ import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 import PermissionDenied from "../../Utils/PermissionDenied";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
+import ProjectSpecDetail from "../common/ProjectSpecDetail";
 
 type BidComponent = {
   quantityPrices: QuantityPrice[];
@@ -96,15 +105,6 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const ProjectListItem = styled(MuiListItem)(() => ({
-  display: "flex",
-  justifyContent: "space-between",
-  "& .MuiTypography-root:last-child": {
-    flexBasis: "65%",
-    whiteSpace: "pre-wrap",
-  },
-}));
-
 type BidComponentsForUpdate = Record<string, UpdateProjectBidComponentInput>;
 type BidComponentsForCreate = Record<string, CreateProjectBidComponentInput>;
 
@@ -120,6 +120,8 @@ const VendorProjectDetail = () => {
   const navigate = useNavigate();
   const [chatOpen, setChatOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+
+  const [updateBidClicked, setUpdateBidClicked] = useState(false);
 
   const [newRemarkFileId, setNewRemarkFileId] = useState<string | null>(null);
 
@@ -235,6 +237,7 @@ const VendorProjectDetail = () => {
       });
     }
   };
+
   const initializeBidComponents = () => {
     if (getVendorProjectData && getVendorProjectData.getVendorProject) {
       const projectComponents =
@@ -342,20 +345,9 @@ const VendorProjectDetail = () => {
     setCurrentTab(newTab);
   };
 
-  const renderProjectAttributeTitle = (value: string) => {
-    return <Typography variant="subtitle2">{value}</Typography>;
-  };
-
   const renderBidDetail = (bid: BidComponent | null) => {
     return (
       <>
-        <Box>
-          <Typography variant="subtitle1" textAlign="left">
-            {intl.formatMessage({
-              id: "app.vendor.projectDetail.bidDetail",
-            })}
-          </Typography>
-        </Box>
         {!!bid && (
           <TableContainer>
             <Table size="small">
@@ -418,9 +410,47 @@ const VendorProjectDetail = () => {
             </Table>
           </TableContainer>
         )}
-        {!bid && <Typography>no bid for this</Typography>}
+        {!bid && (
+          <Typography variant="caption" color="GrayText">
+            {intl.formatMessage({ id: "app.vendor.projectDetail.noBid" })}
+          </Typography>
+        )}
       </>
     );
+  };
+
+  // checks whether a bid component's fields has been only partially filled
+  const hasOnlyPartialFieldsFilledOut = (
+    bidComponent:
+      | CreateProjectBidComponentInput
+      | UpdateProjectBidComponentInput,
+    component: ProjectComponent
+  ) => {
+    const allFields: boolean[] = [];
+    bidComponent.quantityPrices.forEach((qp) => {
+      if (!!qp.price) {
+        allFields.push(true);
+      } else {
+        allFields.push(false);
+      }
+    });
+    if (bidComponent.samplingFee) {
+      allFields.push(true);
+    } else {
+      allFields.push(false);
+    }
+
+    if (
+      component.componentSpec.productName ===
+      PRODUCT_NAME_MOLDED_FIBER_TRAY.value
+    ) {
+      if (bidComponent.toolingFee) {
+        allFields.push(true);
+      } else {
+        allFields.push(false);
+      }
+    }
+    return allFields.some((b) => !!b) && allFields.some((b) => !b);
   };
 
   // renders an existing bid input table for a particular project component
@@ -428,6 +458,7 @@ const VendorProjectDetail = () => {
     component: ProjectComponent,
     bidComponent: UpdateProjectBidComponentInput
   ) => {
+    const isIncomplete = hasOnlyPartialFieldsFilledOut(bidComponent, component);
     const qpDataOnChange = (val: string, qpInd: number) => {
       let isAllowed = isValidFloat(val);
       if (isAllowed) {
@@ -470,6 +501,7 @@ const VendorProjectDetail = () => {
                   <TableCell>{qp.quantity}</TableCell>
                   <TableCell>
                     <TextField
+                      error={updateBidClicked && isIncomplete && !qp.price}
                       value={qp.price}
                       onChange={(e) => qpDataOnChange(e.target.value, i)}
                     />
@@ -486,6 +518,9 @@ const VendorProjectDetail = () => {
             </TableCell>
             <TableCell>
               <TextField
+                error={
+                  updateBidClicked && isIncomplete && !bidComponent.samplingFee
+                }
                 value={bidComponent.samplingFee ? bidComponent.samplingFee : ""}
                 onChange={(e) => feeOnChange(e.target.value, "samplingFee")}
               />
@@ -500,6 +535,9 @@ const VendorProjectDetail = () => {
               </TableCell>
               <TableCell>
                 <TextField
+                  error={
+                    updateBidClicked && isIncomplete && !bidComponent.toolingFee
+                  }
                   value={bidComponent.toolingFee ? bidComponent.toolingFee : ""}
                   onChange={(e) => feeOnChange(e.target.value, "toolingFee")}
                 />
@@ -540,6 +578,8 @@ const VendorProjectDetail = () => {
     component: ProjectComponent,
     bidComponent: CreateProjectBidComponentInput
   ) => {
+    const isIncomplete = hasOnlyPartialFieldsFilledOut(bidComponent, component);
+
     const qpDataOnChange = (val: string, qpInd: number) => {
       let isAllowed = isValidFloat(val);
       if (isAllowed) {
@@ -582,6 +622,7 @@ const VendorProjectDetail = () => {
                   <TableCell>{qp.quantity}</TableCell>
                   <TableCell>
                     <TextField
+                      error={updateBidClicked && isIncomplete && !qp.price}
                       value={qp.price}
                       onChange={(e) => qpDataOnChange(e.target.value, i)}
                     />
@@ -598,6 +639,9 @@ const VendorProjectDetail = () => {
             </TableCell>
             <TableCell>
               <TextField
+                error={
+                  updateBidClicked && isIncomplete && !bidComponent.samplingFee
+                }
                 value={bidComponent.samplingFee ? bidComponent.samplingFee : ""}
                 onChange={(e) => feeOnChange(e.target.value, "samplingFee")}
               />
@@ -612,6 +656,9 @@ const VendorProjectDetail = () => {
               </TableCell>
               <TableCell>
                 <TextField
+                  error={
+                    updateBidClicked && isIncomplete && !bidComponent.toolingFee
+                  }
                   value={bidComponent.toolingFee ? bidComponent.toolingFee : ""}
                   onChange={(e) => feeOnChange(e.target.value, "toolingFee")}
                 />
@@ -647,6 +694,7 @@ const VendorProjectDetail = () => {
   };
 
   const updateBids = async () => {
+    setUpdateBidClicked(true);
     const isCompleteBidComponent = (
       comp: UpdateProjectBidComponentInput | CreateProjectBidComponentInput
     ) => {
@@ -658,6 +706,20 @@ const VendorProjectDetail = () => {
 
       return true;
     };
+
+    const componentsValidated = () => {
+      for (let comp of getVendorProjectData!.getVendorProject!.components) {
+        const bidComponent = !!bidComponentsForUpdate[comp.id]
+          ? bidComponentsForUpdate[comp.id]
+          : bidComponentsForCreate[comp.id];
+        if (hasOnlyPartialFieldsFilledOut(bidComponent, comp)) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    if (!componentsValidated()) return;
 
     try {
       await Promise.all([
@@ -710,17 +772,11 @@ const VendorProjectDetail = () => {
       return null;
 
     const {
-      name: projectName,
-      deliveryDate,
-      deliveryAddress,
-      targetPrice,
-      orderQuantities,
-      status,
       components,
-      companyId,
       companyName: customerName,
       bidInfo,
     } = getVendorProjectData.getVendorProject;
+    const projectData = getVendorProjectData.getVendorProject;
 
     const bids: Record<string, BidComponent> = {};
 
@@ -740,147 +796,123 @@ const VendorProjectDetail = () => {
 
         <Paper
           style={{
-            padding: "12px",
             marginBottom: "8px",
             position: "relative",
           }}
         >
-          <IconButton
-            onClick={() => setChatOpen(true)}
-            sx={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}
+          <Box
+            sx={{
+              padding: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderBottom: "1px solid #e1e2e5",
+            }}
           >
-            <Tooltip
-              title={intl.formatMessage({
-                id: "app.customer.projectDetail.bid.menu.openConversation",
-              })}
-              arrow
-              placement="top"
-            >
-              <QuestionAnswerIcon sx={{ color: theme.palette.primary.light }} />
-            </Tooltip>
-          </IconButton>
-          <Typography variant="subtitle1" textAlign="left">
-            {intl.formatMessage({
-              id: "app.vendor.projectDetail.title",
-            })}
-          </Typography>
-          <Stack>
-            <ProjectListItem>
-              {renderProjectAttributeTitle(
-                intl.formatMessage({
-                  id: "app.vendor.project.attribute.customerName",
-                })
+            <Box pl={2} display="flex">
+              <Typography variant="h6" textAlign="left">
+                {intl.formatMessage({
+                  id: "app.customer.projects.projectDetail",
+                })}
+              </Typography>
+              {bidInfo.status === BidStatus.Outdated && (
+                <Box sx={{ ml: 2, display: "flex", alignItems: "center" }}>
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.bid.status.outdated.tooltip",
+                    })}
+                    placement="top"
+                  >
+                    <ErrorOutline color="warning" />
+                  </Tooltip>
+                </Box>
               )}
+            </Box>
+            <Box>
+              <IconButton
+                onClick={() => setChatOpen(true)}
+                sx={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}
+              >
+                <Tooltip
+                  title={intl.formatMessage({
+                    id: "app.customer.projectDetail.bid.menu.openConversation",
+                  })}
+                  placement="top"
+                >
+                  <QuestionAnswerIcon
+                    sx={{ color: theme.palette.primary.light }}
+                  />
+                </Tooltip>
+              </IconButton>
+            </Box>
+          </Box>
 
-              <Typography variant="caption" component="p">
-                {customerName}
-              </Typography>
-            </ProjectListItem>
-            <ProjectListItem>
-              {renderProjectAttributeTitle(
-                intl.formatMessage({
-                  id: "app.project.attribute.name",
-                })
-              )}
-              <Typography variant="caption" component="p">
-                {projectName}
-              </Typography>
-            </ProjectListItem>
-            <ProjectListItem>
-              {renderProjectAttributeTitle(
-                intl.formatMessage({
-                  id: "app.project.attribute.deliveryDate",
-                })
-              )}
-              <Typography variant="caption" component="p">
-                {deliveryDate}
-              </Typography>
-            </ProjectListItem>
-            <ProjectListItem>
-              {renderProjectAttributeTitle(
-                intl.formatMessage({
-                  id: "app.project.attribute.deliveryAddress",
-                })
-              )}
-              <Typography variant="caption" component="p">
-                {deliveryAddress}
-              </Typography>
-            </ProjectListItem>
-            <ProjectListItem>
-              {renderProjectAttributeTitle(
-                intl.formatMessage({
-                  id: "app.project.attribute.orderQuantities",
-                })
-              )}
-              <Typography variant="caption" component="p">
-                {orderQuantities.join(", ")}
-              </Typography>
-            </ProjectListItem>
-            <ProjectListItem>
-              {renderProjectAttributeTitle(
-                intl.formatMessage({
-                  id: "app.project.attribute.targetPrice",
-                })
-              )}
-              <Typography variant="caption" component="p">
-                {targetPrice}
-              </Typography>
-            </ProjectListItem>
-          </Stack>
+          <ProjectSpecDetail
+            projectData={getVendorProjectData.getVendorProject as VendorProject}
+            isVendorProject={true}
+          />
         </Paper>
 
-        <Paper>
+        <Paper sx={{ position: "relative" }}>
           {bidInfo.permission !== ProjectPermission.Viewer && (
-            <Box p={1} display="flex" justifyContent="flex-end">
-              {isEditMode ? (
-                <>
-                  <Button
-                    onClick={() => setIsEditMode(false)}
-                    variant="outlined"
-                    sx={{ mr: 2 }}
-                  >
-                    {intl.formatMessage({
-                      id: "app.general.cancel",
-                    })}
-                  </Button>
-                  <Button
-                    onClick={updateBids}
-                    variant="contained"
-                    sx={{ mr: 2 }}
-                  >
-                    {intl.formatMessage({
-                      id: "app.vendor.projectDetail.updateBid",
-                    })}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  {bidInfo.status === BidStatus.Outdated && (
-                    <IconButton onClick={resubmitProjectBid}>
+            <Box
+              p={1}
+              display="flex"
+              justifyContent="flex-end"
+              sx={{ position: "absolute", right: 0, top: 0, zIndex: 2 }}
+            >
+              <Box>
+                {isEditMode ? (
+                  <>
+                    <Button
+                      onClick={() => {
+                        setIsEditMode(false);
+                        setUpdateBidClicked(false);
+                      }}
+                      variant="outlined"
+                      sx={{ mr: 2 }}
+                    >
+                      {intl.formatMessage({
+                        id: "app.general.cancel",
+                      })}
+                    </Button>
+                    <Button
+                      onClick={updateBids}
+                      variant="contained"
+                      sx={{ mr: 2 }}
+                    >
+                      {intl.formatMessage({
+                        id: "app.vendor.projectDetail.updateBid",
+                      })}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    {bidInfo.status === BidStatus.Outdated && (
+                      <IconButton onClick={resubmitProjectBid}>
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "app.vendor.projectDetail.resubmitBid",
+                          })}
+                          placement="top"
+                        >
+                          <Sync color="primary" />
+                        </Tooltip>
+                      </IconButton>
+                    )}
+                    <IconButton onClick={() => setIsEditMode(true)}>
                       <Tooltip
-                        arrow
                         title={intl.formatMessage({
-                          id: "app.vendor.projectDetail.resubmitBid",
+                          id: "app.vendor.projectDetail.editBid",
                         })}
                         placement="top"
                       >
-                        <ChangeCircleOutlined />
+                        <Edit color="primary" />
                       </Tooltip>
                     </IconButton>
-                  )}
-                  <IconButton onClick={() => setIsEditMode(true)}>
-                    <Tooltip
-                      arrow
-                      title={intl.formatMessage({
-                        id: "app.vendor.projectDetail.editBid",
-                      })}
-                      placement="top"
-                    >
-                      <Edit />
-                    </Tooltip>
-                  </IconButton>
-                </>
-              )}
+                  </>
+                )}
+              </Box>
             </Box>
           )}
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -889,9 +921,40 @@ const VendorProjectDetail = () => {
               onChange={componentTabOnChange}
               variant="scrollable"
               scrollButtons="auto"
+              sx={{ width: "75%" }}
             >
               {components.map((comp, i) => {
-                return <Tab label={comp.name} key={i} />;
+                const bidComponent = !!bidComponentsForUpdate[comp.id]
+                  ? bidComponentsForUpdate[comp.id]
+                  : bidComponentsForCreate[comp.id];
+
+                const isIncomplete =
+                  bidComponent &&
+                  hasOnlyPartialFieldsFilledOut(bidComponent, comp);
+
+                return (
+                  <Tab
+                    label={comp.name}
+                    key={i}
+                    iconPosition="end"
+                    icon={
+                      isIncomplete && updateBidClicked ? (
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "app.general.incomplete",
+                          })}
+                          placement="top"
+                        >
+                          <InfoOutlined
+                            color="warning"
+                            sx={{ fontSize: "16px", lineHeight: 0 }}
+                          />
+                        </Tooltip>
+                      ) : undefined
+                    }
+                    sx={{ minHeight: "48px" }}
+                  />
+                );
               })}
             </Tabs>
           </Box>
@@ -914,6 +977,33 @@ const VendorProjectDetail = () => {
                 </Box>
 
                 <Box mt={3}>
+                  <Box display="flex" alignItems="center">
+                    <Typography
+                      variant="subtitle1"
+                      textAlign="left"
+                      sx={{ mr: 1 }}
+                    >
+                      {intl.formatMessage({
+                        id: "app.vendor.projectDetail.bidDetail",
+                      })}
+                    </Typography>
+                    {isEditMode && (
+                      <Tooltip
+                        title={
+                          !!bidComponentsForUpdate[comp.id]
+                            ? intl.formatMessage({
+                                id: "app.vendor.projectDetail.editBid.editBidTooltip",
+                              })
+                            : intl.formatMessage({
+                                id: "app.vendor.projectDetail.editBid.createNewBidTooltip",
+                              })
+                        }
+                        placement="right"
+                      >
+                        <InfoOutlined sx={{ fontSize: "20px" }} color="info" />
+                      </Tooltip>
+                    )}
+                  </Box>
                   {isEditMode
                     ? !!bidComponentsForUpdate[comp.id]
                       ? renderEditBid(comp, bidComponentsForUpdate[comp.id])

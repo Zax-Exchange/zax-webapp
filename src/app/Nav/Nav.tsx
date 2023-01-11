@@ -142,7 +142,7 @@ const Nav = () => {
       </Box>
       <Box
         sx={{
-          marginTop: "65px",
+          marginTop: "64px",
           borderTop: "1.5px solid rgb(237 103 4)",
           lineHeight: 0,
           position: "fixed",
@@ -169,7 +169,7 @@ const Nav = () => {
               fontWeight: "700",
             }}
           >
-            BETA
+            ALPHA TEST
           </Typography>
         </Box>
       </Box>

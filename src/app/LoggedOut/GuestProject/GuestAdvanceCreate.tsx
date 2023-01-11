@@ -511,7 +511,6 @@ const GuestAdvamcedCreate = ({
                       id: "app.general.edit",
                     })}
                     placement="top"
-                    arrow
                   >
                     <IconButton onClick={() => editComponent(i)}>
                       <Edit />
@@ -522,7 +521,6 @@ const GuestAdvamcedCreate = ({
                       id: "app.customer.createProject.removeComponent",
                     })}
                     placement="top"
-                    arrow
                   >
                     <IconButton onClick={() => removeComponent(i)}>
                       <Cancel />

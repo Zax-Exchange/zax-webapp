@@ -805,7 +805,6 @@ const GuestEditProject = ({
                       id: "app.general.edit",
                     })}
                     placement="top"
-                    arrow
                   >
                     <IconButton onClick={() => editComponent(i)}>
                       <Edit />
@@ -816,7 +815,6 @@ const GuestEditProject = ({
                       id: "app.customer.createProject.removeComponent",
                     })}
                     placement="top"
-                    arrow
                   >
                     <IconButton onClick={() => removeComponent(i)}>
                       <Cancel />
@@ -851,7 +849,6 @@ const GuestEditProject = ({
                       id: "app.customer.editProject.restoreComponent",
                     })}
                     placement="right"
-                    arrow
                   >
                     <IconButton onClick={() => restoreComponent(i)}>
                       <Restore />

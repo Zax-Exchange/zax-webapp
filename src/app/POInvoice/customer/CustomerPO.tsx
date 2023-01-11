@@ -203,7 +203,6 @@ const CustomerPO = () => {
                                 }
                               >
                                 <Tooltip
-                                  arrow
                                   title={intl.formatMessage({
                                     id: "app.customer.poInvoice.uploadAnother",
                                   })}

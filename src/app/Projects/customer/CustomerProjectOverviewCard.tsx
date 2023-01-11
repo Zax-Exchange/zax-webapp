@@ -121,11 +121,31 @@ const CustomerProjectOverviewCard = ({
   const renderProjectStatusChip = () => {
     switch (project.status) {
       case ProjectStatus.Open:
-        return <Chip label="Open" color="primary" size="small" />;
+        return (
+          <Chip
+            sx={{ color: "#fff" }}
+            label={intl.formatMessage({ id: "app.project.status.open" })}
+            color="primary"
+            size="small"
+          />
+        );
       case ProjectStatus.InProgress:
-        return <Chip label="In Progress" color="warning" size="small" />;
+        return (
+          <Chip
+            sx={{ color: "#fff" }}
+            label={intl.formatMessage({ id: "app.project.status.inProgress" })}
+            color="warning"
+            size="small"
+          />
+        );
       case ProjectStatus.Completed:
-        return <Chip label="Closed" color="success" size="small" />;
+        return (
+          <Chip
+            label={intl.formatMessage({ id: "app.project.status.closed" })}
+            color="success"
+            size="small"
+          />
+        );
       default:
         return null;
     }

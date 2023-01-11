@@ -13,7 +13,7 @@
   "app.general.cancel": "取消",
   "app.general.month": "月",
   "app.general.year": "年",
-  "app.general.currency.usd": "美金",
+  "app.general.currency.usd": "美元",
   "app.general.currency.rmb": "人民币",
   "app.general.login": "登入",
   "app.general.logout": "登出",
@@ -41,6 +41,7 @@
   "app.general.userPower.admin": "管理员",
   "app.general.userPower.user": "一般用户",
   "app.general.name": "名字",
+  "app.general.incomplete": "尚未完成",
 
   "app.general.company.vendorName": "厂商名",
   "app.general.company.customerName": "客户名",
@@ -52,7 +53,9 @@
   "app.general.input.emptyError": "本栏不能为空",
   
   "app.general.unit.mm": "毫米",
+  "app.general.unit.px": "px",
   "app.general.unit": "单位",
+  "app.general.unit.g": "克",
 
   "app.general.button.login": "登入",
 
@@ -242,7 +245,7 @@
   "app.project.status.closed": "Closed",
 
   "app.bid.attribute.quantity": "数量",
-  "app.bid.attribute.price": "价格",
+  "app.bid.attribute.price": "每单价格",
   "app.bid.attribute.samplingFee": "打样费",  
   "app.bid.attribute.toolingFee": "模具费",  
   "app.bid.attribute.bidRemark": "其他信息",
@@ -411,11 +414,14 @@
   "app.vendor.projectDetail.bidDetail": "竞标细节",
   "app.vendor.projectDetail.updateBid": "更新竞标",
   "app.vendor.projectDetail.updateSuccess": "更新完成",
-
-  "app.vendor.projects.yourBids": "您的竞标项目",
-  "app.vendor.projectDetail.resubmitBid": "重新提交",
-  "app.vendor.projectDetail.editBid": "编辑竞标",
+  "app.vendor.projectDetail.noBid": "您没有竞标此部件。",
   
+  "app.vendor.projects.yourBids": "您的竞标项目",
+  "app.vendor.projectDetail.resubmitBid": "如果您的竞标无需更新，您可以重新提交。",
+  "app.vendor.projectDetail.editBid": "编辑竞标",
+  "app.vendor.projectDetail.editBid.createNewBidTooltip": "您之前没有对此部件进行竞标。如欲竞标此部件，请完成以下表格。若无需竞标，留空即可。",
+  "app.vendor.projectDetail.editBid.editBidTooltip": "您已经对此部件竞标。如欲更新，请编辑以下表格之数字。",
+
   "app.vendor.guestProject.create": "生成询价单",
   "app.vendor.guestProject.modal.title": "发送询价单链接",
   "app.vendor.guestProject.linkSent": "链接已发送",

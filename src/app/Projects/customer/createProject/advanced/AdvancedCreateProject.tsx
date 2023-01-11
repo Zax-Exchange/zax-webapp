@@ -461,7 +461,11 @@ const AdvancedCreateProject = () => {
                 value={projectData.totalWeight}
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="end">g</InputAdornment>
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({ id: "app.general.unit.g" })}
+                      </Typography>
+                    </InputAdornment>
                   ),
                 }}
               />
@@ -514,6 +518,15 @@ const AdvancedCreateProject = () => {
                 onChange={projectInputOnChange}
                 name="targetPrice"
                 value={projectData.targetPrice || ""}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({ id: "app.general.currency.usd" })}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </ListItem>
 

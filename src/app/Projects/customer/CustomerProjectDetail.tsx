@@ -72,6 +72,7 @@ import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
 import { useGetProjectChangelogQuery } from "../../gql/get/project/project.generated";
 import PermissionDenied from "../../Utils/PermissionDenied";
+import ProjectSpecDetail from "../common/ProjectSpecDetail";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -183,27 +184,6 @@ const CustomerProjectDetail = () => {
     navigate(GENERAL_ROUTES.PROJECTS);
   };
 
-  // Render project fields
-  const renderProjectField = (
-    projectAttribute: keyof Project,
-    projectFieldData: string | number | number[]
-  ) => {
-    if (Array.isArray(projectFieldData)) {
-      return (
-        <Typography variant="caption">{projectFieldData.join(", ")}</Typography>
-      );
-    }
-
-    let fieldString = projectFieldData;
-    if (projectAttribute === "totalWeight") {
-      fieldString += " g";
-    }
-    if (projectAttribute === "targetPrice") {
-      fieldString = parseFloat(fieldString as string);
-    }
-    return <Typography variant="caption">{fieldString}</Typography>;
-  };
-
   const renderVendorBidOverview = (
     bids: ProjectBid[],
     projectComponents: ProjectComponent[]
@@ -215,10 +195,6 @@ const CustomerProjectDetail = () => {
         </ListItem>
       );
     });
-  };
-
-  const renderAttributeTitle = (attr: string) => {
-    return <Typography variant="subtitle2">{attr}</Typography>;
   };
 
   const isLoading = getProjectLoading || getProjectChangelogLoading;
@@ -255,8 +231,8 @@ const CustomerProjectDetail = () => {
                 sx={{
                   padding: 1,
                   display: "flex",
-                  justifyContent: "space-between",
                   alignItems: "center",
+                  justifyContent: "space-between",
                   borderBottom: "1px solid #e1e2e5",
                 }}
               >
@@ -280,100 +256,7 @@ const CustomerProjectDetail = () => {
                   </Box>
                 )}
               </Box>
-              <Box display="flex" justifyContent="space-between" p={3}>
-                <List>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({ id: "app.project.attribute.name" })
-                    )}
-                    {renderProjectField("name", projectData.name)}
-                  </ProjectDetailListItem>
-
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.category",
-                      })
-                    )}
-                    {renderProjectField("category", projectData.category)}
-                  </ProjectDetailListItem>
-
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.totalWeight",
-                      })
-                    )}
-                    {renderProjectField("totalWeight", projectData.totalWeight)}
-                  </ProjectDetailListItem>
-
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.deliveryDate",
-                      })
-                    )}
-
-                    {renderProjectField(
-                      "deliveryDate",
-                      projectData.deliveryDate
-                    )}
-                  </ProjectDetailListItem>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.deliveryAddress",
-                      })
-                    )}
-
-                    {renderProjectField(
-                      "deliveryAddress",
-                      projectData.deliveryAddress
-                    )}
-                  </ProjectDetailListItem>
-                </List>
-                <List>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.targetPrice",
-                      })
-                    )}
-                    {renderProjectField("targetPrice", projectData.targetPrice)}
-                  </ProjectDetailListItem>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.orderQuantities",
-                      })
-                    )}
-                    {renderProjectField(
-                      "orderQuantities",
-                      projectData.orderQuantities
-                    )}
-                  </ProjectDetailListItem>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.general.createdAt",
-                      })
-                    )}
-                    <Typography variant="caption">
-                      {projectData.createdAt.slice(0, 10)}
-                    </Typography>
-                  </ProjectDetailListItem>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.general.updatedAt",
-                      })
-                    )}
-                    <Typography variant="caption">
-                      {projectData.updatedAt.slice(0, 10)}
-                    </Typography>
-                  </ProjectDetailListItem>
-                </List>
-              </Box>
+              <ProjectSpecDetail projectData={projectData as Project} />
             </Paper>
 
             {/* COMPONENTS SECTION */}

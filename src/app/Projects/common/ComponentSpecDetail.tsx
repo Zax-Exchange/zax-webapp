@@ -79,7 +79,6 @@ export default function ComponentSpecDetail({
                     id: "app.component.attribute.includeArtworkInQuote",
                   })}
                   placement="top"
-                  arrow
                 >
                   <CheckCircle fontSize="small" color="info" sx={{ ml: 1 }} />
                 </Tooltip>

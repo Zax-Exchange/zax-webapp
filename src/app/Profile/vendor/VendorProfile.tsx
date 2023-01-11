@@ -182,7 +182,6 @@ const VendorProfile = () => {
                   id: "app.company.attribute.verified",
                 })}
                 placement="right"
-                arrow
               >
                 <CheckCircleIcon
                   fontSize="small"

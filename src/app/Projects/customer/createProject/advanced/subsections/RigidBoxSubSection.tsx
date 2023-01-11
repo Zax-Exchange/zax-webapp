@@ -237,7 +237,7 @@ const RigidBoxSubSection = ({
               RIGID_BOX_MATERIAL_SOURCES,
               "insideMaterialSource",
               intl.formatMessage({
-                id: "app.component.attribute.insideMaterial",
+                id: "app.component.attribute.insideMaterialSource",
               })
             )}
           </ListItem>
