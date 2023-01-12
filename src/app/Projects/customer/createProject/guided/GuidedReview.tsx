@@ -225,7 +225,7 @@ const GuidedReview = ({
           <Box mt={5}>
             {renderTypography(
               intl.formatMessage({
-                id: "app.customer.createProject.guidedCreate.step.generalSpec",
+                id: "app.customer.projects.projectDetail",
               }),
               { variant: "h6", textAlign: "left" }
             )}

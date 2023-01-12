@@ -670,7 +670,16 @@ const EditProject = () => {
               {renderTextField(
                 "totalWeight",
                 projectData.totalWeight,
-                intl.formatMessage({ id: "app.project.attribute.totalWeight" })
+                intl.formatMessage({ id: "app.project.attribute.totalWeight" }),
+                {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({ id: "app.general.unit.g" })}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }
               )}
             </ListItem>
             <ListItem>
@@ -743,7 +752,16 @@ const EditProject = () => {
               {renderTextField(
                 "targetPrice",
                 projectData.targetPrice,
-                intl.formatMessage({ id: "app.project.attribute.targetPrice" })
+                intl.formatMessage({ id: "app.project.attribute.targetPrice" }),
+                {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({ id: "app.general.currency.usd" })}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }
               )}
             </ListItem>
 

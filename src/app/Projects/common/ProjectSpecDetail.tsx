@@ -54,115 +54,127 @@ const ProjectSpecDetail = ({
 
   return (
     <>
-      <Box display="flex" p={3}>
-        <List sx={{ mr: 16 }}>
-          {isVendorProject && (
+      <Box p={3}>
+        <Box display="flex">
+          <List sx={{ mr: 16 }}>
+            {isVendorProject && (
+              <ProjectDetailListItem>
+                {renderAttributeTitle(
+                  intl.formatMessage({
+                    id: "app.vendor.project.attribute.customerName",
+                  })
+                )}
+                {renderProjectField("companyName", projectData.companyName)}
+              </ProjectDetailListItem>
+            )}
+
+            <ProjectDetailListItem>
+              {renderAttributeTitle(
+                intl.formatMessage({ id: "app.project.attribute.name" })
+              )}
+              {renderProjectField("name", projectData.name)}
+            </ProjectDetailListItem>
+
+            {isGuestProject && (
+              <ProjectDetailListItem>
+                {renderAttributeTitle(
+                  intl.formatMessage({
+                    id: "app.project.attribute.guestEmail",
+                  })
+                )}
+                {renderProjectField(
+                  "guestEmail",
+                  (projectData as VendorGuestProject).guestEmail
+                )}
+              </ProjectDetailListItem>
+            )}
+
             <ProjectDetailListItem>
               {renderAttributeTitle(
                 intl.formatMessage({
-                  id: "app.vendor.project.attribute.customerName",
+                  id: "app.project.attribute.category",
                 })
               )}
-              {renderProjectField("companyName", projectData.companyName)}
+              {renderProjectField("category", projectData.category)}
             </ProjectDetailListItem>
-          )}
 
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({ id: "app.project.attribute.name" })
-            )}
-            {renderProjectField("name", projectData.name)}
-          </ProjectDetailListItem>
-
-          {isGuestProject && (
             <ProjectDetailListItem>
               {renderAttributeTitle(
                 intl.formatMessage({
-                  id: "app.project.attribute.guestEmail",
+                  id: "app.project.attribute.totalWeight",
+                })
+              )}
+              {renderProjectField("totalWeight", projectData.totalWeight)}
+            </ProjectDetailListItem>
+
+            <ProjectDetailListItem>
+              {renderAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.deliveryDate",
+                })
+              )}
+
+              {renderProjectField("deliveryDate", projectData.deliveryDate)}
+            </ProjectDetailListItem>
+          </List>
+          <List>
+            <ProjectDetailListItem>
+              {renderAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.targetPrice",
+                })
+              )}
+              {renderProjectField("targetPrice", projectData.targetPrice)}
+            </ProjectDetailListItem>
+            <ProjectDetailListItem>
+              {renderAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.orderQuantities",
                 })
               )}
               {renderProjectField(
-                "guestEmail",
-                (projectData as VendorGuestProject).guestEmail
+                "orderQuantities",
+                projectData.orderQuantities
               )}
             </ProjectDetailListItem>
-          )}
+            <ProjectDetailListItem>
+              {renderAttributeTitle(
+                intl.formatMessage({
+                  id: "app.general.createdAt",
+                })
+              )}
+              <Typography variant="caption">
+                {projectData.createdAt.slice(0, 10)}
+              </Typography>
+            </ProjectDetailListItem>
+            <ProjectDetailListItem>
+              {renderAttributeTitle(
+                intl.formatMessage({
+                  id: "app.general.updatedAt",
+                })
+              )}
+              <Typography variant="caption">
+                {projectData.updatedAt.slice(0, 10)}
+              </Typography>
+            </ProjectDetailListItem>
+          </List>
+        </Box>
+        <Box>
+          <List sx={{ pt: 0 }}>
+            <ProjectDetailListItem>
+              {renderAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.deliveryAddress",
+                })
+              )}
 
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.project.attribute.category",
-              })
-            )}
-            {renderProjectField("category", projectData.category)}
-          </ProjectDetailListItem>
-
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.project.attribute.totalWeight",
-              })
-            )}
-            {renderProjectField("totalWeight", projectData.totalWeight)}
-          </ProjectDetailListItem>
-
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.project.attribute.deliveryDate",
-              })
-            )}
-
-            {renderProjectField("deliveryDate", projectData.deliveryDate)}
-          </ProjectDetailListItem>
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.project.attribute.deliveryAddress",
-              })
-            )}
-
-            {renderProjectField("deliveryAddress", projectData.deliveryAddress)}
-          </ProjectDetailListItem>
-        </List>
-        <List>
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.project.attribute.targetPrice",
-              })
-            )}
-            {renderProjectField("targetPrice", projectData.targetPrice)}
-          </ProjectDetailListItem>
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.project.attribute.orderQuantities",
-              })
-            )}
-            {renderProjectField("orderQuantities", projectData.orderQuantities)}
-          </ProjectDetailListItem>
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.general.createdAt",
-              })
-            )}
-            <Typography variant="caption">
-              {projectData.createdAt.slice(0, 10)}
-            </Typography>
-          </ProjectDetailListItem>
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.general.updatedAt",
-              })
-            )}
-            <Typography variant="caption">
-              {projectData.updatedAt.slice(0, 10)}
-            </Typography>
-          </ProjectDetailListItem>
-        </List>
+              {renderProjectField(
+                "deliveryAddress",
+                projectData.deliveryAddress
+              )}
+            </ProjectDetailListItem>
+          </List>
+        </Box>
       </Box>
     </>
   );

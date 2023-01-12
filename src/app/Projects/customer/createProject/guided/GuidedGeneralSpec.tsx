@@ -87,8 +87,6 @@ export default function GuidedGeneralSpec({
   };
 
   const shouldDisableNextButton = () => {
-    console.log(projectData);
-
     for (let key in projectData) {
       const attr = key as keyof CreateProjectInput;
       if (attr === "components") continue;

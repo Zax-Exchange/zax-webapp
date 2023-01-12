@@ -59,6 +59,8 @@
 
   "app.general.button.login": "Login",
 
+  "app.general.search": "Search",
+
   "app.routes.loggedOut.getStarted": "Get Started",
   "app.routes.loggedIn.home": "Home",
   "app.routes.loggedIn.projects": "Projects",
@@ -443,7 +445,7 @@
   "app.search.clearFilters": "Clear Filters",
   "app.search.resultsTitle": "Search Results",
   "app.search.noResults": "Sorry, but we could not find any projects based on your search terms. Try searching for other products!",
-
+  "app.search.invalidSearch": "Invalid seach keywords",
 
   "app.settings.accountSettings": "Account Settings",
   "app.settings.accountSettings.changePassword": "Change Password",

@@ -238,6 +238,7 @@ const GuidedOtherSubSection = ({
             }
             return option.value === value.value;
           }}
+          disableCloseOnSelect
           onChange={(e, v) => {
             setComponentSpec((prev) => ({
               ...prev,

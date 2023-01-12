@@ -234,6 +234,7 @@ const GuidedInsideSpec = ({
             }
             return option.value === value.value;
           }}
+          disableCloseOnSelect
           onChange={(e, v) => {
             setComponentSpec((prev) => ({
               ...prev,

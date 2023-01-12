@@ -83,7 +83,7 @@ const VendorSearchResults = () => {
   useEffect(() => {
     if (searchProjectsError) {
       setSnackbar({
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
@@ -91,7 +91,7 @@ const VendorSearchResults = () => {
 
     if (queryParamError) {
       setSnackbar({
-        message: "Invalid search.",
+        message: intl.formatMessage({ id: "app.search.invalidSearch" }),
         severity: "error",
       });
       setSnackbarOpen(true);

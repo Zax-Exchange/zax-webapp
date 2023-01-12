@@ -130,7 +130,6 @@ export default function GoogleMaps({
   const getCountryValue = (
     selectedPlace: google.maps.places.QueryAutocompletePrediction | null
   ) => {
-    console.log(placesService, selectedPlace);
     if (placesService && selectedPlace) {
       placesService.getDetails(
         {
