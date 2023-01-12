@@ -76,6 +76,7 @@ export default function GuidedGeneralSpec({
     setProjectData({
       ...projectData,
       deliveryAddress: address,
+      country,
     });
   };
 
@@ -85,24 +86,19 @@ export default function GuidedGeneralSpec({
     }
   };
 
-  // TODO: finish
   const shouldDisableNextButton = () => {
+    console.log(projectData);
+
     for (let key in projectData) {
-      const attribute = key as keyof CreateProjectInput;
-      switch (attribute) {
-        case "category":
-        case "deliveryAddress":
-        case "deliveryDate":
-        case "name":
-        case "targetPrice":
-        case "totalWeight":
-          if (!projectData[attribute]) return true;
-          break;
-        case "orderQuantities":
-          if (!projectData.orderQuantities.length) return true;
-          break;
+      const attr = key as keyof CreateProjectInput;
+      if (attr === "components") continue;
+      if (Array.isArray(projectData[attr])) {
+        if ((projectData[attr] as []).length === 0) return true;
+      } else if (!(projectData[attr] as string).length) {
+        return true;
       }
     }
+
     return false;
   };
 
