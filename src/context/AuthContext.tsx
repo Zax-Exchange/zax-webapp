@@ -20,7 +20,6 @@ const initialState = {
   user: null,
 };
 
-// TODO: fix all typings in this file
 if (sessionStorage.getItem("token")) {
   const decoded = jwtDecode(sessionStorage.getItem("token")!) as any;
 

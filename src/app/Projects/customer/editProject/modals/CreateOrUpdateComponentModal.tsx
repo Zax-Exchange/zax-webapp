@@ -1,4 +1,4 @@
-import { Cancel } from "@mui/icons-material";
+import { Cancel, InfoOutlined } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
@@ -14,6 +14,7 @@ import {
   ListItem,
   Stack,
   TextField,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -266,10 +267,58 @@ const CreateOrUpdateComponentModal = ({
     }
   };
 
-  // TODO: finish implementation
+  // TODO: refactor implementation
   // check if component modal add button should be disabled
   const shouldDisableComponentModalAddOrSaveButton = () => {
     // check each required spec is filled
+    const isInvalidComponentDimension = () => {
+      if (!Object.keys(componentSpec).length) {
+        return true;
+      }
+      if (componentSpec.productName === PRODUCT_NAME_STICKER.value) {
+        if (!componentSpec.dimension.x || !componentSpec.dimension.y) {
+          return true;
+        }
+        return false;
+      }
+      if (
+        !componentSpec.dimension.x ||
+        !componentSpec.dimension.y ||
+        !componentSpec.dimension.z
+      ) {
+        return true;
+      }
+      return false;
+    };
+
+    const isInvalidComponentSpec = () => {
+      if (Object.keys(componentSpec).length === 0) return true;
+
+      for (let key in componentSpec) {
+        const attribute: keyof CreateProjectComponentSpecInput =
+          key as keyof CreateProjectComponentSpecInput;
+
+        if (attribute === "dimension") {
+          if (isInvalidComponentDimension()) return true;
+        }
+
+        const val = componentSpec[attribute];
+
+        if (
+          val !== undefined &&
+          val !== null &&
+          typeof val !== "boolean" &&
+          typeof val !== "object"
+        ) {
+          if (val.length === 0) return true;
+        }
+      }
+      return false;
+    };
+
+    if (isInvalidComponentSpec()) return true;
+
+    if (!componentData.name) return false;
     return false;
   };
 
@@ -279,49 +328,64 @@ const CreateOrUpdateComponentModal = ({
     };
 
     return (
-      <Autocomplete
-        sx={{ width: 200 }}
-        options={ALL_PRODUCT_NAMES}
-        getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
-        autoHighlight
-        defaultValue={getDefaultProduct()}
-        onChange={(e, v) => {
-          // whenever product name changes, we assume it's a brand new component
-          setComponentIndexToEdit(null);
-          setComponentDesigns([]);
-
-          if (!v) {
-            setComponentSpec({} as CreateProjectComponentSpecInput);
-            return;
+      <>
+        <Autocomplete
+          sx={{ width: 200 }}
+          options={ALL_PRODUCT_NAMES}
+          getOptionLabel={(option) =>
+            intl.formatMessage({ id: option.labelId })
           }
-          setComponentData({
-            name: "",
-            componentSpec: {},
-          } as CreateProjectComponentInput);
-          setComponentSpec((spec) => {
-            return getComponentSpecDefaultState(v.value);
-          });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={intl.formatMessage({
-              id: "app.component.attribute.product",
+          autoHighlight
+          defaultValue={getDefaultProduct()}
+          onChange={(e, v) => {
+            // whenever product name changes, we assume it's a brand new component
+            setComponentIndexToEdit(null);
+            setComponentDesigns([]);
+
+            if (!v) {
+              setComponentSpec({} as CreateProjectComponentSpecInput);
+              return;
+            }
+            setComponentData({
+              name: componentData.name,
+              componentSpec: {},
+            } as CreateProjectComponentInput);
+            setComponentSpec((spec) => {
+              return getComponentSpecDefaultState(v.value);
+            });
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={intl.formatMessage({
+                id: "app.component.attribute.product",
+              })}
+              name=""
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password",
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: 16,
+                  top: -7,
+                },
+              }}
+            />
+          )}
+        />
+        {componentIndexToEdit !== null && (
+          <Tooltip
+            title={intl.formatMessage({
+              id: "app.customer.editProject.selectDifferentProduct",
             })}
-            name=""
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: "new-password",
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: 16,
-                top: -7,
-              },
-            }}
-          />
+            placement="top"
+            sx={{ ml: 1 }}
+          >
+            <InfoOutlined color="info" />
+          </Tooltip>
         )}
-      />
+      </>
     );
   };
 

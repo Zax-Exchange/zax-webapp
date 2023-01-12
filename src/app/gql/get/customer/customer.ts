@@ -11,6 +11,7 @@ const GET_CUSTOMER_PROJECT = gql`
   query getCustomerProject($data: GetCustomerProjectInput!) {
     getCustomerProject(data: $data) {
       ...ProjectFragment
+      country
       creationMode
       permission
       components {

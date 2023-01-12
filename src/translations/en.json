@@ -35,6 +35,7 @@
   "app.general.no": "No",
   "app.general.ok": "OK",
   "app.general.email": "Email",
+  "app.general.yourEmail": "Your Email",
   "app.general.password": "Password",
   "app.general.tokenExpired": "Token Expired!",
   "app.general.send": "Send",
@@ -82,10 +83,16 @@
   "app.notification.noNewNotifications": "No new notifications at this time!",
   "app.notification.clearAll": "Clear All",
 
+  "app.feedback.action.bugReport": "Bug Report",
+  "app.feedback.action.bugReport.whatAreYouTryingToDo": "What were you trying to do",
+  "app.feedback.action.bugReport.whatIsTheProblem": "What was the problem",
+  "app.feedback.action.bugReport.reported": "Bug reported, thank you for your report!",
+  "app.feedback.action.feedbackForm": "Feedback Form",
+
   "app.signup.companySignup.pageTitle": "Select Your Company Type",
   "app.signup.companySignup.asCustomer": "Sign-up as Customer",
   "app.signup.companySignup.asVendor": "Sign-up as Vendor",
-  "app.signup.billingEmail.helperText": "We will use this email to send billing & sign-up information.",
+  "app.signup.billingEmail.helperText": "We will use this email to send billing & sign up information.",
   "app.signup.billingEmail.pageTitle": "Let's start with your email",
   "app.signup.companyInfo.pageTitle": "Enter Your Company Information",
   "app.signup.companyInfo.contactEmail.helperText": "This will be visible to others for contacting.",
@@ -228,7 +235,6 @@
   "app.project.attribute.category": "Category",
   "app.project.attribute.totalWeight": "Estimated Total Weight",
   "app.project.attribute.companyName": "Company Name",
-  "app.project.attribute.design": "Design",
   "app.project.attribute.deliveryDate": "Delivery Date",
   "app.project.attribute.deliveryAddress": "Delivery Address",
   "app.project.attribute.targetPrice": "Target Price Per Unit",
@@ -332,12 +338,13 @@
   "app.customer.createProject.creationModeModalTitle": "Please select below how you would like to configure your project.",
   "app.customer.createProject.selectBoxStyle": "Select Box Style",
   "app.customer.createProject.noDesignPlaceholder": "No designs uploaded yet.",
-
+  "app.customer.createProject.projectCreated": "Project created!",
 
   "app.customer.editProject.restoreComponent": "Restore Component",
   "app.customer.editProject.removedComponents": "Removed Components",
   "app.customer.editProject.title": "Edit Project Detail",
   "app.customer.editProject.update.success": "Project Updated!",
+  "app.customer.editProject.selectDifferentProduct": "Selecting different products will be treated as creating a new component. If you wish to delete the current component, please close this window and click on 'Remove Component'.",
 
   "app.customer.createProject.guidedCreate": "Guided",
   "app.customer.createProject.guidedCreate.step.generalSpec": "General Spec",
@@ -371,6 +378,7 @@
   "app.customer.projectDetail.bid.menu.rejectBid": "Reject",
   "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
   "app.customer.projectDetail.bidModal.vendorInformation": "Vendor Information",
+  "app.customer.projectDetail.noBids": "Project does not have any bids yet.",
 
   "app.customer.poInvoice.create": "New Invoice",
   "app.customer.poInvoice.createSuccess": "PO Created!",

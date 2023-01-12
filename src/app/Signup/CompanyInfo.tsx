@@ -40,7 +40,9 @@ const CompanyInfo = ({
     if ((data && !data.checkCompanyName) || !data) {
       return "";
     }
-    return "Company name taken.";
+    return intl.formatMessage({
+      id: "app.signup.companyInfo.companyNameTaken",
+    });
   };
 
   const companyNameOnChange = async (

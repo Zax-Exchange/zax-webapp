@@ -55,6 +55,7 @@ import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
 import { ProjectOverviewListItem } from "../../Projects/customer/CustomerProjectOverviewCard";
+import ProjectSpecDetail from "../../Projects/common/ProjectSpecDetail";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -638,112 +639,31 @@ const SearchProjectDetail = () => {
                   </Typography>
                 </Box>
               </Box>
-              <Box display="flex" justifyContent="space-between" p={3}>
-                <List>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({ id: "app.project.attribute.name" })
-                    )}
-                    {renderProjectField("name", projectData.name)}
-                  </ProjectDetailListItem>
-
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.category",
-                      })
-                    )}
-                    {renderProjectField("category", projectData.category)}
-                  </ProjectDetailListItem>
-
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.totalWeight",
-                      })
-                    )}
-                    {renderProjectField("totalWeight", projectData.totalWeight)}
-                  </ProjectDetailListItem>
-
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.deliveryDate",
-                      })
-                    )}
-
-                    {renderProjectField(
-                      "deliveryDate",
-                      projectData.deliveryDate
-                    )}
-                  </ProjectDetailListItem>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.deliveryAddress",
-                      })
-                    )}
-
-                    {renderProjectField(
-                      "deliveryAddress",
-                      projectData.deliveryAddress
-                    )}
-                  </ProjectDetailListItem>
-                </List>
-                <List>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.targetPrice",
-                      })
-                    )}
-                    {renderProjectField("targetPrice", projectData.targetPrice)}
-                  </ProjectDetailListItem>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.project.attribute.orderQuantities",
-                      })
-                    )}
-                    {renderProjectField(
-                      "orderQuantities",
-                      projectData.orderQuantities
-                    )}
-                  </ProjectDetailListItem>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.general.createdAt",
-                      })
-                    )}
-                    <Typography variant="caption">
-                      {projectData.createdAt.slice(0, 10)}
-                    </Typography>
-                  </ProjectDetailListItem>
-                  <ProjectDetailListItem>
-                    {renderAttributeTitle(
-                      intl.formatMessage({
-                        id: "app.general.updatedAt",
-                      })
-                    )}
-                    <Typography variant="caption">
-                      {projectData.updatedAt.slice(0, 10)}
-                    </Typography>
-                  </ProjectDetailListItem>
-                </List>
-              </Box>
+              <ProjectSpecDetail projectData={projectData} />
             </Paper>
 
-            <Box mt={2} mb={1.5} display="flex">
-              <Typography variant="subtitle1">
-                {intl.formatMessage({
-                  id: "app.vendor.search.componentsDetail",
-                })}
-              </Typography>
-            </Box>
-
             <Paper sx={{ mt: 1 }}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Box
+                sx={{
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  display: "flex",
+                }}
+              >
+                <Box
+                  sx={{
+                    padding: "8px",
+                    margin: "0 8px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="h6" textAlign="left">
+                    {intl.formatMessage({
+                      id: "app.customer.projects.componentsDetail",
+                    })}
+                  </Typography>
+                </Box>
                 <Tabs
                   value={currentComponentTab}
                   onChange={componentTabOnChange}
@@ -826,20 +746,20 @@ const SearchProjectDetail = () => {
                     : renderBidInputSection(components)}
                 </Paper>
                 <Box>
-                  {!existingBid && (
-                    <Box display="flex" alignItems="center" mt={2}>
-                      <Typography variant="subtitle2">
-                        {intl.formatMessage({
-                          id: "app.vendor.search.AdditionRemarks",
-                        })}
-                      </Typography>
+                  <Box display="flex" alignItems="center" mt={2}>
+                    <Typography variant="subtitle2">
+                      {intl.formatMessage({
+                        id: "app.vendor.search.AdditionRemarks",
+                      })}
+                    </Typography>
+                    {!existingBid && (
                       <UploadRemark
                         setRemarkFile={setRemarkFile}
                         setRemarkId={setRemarkId}
                         deleteExistingRemark={deleteExistingRemark}
                       />
-                    </Box>
-                  )}
+                    )}
+                  </Box>
 
                   {remarkFile && (
                     <Box display="flex">

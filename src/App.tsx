@@ -53,6 +53,7 @@ import {
   LocaleContext,
   LocaleContextProvider,
 } from "./context/LocaleContext";
+import Feedback from "./app/Feedback/Feedback";
 
 const theme = createTheme({
   palette: {
@@ -395,6 +396,7 @@ function App() {
                 />
               </Routes>
             </Container>
+            <Feedback />
             <Footer />
           </ErrorBoundary>
         </div>

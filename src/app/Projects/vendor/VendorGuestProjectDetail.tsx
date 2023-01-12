@@ -27,6 +27,7 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../Utils/Loading";
 import PermissionDenied from "../../Utils/PermissionDenied";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
+import ProjectSpecDetail from "../common/ProjectSpecDetail";
 import { ProjectOverviewListItem } from "../customer/CustomerProjectOverviewCard";
 
 interface TabPanelProps {
@@ -167,106 +168,7 @@ const VendorGuestProjectDetail = () => {
               </Typography>
             </Box>
           </Box>
-          <Box display="flex" justifyContent="space-between" p={3}>
-            <List>
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({ id: "app.project.attribute.name" })
-                )}
-                {renderProjectField("name", projectData.name)}
-              </ProjectDetailListItem>
-
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.project.attribute.guestEmail",
-                  })
-                )}
-                {renderProjectField("guestEmail", projectData.guestEmail)}
-              </ProjectDetailListItem>
-
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.project.attribute.category",
-                  })
-                )}
-                {renderProjectField("category", projectData.category)}
-              </ProjectDetailListItem>
-
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.project.attribute.totalWeight",
-                  })
-                )}
-                {renderProjectField("totalWeight", projectData.totalWeight)}
-              </ProjectDetailListItem>
-
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.project.attribute.deliveryDate",
-                  })
-                )}
-
-                {renderProjectField("deliveryDate", projectData.deliveryDate)}
-              </ProjectDetailListItem>
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.project.attribute.deliveryAddress",
-                  })
-                )}
-
-                {renderProjectField(
-                  "deliveryAddress",
-                  projectData.deliveryAddress
-                )}
-              </ProjectDetailListItem>
-            </List>
-            <List>
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.project.attribute.targetPrice",
-                  })
-                )}
-                {renderProjectField("targetPrice", projectData.targetPrice)}
-              </ProjectDetailListItem>
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.project.attribute.orderQuantities",
-                  })
-                )}
-                {renderProjectField(
-                  "orderQuantities",
-                  projectData.orderQuantities
-                )}
-              </ProjectDetailListItem>
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.general.createdAt",
-                  })
-                )}
-                <Typography variant="caption">
-                  {projectData.createdAt.slice(0, 10)}
-                </Typography>
-              </ProjectDetailListItem>
-              <ProjectDetailListItem>
-                {renderAttributeTitle(
-                  intl.formatMessage({
-                    id: "app.general.updatedAt",
-                  })
-                )}
-                <Typography variant="caption">
-                  {projectData.updatedAt.slice(0, 10)}
-                </Typography>
-              </ProjectDetailListItem>
-            </List>
-          </Box>
+          <ProjectSpecDetail projectData={projectData} isGuestProject={true} />
         </Paper>
 
         {/* COMPONENTS SECTION */}

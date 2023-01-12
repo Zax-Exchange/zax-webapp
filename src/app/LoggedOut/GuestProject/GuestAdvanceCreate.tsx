@@ -44,6 +44,7 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 import {
   CreateGuestProjectInput,
+  CreateProjectInput,
   ProjectCreationMode,
   ProjectDesign,
 } from "../../../generated/graphql";
@@ -109,6 +110,7 @@ const GuestAdvamcedCreate = ({
   >({
     name: "",
     deliveryAddress: "",
+    country: "",
     category: "",
     totalWeight: "",
     deliveryDate: new Date().toISOString().split("T")[0],
@@ -246,20 +248,16 @@ const GuestAdvamcedCreate = ({
   // check if create project button should be disabled
   const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
-      const attr = key as keyof CreateGuestProjectInput;
-      if (attr === "targetPrice") {
-        if (!projectData.targetPrice) return true;
-        continue;
-      }
+      const attr = key as keyof Partial<CreateGuestProjectInput>;
+
       if (Array.isArray(projectData[attr])) {
         if ((projectData[attr] as []).length === 0) return true;
-        return false;
       } else if (!(projectData[attr] as string).length) {
         return true;
       }
     }
 
-    return projectData.components!.length === 0;
+    return false;
   };
 
   const createProject = async () => {
@@ -284,10 +282,11 @@ const GuestAdvamcedCreate = ({
     }
   };
 
-  const handleAddressOnChange = (address: string) => {
+  const handleAddressOnChange = (address: string, country: string) => {
     setProjectData({
       ...projectData,
       deliveryAddress: address,
+      country,
     });
   };
 

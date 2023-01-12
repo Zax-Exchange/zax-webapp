@@ -23,21 +23,9 @@ function loadScript(src: string, position: HTMLElement | null, id: string) {
   position.appendChild(script);
 }
 
-const autocompleteService = { current: null };
+let autocompleteService: null | google.maps.places.AutocompleteService = null;
 
-interface MainTextMatchedSubstrings {
-  offset: number;
-  length: number;
-}
-interface StructuredFormatting {
-  main_text: string;
-  secondary_text: string;
-  main_text_matched_substrings: readonly MainTextMatchedSubstrings[];
-}
-interface PlaceType {
-  description: string;
-  structured_formatting: StructuredFormatting;
-}
+let placesService: null | google.maps.places.PlacesService = null;
 
 export default function GoogleMaps({
   parentSetDataHandler,
@@ -48,7 +36,7 @@ export default function GoogleMaps({
   error = false,
   errorHelperText = "",
 }: {
-  parentSetDataHandler: (address: string) => void;
+  parentSetDataHandler: (address: string, country: string) => void;
   defaultAddress?: string;
   width?: string | number;
   height?: string | number;
@@ -57,9 +45,12 @@ export default function GoogleMaps({
   errorHelperText?: string;
 }) {
   const intl = useIntl();
-  const [value, setValue] = React.useState<PlaceType | null>(null);
+  const [value, setValue] =
+    React.useState<google.maps.places.QueryAutocompletePrediction | null>(null);
   const [inputValue, setInputValue] = React.useState("");
-  const [options, setOptions] = React.useState<readonly PlaceType[]>([]);
+  const [options, setOptions] = React.useState<
+    google.maps.places.QueryAutocompletePrediction[]
+  >([]);
   const loaded = React.useRef(false);
 
   if (typeof window !== "undefined" && !loaded.current) {
@@ -79,12 +70,13 @@ export default function GoogleMaps({
       throttle(
         (
           request: { input: string },
-          callback: (results?: readonly PlaceType[]) => void
+          callback: (
+            results: google.maps.places.QueryAutocompletePrediction[] | null
+          ) => void
         ) => {
-          (autocompleteService.current as any).getPlacePredictions(
-            request,
-            callback
-          );
+          if (autocompleteService) {
+            autocompleteService.getPlacePredictions(request, callback);
+          }
         },
         200
       ),
@@ -94,26 +86,32 @@ export default function GoogleMaps({
   React.useEffect(() => {
     let active = true;
 
-    if (!autocompleteService.current && (window as any).google) {
-      autocompleteService.current = new (
+    if (!autocompleteService && (window as any).google) {
+      autocompleteService = new (
         window as any
       ).google.maps.places.AutocompleteService();
     }
-    if (!autocompleteService.current) {
-      return undefined;
+
+    if (!placesService && (window as any).google) {
+      placesService = new (window as any).google.maps.places.PlacesService(
+        document.createElement("div")
+      );
+    }
+    if (!autocompleteService) {
+      return;
     }
 
     if (inputValue === "") {
-      setOptions(value ? [value] : []);
-      return undefined;
+      setOptions([]);
+      return;
     }
 
-    fetch({ input: inputValue }, (results?: readonly PlaceType[]) => {
+    fetch({ input: inputValue }, (results) => {
       if (active) {
-        let newOptions: readonly PlaceType[] = [];
+        let newOptions: google.maps.places.QueryAutocompletePrediction[] = [];
 
-        if (value) {
-          newOptions = [value];
+        if (value && results) {
+          newOptions = [...results];
         }
 
         if (results) {
@@ -129,6 +127,30 @@ export default function GoogleMaps({
     };
   }, [value, inputValue, fetch]);
 
+  const getCountryValue = (
+    selectedPlace: google.maps.places.QueryAutocompletePrediction | null
+  ) => {
+    console.log(placesService, selectedPlace);
+    if (placesService && selectedPlace) {
+      placesService.getDetails(
+        {
+          placeId: selectedPlace.place_id || "",
+          fields: ["address_component"],
+        },
+        (place: google.maps.places.PlaceResult | null, status: any) => {
+          if (place && place.address_components) {
+            for (let comp of place.address_components) {
+              if (comp.types.includes("country")) {
+                parentSetDataHandler(selectedPlace.description, comp.long_name);
+              }
+            }
+          }
+        }
+      );
+    }
+    return "";
+  };
+
   return (
     <Autocomplete
       sx={{ width }}
@@ -142,10 +164,16 @@ export default function GoogleMaps({
       filterSelectedOptions
       value={value ? value : defaultAddress ? (defaultAddress as any) : null}
       inputValue={inputValue}
-      onChange={(event: any, newValue: PlaceType | null) => {
+      onChange={(
+        event: any,
+        newValue: google.maps.places.QueryAutocompletePrediction | null
+      ) => {
         setOptions(newValue ? [newValue, ...options] : options);
         setValue(newValue);
-        parentSetDataHandler(newValue ? newValue.description : "");
+        parentSetDataHandler(
+          newValue ? newValue.description : "",
+          getCountryValue(newValue)
+        );
       }}
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);

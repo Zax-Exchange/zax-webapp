@@ -75,7 +75,7 @@ const GenerateGuestProjectLinkModal = ({
       <Box>
         <TextField
           type="email"
-          label={intl.formatMessage({ id: "app.general.email" })}
+          label={intl.formatMessage({ id: "app.project.attribute.guestEmail" })}
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

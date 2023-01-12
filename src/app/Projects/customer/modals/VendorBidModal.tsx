@@ -78,16 +78,16 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
           {row.isLast ? row.projectComponent.name : ""}
         </TableCell>
         <TableCell align="right">{row.quantity}</TableCell>
-        <TableCell align="right">{parseFloat(row.price)}</TableCell>
+        <TableCell align="right">${parseFloat(row.price)}</TableCell>
 
         <TableCell align="right">
-          {row.isLast ? row.bidComponent.samplingFee : "-"}
+          {row.isLast ? `$${row.bidComponent.samplingFee}` : "-"}
         </TableCell>
 
         <TableCell align="right">
           {row.isLast
             ? row.bidComponent.toolingFee
-              ? row.bidComponent.toolingFee
+              ? `$${row.bidComponent.toolingFee}`
               : "-"
             : "-"}
         </TableCell>

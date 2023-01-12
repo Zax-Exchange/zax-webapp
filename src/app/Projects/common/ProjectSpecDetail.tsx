@@ -5,6 +5,7 @@ import { useIntl } from "react-intl";
 import {
   CustomerProject,
   Project,
+  VendorGuestProject,
   VendorProject,
 } from "../../../generated/graphql";
 import { ProjectOverviewListItem } from "../customer/CustomerProjectOverviewCard";
@@ -17,9 +18,11 @@ const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
 const ProjectSpecDetail = ({
   projectData,
   isVendorProject = false,
+  isGuestProject = false,
 }: {
-  projectData: Project | CustomerProject | VendorProject;
+  projectData: Project | CustomerProject | VendorProject | VendorGuestProject;
   isVendorProject?: boolean;
+  isGuestProject?: boolean;
 }) => {
   const intl = useIntl();
   const renderAttributeTitle = (attr: string) => {
@@ -70,6 +73,20 @@ const ProjectSpecDetail = ({
             )}
             {renderProjectField("name", projectData.name)}
           </ProjectDetailListItem>
+
+          {isGuestProject && (
+            <ProjectDetailListItem>
+              {renderAttributeTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.guestEmail",
+                })
+              )}
+              {renderProjectField(
+                "guestEmail",
+                (projectData as VendorGuestProject).guestEmail
+              )}
+            </ProjectDetailListItem>
+          )}
 
           <ProjectDetailListItem>
             {renderAttributeTitle(

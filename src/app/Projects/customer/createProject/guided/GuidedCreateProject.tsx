@@ -97,6 +97,7 @@ export default function GuidedCreateProject() {
     creationMode: ProjectCreationMode.Guided,
     name: "",
     deliveryAddress: "",
+    country: "",
     category: "",
     totalWeight: "",
     deliveryDate: new Date().toISOString().split("T")[0],

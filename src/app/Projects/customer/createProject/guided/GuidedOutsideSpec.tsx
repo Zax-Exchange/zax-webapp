@@ -324,7 +324,6 @@ const GuidedOutsideSpec = ({
     }
   };
 
-  // TODO: change .value to .label
   const renderBoxStyle = () => {
     return (
       <Box>

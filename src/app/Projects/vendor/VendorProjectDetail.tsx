@@ -786,6 +786,11 @@ const VendorProjectDetail = () => {
 
     return (
       <>
+        <Box textAlign="left">
+          <IconButton onClick={() => navigate(-1)}>
+            <KeyboardBackspaceIcon style={{ color: "rgb(43, 52, 89)" }} />
+          </IconButton>
+        </Box>
         <ProjectChat
           setChatOpen={setChatOpen}
           projectBidId={bidInfo.id}
@@ -1062,16 +1067,7 @@ const VendorProjectDetail = () => {
     );
   }
 
-  return (
-    <Container>
-      <Box textAlign="left">
-        <IconButton onClick={() => navigate(-1)}>
-          <KeyboardBackspaceIcon style={{ color: "rgb(43, 52, 89)" }} />
-        </IconButton>
-      </Box>
-      {renderProjectDetail()}
-    </Container>
-  );
+  return <Container>{renderProjectDetail()}</Container>;
 };
 
 export default VendorProjectDetail;

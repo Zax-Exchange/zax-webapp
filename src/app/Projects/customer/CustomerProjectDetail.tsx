@@ -261,21 +261,28 @@ const CustomerProjectDetail = () => {
 
             {/* COMPONENTS SECTION */}
             <Paper sx={{ mt: 3 }}>
-              {/* <Box>
-                <Typography variant="h6" textAlign="left">
-                  {intl.formatMessage({
-                    id: "app.customer.projects.componentsDetail",
-                  })}
-                </Typography>
-              </Box> */}
-
               {/* <Paper sx={{ mt: 1 }}> */}
               <Box
                 sx={{
                   borderBottom: 1,
                   borderColor: "divider",
+                  display: "flex",
                 }}
               >
+                <Box
+                  sx={{
+                    padding: "8px",
+                    margin: "0 8px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="h6" textAlign="left">
+                    {intl.formatMessage({
+                      id: "app.customer.projects.componentsDetail",
+                    })}
+                  </Typography>
+                </Box>
                 <Tabs
                   value={currentTab}
                   onChange={componentTabOnChange}
@@ -309,9 +316,27 @@ const CustomerProjectDetail = () => {
                 })}
               </Typography>
             </Box>
-            <List sx={{ maxHeight: 500, overflow: "scroll" }}>
-              {bids && renderVendorBidOverview(bids, projectData.components)}
-            </List>
+            {!bids?.length && (
+              <Box>
+                <Typography variant="caption" color="GrayText">
+                  {intl.formatMessage({
+                    id: "app.customer.projectDetail.noBids",
+                  })}
+                </Typography>
+              </Box>
+            )}
+            {!!bids && (
+              <List sx={{ maxHeight: "800px", overflow: "scroll" }}>
+                {renderVendorBidOverview(bids, projectData.components)}
+                {renderVendorBidOverview(bids, projectData.components)}
+                {renderVendorBidOverview(bids, projectData.components)}
+                {renderVendorBidOverview(bids, projectData.components)}
+                {renderVendorBidOverview(bids, projectData.components)}
+                {renderVendorBidOverview(bids, projectData.components)}
+                {renderVendorBidOverview(bids, projectData.components)}
+                {renderVendorBidOverview(bids, projectData.components)}
+              </List>
+            )}
           </Grid>
         </Grid>
 

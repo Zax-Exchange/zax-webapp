@@ -248,7 +248,7 @@ const CreateProjectComponentModal = ({
     }
   };
 
-  // TODO: finish implementation
+  // TODO: refactor implementation
   // check if component modal add button should be disabled
   const shouldDisableComponentModalAddOrSaveButton = () => {
     // check each required spec is filled
@@ -300,16 +300,7 @@ const CreateProjectComponentModal = ({
 
     if (isInvalidComponentSpec()) return true;
 
-    for (let key in componentData) {
-      if (key === "componentSpec" || key === "designIds") {
-        continue;
-      }
-      if (
-        (componentData[key as keyof CreateProjectComponentInput] as string)
-          .length === 0
-      )
-        return true;
-    }
+    if (!componentData.name) return false;
     return false;
   };
 
@@ -339,7 +330,6 @@ const CreateProjectComponentModal = ({
           setComponentSpec((spec) => {
             return getComponentSpecDefaultState(v.value);
           });
-          setComponentIndexToEdit(null);
         }}
         renderInput={(params) => (
           <TextField

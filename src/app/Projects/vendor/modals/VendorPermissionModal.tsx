@@ -385,7 +385,6 @@ const VendorPermissionModal = ({
 
   const isLoading =
     updateProjectBidPermissionLoading || deleteProjectBidPermissionLoading;
-  // TODO: use isVendor
 
   return (
     <Container>

@@ -15,6 +15,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
+    "@types/google.maps": "^3.51.0",
     "all-countries-and-cities-json": "^1.0.0",
     "apollo-upload-client": "^17.0.0",
     "autosuggest-highlight": "^3.3.4",

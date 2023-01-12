@@ -121,6 +121,7 @@ const AdvancedCreateProject = () => {
   const [projectData, setProjectData] = useState<Partial<CreateProjectInput>>({
     name: "",
     deliveryAddress: "",
+    country: "",
     category: "",
     totalWeight: "",
     deliveryDate: new Date().toISOString().split("T")[0],
@@ -174,6 +175,7 @@ const AdvancedCreateProject = () => {
         name,
         deliveryAddress,
         category,
+        country,
         totalWeight,
         targetPrice,
         deliveryDate,
@@ -219,6 +221,7 @@ const AdvancedCreateProject = () => {
         name,
         deliveryAddress,
         category,
+        country,
         totalWeight,
         deliveryDate,
         targetPrice,
@@ -338,19 +341,15 @@ const AdvancedCreateProject = () => {
   const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
       const attr = key as keyof CreateProjectInput;
-      if (attr === "targetPrice") {
-        if (!projectData.targetPrice) return true;
-        continue;
-      }
+
       if (Array.isArray(projectData[attr])) {
         if ((projectData[attr] as []).length === 0) return true;
-        return false;
       } else if (!(projectData[attr] as string).length) {
         return true;
       }
     }
 
-    return projectData.components!.length === 0;
+    return false;
   };
 
   const createProject = async () => {
@@ -369,22 +368,27 @@ const AdvancedCreateProject = () => {
 
       setSnackbar({
         severity: "success",
-        message: "Project created.",
+        message: intl.formatMessage({
+          id: "app.customer.createProject.projectCreated",
+        }),
       });
     } catch (e) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({
+          id: "app.general.network.error",
+        }),
       });
     } finally {
       setSnackbarOpen(true);
     }
   };
 
-  const handleAddressOnChange = (address: string) => {
+  const handleAddressOnChange = (address: string, country: string) => {
     setProjectData({
       ...projectData,
       deliveryAddress: address,
+      country,
     });
   };
 
@@ -621,7 +625,6 @@ const AdvancedCreateProject = () => {
                       id: "app.general.edit",
                     })}
                     placement="top"
-                    arrow
                   >
                     <IconButton onClick={() => editComponent(i)}>
                       <Edit />
@@ -632,7 +635,6 @@ const AdvancedCreateProject = () => {
                       id: "app.customer.createProject.removeComponent",
                     })}
                     placement="top"
-                    arrow
                   >
                     <IconButton onClick={() => removeComponent(i)}>
                       <CancelIcon />

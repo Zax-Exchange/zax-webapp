@@ -118,6 +118,7 @@ export type CreateCustomerInput = {
 export type CreateGuestProjectInput = {
   category: Scalars['String'];
   components: Array<CreateProjectComponentInput>;
+  country: Scalars['String'];
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
@@ -191,6 +192,7 @@ export type CreateProjectComponentSpecInput = {
 export type CreateProjectInput = {
   category: Scalars['String'];
   components: Array<CreateProjectComponentInput>;
+  country: Scalars['String'];
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
@@ -302,6 +304,7 @@ export type CustomerProject = ProjectInterface & {
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
+  country: Scalars['String'];
   createdAt: Scalars['Date'];
   creationMode: ProjectCreationMode;
   deliveryAddress: Scalars['String'];
@@ -875,6 +878,7 @@ export type PermissionedProject = ProjectInterface & {
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
+  country: Scalars['String'];
   createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
@@ -1006,6 +1010,7 @@ export type Project = ProjectInterface & {
   companyId: Scalars['String'];
   companyName: Scalars['String'];
   components: Array<ProjectComponent>;
+  country: Scalars['String'];
   createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
@@ -1562,6 +1567,7 @@ export type UpdateProjectComponentSpecData = {
 
 export type UpdateProjectData = {
   category: Scalars['String'];
+  country: Scalars['String'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
   name: Scalars['String'];

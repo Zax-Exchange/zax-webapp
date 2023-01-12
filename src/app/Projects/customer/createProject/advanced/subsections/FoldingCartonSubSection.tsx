@@ -187,7 +187,9 @@ const FoldingCartonSubSection = ({
             {renderAutocompleteDropdown(
               FOLDING_CARTON_MATERIAL_SOURCES,
               "materialSource",
-              "Material Source",
+              intl.formatMessage({
+                id: "app.component.attribute.materialSource",
+              }),
               "folding-carton-material-source"
             )}
           </ListItem>

@@ -119,6 +119,7 @@ const EditProject = () => {
         projectId: projectId || "",
         name: "",
         deliveryAddress: "",
+        country: "",
         category: "",
         totalWeight: "",
         deliveryDate: new Date().toISOString().split("T")[0],
@@ -199,6 +200,7 @@ const EditProject = () => {
         id: projectId,
         name,
         deliveryAddress,
+        country,
         category,
         totalWeight,
         targetPrice,
@@ -243,6 +245,7 @@ const EditProject = () => {
           projectId,
           name,
           deliveryAddress,
+          country,
           category,
           totalWeight,
           deliveryDate,
@@ -533,12 +536,13 @@ const EditProject = () => {
 
     navigate(`${dest.join("")}`);
   };
-  const handleAddressOnChange = (deliveryAddress: string) => {
+  const handleAddressOnChange = (deliveryAddress: string, country: string) => {
     setUpdateProjectInput((prev) => ({
       ...prev,
       projectData: {
         ...prev.projectData,
         deliveryAddress,
+        country,
       },
     }));
   };
@@ -852,7 +856,6 @@ const EditProject = () => {
                       id: "app.general.edit",
                     })}
                     placement="top"
-                    arrow
                   >
                     <IconButton onClick={() => editComponent(i)}>
                       <Edit />
@@ -863,7 +866,6 @@ const EditProject = () => {
                       id: "app.customer.createProject.removeComponent",
                     })}
                     placement="top"
-                    arrow
                   >
                     <IconButton onClick={() => removeComponent(i)}>
                       <Cancel />

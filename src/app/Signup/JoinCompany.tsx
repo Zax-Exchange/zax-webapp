@@ -117,7 +117,9 @@ const JoinCompany = () => {
     <Box>
       <Box display="flex" flexDirection="column">
         <TextField
-          label="Company Name"
+          label={intl.formatMessage({
+            id: "app.company.attribute.companyName",
+          })}
           type="text"
           name="companyName"
           value={inputData.companyName}
@@ -131,7 +133,9 @@ const JoinCompany = () => {
           sx={{ mb: 3 }}
         />
         <TextField
-          label="Your Email"
+          label={intl.formatMessage({
+            id: "app.general.yourEmail",
+          })}
           type="email"
           name="userEmail"
           value={inputData.userEmail}

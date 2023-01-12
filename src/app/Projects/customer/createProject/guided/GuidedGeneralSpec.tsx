@@ -72,7 +72,7 @@ export default function GuidedGeneralSpec({
     }
   };
 
-  const handleAddressOnChange = (address: string) => {
+  const handleAddressOnChange = (address: string, country: string) => {
     setProjectData({
       ...projectData,
       deliveryAddress: address,

@@ -316,7 +316,6 @@ const CustomerSignup = () => {
         </Fade>
       );
     } else if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
-      // TODO: use email validator
       return (
         <Fade in={true} mountOnEnter unmountOnExit>
           <div>
