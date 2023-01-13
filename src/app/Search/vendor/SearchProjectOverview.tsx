@@ -21,6 +21,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import CategoryIcon from "@mui/icons-material/Category";
 import { useIntl } from "react-intl";
 import { productValueToLabelMap } from "../../constants/products";
+import { Inventory } from "@mui/icons-material";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -70,7 +71,7 @@ const SearchProjectOverview = ({
                     arrow
                     placement="top"
                   >
-                    <CategoryIcon />
+                    <Inventory />
                   </Tooltip>
                   <Typography variant="caption">
                     {projectData.products

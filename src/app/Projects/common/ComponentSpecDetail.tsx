@@ -9,6 +9,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableHead,
   TableRow,
   Tooltip,
   Typography,
@@ -335,87 +336,6 @@ export default function ComponentSpecDetail({
     );
   }
 
-  if (postProcess && postProcess.length) {
-    // only field in postProcess guaranteed to exist is postProcessName
-    res.push(
-      <TableRow>
-        <TableCell>
-          <Typography variant="subtitle2">
-            {intl.formatMessage({
-              id: "app.component.attribute.postProcess",
-            })}
-          </Typography>
-        </TableCell>
-
-        <TableCell>
-          <Stack>
-            {postProcess.map((process) => {
-              const dims = Object.entries(process.estimatedArea || {});
-              const estimatedArea = [];
-              for (let [attr, dim] of dims) {
-                if (!dim || attr === "__typename") continue;
-                estimatedArea.push(parseFloat(dim));
-              }
-              return (
-                <ListItem sx={{ padding: 0 }}>
-                  <Typography variant="caption">
-                    {process.isInside !== null
-                      ? process.isInside
-                        ? `${intl.formatMessage({
-                            id: "app.component.inside",
-                          })} `
-                        : `${intl.formatMessage({
-                            id: "app.component.outside",
-                          })} `
-                      : ""}
-
-                    {intl.formatMessage({
-                      id: productValueToLabelMap[process.postProcessName]
-                        .labelId,
-                    })}
-                    {!!process.numberOfColors &&
-                    !!process.numberOfColors.c &&
-                    !!process.numberOfColors.t
-                      ? ` ${intl.formatMessage({
-                          id: "app.component.postProcess.printing.numberOfColors",
-                        })}: ${process.numberOfColors.c}/${
-                          process.numberOfColors.t
-                        }`
-                      : ""}
-                    {process.printingMethod
-                      ? ` ${intl.formatMessage({
-                          id: "app.component.postProcess.printing.method",
-                        })}: ${process.printingMethod}`
-                      : ""}
-                    {process.fontSize
-                      ? ` ${intl.formatMessage({
-                          id: "app.component.postProcess.emboss.fontSize",
-                        })}: ${process.fontSize}`
-                      : ""}
-                    {process.color
-                      ? ` ${intl.formatMessage({
-                          id: "app.component.postProcess.foilStamp.color",
-                        })}: ${intl.formatMessage({
-                          id: productValueToLabelMap[process.color].labelId,
-                        })}`
-                      : ""}
-                    {estimatedArea.length
-                      ? ` ${intl.formatMessage({
-                          id: "app.component.postProcess.estimatedArea",
-                        })}: ${estimatedArea.join("x")}${intl.formatMessage({
-                          id: "app.general.unit.mm",
-                        })}`
-                      : ""}
-                  </Typography>
-                </ListItem>
-              );
-            })}
-          </Stack>
-        </TableCell>
-      </TableRow>
-    );
-  }
-
   if (finish) {
     res.push(
       <TableRow>
@@ -612,6 +532,166 @@ export default function ComponentSpecDetail({
     );
   }
 
+  if (postProcess && postProcess.length) {
+    // only field in postProcess guaranteed to exist is postProcessName
+    res.push(
+      <TableRow>
+        <TableCell>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({
+              id: "app.component.attribute.postProcess",
+            })}
+          </Typography>
+        </TableCell>
+
+        <TableCell>
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    {intl.formatMessage({
+                      id: "app.component.attribute.postProcess",
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {intl.formatMessage({ id: "app.component.side" })}
+                  </TableCell>
+                  <TableCell>
+                    {intl.formatMessage({
+                      id: "app.component.postProcess.printing.numberOfColors",
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {intl.formatMessage({
+                      id: "app.component.postProcess.printing.method",
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {intl.formatMessage({
+                      id: "app.component.postProcess.emboss.fontSize",
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {intl.formatMessage({
+                      id: "app.component.postProcess.foilStamp.color",
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {intl.formatMessage({
+                      id: "app.component.postProcess.estimatedArea",
+                    })}
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {postProcess.map((process) => {
+                  const dims = Object.entries(process.estimatedArea || {});
+                  const estimatedArea = [];
+                  for (let [attr, dim] of dims) {
+                    if (!dim || attr === "__typename") continue;
+                    estimatedArea.push(parseFloat(dim));
+                  }
+
+                  const res: JSX.Element[] = [];
+
+                  res.push(
+                    <TableCell>
+                      {intl.formatMessage({
+                        id: productValueToLabelMap[process.postProcessName]
+                          .labelId,
+                      })}
+                    </TableCell>
+                  );
+
+                  if (process.isInside !== null) {
+                    if (process.isInside) {
+                      res.push(
+                        <TableCell>
+                          {intl.formatMessage({
+                            id: "app.component.inside",
+                          })}
+                        </TableCell>
+                      );
+                    } else {
+                      res.push(
+                        <TableCell>
+                          {intl.formatMessage({
+                            id: "app.component.outside",
+                          })}
+                        </TableCell>
+                      );
+                    }
+                  } else {
+                    res.push(<TableCell>-</TableCell>);
+                  }
+
+                  if (
+                    !!process.numberOfColors &&
+                    !!process.numberOfColors.c &&
+                    !!process.numberOfColors.t
+                  ) {
+                    res.push(
+                      <TableCell>
+                        {process.numberOfColors.c}/{process.numberOfColors.t}
+                      </TableCell>
+                    );
+                  } else {
+                    res.push(<TableCell>-</TableCell>);
+                  }
+
+                  if (process.printingMethod) {
+                    res.push(<TableCell>{process.printingMethod}</TableCell>);
+                  } else {
+                    res.push(<TableCell>-</TableCell>);
+                  }
+
+                  if (process.fontSize) {
+                    res.push(
+                      <TableCell>
+                        {process.fontSize}
+                        {intl.formatMessage({ id: "app.general.unit.px" })}
+                      </TableCell>
+                    );
+                  } else {
+                    res.push(<TableCell>-</TableCell>);
+                  }
+
+                  if (process.color) {
+                    res.push(
+                      <TableCell>
+                        {intl.formatMessage({
+                          id: productValueToLabelMap[process.color].labelId,
+                        })}
+                      </TableCell>
+                    );
+                  } else {
+                    res.push(<TableCell>-</TableCell>);
+                  }
+
+                  if (process.estimatedArea) {
+                    res.push(
+                      <TableCell>
+                        {estimatedArea.join("x")}
+                        {intl.formatMessage({
+                          id: "app.general.unit.mm",
+                        })}
+                      </TableCell>
+                    );
+                  } else {
+                    res.push(<TableCell>-</TableCell>);
+                  }
+
+                  return <TableRow>{res}</TableRow>;
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Stack></Stack>
+        </TableCell>
+      </TableRow>
+    );
+  }
   return (
     <TableContainer>
       <Table size="small">

@@ -73,6 +73,7 @@ import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
 import { useGetProjectChangelogQuery } from "../../gql/get/project/project.generated";
 import PermissionDenied from "../../Utils/PermissionDenied";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
+import { ContentCopy, CopyAll } from "@mui/icons-material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -184,6 +185,14 @@ const CustomerProjectDetail = () => {
     navigate(GENERAL_ROUTES.PROJECTS);
   };
 
+  const copyProject = () => {
+    navigate(CUSTOMER_ROUTES.ADVANCED_CREATE_PROJECT, {
+      state: {
+        projectId,
+      },
+    });
+  };
+
   const renderVendorBidOverview = (
     bids: ProjectBid[],
     projectComponents: ProjectComponent[]
@@ -225,7 +234,7 @@ const CustomerProjectDetail = () => {
 
         <Grid container spacing={2}>
           {/* PROJECT SECTION */}
-          <Grid item xs={8}>
+          <Grid item xs={9}>
             <Paper elevation={1}>
               <Box
                 sx={{
@@ -245,10 +254,20 @@ const CustomerProjectDetail = () => {
                 </Box>
                 {projectData.permission !== ProjectPermission.Viewer && (
                   <Box>
+                    <IconButton onClick={copyProject}>
+                      <Tooltip
+                        title={intl.formatMessage({
+                          id: "app.customer.projectDetail.copyProject",
+                        })}
+                        placement="top"
+                      >
+                        <ContentCopy color="primary" />
+                      </Tooltip>
+                    </IconButton>
                     <IconButton onClick={openEditProjectPage}>
                       <Tooltip
                         title={intl.formatMessage({ id: "app.general.edit" })}
-                        placement="left"
+                        placement="top"
                       >
                         <EditIcon color="primary" />
                       </Tooltip>
@@ -308,7 +327,7 @@ const CustomerProjectDetail = () => {
           </Grid>
 
           {/* BID SECTION */}
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Box>
               <Typography variant="h6" textAlign="left">
                 {intl.formatMessage({
@@ -327,13 +346,6 @@ const CustomerProjectDetail = () => {
             )}
             {!!bids && (
               <List sx={{ maxHeight: "800px", overflow: "scroll" }}>
-                {renderVendorBidOverview(bids, projectData.components)}
-                {renderVendorBidOverview(bids, projectData.components)}
-                {renderVendorBidOverview(bids, projectData.components)}
-                {renderVendorBidOverview(bids, projectData.components)}
-                {renderVendorBidOverview(bids, projectData.components)}
-                {renderVendorBidOverview(bids, projectData.components)}
-                {renderVendorBidOverview(bids, projectData.components)}
                 {renderVendorBidOverview(bids, projectData.components)}
               </List>
             )}

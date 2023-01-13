@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useLazyQuery, gql } from "@apollo/client";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
@@ -11,6 +11,7 @@ import {
   InputBase,
   Box,
   Autocomplete,
+  Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, useTheme } from "@mui/material/styles";
@@ -74,9 +75,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+enum AutoSuggestOptionType {
+  PRODUCT = "PRODUCT",
+  CATEGORY = "CATEGORY",
+}
+
 type AutoSuggestOption = {
   label: string;
-  type: "product" | "category";
+  type: AutoSuggestOptionType;
 };
 
 const SearchBar = () => {
@@ -111,11 +117,29 @@ const SearchBar = () => {
     },
   ] = useSearchCategoriesLazyQuery();
 
-  const fetch = React.useMemo(
-    () =>
-      throttle(() => {
-        if (input) {
-          searchProducts({
+  const fetch = useMemo(() => {
+    return throttle(
+      (cb: () => void) => {
+        cb();
+      },
+      500,
+      { leading: true }
+    );
+  }, []);
+
+  useEffect(() => {
+    fetch(() => {
+      if (input) {
+        searchProducts({
+          variables: {
+            data: {
+              searchText: input,
+            },
+          },
+          fetchPolicy: "network-only",
+        });
+        if (user!.isVendor) {
+          searchCategories({
             variables: {
               data: {
                 searchText: input,
@@ -123,24 +147,10 @@ const SearchBar = () => {
             },
             fetchPolicy: "network-only",
           });
-          if (user!.isVendor) {
-            searchCategories({
-              variables: {
-                data: {
-                  searchText: input,
-                },
-              },
-              fetchPolicy: "network-only",
-            });
-          }
         }
-      }, 500),
-    [input]
-  );
-
-  useEffect(() => {
-    fetch();
-  }, [input]);
+      }
+    });
+  }, [fetch, input]);
 
   useEffect(() => {
     let allData: AutoSuggestOption[] = [];
@@ -148,18 +158,18 @@ const SearchBar = () => {
       allData = [
         ...(searchProductsData.searchProducts.map((p) => ({
           label: p,
-          type: "product",
+          type: AutoSuggestOptionType.PRODUCT,
         })) as AutoSuggestOption[]),
         ...(searchCategoriesData.searchCategories.map((c) => ({
           label: c.name,
-          type: "category",
+          type: AutoSuggestOptionType.CATEGORY,
         })) as AutoSuggestOption[]),
       ];
     } else if (!user!.isVendor && searchProductsData) {
       allData = [
         ...(searchProductsData.searchProducts.map((p) => ({
           label: p,
-          type: "product",
+          type: AutoSuggestOptionType.PRODUCT,
         })) as AutoSuggestOption[]),
       ];
     }
@@ -202,18 +212,15 @@ const SearchBar = () => {
   return (
     <Box width="400px" ml={2}>
       <Autocomplete
-        loading={searchProductsLoading}
+        // loading={searchProductsLoading}
+        // loadingText={intl.formatMessage({ id: "app.general.loading" }) + "..."}
+
         open={showSuggestions}
         onOpen={() => setShowSuggestions(true)}
         onClose={closeSuggestions}
         options={options}
-        filterOptions={(options) => options}
         renderOption={(props, option) => {
-          return (
-            <li {...props} style={{ zIndex: 9999 }}>
-              {option.label} - {option.type}
-            </li>
-          );
+          return <li {...props}>{option.label}</li>;
         }}
         onChange={(e, v) => {
           if (v) {
@@ -246,39 +253,55 @@ const SearchBar = () => {
                 fontSize: 16,
                 borderRadius: "40px",
                 width: "100%",
-                // "& .MuiInputBase-input": {
-                //   padding: theme.spacing(1, 1, 1, 0),
-                //   // vertical padding + font size from searchIcon
-                //   paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-                //   transition: theme.transitions.create("width"),
+                "& .MuiInputBase-input": {
+                  paddingLeft: "4px",
+                  // padding: theme.spacing(1, 1, 1, 0),
+                  // // vertical padding + font size from searchIcon
+                  // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+                  // transition: theme.transitions.create("width"),
 
-                //   [theme.breakpoints.up("sm")]: {
-                //     width: "12ch",
-                //     minWidth: "12ch",
-                //     "&:focus": {
-                //       width: "20ch",
-                //     },
-                //   },
-                // },
+                  // [theme.breakpoints.up("sm")]: {
+                  //   width: "12ch",
+                  //   minWidth: "12ch",
+                  //   "&:focus": {
+                  //     width: "20ch",
+                  //   },
+                  // },
+                },
               },
-              startAdornment: !isFocused ? (
-                <SearchIconWrapper>
-                  <SearchIcon />
-                  {intl.formatMessage({ id: "app.general.search" })}
-                </SearchIconWrapper>
-              ) : null,
+              startAdornment:
+                !isFocused && !input ? (
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                    {intl.formatMessage({ id: "app.general.search" })}
+                  </SearchIconWrapper>
+                ) : null,
             }}
           />
-          // <Search>
-          //   <StyledInputBase
-          //     placeholder="Search…"
-          //     autoComplete="new-password"
-          //     value={input}
-          //     onChange={handleSearchInput}
-          //     onKeyDown={handleEnterPress}
-          //   />
-          // </Search>
         )}
+        groupBy={(option) => {
+          return option.type;
+        }}
+        renderGroup={(params) => {
+          return (
+            <Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ m: 1 }}
+              >
+                {params.group === AutoSuggestOptionType.PRODUCT
+                  ? intl.formatMessage({
+                      id: "app.component.attribute.product",
+                    })
+                  : intl.formatMessage({
+                      id: "app.project.attribute.category",
+                    })}
+              </Typography>
+              {params.children}
+            </Box>
+          );
+        }}
       />
     </Box>
   );

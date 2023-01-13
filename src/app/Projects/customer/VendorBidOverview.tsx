@@ -268,7 +268,7 @@ const VendorBidOverview = ({
           <Dialog
             open={isBidModalOpen}
             onClose={() => setIsBidModalOpen(false)}
-            maxWidth="md"
+            maxWidth="lg"
             fullWidth={true}
           >
             <DialogContent>

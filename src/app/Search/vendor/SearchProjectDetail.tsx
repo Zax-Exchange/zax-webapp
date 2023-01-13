@@ -107,6 +107,7 @@ export const BidInputPriceTextField = styled((props: TextFieldProps) => {
         "& .MuiInputBase-root": {
           pl: 1,
         },
+        width: "7rem",
       }}
     />
   );
@@ -620,7 +621,7 @@ const SearchProjectDetail = () => {
       <Container>
         {createProjectBidLoading && <FullScreenLoading />}
         <Grid container>
-          <Grid item xs={7}>
+          <Grid item xs={8}>
             <Paper elevation={1}>
               <Box
                 sx={{
@@ -690,7 +691,7 @@ const SearchProjectDetail = () => {
           </Grid>
 
           {!getProjectBidLoading && (
-            <Grid item xs={5}>
+            <Grid item xs={4}>
               <Container>
                 <Box display="flex" justifyContent="space-between" mb={1.5}>
                   <Box
@@ -725,20 +726,20 @@ const SearchProjectDetail = () => {
                         </Tooltip>
                       </Box>
                     )}
+                    {!existingBid && (
+                      <Box>
+                        <Button
+                          onClick={submitBid}
+                          variant="contained"
+                          disabled={shouldDisableSubmitBidButton()}
+                        >
+                          {intl.formatMessage({
+                            id: "app.vendor.search.submitBids",
+                          })}
+                        </Button>
+                      </Box>
+                    )}
                   </Box>
-                  {!existingBid && (
-                    <Box>
-                      <Button
-                        onClick={submitBid}
-                        variant="contained"
-                        disabled={shouldDisableSubmitBidButton()}
-                      >
-                        {intl.formatMessage({
-                          id: "app.vendor.search.submitBids",
-                        })}
-                      </Button>
-                    </Box>
-                  )}
                 </Box>
                 <Paper sx={{ mt: 1 }}>
                   {!!existingBid

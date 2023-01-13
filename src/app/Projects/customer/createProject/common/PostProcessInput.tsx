@@ -308,7 +308,7 @@ const PostProcessInput = ({
               ${intl.formatMessage({
                 id: "app.general.unit",
               })}
-              : ${intl.formatMessage({ id: "app.general.unit.mm" })}`}
+              : ${intl.formatMessage({ id: "app.general.unit.px" })}`}
             FormHelperTextProps={{
               sx: {
                 fontStyle: "italic",

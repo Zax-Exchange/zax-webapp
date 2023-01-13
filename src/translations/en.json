@@ -43,7 +43,8 @@
   "app.general.userPower.user": "Normal User",
   "app.general.name": "Name",
   "app.general.incomplete": "Incomplete",
-
+  "app.general.loading": "Loading",
+  
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",
   "app.general.purchaseOrder": "Purchase Order",
@@ -98,6 +99,7 @@
   "app.signup.billingEmail.pageTitle": "Let's start with your email",
   "app.signup.companyInfo.pageTitle": "Enter Your Company Information",
   "app.signup.companyInfo.contactEmail.helperText": "This will be visible to others for contacting.",
+  "app.signup.companyInfo.companyNameTaken": "Company name must be unique.",
   "app.signup.vendorInfo.pageTitle": "Since your a vendor, we're going to need a little more information.",
   "app.signup.vendorInfo.products.helperText": "This helps customers to find your company easier.",
   "app.signup.vendorInfo.leadTime.placeholder": "Typical lead time (in months)",
@@ -274,7 +276,7 @@
   "app.component.attribute.numberOfPages": "Number of Pages",
   "app.component.attribute.purpose": "Purpose",
   "app.component.attribute.shape": "Shape",
-  "app.component.attribute.product": "Product",
+  "app.component.attribute.product": "Packaging Product",
   "app.component.attribute.dimension": "Dimension",
   "app.component.attribute.thickness": "Thickness",
   "app.component.attribute.flute": "Flute Type",
@@ -381,6 +383,7 @@
   "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
   "app.customer.projectDetail.bidModal.vendorInformation": "Vendor Information",
   "app.customer.projectDetail.noBids": "Project does not have any bids yet.",
+  "app.customer.projectDetail.copyProject": "Copy Project",
 
   "app.customer.poInvoice.create": "New Invoice",
   "app.customer.poInvoice.createSuccess": "PO Created!",
@@ -427,9 +430,11 @@
   "app.vendor.projects.yourBids": "Your Bids",
   "app.vendor.projectDetail.resubmitBid": "Resubmit bid if your bid still holds.",
   "app.vendor.projectDetail.editBid": "Edit Bid",
-  "app.vendor.projectDetail.editBid.createNewBidTooltip": "You did not bid on this component previously. If you wish to bid, simply fill out all below fields. Otherwise, you can leave them empty.",
-  "app.vendor.projectDetail.editBid.editBidTooltip": "You have bid on this already. To update your bid, simply edit the numbers below.",
-  
+  "app.vendor.projectDetail.editBid.createNewBidTooltip": "You did not bid on this component previously. If you wish to bid, simply fill out all below fields.",
+  "app.vendor.projectDetail.editBid.editBidTooltip": "You have bid on this already. To update your bid, simply edit the numbers below. If you wish to delete the bid, just leave all fields empty.",
+  "app.vendor.projectDetail.bidWasCleared": "Your bid was cleared due to project order quantities change. Please click on edit and resubmit your bid.",
+  "app.vendor.projectDetail.bidWasCleared.tooltip": "Due to project order quantities changed, please fill out form below to resubmit your bid or leave them all empty if you wish to delete the bid.",
+
   "app.vendor.guestProject.create": "Generate RFQ Form",
   "app.vendor.guestProject.modal.title": "Send RFQ Form Link",
   "app.vendor.guestProject.linkSent": "RFQ link sent successfully!",

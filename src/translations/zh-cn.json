@@ -43,6 +43,7 @@
   "app.general.userPower.user": "一般用户",
   "app.general.name": "名字",
   "app.general.incomplete": "尚未完成",
+  "app.general.loading": "加载中",
 
   "app.general.company.vendorName": "厂商名",
   "app.general.company.customerName": "客户名",
@@ -339,7 +340,7 @@
   "app.customer.createProject.componentDetail": "部件细节",
   "app.customer.createProject.upload.success": "设计已成功上传",
   "app.customer.createProject.upload.fileTypeError": "档案类型错误，请上传PDF类型的档案",
-  "app.customer.createProject.create.success": "已创建项目",  
+  "app.customer.createProject.create.success": "项目创建成功！",  
   "app.customer.createProject.creationModeModalTitle": "请选择以下项目创建方法",
   "app.customer.createProject.selectBoxStyle": "选择盒型",
   "app.customer.createProject.noDesignPlaceholder": "暂无上传档案",
@@ -384,6 +385,7 @@
   "app.customer.projectDetail.error.orderQuantity.helperText": "必须有至少一个报价数量",
   "app.customer.projectDetail.bidModal.vendorInformation": "厂商信息",
   "app.customer.projectDetail.noBids": "此项目尚无厂商竞标。",
+  "app.customer.projectDetail.copyProject": "复制项目",
 
   "app.customer.poInvoice.create": "新账单",
   "app.customer.poInvoice.createSuccess": "订单创建完成",
@@ -431,7 +433,9 @@
   "app.vendor.projectDetail.resubmitBid": "如果您的竞标无需更新，您可以重新提交。",
   "app.vendor.projectDetail.editBid": "编辑竞标",
   "app.vendor.projectDetail.editBid.createNewBidTooltip": "您之前未对此部件进行竞标。如欲竞标此部件，请完成以下表格。若无需竞标，留空即可。",
-  "app.vendor.projectDetail.editBid.editBidTooltip": "您已经对此部件竞标。如欲更新，请编辑以下表格之数字。",
+  "app.vendor.projectDetail.editBid.editBidTooltip": "您已经对此部件竞标。如欲更新，请编辑以下表格之数字。如欲删除，全部留空即可。",
+  "app.vendor.projectDetail.bidWasCleared": "由于项目报价数量变动，您原本的竞标已被清除。请点击编辑并重新提交您的竞标。如欲删除竞标，全部留空即可。",
+  "app.vendor.projectDetail.bidWasCleared.tooltip": "请完成以下竞标并重新提交。",
 
   "app.vendor.guestProject.create": "生成询价单",
   "app.vendor.guestProject.modal.title": "发送询价单链接",
