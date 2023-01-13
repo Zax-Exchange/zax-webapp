@@ -75,6 +75,8 @@ const VendorNav = () => {
       <Dialog
         open={generateGuestProjectLinkModalOpen}
         onClose={() => setGenerateGuestProjectLinkModalOpen(false)}
+        maxWidth="md"
+        fullWidth
       >
         <DialogContent>
           <GenerateGuestProjectLinkModal

@@ -439,6 +439,7 @@
 
   "app.vendor.guestProject.create": "生成询价单",
   "app.vendor.guestProject.modal.title": "发送询价单链接",
+  "app.vendor.guestProject.modal.helperText": "您可以发送项目创建表格(询价单)到Zax平台以外的客户。",
   "app.vendor.guestProject.linkSent": "链接已发送",
 
   "app.guestProject.created": "您的询价单已被创建并发送给厂商，您现在可以关闭此窗口。",

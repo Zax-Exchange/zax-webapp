@@ -437,6 +437,7 @@
 
   "app.vendor.guestProject.create": "Generate RFQ Form",
   "app.vendor.guestProject.modal.title": "Send RFQ Form Link",
+  "app.vendor.guestProject.modal.helperText": "You can send project creation form (RFQ form) to customers outside of Zax.",
   "app.vendor.guestProject.linkSent": "RFQ link sent successfully!",
 
   "app.guestProject.created": "Your RFQ form has been created and sent to the vendor! You can close this window now.",
