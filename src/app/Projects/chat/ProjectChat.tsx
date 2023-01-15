@@ -28,9 +28,11 @@ import Messages from "./Messages";
 import CustomMessageInput from "./MessageInput";
 import React from "react";
 import "./Chat.scss";
+import { envConfig as config } from "../../Config/EnvConfig";
 import { client } from "../../../ApolloClient/client";
-const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
-const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
+
+const streamApiKey = config.streamApiKey;
+const streamAppId = config.streamAppId;
 const filters = { type: "messaging", members: { $in: ["ancient-mountain-4"] } };
 const sort = { last_message_at: -1 };
 

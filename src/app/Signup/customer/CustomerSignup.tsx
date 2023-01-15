@@ -34,10 +34,9 @@ import JoinOrCreateCompany from "../JoinOrCreateCompany";
 import JoinCompany from "../JoinCompany";
 import { StripePaymentIntent } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
+import { envConfig as config } from "../../Config/EnvConfig";
 
-const stripePromise = loadStripe(
-  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
-);
+const stripePromise = loadStripe(config.stripePublishableKey);
 
 export interface CustomerSignupData {
   name: string;

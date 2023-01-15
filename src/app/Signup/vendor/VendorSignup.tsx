@@ -43,6 +43,7 @@ import { useIntl } from "react-intl";
 import { useCreateStripeCustomerInStripeForVendorMutation } from "../../gql/create/company/company.generated";
 import JoinOrCreateCompany from "../JoinOrCreateCompany";
 import JoinCompany from "../JoinCompany";
+import { envConfig as config } from "../../Config/EnvConfig";
 
 export type VendorSignupData = {
   name: string;
@@ -86,9 +87,7 @@ export const VendorSignupPage = {
   SUCCESS_PAGE: "SUCCESS_PAGE",
 };
 
-const stripePromise = loadStripe(
-  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!
-);
+const stripePromise = loadStripe(config.stripePublishableKey);
 
 const VendorSignup = () => {
   const intl = useIntl();
