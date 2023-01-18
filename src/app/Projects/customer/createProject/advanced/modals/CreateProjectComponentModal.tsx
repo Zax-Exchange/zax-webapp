@@ -300,7 +300,7 @@ const CreateProjectComponentModal = ({
 
     if (isInvalidComponentSpec()) return true;
 
-    if (!componentData.name) return false;
+    if (!componentData.name) return true;
     return false;
   };
 

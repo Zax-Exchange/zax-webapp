@@ -188,17 +188,17 @@ function App() {
     };
   }, []);
 
-  useEffect(() => {
-    const initialValue: any = (document.body.style as any).zoom;
+  // useEffect(() => {
+  //   const initialValue: any = (document.body.style as any).zoom;
 
-    // Change zoom level on mount
-    (document.body.style as any).zoom = "90%";
+  //   // Change zoom level on mount
+  //   (document.body.style as any).zoom = "90%";
 
-    return () => {
-      // Restore default value
-      (document.body.style as any).zoom = initialValue;
-    };
-  }, []);
+  //   return () => {
+  //     // Restore default value
+  //     (document.body.style as any).zoom = initialValue;
+  //   };
+  // }, []);
 
   return (
     <ThemeProvider theme={theme}>

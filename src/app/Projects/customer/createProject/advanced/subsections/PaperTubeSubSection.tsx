@@ -158,7 +158,6 @@ const PaperTubeSubSection = ({
             <BoxStyleDropdown
               componentSpec={componentSpec}
               setComponentSpec={setComponentSpec}
-              options={PAPER_TUBE_BOX_STYLES}
             />
           </ListItem>
           <ListItem>

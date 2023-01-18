@@ -161,7 +161,6 @@ const CorrugateBoxSubSection = ({
             <BoxStyleDropdown
               componentSpec={componentSpec}
               setComponentSpec={setComponentSpec}
-              options={CORRUGATE_BOX_BOX_STYLES}
             />
           </ListItem>
           <ListItem>

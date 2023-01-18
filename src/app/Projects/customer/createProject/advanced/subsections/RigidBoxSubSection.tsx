@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 import {
   Autocomplete,
+  Box,
   Button,
+  Dialog,
   IconButton,
   List,
   ListItem,
@@ -39,6 +41,8 @@ import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
 import BoxStyleDropdown from "./common/BoxStyleDropdown";
 import ThicknessInput from "../../common/ThicknessInput";
+import GuidedCreateBoxStyleSelection from "../../guided/modals/GuidedCreateBoxStyleSelection";
+import { ChangeCircle } from "@mui/icons-material";
 
 type RigidBoxPostProcessDetail = {
   postProcessName: string;
@@ -161,7 +165,6 @@ const RigidBoxSubSection = ({
             <BoxStyleDropdown
               componentSpec={componentSpec}
               setComponentSpec={setComponentSpec}
-              options={RIGID_BOX_BOX_STYLES}
             />
           </ListItem>
           <ListItem>

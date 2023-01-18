@@ -74,7 +74,7 @@ const GuidedCreateBoxStyleSelection = ({
                       src={`${cdn}/box-styles/${boxStyle.code}.png`}
                     />
                     <Typography variant="subtitle2" textAlign="center">
-                      {boxStyle.value}
+                      {intl.formatMessage({ id: boxStyle.labelId })}
                     </Typography>
                   </CardActionArea>
                 </Card>

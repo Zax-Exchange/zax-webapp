@@ -1,4 +1,4 @@
-import { CheckCircle } from "@mui/icons-material";
+import { CheckCircle, InfoOutlined } from "@mui/icons-material";
 import {
   Box,
   Link,
@@ -158,6 +158,9 @@ export default function ComponentSpecDetail({
   }
 
   if (boxStyle) {
+    const rawBoxStyle = productValueToLabelMap[boxStyle];
+    const cdn = process.env.REACT_APP_CLOUDFRONT_URL;
+
     res.push(
       <TableRow>
         <TableCell>
@@ -166,7 +169,26 @@ export default function ComponentSpecDetail({
           </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="caption">{boxStyle}</Typography>
+          <Box display="flex" alignItems="center">
+            <Typography variant="caption" sx={{ mr: 1 }}>
+              {intl.formatMessage({ id: rawBoxStyle.labelId })}
+            </Typography>
+            <Tooltip
+              title={
+                <>
+                  <img
+                    height={150}
+                    width={150}
+                    src={`${cdn}/box-styles/${rawBoxStyle.code}.png`}
+                    alt="box_style"
+                  />
+                </>
+              }
+              placement="right"
+            >
+              <InfoOutlined fontSize="small" color="info" />
+            </Tooltip>
+          </Box>
         </TableCell>
       </TableRow>
     );

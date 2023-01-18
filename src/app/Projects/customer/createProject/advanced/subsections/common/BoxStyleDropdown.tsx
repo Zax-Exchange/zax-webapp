@@ -1,62 +1,69 @@
-import { Autocomplete, TextField } from "@mui/material";
-import React from "react";
+import { ChangeCircle } from "@mui/icons-material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Dialog,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useState } from "react";
 import { useIntl } from "react-intl";
 import { CreateProjectComponentSpecInput } from "../../../../../../../generated/graphql";
 import { TranslatableAttribute } from "../../../../../../../type/common";
 import { productValueToLabelMap } from "../../../../../../constants/products";
+import GuidedCreateBoxStyleSelection from "../../../guided/modals/GuidedCreateBoxStyleSelection";
 
 const BoxStyleDropdown = ({
   setComponentSpec,
   componentSpec,
-  options,
 }: {
   setComponentSpec: React.Dispatch<
     React.SetStateAction<CreateProjectComponentSpecInput>
   >;
   componentSpec: CreateProjectComponentSpecInput;
-  options: TranslatableAttribute[];
 }) => {
   const intl = useIntl();
-  const getDefaultValue = () => {
-    if (componentSpec && componentSpec.boxStyle) {
-      return productValueToLabelMap[componentSpec.boxStyle];
-    } else {
-      return null;
-    }
-  };
+  const [boxStyleModalOpen, setBoxStyleModalOpen] = useState(false);
 
   return (
-    <Autocomplete
-      sx={{ width: 300 }}
-      options={options}
-      getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
-      autoHighlight
-      value={getDefaultValue()}
-      onChange={(e, v) => {
-        const value = v ? v.value : "";
-
-        setComponentSpec((prev) => ({
-          ...prev,
-          boxStyle: value,
-        }));
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={intl.formatMessage({ id: "app.component.attribute.boxStyle" })}
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: "new-password",
-          }}
-          InputLabelProps={{
-            sx: {
-              fontSize: 16,
-              top: -7,
-            },
-          }}
+    <>
+      <Box>
+        {componentSpec.boxStyle ? (
+          <Box>
+            <Typography variant="caption">
+              {intl.formatMessage({
+                id: productValueToLabelMap[componentSpec.boxStyle].labelId,
+              })}
+            </Typography>
+            <IconButton
+              onClick={() => setBoxStyleModalOpen(true)}
+              color="primary"
+            >
+              <ChangeCircle />
+            </IconButton>
+          </Box>
+        ) : (
+          <Button variant="outlined" onClick={() => setBoxStyleModalOpen(true)}>
+            {intl.formatMessage({
+              id: "app.customer.createProject.selectBoxStyle",
+            })}
+          </Button>
+        )}
+      </Box>
+      <Dialog
+        open={boxStyleModalOpen}
+        onClose={() => setBoxStyleModalOpen(false)}
+        maxWidth="md"
+      >
+        <GuidedCreateBoxStyleSelection
+          productName={componentSpec.productName}
+          setComponentSpec={setComponentSpec}
+          setBoxStyleModalOpen={setBoxStyleModalOpen}
         />
-      )}
-    />
+      </Dialog>
+    </>
   );
 };
 
