@@ -445,7 +445,12 @@ const EditProject = () => {
     for (let val of Object.values(projectEditError)) {
       if (val) return true;
     }
-
+    if (
+      isNaN(parseFloat(projectData.totalWeight)) ||
+      parseFloat(projectData.totalWeight) === 0
+    ) {
+      return true;
+    }
     return components.length === 0;
   };
 

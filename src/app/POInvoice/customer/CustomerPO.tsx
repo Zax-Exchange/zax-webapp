@@ -121,122 +121,132 @@ const CustomerPO = () => {
       </Box>
       <Box>
         {getCustomerPosLoading && <FullScreenLoading />}
-        {!!getCustomerPosData && !!getCustomerPosData.getCustomerPos.length && (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center" width="25%">
-                    {intl.formatMessage({ id: "app.project.attribute.name" })}
-                  </TableCell>
-                  <TableCell align="center" width="25%">
-                    {intl.formatMessage({
-                      id: "app.general.company.vendorName",
-                    })}
-                  </TableCell>
-                  <TableCell align="center" width="25%">
-                    {intl.formatMessage({ id: "app.general.purchaseOrder" })}
-                  </TableCell>
-                  <TableCell align="center" width="25%">
-                    {intl.formatMessage({ id: "app.general.invoice" })}
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {getCustomerPosData.getCustomerPos.map((customerPO) => {
-                  return (
-                    <>
-                      {customerPO.poDetails?.map((poDetail) => {
-                        return (
-                          <TableRow
-                            sx={{ ":hover": { backgroundColor: "#fafafa" } }}
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" width="25%">
+                  {intl.formatMessage({ id: "app.project.attribute.name" })}
+                </TableCell>
+                <TableCell align="center" width="25%">
+                  {intl.formatMessage({
+                    id: "app.general.company.vendorName",
+                  })}
+                </TableCell>
+                <TableCell align="center" width="25%">
+                  {intl.formatMessage({ id: "app.general.purchaseOrder" })}
+                </TableCell>
+                <TableCell align="center" width="25%">
+                  {intl.formatMessage({ id: "app.general.invoice" })}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {!!getCustomerPosData &&
+                !getCustomerPosData.getCustomerPos.length && (
+                  <TableRow>
+                    <TableCell colSpan={100} align="center">
+                      <Typography color="GrayText" variant="caption">
+                        {intl.formatMessage({
+                          id: "app.customer.poInvoice.noPOYet",
+                        })}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              {getCustomerPosData?.getCustomerPos.map((customerPO) => {
+                return (
+                  <>
+                    {customerPO.poDetails?.map((poDetail) => {
+                      return (
+                        <TableRow
+                          sx={{ ":hover": { backgroundColor: "#fafafa" } }}
+                        >
+                          <TableCell
+                            align="center"
+                            width="25%"
+                            onClick={() =>
+                              projectNameOnClick(
+                                customerPO.projectInfo.projectId
+                              )
+                            }
+                            sx={{
+                              ":hover": {
+                                cursor: "pointer",
+                                backgroundColor: "#f2f2f2",
+                                fontWeight: 600,
+                              },
+                              borderRadius: "4px",
+                            }}
                           >
-                            <TableCell
-                              align="center"
-                              width="25%"
+                            {customerPO.projectInfo.projectName}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            width="25%"
+                            onClick={() =>
+                              vendorNameOnClick(poDetail.vendorInfo.companyId)
+                            }
+                            sx={{
+                              ":hover": {
+                                cursor: "pointer",
+                                backgroundColor: "#f2f2f2",
+                                fontWeight: 600,
+                              },
+                              borderRadius: "4px",
+                            }}
+                          >
+                            {poDetail.vendorInfo.companyName}
+                          </TableCell>
+                          <TableCell align="center" width="25%">
+                            <AttachmentButton
+                              label={poDetail.poFile.filename}
+                              onClick={() => openLink(poDetail.poFile.url)}
+                            />
+
+                            {/* <Typography>{poDetail.poFile.status}</Typography> */}
+                            <IconButton
                               onClick={() =>
-                                projectNameOnClick(
-                                  customerPO.projectInfo.projectId
+                                uploadAnotherOnClick(
+                                  customerPO.projectInfo.projectId,
+                                  poDetail.projectBidId
                                 )
                               }
-                              sx={{
-                                ":hover": {
-                                  cursor: "pointer",
-                                  backgroundColor: "#f2f2f2",
-                                  fontWeight: 600,
-                                },
-                                borderRadius: "4px",
-                              }}
                             >
-                              {customerPO.projectInfo.projectName}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              width="25%"
-                              onClick={() =>
-                                vendorNameOnClick(poDetail.vendorInfo.companyId)
-                              }
-                              sx={{
-                                ":hover": {
-                                  cursor: "pointer",
-                                  backgroundColor: "#f2f2f2",
-                                  fontWeight: 600,
-                                },
-                                borderRadius: "4px",
-                              }}
-                            >
-                              {poDetail.vendorInfo.companyName}
-                            </TableCell>
-                            <TableCell align="center" width="25%">
-                              <AttachmentButton
-                                label={poDetail.poFile.filename}
-                                onClick={() => openLink(poDetail.poFile.url)}
-                              />
-
-                              {/* <Typography>{poDetail.poFile.status}</Typography> */}
-                              <IconButton
-                                onClick={() =>
-                                  uploadAnotherOnClick(
-                                    customerPO.projectInfo.projectId,
-                                    poDetail.projectBidId
-                                  )
-                                }
+                              <Tooltip
+                                title={intl.formatMessage({
+                                  id: "app.customer.poInvoice.uploadAnother",
+                                })}
+                                placement="top"
                               >
-                                <Tooltip
-                                  title={intl.formatMessage({
-                                    id: "app.customer.poInvoice.uploadAnother",
-                                  })}
-                                  placement="top"
-                                >
-                                  <ChangeCircleOutlined />
-                                </Tooltip>
-                              </IconButton>
-                            </TableCell>
-                            <TableCell align="center" width="25%">
-                              {!!poDetail.invoiceFile && (
-                                <AttachmentButton
-                                  label={poDetail.invoiceFile.filename}
-                                  onClick={() =>
-                                    openLink(poDetail.invoiceFile!.url)
-                                  }
-                                />
-                              )}
-                              {/* {!!poDetail.invoiceFile && (
+                                <ChangeCircleOutlined />
+                              </Tooltip>
+                            </IconButton>
+                          </TableCell>
+                          <TableCell align="center" width="25%">
+                            {!!poDetail.invoiceFile && (
+                              <AttachmentButton
+                                label={poDetail.invoiceFile.filename}
+                                onClick={() =>
+                                  openLink(poDetail.invoiceFile!.url)
+                                }
+                              />
+                            )}
+                            {/* {!!poDetail.invoiceFile && (
                                 <Typography>
                                   {poDetail.invoiceFile.status}
                                 </Typography>
                               )} */}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
       <Dialog open={openUploadPOModal} maxWidth="md" fullWidth={true}>
         <DialogContent>

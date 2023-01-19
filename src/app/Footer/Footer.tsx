@@ -54,11 +54,6 @@ const Footer = () => {
           anchorEl={localeMenuAnchor}
           open={localeMenuOpen}
           onClose={() => setLocaleMenuAnchor(null)}
-          // PaperProps={{
-          //   style: {
-          //     maxHeight: "120px",
-          //   },
-          // }}
         >
           <MenuList dense sx={{ padding: "4px 0 4px" }}>
             {SUPPORTED_LOCALES.map((locale) => {
@@ -80,9 +75,8 @@ const Footer = () => {
             fontSize: "13px",
           }}
         >
-          <Copyright fontSize="small" sx={{ fontSize: "13px", mr: 1 }} />
           <Typography variant="caption" fontSize="13px">
-            2023, Zax Exchange LLC
+            © 2023, Zax Exchange LLC
           </Typography>
         </Box>
       </Box>

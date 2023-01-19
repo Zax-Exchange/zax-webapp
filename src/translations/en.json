@@ -78,6 +78,8 @@
   "app.notification.bid.bidUpdate": "Bid update for {projectName}.",
   "app.notification.poInvoice.poCreate": "PO created for {projectName}.",
   "app.notification.poInvoice.invoiceCreate": "Invoice created for {projectName}.",
+  "app.notification.poInvoice.poUpdate": "PO updated for {projectName}.",
+  "app.notification.poInvoice.invoiceUpdate": "Invoice updated for {projectName}.",
   "app.notification.guestProject.create": "RFQ form created.",
   "app.notification.guestProject.update": "There is an update on {projectName} RFQ.",
   "app.notification.project.update": "There is an update on {projectName}.",
@@ -337,7 +339,7 @@
   "app.customer.createProject.configureComponentDetail": "Configure Project Component",
   "app.customer.createProject.componentDetail": "Component Detail",
   "app.customer.createProject.upload.success": "Project design uploaded successfully.",
-  "app.customer.createProject.upload.fileTypeError": "File type is not supported. Please upload pdf only.",
+  "app.customer.createProject.upload.fileTypeError": "File type is not supported.",
   "app.customer.createProject.create.success": "Project created",  
   "app.customer.createProject.creationModeModalTitle": "Please select below how you would like to configure your project.",
   "app.customer.createProject.selectBoxStyle": "Select Box Style",
@@ -394,7 +396,7 @@
   "app.customer.poInvoice.uploadAnother.helperText": "Creating a new PO will overwrite the existing one.",
   "app.customer.poInvoice.selectProject": "Select Project",
   "app.customer.poInvoice.selectVendor": "Select Vendor",
-
+  "app.customer.poInvoice.noPOYet": "You have not created any PO yet.",
 
   "app.vendorProfile.tab.companyInfo": "Company Info",
   "app.vendorProfile.tab.certifications": "Certifications & Rewards",
@@ -408,6 +410,7 @@
   "app.vendor.poInvoice.uploadInvoice.tooltip": "Select Invoice File",
   "app.vendor.poInvoice.uploadAnother.helperText": "Creating a new Invoice will overwrite the existing one.",
   "app.vendor.poInvoice.uploadAnother.tooltip": "Upload Another Invoice",
+  "app.vendor.poInvoice.noPOYet": "You have not received any PO yet.",
 
   "app.vendor.search.projectDetail": "Project Detail",
   "app.vendor.search.componentsDetail": "Components Detail",

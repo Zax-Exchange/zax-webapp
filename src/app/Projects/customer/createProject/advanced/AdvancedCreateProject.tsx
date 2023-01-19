@@ -349,6 +349,13 @@ const AdvancedCreateProject = () => {
       }
     }
 
+    if (
+      isNaN(parseFloat(projectData.totalWeight!)) ||
+      parseFloat(projectData.totalWeight!) === 0
+    ) {
+      return true;
+    }
+
     return false;
   };
 

@@ -1,4 +1,4 @@
-import { CheckCircle, InfoOutlined } from "@mui/icons-material";
+import { CheckCircle, ImageOutlined, InfoOutlined } from "@mui/icons-material";
 import {
   Box,
   Link,
@@ -186,7 +186,7 @@ export default function ComponentSpecDetail({
               }
               placement="right"
             >
-              <InfoOutlined fontSize="small" color="info" />
+              <ImageOutlined fontSize="small" color="info" />
             </Tooltip>
           </Box>
         </TableCell>
@@ -202,7 +202,9 @@ export default function ComponentSpecDetail({
           </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="caption">{style}</Typography>
+          <Typography variant="caption">
+            {intl.formatMessage({ id: productValueToLabelMap[style].labelId })}
+          </Typography>
         </TableCell>
       </TableRow>
     );
@@ -216,7 +218,11 @@ export default function ComponentSpecDetail({
           </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="caption">{purpose}</Typography>
+          <Typography variant="caption">
+            {intl.formatMessage({
+              id: productValueToLabelMap[purpose].labelId,
+            })}
+          </Typography>
         </TableCell>
       </TableRow>
     );
@@ -230,7 +236,9 @@ export default function ComponentSpecDetail({
           </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="caption">{shape}</Typography>
+          <Typography variant="caption">
+            {intl.formatMessage({ id: productValueToLabelMap[shape].labelId })}
+          </Typography>
         </TableCell>
       </TableRow>
     );
