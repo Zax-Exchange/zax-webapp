@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import {
   ProjectBid,
@@ -36,6 +36,8 @@ import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../../constants/products";
 import { countries } from "../../../constants/countries";
 import AttachmentButton from "../../../Utils/AttachmentButton";
 import { openLink } from "../../../Utils/openLink";
+import ReactGA from "react-ga4";
+import { CUSTOMER_ROUTES } from "../../../constants/loggedInRoutes";
 
 /**
  * Bid modal shown in CustomerProjectDetail
@@ -131,6 +133,8 @@ const VendorBidModal = ({
     return countries.find((country) => country.label === vendorData.country)!
       .phone;
   };
+
+  useEffect(() => {}, []);
 
   return (
     <>

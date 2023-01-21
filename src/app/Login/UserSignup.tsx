@@ -12,24 +12,32 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import jwt_decode from "jwt-decode";
+import { JwtPayload } from "jwt-decode";
 import FullScreenLoading from "../Utils/Loading";
 import React from "react";
-import { LoggedInUser } from "../../generated/graphql";
+import { CreateUserInput, LoggedInUser } from "../../generated/graphql";
 import { GENERAL_ROUTES } from "../constants/loggedInRoutes";
 import { useCreateUserMutation } from "../gql/create/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { useIntl } from "react-intl";
 import { validate } from "email-validator";
+import jwt from "jwt-decode";
+import InvalidToken from "./InvalidToken";
+import {
+  useCheckSignupJwtTokenLazyQuery,
+  useCheckSignupJwtTokenQuery,
+} from "../gql/utils/user/user.generated";
 
 // TODO: refactor url/route
 // TODO: intl
 const UserSignup = () => {
   const intl = useIntl();
+  const { token } = useParams();
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
+  const [noTokenError, setNoTokenError] = useState(false);
   const [emailTakenError, setEmailTakenError] = useState(false);
 
   const [createUser, { error: createUserError, loading: createUserLoading }] =
@@ -40,13 +48,33 @@ const UserSignup = () => {
       },
     });
 
-  const { companyId } = useParams();
+  const {
+    loading: onLoadCheckTokenLoading,
+    error: onLoadCheckTokenError,
+    data: onLoadCheckTokenData,
+  } = useCheckSignupJwtTokenQuery({
+    variables: {
+      data: {
+        token: token || "",
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
 
-  const [values, setValues] = useState({
+  const [
+    checkToken,
+    {
+      loading: checkTokenLoading,
+      data: checkTokenData,
+      error: checkTokenError,
+    },
+  ] = useCheckSignupJwtTokenLazyQuery();
+
+  const [values, setValues] = useState<CreateUserInput>({
     name: "",
     email: "",
     password: "",
-    companyId,
+    token: token || "",
   });
 
   useEffect(() => {
@@ -61,7 +89,14 @@ const UserSignup = () => {
         setSnackbarOpen(true);
       }
     }
-  }, [createUserError]);
+    if (checkTokenError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [createUserError, checkTokenError]);
 
   const shouldDisableCreateButton = () => {
     return !validate(values.email) || !values.password || !values.name;
@@ -81,21 +116,41 @@ const UserSignup = () => {
 
   const createUserHandler = async () => {
     try {
-      if (!companyId) {
-        throw new Error("Invalid Company Id.");
-      }
-      const { data } = await createUser({
+      // check token again in case the link has somehow been used by other ppl
+      const { data } = await checkToken({
         variables: {
           data: {
-            name: values.name,
-            email: values.email,
-            password: values.password,
-            companyId: values.companyId!,
+            token: token || "",
           },
         },
+        fetchPolicy: "no-cache",
       });
+      console.log(data);
+      if (data && data.checkSignupJwtToken) {
+        await createUser({
+          variables: {
+            data: {
+              ...values,
+            },
+          },
+          fetchPolicy: "no-cache",
+        });
+      }
     } catch (error) {}
   };
+
+  if (onLoadCheckTokenLoading) {
+    return <FullScreenLoading />;
+  }
+
+  if (
+    onLoadCheckTokenError ||
+    (onLoadCheckTokenData && !onLoadCheckTokenData.checkSignupJwtToken) ||
+    checkTokenError ||
+    (checkTokenData && !checkTokenData.checkSignupJwtToken)
+  ) {
+    return <InvalidToken />;
+  }
 
   return (
     <Container maxWidth="sm">

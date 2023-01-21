@@ -19,6 +19,11 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
 import {
+  EVENT_ACTION,
+  EVENT_CATEGORY,
+  EVENT_LABEL,
+} from "../../../../../analytics/constants";
+import {
   CreateProjectComponentInput,
   CreateProjectInput,
   ProjectDesign,
@@ -36,6 +41,7 @@ import {
   GuidedComponentConfigView,
   GuidedCreateComponentsDataContainer,
 } from "./GuidedCreateProject";
+import ReactGA from "react-ga4";
 
 type TypographyVariant =
   | "button"
@@ -88,6 +94,7 @@ const GuidedReview = ({
   projectData,
   componentsDesigns,
   activeStep,
+  startingTime,
 }: {
   setActiveStep: Dispatch<SetStateAction<number>>;
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
@@ -98,6 +105,7 @@ const GuidedReview = ({
   projectData: CreateProjectInput;
   componentsDesigns: Record<GuidedComponentConfigView, ProjectDesign[] | null>;
   activeStep: number;
+  startingTime: number;
 }) => {
   const intl = useIntl();
   const navigate = useNavigate();
@@ -140,6 +148,12 @@ const GuidedReview = ({
 
   const createProject = async () => {
     try {
+      ReactGA.event({
+        action: EVENT_ACTION.CLICK,
+        category: EVENT_CATEGORY.PROJECT,
+        label: EVENT_LABEL.GUIDED_PROJECT_CREATION_TIME_ELAPSED,
+        value: Math.round((performance.now() - startingTime) / 1000),
+      });
       await createProjectMutation({
         variables: {
           data: {

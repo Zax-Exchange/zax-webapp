@@ -116,6 +116,7 @@
   "app.signup.createNewCompany": "Create a new company",
   "app.signup.finishAndPay": "Finish & Pay",
   "app.signup.pricingDetail": "Pricing Detail",
+  "app.signup.invalidToken": "Your token is either invalid or has expired. Please contact your company admins to re-send invitation link.",
 
   "app.login.resetPassword.success": "Password reset success!",
   "app.login.forgotPassword": "Forgot Password",

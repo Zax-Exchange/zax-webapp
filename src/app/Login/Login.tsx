@@ -22,6 +22,8 @@ import { useLoginLazyQuery } from "../gql/utils/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { useIntl } from "react-intl";
 import { LOGGED_OUT_ROUTES } from "../constants/loggedOutRoutes";
+import ReactGA from "react-ga4";
+import { EVENT_ACTION, EVENT_CATEGORY } from "../../analytics/constants";
 
 const Login = () => {
   const theme = useTheme();
@@ -88,6 +90,10 @@ const Login = () => {
           data: values,
         },
         fetchPolicy: "no-cache",
+      });
+      ReactGA.event({
+        action: EVENT_ACTION.LOGIN,
+        category: EVENT_CATEGORY.USER_SESSION,
       });
     } catch (e) {}
   };

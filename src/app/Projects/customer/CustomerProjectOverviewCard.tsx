@@ -44,6 +44,12 @@ import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.genera
 import { useIntl } from "react-intl";
 import CustomerPermissionModal from "./modals/CustomerPermissionModal";
 import { Create } from "@mui/icons-material";
+import ReactGA from "react-ga4";
+import {
+  EVENT_ACTION,
+  EVENT_CATEGORY,
+  EVENT_LABEL,
+} from "../../../analytics/constants";
 
 type ProjectOverviewMenuOption = "view-detail" | "share" | "delete";
 
@@ -95,7 +101,14 @@ const CustomerProjectOverviewCard = ({
         viewDetailHandler();
         break;
       case "share":
-        if (canShare()) setPermissionModalOpen(true);
+        if (canShare()) {
+          ReactGA.event({
+            action: EVENT_ACTION.CLICK,
+            category: EVENT_CATEGORY.PROJECT,
+            label: EVENT_LABEL.SHARE_PROJECT,
+          });
+          setPermissionModalOpen(true);
+        }
         break;
       case "delete":
         if (canDelete()) setDeleteProjectModalOpen(true);

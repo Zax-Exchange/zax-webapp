@@ -87,7 +87,12 @@ const VendorPO = () => {
 
   return (
     <Container>
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
+      <Box
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-between"
+        mb={2}
+      >
         <Box>
           <Typography variant="subtitle2">
             {intl.formatMessage({ id: "app.routes.loggedIn.poInvoice" })}

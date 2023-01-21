@@ -17,8 +17,6 @@ const Feedback = () => {
   const { user } = useContext(AuthContext);
   const locale: Locale = intl.locale as Locale;
 
-  const [bugFormOpen, setBugFormOpen] = useState(false);
-
   const openBugForm = () => {
     switch (locale) {
       case "en":
@@ -35,22 +33,24 @@ const Feedback = () => {
       case "en":
         if (user) {
           if (user!.isVendor) {
-            openLink("https://forms.gle/UrKrewdvgM8NeX4q7");
+            openLink("https://forms.gle/YwDLF25KHgDZFSnMA");
           } else {
-            openLink("https://forms.gle/HErQubMk4hLoAGkE7");
+            openLink("https://forms.gle/YwDLF25KHgDZFSnMA");
           }
         } else {
+          // signup feedback
           openLink("https://forms.gle/8iihHkRz8qYyRWAP9");
         }
         break;
       case "zh-cn":
         if (user) {
           if (user!.isVendor) {
-            openLink("https://forms.gle/381CAV3LcST6jdbE9");
+            openLink("https://forms.gle/cBVPa8ALikDU2uf77");
           } else {
-            openLink("https://forms.gle/BF23PFXn9aLtLuW37");
+            openLink("https://forms.gle/cBVPa8ALikDU2uf77");
           }
         } else {
+          // signup feedback
           openLink("https://forms.gle/oX24k1jEas1oE92Q9");
         }
         break;

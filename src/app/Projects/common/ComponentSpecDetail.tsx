@@ -699,7 +699,7 @@ export default function ComponentSpecDetail({
                     res.push(<TableCell>-</TableCell>);
                   }
 
-                  if (process.estimatedArea) {
+                  if (process.estimatedArea && estimatedArea.length) {
                     res.push(
                       <TableCell>
                         {estimatedArea.join("x")}

@@ -74,6 +74,12 @@ import ProjectCategoryDropdown from "../../../../Utils/ProjectCategoryDropdown";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import { v4 as uuidv4 } from "uuid";
 import Edit from "@mui/icons-material/Edit";
+import ReactGA from "react-ga4";
+import {
+  EVENT_ACTION,
+  EVENT_CATEGORY,
+  EVENT_LABEL,
+} from "../../../../../analytics/constants";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -105,6 +111,7 @@ const AdvancedCreateProject = () => {
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [createProjectMutation, { loading: createProjectLoading }] =
     useCreateProjectMutation();
+  const [startingTime, setStartingTime] = useState(performance.now());
 
   const [
     getCustomerProject,
@@ -310,6 +317,7 @@ const AdvancedCreateProject = () => {
     setComponentIndexToEdit(ind);
     setComponentModalOpen(true);
   };
+
   const projectInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val: string | number = e.target.value;
     let isAllowed = true;
@@ -361,6 +369,12 @@ const AdvancedCreateProject = () => {
 
   const createProject = async () => {
     try {
+      ReactGA.event({
+        action: EVENT_ACTION.CLICK,
+        category: EVENT_CATEGORY.PROJECT,
+        label: EVENT_LABEL.ADVANCED_PROJECT_CREATION_TIME_ELAPSED,
+        value: Math.round((performance.now() - startingTime) / 1000),
+      });
       await createProjectMutation({
         variables: {
           data: {
@@ -387,7 +401,7 @@ const AdvancedCreateProject = () => {
         }),
       });
     } finally {
-      setSnackbarOpen(true);
+      // setSnackbarOpen(true);
     }
   };
 

@@ -44,3 +44,9 @@ const RESET_PASSWORD = gql`
     resetPassword(data: $data)
   }
 `
+
+const CHECK_JWT_SIGNUP_TOKEN = gql`
+  query checkSignupJwtToken($data: CheckSignupJwtTokenInput!) {
+    checkSignupJwtToken(data: $data)
+  }
+`

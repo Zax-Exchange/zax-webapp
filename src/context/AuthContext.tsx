@@ -1,7 +1,10 @@
 // @ts-nocheck
 import jwtDecode from "jwt-decode";
 import React, { createContext, useReducer } from "react";
+import { EVENT_ACTION, EVENT_CATEGORY } from "../analytics/constants";
 import { LoggedInUser } from "../generated/graphql";
+import ReactGA from "react-ga4";
+
 /**
  * user {
  *  id
@@ -74,6 +77,10 @@ const AuthProvider = (props: any) => {
   const logout = () => {
     sessionStorage.removeItem("token");
     dispatch({ type: "LOGOUT" });
+    ReactGA.event({
+      action: EVENT_ACTION.LOGOUT,
+      category: EVENT_CATEGORY.USER_SESSION,
+    });
   };
 
   return (

@@ -91,6 +91,7 @@ export default function GuidedCreateProject() {
   const [activeStep, setActiveStep] = useState(0);
   const [currentView, setCurrentView] = useState(GuidedView.GENERAL_SPEC);
   const [projectCreated, setProjectCreated] = useState(false);
+  const [startingTime, setStartingTime] = useState(performance.now());
 
   const [projectData, setProjectData] = useState<CreateProjectInput>({
     userId: user!.id,
@@ -299,6 +300,7 @@ export default function GuidedCreateProject() {
           componentsData={componentsData}
           additionalComponents={additionalComponents}
           additionalComponentsDesigns={additionalComponentsDesigns}
+          startingTime={startingTime}
         />
       );
     }

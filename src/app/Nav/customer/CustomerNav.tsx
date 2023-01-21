@@ -7,7 +7,7 @@ import {
   IconButton,
   Toolbar,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import SearchBar from "../../Search/SearchBar";
 import CustomerSideNav from "./CustomerSideNav";
 import logo from "../../../static/logo2.png";
@@ -20,13 +20,27 @@ import {
 } from "../../constants/loggedInRoutes";
 import CreateProjectSelectionModal from "./CreateProjectSelectionModal";
 import NotificationComponent from "../../Notification/NotificationComponent";
+import { AuthContext } from "../../../context/AuthContext";
+
+import ReactGA from "react-ga4";
+import {
+  EVENT_ACTION,
+  EVENT_CATEGORY,
+  EVENT_LABEL,
+} from "../../../analytics/constants";
 
 export default function CustomerNav() {
+  const { user } = useContext(AuthContext);
+
   const intl = useIntl();
   const navigate = useNavigate();
   const [sideNavOpen, setSideNavOpen] = useState(false);
   const [createProjectSelectionModalOpen, setCreateProjectSelectionModalOpen] =
     useState(false);
+
+  const createProjectOnClick = () => {
+    setCreateProjectSelectionModalOpen(true);
+  };
 
   const renderHamburger = () => {
     return (
@@ -61,7 +75,7 @@ export default function CustomerNav() {
         <SearchBar />
         <Box display="flex" flexGrow={1} justifyContent="flex-end">
           <Button
-            onClick={() => setCreateProjectSelectionModalOpen(true)}
+            onClick={createProjectOnClick}
             variant="outlined"
             sx={{ borderRadius: 40 }}
           >

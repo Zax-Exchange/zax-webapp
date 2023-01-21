@@ -117,6 +117,7 @@
   "app.signup.createNewCompany": "创建新企业账号",
   "app.signup.finishAndPay": "完成并支付",
   "app.signup.pricingDetail": "详细费用",
+  "app.signup.invalidToken": "您的令牌不合法或已失效，请联系您的企业管理员并重新发送账号创建链接。",
 
   "app.login.resetPassword.success": "密码已被重置",
   "app.login.forgotPassword": "忘记密码",

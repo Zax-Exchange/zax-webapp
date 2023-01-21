@@ -74,6 +74,12 @@ import { useGetProjectChangelogQuery } from "../../gql/get/project/project.gener
 import PermissionDenied from "../../Utils/PermissionDenied";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
 import { ContentCopy, CopyAll } from "@mui/icons-material";
+import {
+  EVENT_ACTION,
+  EVENT_CATEGORY,
+  EVENT_LABEL,
+} from "../../../analytics/constants";
+import ReactGA from "react-ga4";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -186,6 +192,11 @@ const CustomerProjectDetail = () => {
   };
 
   const copyProject = () => {
+    ReactGA.event({
+      action: EVENT_ACTION.CLICK,
+      category: EVENT_CATEGORY.PROJECT,
+      label: EVENT_LABEL.COPY_PROJECT,
+    });
     navigate(CUSTOMER_ROUTES.ADVANCED_CREATE_PROJECT, {
       state: {
         projectId,

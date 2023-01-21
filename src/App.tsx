@@ -54,6 +54,8 @@ import {
   LocaleContextProvider,
 } from "./context/LocaleContext";
 import Feedback from "./app/Feedback/Feedback";
+import ReactGA from "react-ga4";
+import { EVENT_ACTION, EVENT_CATEGORY } from "./analytics/constants";
 
 const theme = createTheme({
   palette: {
@@ -164,16 +166,6 @@ const theme = createTheme({
   },
 });
 
-const getIntlFile = (locale: Locale) => {
-  switch (locale) {
-    case "en":
-      return en;
-    case "zh-cn":
-      return zhCn;
-  }
-  return undefined;
-};
-
 function App() {
   const { CustomSnackbar } = useCustomSnackbar();
   const { locale } = useContext(LocaleContext);
@@ -183,10 +175,20 @@ function App() {
     document.addEventListener("logout", () => {
       logout();
     });
+
+    ReactGA.initialize(process.env.REACT_APP_GA4_ID!);
+
     return () => {
       document.removeEventListener("logout", () => {});
     };
   }, []);
+
+  useEffect(() => {
+    ReactGA.set({
+      userId: user ? user.id : "null",
+      isVendor: user ? user.isVendor : "null",
+    });
+  }, [user]);
 
   // useEffect(() => {
   //   const initialValue: any = (document.body.style as any).zoom;

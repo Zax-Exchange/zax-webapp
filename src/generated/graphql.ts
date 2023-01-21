@@ -50,6 +50,10 @@ export type CheckCompanyNameInput = {
   companyName: Scalars['String'];
 };
 
+export type CheckSignupJwtTokenInput = {
+  token: Scalars['String'];
+};
+
 export type CheckUserEmailInput = {
   email: Scalars['String'];
 };
@@ -228,10 +232,10 @@ export type CreateStripeCustomerInStripeForVendorInput = {
 };
 
 export type CreateUserInput = {
-  companyId: Scalars['String'];
   email: Scalars['String'];
   name: Scalars['String'];
   password: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type CreateVendorInput = {
@@ -1233,6 +1237,7 @@ export type Query = {
   __typename?: 'Query';
   allProducts: Array<Scalars['String']>;
   checkCompanyName: Scalars['Boolean'];
+  checkSignupJwtToken: Scalars['Boolean'];
   checkUserEmail: Scalars['Boolean'];
   getAllCategories: Array<Category>;
   getAllPendingJoinRequests: Array<Scalars['String']>;
@@ -1274,6 +1279,11 @@ export type Query = {
 
 export type QueryCheckCompanyNameArgs = {
   data: CheckCompanyNameInput;
+};
+
+
+export type QueryCheckSignupJwtTokenArgs = {
+  data: CheckSignupJwtTokenInput;
 };
 
 

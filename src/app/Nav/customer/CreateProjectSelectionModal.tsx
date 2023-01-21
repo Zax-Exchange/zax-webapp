@@ -19,6 +19,12 @@ import {
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useGetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import ReactGA from "react-ga4";
+import {
+  EVENT_ACTION,
+  EVENT_CATEGORY,
+  EVENT_LABEL,
+} from "../../../analytics/constants";
 
 enum ModalView {
   SELECTION_VIEW = "SELECTION_VIEW",
@@ -55,6 +61,8 @@ const CreateProjectSelectionModal = ({
     },
     fetchPolicy: "no-cache",
   });
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (projectsError) {
@@ -115,7 +123,14 @@ const CreateProjectSelectionModal = ({
 
               <Button
                 variant="outlined"
-                onClick={() => setCurrentView(ModalView.IMPORT_VIEW)}
+                onClick={() => {
+                  ReactGA.event({
+                    action: EVENT_ACTION.CLICK,
+                    category: EVENT_CATEGORY.PROJECT,
+                    label: EVENT_LABEL.IMPORT_PROJECT,
+                  });
+                  setCurrentView(ModalView.IMPORT_VIEW);
+                }}
               >
                 {intl.formatMessage({
                   id: "app.customer.createProject.import",
