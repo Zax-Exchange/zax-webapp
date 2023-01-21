@@ -229,14 +229,14 @@ function App() {
                     </RequireAuth>
                   }
                 />
-                <Route
+                {/* <Route
                   path={GENERAL_ROUTES.PROFILE}
                   element={
                     <RequireAuth isAllowed={true}>
                       <Profile />
                     </RequireAuth>
                   }
-                />
+                /> */}
                 <Route
                   path={GENERAL_ROUTES.PROJECT_DETAIL}
                   element={

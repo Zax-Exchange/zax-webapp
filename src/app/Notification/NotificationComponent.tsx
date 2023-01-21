@@ -263,7 +263,18 @@ const NotificationComponent = () => {
                         justifyContent="center"
                         p={2}
                       >
-                        {renderNotificationMessage(noti)}
+                        <Typography
+                          variant="caption"
+                          color="InfoText"
+                          component={"p"}
+                          sx={{
+                            overflow: "visible",
+                            textOverflow: "clip",
+                            whiteSpace: "break-spaces",
+                          }}
+                        >
+                          {renderNotificationMessage(noti)}
+                        </Typography>
                       </Box>
                     </ListItem>
                   );

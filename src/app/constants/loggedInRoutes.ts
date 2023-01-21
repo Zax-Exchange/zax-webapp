@@ -4,7 +4,7 @@
 export enum GENERAL_ROUTES {
   ARBITRARY = "*",
   HOME = "/",
-  PROFILE = "/profile",
+  // PROFILE = "/profile",
   SETTINGS = "/settings",
   PROJECT_DETAIL = "/project-detail/:projectId",
   PROJECTS = "/projects",
