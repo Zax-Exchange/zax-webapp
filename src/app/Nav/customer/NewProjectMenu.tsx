@@ -70,7 +70,7 @@ const NewProjectMenu = ({
         <Typography variant="caption" fontWeight={600}>
           {menuText}
         </Typography>
-        <Tooltip title={menuTooltip} placement="right">
+        <Tooltip title={menuTooltip} placement="left">
           <InfoSharp sx={{ fontSize: "16px" }} color="info" />
         </Tooltip>
       </Box>

@@ -157,7 +157,6 @@ const VendorBidOverview = ({
           <Tooltip
             title={intl.formatMessage({ id: "app.bid.status.open.tooltip" })}
             placement="top"
-            arrow
           >
             <EventAvailableOutlined color="success" />
           </Tooltip>
@@ -169,7 +168,6 @@ const VendorBidOverview = ({
               id: "app.bid.status.outdated.tooltip",
             })}
             placement="top"
-            arrow
           >
             <ErrorOutline color="warning" />
           </Tooltip>
@@ -227,16 +225,20 @@ const VendorBidOverview = ({
           >
             <MenuList dense sx={{ padding: "4px 0 4px" }}>
               <MenuItem onClick={() => vendorBidMenuOnClick("view-profile")}>
-                {intl.formatMessage({
-                  id: "app.customer.projectDetail.bid.menu.viewVendorProfile",
-                })}
+                <Typography variant="caption">
+                  {intl.formatMessage({
+                    id: "app.customer.projectDetail.bid.menu.viewVendorProfile",
+                  })}
+                </Typography>
               </MenuItem>
               <MenuItem
                 onClick={() => vendorBidMenuOnClick("open-conversation")}
               >
-                {intl.formatMessage({
-                  id: "app.customer.projectDetail.bid.menu.openConversation",
-                })}
+                <Typography variant="caption">
+                  {intl.formatMessage({
+                    id: "app.customer.projectDetail.bid.menu.openConversation",
+                  })}
+                </Typography>
               </MenuItem>
 
               {/* <MenuItem onClick={() => vendorBidMenuOnClick("export-to-pdf")}>
@@ -246,9 +248,11 @@ const VendorBidOverview = ({
               </MenuItem> */}
 
               <MenuItem onClick={() => vendorBidMenuOnClick("create-po")}>
-                {intl.formatMessage({
-                  id: "app.customer.projectDetail.bid.menu.createPO",
-                })}
+                <Typography variant="caption">
+                  {intl.formatMessage({
+                    id: "app.customer.projectDetail.bid.menu.createPO",
+                  })}
+                </Typography>
               </MenuItem>
 
               {/* <MenuItem onClick={() => vendorBidMenuOnClick("accept")}>

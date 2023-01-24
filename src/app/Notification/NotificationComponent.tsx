@@ -119,6 +119,14 @@ const NotificationComponent = () => {
       }
     );
 
+    socket.on(
+      ReceiveEventType.SERVER_SENT_ACTIONS,
+      (notification: Notification) => {
+        if (notification.notificationType === NotificationType.RELOAD) {
+          document.dispatchEvent(new CustomEvent("reload"));
+        }
+      }
+    );
     if (!socket.connected) {
       socket.connect();
     }

@@ -122,8 +122,7 @@ const VendorProjectOverviewCard = ({
         return (
           <Tooltip
             title={intl.formatMessage({ id: "app.bid.status.open.tooltip" })}
-            placement="top"
-            arrow
+            placement="right"
           >
             <EventAvailableOutlined color="success" />
           </Tooltip>
@@ -134,8 +133,7 @@ const VendorProjectOverviewCard = ({
             title={intl.formatMessage({
               id: "app.bid.status.outdated.tooltip",
             })}
-            placement="top"
-            arrow
+            placement="right"
           >
             <ErrorOutline color="warning" />
           </Tooltip>

@@ -176,10 +176,15 @@ function App() {
       logout();
     });
 
+    document.addEventListener("reload", () => {
+      window.location.reload();
+    });
+
     ReactGA.initialize(process.env.REACT_APP_GA4_ID!);
 
     return () => {
       document.removeEventListener("logout", () => {});
+      document.removeEventListener("reload", () => {});
     };
   }, []);
 
