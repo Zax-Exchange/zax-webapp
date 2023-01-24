@@ -376,7 +376,10 @@
   "app.customer.createProject.advancedCreate.helperText": "This option is for users who knows exactly what they want and would like to configure the project detail themselves. This option includes technical terms that vendors use across the industry.",
   "app.customer.createProject.import": "Import",
   "app.customer.createProject.importFromExisting": "Import from existing projects below",
-  
+  "app.customer.createProject.guidedCreate.tooltip": "If you're unfamiliar with how to create a project, you can utilize our guided flow to get started.",
+  "app.customer.createProject.advancedCreate.tooltip": "If you know how to create a project already, you can use this to fine tune your project specs.",
+  "app.customer.createProject.import.tooltip": "Import from existing project.",
+
   "app.customer.projectDetail.bid.menu.viewVendorProfile": "View vendor profile",
   "app.customer.projectDetail.bid.menu.openConversation": "Open Conversation",
   "app.customer.projectDetail.bid.menu.exportToPdf": "Export to pdf",

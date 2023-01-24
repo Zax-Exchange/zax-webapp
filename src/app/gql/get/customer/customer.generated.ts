@@ -19,7 +19,7 @@ export type GetCustomerProjectsQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects: Array<{ __typename?: 'CustomerProjectOverview', id: string, userId: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: string, permission: Types.ProjectPermission, createdAt: any, updatedAt: any }> };
+export type GetCustomerProjectsQuery = { __typename?: 'Query', getCustomerProjects: Array<{ __typename?: 'CustomerProjectOverview', id: string, userId: string, name: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: string, permission: Types.ProjectPermission, totalWeight: string, category: string, createdAt: any, updatedAt: any }> };
 
 export type GetCustomerDetailQueryVariables = Types.Exact<{
   data: Types.GetCustomerDetailInput;
@@ -101,6 +101,8 @@ export const GetCustomerProjectsDocument = gql`
     orderQuantities
     status
     permission
+    totalWeight
+    category
     createdAt
     updatedAt
   }

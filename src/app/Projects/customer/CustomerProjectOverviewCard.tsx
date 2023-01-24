@@ -71,8 +71,8 @@ const CustomerProjectOverviewCard = ({
 }) => {
   const intl = useIntl();
   const navigate = useNavigate();
-  const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
+  const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [projectMenuAnchor, setProjectMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
 
@@ -183,7 +183,7 @@ const CustomerProjectOverviewCard = ({
           <MoreIcon />
         </IconButton>
         <Menu
-          id="long-menu"
+          id="customer-project-overview-menu"
           anchorEl={projectMenuAnchor}
           open={projectMenuOpen}
           onClose={moreOnClose}

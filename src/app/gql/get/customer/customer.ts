@@ -37,6 +37,8 @@ const GET_CUSTOMER_PROJECTS = gql`
       orderQuantities
       status
       permission
+      totalWeight
+      category
       createdAt
       updatedAt
   }

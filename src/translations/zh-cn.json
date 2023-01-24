@@ -378,6 +378,9 @@
   "app.customer.createProject.advancedCreate.helperText": "This option is for users who knows exactly what they want and would like to configure the project detail themselves. This option includes technical terms that vendors use across the industry.",
   "app.customer.createProject.import": "载入",
   "app.customer.createProject.importFromExisting": "从以下选单选择项目载入",
+  "app.customer.createProject.guidedCreate.tooltip": "若您不熟悉项目的创建流程，您可以使用指导流程来帮助您开始。",
+  "app.customer.createProject.advancedCreate.tooltip": "若您已熟悉项目创建流程，您可以使用进阶流程来微调每个项目细节。",
+  "app.customer.createProject.import.tooltip": "从现有的项目选择您想要载入的项目。",
 
   "app.customer.projectDetail.bid.menu.viewVendorProfile": "查看厂商信息",
   "app.customer.projectDetail.bid.menu.openConversation": "打开对话栏",

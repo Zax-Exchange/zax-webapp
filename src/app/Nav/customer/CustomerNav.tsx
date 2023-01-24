@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Menu,
   Toolbar,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
@@ -13,12 +14,12 @@ import CustomerSideNav from "./CustomerSideNav";
 import logo from "../../../static/logo2.png";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
-import { Menu } from "@mui/icons-material";
+import { ExpandMore, Menu as MenuIcon } from "@mui/icons-material";
 import {
   CUSTOMER_ROUTES,
   GENERAL_ROUTES,
 } from "../../constants/loggedInRoutes";
-import CreateProjectSelectionModal from "./CreateProjectSelectionModal";
+import NewProjectMenu from "./NewProjectMenu";
 import NotificationComponent from "../../Notification/NotificationComponent";
 import { AuthContext } from "../../../context/AuthContext";
 
@@ -35,11 +36,18 @@ export default function CustomerNav() {
   const intl = useIntl();
   const navigate = useNavigate();
   const [sideNavOpen, setSideNavOpen] = useState(false);
-  const [createProjectSelectionModalOpen, setCreateProjectSelectionModalOpen] =
-    useState(false);
 
-  const createProjectOnClick = () => {
-    setCreateProjectSelectionModalOpen(true);
+  const [newProjectMenuAnchor, seNewtProjectMenuAnchor] =
+    useState<HTMLButtonElement | null>(null);
+
+  const newProjectMenuOpen = !!newProjectMenuAnchor;
+
+  const newProjectOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    seNewtProjectMenuAnchor(e.currentTarget);
+  };
+
+  const newProjectOnClose = () => {
+    seNewtProjectMenuAnchor(null);
   };
 
   const renderHamburger = () => {
@@ -51,7 +59,7 @@ export default function CustomerNav() {
         sx={{ color: "gray" }}
         onClick={() => setSideNavOpen(true)}
       >
-        <Menu />
+        <MenuIcon />
       </IconButton>
     );
   };
@@ -75,34 +83,28 @@ export default function CustomerNav() {
         <SearchBar />
         <Box display="flex" flexGrow={1} justifyContent="flex-end">
           <Button
-            onClick={createProjectOnClick}
+            onClick={newProjectOnClick}
             variant="outlined"
             sx={{ borderRadius: 40 }}
           >
             {intl.formatMessage({
               id: "app.routes.loggedIn.newProject",
             })}
+            <ExpandMore />
           </Button>
         </Box>
         <NotificationComponent />
       </Toolbar>
+
       <CustomerSideNav
         sideNavOpen={sideNavOpen}
         setSideNavOpen={setSideNavOpen}
       />
-
-      <Dialog
-        open={createProjectSelectionModalOpen}
-        onClose={() => setCreateProjectSelectionModalOpen(false)}
-        maxWidth="md"
-      >
-        <CreateProjectSelectionModal
-          setCreateProjectSelectionModalOpen={
-            setCreateProjectSelectionModalOpen
-          }
-          createProjectSelectionModalOpen={createProjectSelectionModalOpen}
-        />
-      </Dialog>
+      <NewProjectMenu
+        newProjectMenuAnchor={newProjectMenuAnchor}
+        newProjectMenuOpen={newProjectMenuOpen}
+        newProjectOnClose={newProjectOnClose}
+      />
     </>
   );
 }
