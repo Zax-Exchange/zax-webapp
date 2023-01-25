@@ -44,6 +44,7 @@
   "app.general.name": "Name",
   "app.general.incomplete": "Incomplete",
   "app.general.loading": "Loading",
+  "app.general.NA": "N/A",
   
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",
@@ -255,7 +256,7 @@
   "app.project.status.closed": "Closed",
 
   "app.bid.attribute.quantity": "Quantity",
-  "app.bid.attribute.price": "Price Per Unit",
+  "app.bid.attribute.price": "Price",
   "app.bid.attribute.samplingFee": "Sampling Fee",  
   "app.bid.attribute.toolingFee": "Tooling Fee",  
   "app.bid.attribute.bidRemark": "Additional Remarks",

@@ -11,6 +11,7 @@ import {
   ListItem,
   Paper,
   Stack,
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -53,6 +54,12 @@ type ProjectComponentRow = {
   isLast: boolean;
 };
 
+const StyledTableBody = styled(TableBody)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: "#f9f9f9",
+  },
+}));
+
 const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
   const intl = useIntl();
   const [open, setOpen] = useState(false);
@@ -90,7 +97,7 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
           {row.isLast
             ? row.bidComponent.toolingFee
               ? `$${row.bidComponent.toolingFee}`
-              : "-"
+              : intl.formatMessage({ id: "app.general.NA" })
             : "-"}
         </TableCell>
       </TableRow>
@@ -243,14 +250,14 @@ const VendorBidModal = ({
                     </TableRow>
                   </TableHead>
                 )}
-                <TableBody>
+                <StyledTableBody>
                   {rows.map((row) => (
                     <>
                       <BidComponentRow row={row} />
                     </>
                   ))}
-                </TableBody>
-                <TableBody sx={{ height: 20 }} />
+                </StyledTableBody>
+                <Box height={20}></Box>
               </>
             );
           })}

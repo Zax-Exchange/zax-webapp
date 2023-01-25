@@ -44,6 +44,7 @@
   "app.general.name": "名字",
   "app.general.incomplete": "尚未完成",
   "app.general.loading": "加载中",
+  "app.general.NA": "不适用",
 
   "app.general.company.vendorName": "厂商名",
   "app.general.company.customerName": "客户名",

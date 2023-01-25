@@ -149,6 +149,7 @@ const VendorProjectDetail = () => {
       },
     },
     fetchPolicy: "no-cache",
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
