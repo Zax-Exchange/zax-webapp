@@ -346,6 +346,7 @@ const GuidedOtherSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
+              displayTitle={false}
               dimension={componentData!.componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));
@@ -382,6 +383,7 @@ const GuidedOtherSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
+              displayTitle={false}
               dimension={componentData!.componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));
@@ -402,6 +404,7 @@ const GuidedOtherSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
+              displayTitle={false}
               dimension={componentData!.componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));

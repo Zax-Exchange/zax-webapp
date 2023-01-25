@@ -49,7 +49,7 @@ import {
 } from "../../../../Utils/inputValidators";
 import { openLink } from "../../../../Utils/openLink";
 import UploadDesign from "../../UploadDesign";
-import DimensionsInput from "../common/DimensionsInput";
+import DimensionsInput, { isValidDimension } from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedCreateBoxStyleSelection from "./modals/GuidedCreateBoxStyleSelection";
@@ -240,12 +240,8 @@ const GuidedOutsideSpec = ({
 
   const shouldDisableNextButton = () => {
     let res = false;
-    if (
-      !componentSpec.dimension.x ||
-      !componentSpec.dimension.y ||
-      !componentSpec.dimension.z
-    )
-      return true;
+
+    if (!isValidDimension(componentSpec.dimension)) return true;
 
     if (
       componentSpec.includeArtworkInQuote &&
@@ -495,6 +491,7 @@ const GuidedOutsideSpec = ({
                 })}
               </Typography>
               <DimensionsInput
+                displayTitle={false}
                 dimension={componentSpec.dimension}
                 setDimension={(data: ProductDimensionInput) => {
                   setComponentSpec((prev) => ({ ...prev, dimension: data }));

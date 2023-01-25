@@ -143,6 +143,29 @@ const PostProcessInput = ({
     return productValueToLabelMap[postProcess.postProcessName];
   };
 
+  const renderEstimatedAreaInput = () => {
+    return (
+      <Box>
+        <Box mb={1.5}>
+          <Typography variant="caption">
+            {intl.formatMessage({
+              id: "app.component.postProcess.estimatedArea",
+            })}
+          </Typography>
+        </Box>
+        <DimensionsInput
+          displayTitle={false}
+          dimension={postProcess.estimatedArea}
+          setDimension={(data: ProductDimensionInput) => {
+            setPostProcess({
+              ...postProcess,
+              estimatedArea: data,
+            });
+          }}
+        />
+      </Box>
+    );
+  };
   const renderPrintingPostProcessSection = () => {
     const getPrintingMethodLabel = () => {
       if (!postProcess.printingMethod) return null;
@@ -273,24 +296,7 @@ const PostProcessInput = ({
             />
           </Box>
         </Box>
-        <Box>
-          <Box>
-            <Typography variant="caption">
-              {intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
-              })}
-            </Typography>
-          </Box>
-          <DimensionsInput
-            dimension={postProcess.estimatedArea}
-            setDimension={(data: ProductDimensionInput) => {
-              setPostProcess({
-                ...postProcess,
-                estimatedArea: data,
-              });
-            }}
-          />
-        </Box>
+        {renderEstimatedAreaInput()}
       </>
     );
   };
@@ -321,24 +327,7 @@ const PostProcessInput = ({
             value={postProcess.fontSize}
           />
         </Box>
-        <Box>
-          <Box>
-            <Typography variant="caption">
-              {intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
-              })}
-            </Typography>
-          </Box>
-          <DimensionsInput
-            dimension={postProcess.estimatedArea}
-            setDimension={(data: ProductDimensionInput) => {
-              setPostProcess({
-                ...postProcess,
-                estimatedArea: data,
-              });
-            }}
-          />
-        </Box>
+        {renderEstimatedAreaInput()}
       </>
     );
   };
@@ -354,24 +343,7 @@ const PostProcessInput = ({
             }
           />
         </Box>
-        <Box>
-          <Box>
-            <Typography variant="caption">
-              {intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
-              })}
-            </Typography>
-          </Box>
-          <DimensionsInput
-            dimension={postProcess.estimatedArea}
-            setDimension={(data: ProductDimensionInput) => {
-              setPostProcess({
-                ...postProcess,
-                estimatedArea: data,
-              });
-            }}
-          />
-        </Box>
+        {renderEstimatedAreaInput()}
       </>
     );
   };

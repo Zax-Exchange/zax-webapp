@@ -80,8 +80,8 @@ import ProjectSpecDetail from "../common/ProjectSpecDetail";
 
 type BidComponent = {
   quantityPrices: QuantityPrice[];
-  samplingFee: number;
-  toolingFee?: number | null;
+  samplingFee: string;
+  toolingFee?: string | null;
   bidClearedByCustomer?: boolean;
 };
 
@@ -320,7 +320,7 @@ const VendorProjectDetail = () => {
             projectBidId: bidId,
             projectComponentId: comp.id,
             quantityPrices: getAllQp(null),
-            samplingFee: 0,
+            samplingFee: "",
           };
 
           // check whether productName is moldedFiber before initializing the attribute
@@ -328,7 +328,7 @@ const VendorProjectDetail = () => {
             comp.componentSpec.productName ===
             PRODUCT_NAME_MOLDED_FIBER_TRAY.value
           ) {
-            compsForCreate[comp.id].toolingFee = 0;
+            compsForCreate[comp.id].toolingFee = "";
           } else {
             compsForCreate[comp.id].toolingFee = null;
           }
@@ -416,21 +416,25 @@ const VendorProjectDetail = () => {
                     <TableRow>
                       <TableCell align="right">{qp.quantity}</TableCell>
                       <TableCell align="right">
-                        {parseFloat(qp.price)}
+                        ${parseFloat(qp.price)}
                       </TableCell>
                       {isLast ? (
                         <>
-                          <TableCell align="right">{bid.samplingFee}</TableCell>
+                          <TableCell align="right">
+                            ${bid.samplingFee}
+                          </TableCell>
                           {!!bid.toolingFee && (
                             <TableCell align="right">
-                              {bid.toolingFee}
+                              ${bid.toolingFee}
                             </TableCell>
                           )}
                         </>
                       ) : (
                         <>
-                          <TableCell></TableCell>
-                          {!!bid.toolingFee && <TableCell></TableCell>}
+                          <TableCell align="right">-</TableCell>
+                          {!!bid.toolingFee && (
+                            <TableCell align="right">-</TableCell>
+                          )}
                         </>
                       )}
                     </TableRow>
@@ -515,7 +519,7 @@ const VendorProjectDetail = () => {
           ...bidComponentsForUpdate,
           [component.id]: {
             ...bidComponentsForUpdate[component.id],
-            [type]: +val,
+            [type]: val,
           },
         });
       }
@@ -636,7 +640,7 @@ const VendorProjectDetail = () => {
           ...bidComponentsForCreate,
           [component.id]: {
             ...bidComponentsForCreate[component.id],
-            [type]: +val,
+            [type]: val,
           },
         });
       }
@@ -765,7 +769,6 @@ const VendorProjectDetail = () => {
 
       return true;
     };
-
     if (!componentsValidated() || isAllEmpty()) return;
 
     try {
@@ -786,13 +789,15 @@ const VendorProjectDetail = () => {
         }),
         createProjectBidComponents({
           variables: {
-            data: Object.values(bidComponentsForCreate),
+            data: Object.values(bidComponentsForCreate).filter(
+              (comp) => !isEmptyBidComponent(comp)
+            ),
           },
         }),
       ]);
-      setIsEditMode(false);
+      await getVendorProjectRefetch();
       setUpdateBidClicked(false);
-      getVendorProjectRefetch();
+      setIsEditMode(false);
       setSnackbar({
         message: intl.formatMessage({
           id: "app.vendor.projectDetail.updateSuccess",

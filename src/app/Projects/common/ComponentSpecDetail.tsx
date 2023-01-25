@@ -133,7 +133,7 @@ export default function ComponentSpecDetail({
         </TableCell>
         <TableCell>
           <Typography variant="caption">
-            {output.join("x")}
+            {output.join("x")}{" "}
             {intl.formatMessage({ id: "app.general.unit.mm" })}
           </Typography>
         </TableCell>
@@ -679,7 +679,7 @@ export default function ComponentSpecDetail({
                   if (process.fontSize) {
                     res.push(
                       <TableCell>
-                        {process.fontSize}
+                        {process.fontSize}{" "}
                         {intl.formatMessage({ id: "app.general.unit.px" })}
                       </TableCell>
                     );
@@ -702,7 +702,7 @@ export default function ComponentSpecDetail({
                   if (process.estimatedArea && estimatedArea.length) {
                     res.push(
                       <TableCell>
-                        {estimatedArea.join("x")}
+                        {estimatedArea.join("x")}{" "}
                         {intl.formatMessage({
                           id: "app.general.unit.mm",
                         })}

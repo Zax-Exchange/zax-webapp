@@ -9,11 +9,29 @@ import {
 } from "../../../../../generated/graphql";
 import { isValidFloat } from "../../../../Utils/inputValidators";
 
+export const isValidDimension = (
+  dimension: ProductDimension | null | undefined
+) => {
+  if (dimension) {
+    if (parseFloat(dimension.x) === 0 || isNaN(parseFloat(dimension.x)))
+      return false;
+    if (parseFloat(dimension.y) === 0 || isNaN(parseFloat(dimension.y)))
+      return false;
+    if (dimension.z !== undefined && dimension.z !== null) {
+      if (parseFloat(dimension.z) === 0 || isNaN(parseFloat(dimension.z)))
+        return false;
+    }
+    return true;
+  }
+  return false;
+};
 const DimensionsInput = ({
   dimension,
+  displayTitle = true,
   setDimension,
 }: {
   dimension: ProductDimension | null | undefined;
+  displayTitle?: boolean;
   setDimension: (data: ProductDimension) => void;
 }) => {
   const intl = useIntl();
@@ -33,6 +51,13 @@ const DimensionsInput = ({
 
   return (
     <Box>
+      {displayTitle && (
+        <Box mb={1}>
+          <Typography variant="caption">
+            {intl.formatMessage({ id: "app.component.attribute.dimension" })}
+          </Typography>
+        </Box>
+      )}
       <Box>
         <TextField
           autoComplete="new-password"

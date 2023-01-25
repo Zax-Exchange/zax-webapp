@@ -155,8 +155,8 @@ export type CreateProjectBidComponentInput = {
   projectBidId?: InputMaybe<Scalars['String']>;
   projectComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPriceInput>;
-  samplingFee: Scalars['Int'];
-  toolingFee?: InputMaybe<Scalars['Int']>;
+  samplingFee: Scalars['String'];
+  toolingFee?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateProjectBidInput = {
@@ -1059,8 +1059,8 @@ export type ProjectBidComponent = {
   projectBidId: Scalars['String'];
   projectComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPrice>;
-  samplingFee: Scalars['Int'];
-  toolingFee?: Maybe<Scalars['Int']>;
+  samplingFee: Scalars['String'];
+  toolingFee?: Maybe<Scalars['String']>;
 };
 
 export type ProjectBidForPo = {
@@ -1557,8 +1557,8 @@ export type UpdateGuestProjectInput = {
 export type UpdateProjectBidComponentInput = {
   bidComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPriceInput>;
-  samplingFee: Scalars['Int'];
-  toolingFee?: InputMaybe<Scalars['Int']>;
+  samplingFee: Scalars['String'];
+  toolingFee?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateProjectBidInput = {

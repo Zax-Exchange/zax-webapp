@@ -257,7 +257,7 @@
   "app.project.status.closed": "Closed",
 
   "app.bid.attribute.quantity": "数量",
-  "app.bid.attribute.price": "每单价格",
+  "app.bid.attribute.price": "价格",
   "app.bid.attribute.samplingFee": "打样费",  
   "app.bid.attribute.toolingFee": "模具费",  
   "app.bid.attribute.bidRemark": "其他竞标信息",
@@ -374,6 +374,7 @@
   "app.customer.createProject.guidedCreate.skip": "跳过",
   "app.customer.createProject.guidedCreate.addProduct": "添加产品",
   "app.customer.createProject.guidedCreate.finish": "盒子饰面",
+  "app.customer.createProject.guidedCreate.isRequired.tooltip": "由于您跳过了外盒与内托盘，您必须创建至少一个包装产品来继续。",
   "app.customer.createProject.advancedCreate": "进阶",
   "app.customer.createProject.advancedCreate.helperText": "This option is for users who knows exactly what they want and would like to configure the project detail themselves. This option includes technical terms that vendors use across the industry.",
   "app.customer.createProject.import": "载入",
@@ -390,6 +391,7 @@
   "app.customer.projectDetail.bid.menu.rejectBid": "拒绝",
   "app.customer.projectDetail.error.orderQuantity.helperText": "必须有至少一个报价数量",
   "app.customer.projectDetail.bidModal.vendorInformation": "厂商信息",
+  "app.customer.projectDetail.bidWasCleared": "由于您的项目报价数量有变动，厂商原本的报价已被清除。待厂商重新提交竞标后便可查看新的报价细节。",
   "app.customer.projectDetail.noBids": "此项目尚无厂商竞标。",
   "app.customer.projectDetail.copyProject": "复制项目",
 
@@ -424,6 +426,7 @@
   "app.vendor.search.bidsDetail": "竞标细节",
   "app.vendor.search.viewYourBid": "查看您的竞标",
   "app.vendor.search.AdditionRemarks": "其他竞标信息",
+  "app.vendor.search.bidCreated": "竞标提交成功！",
   "app.vendor.uploadRemark.tooltip": "上传其他竞标信息档案",
   "app.vendor.uploadRemark.success": "上传成功",
   "app.vendor.project.attribute.customerName": "客户名称",

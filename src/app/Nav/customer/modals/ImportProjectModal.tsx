@@ -92,7 +92,7 @@ const ImportProjectModal = ({
           />
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ p: 2 }}>
         <Button
           onClick={() => {
             closeModal();
@@ -102,6 +102,7 @@ const ImportProjectModal = ({
         </Button>
         <Button
           disabled={!selectedProjectForImport}
+          variant="outlined"
           onClick={() =>
             navigateToAdvanceCreateProject(selectedProjectForImport!.id)
           }

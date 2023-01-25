@@ -184,7 +184,7 @@ const VendorBidModal = ({
       </Box>
 
       <TableContainer component={Box}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: 650 }} size="small">
           {bid.components.map((comp, bidCompIndex) => {
             const rows: ProjectComponentRow[] = [];
             const projectComponent = getComponent(comp.projectComponentId)!;
@@ -203,7 +203,16 @@ const VendorBidModal = ({
 
             return (
               <>
-                {bidCompIndex === 0 && (
+                {bidCompIndex === 0 && !rows.length && (
+                  <Box display="flex" justifyContent="center">
+                    <Typography variant="caption" color="GrayText">
+                      {intl.formatMessage({
+                        id: "app.customer.projectDetail.bidWasCleared",
+                      })}
+                    </Typography>
+                  </Box>
+                )}
+                {bidCompIndex === 0 && !!rows.length && (
                   <TableHead>
                     <TableRow>
                       <TableCell width="10%" />

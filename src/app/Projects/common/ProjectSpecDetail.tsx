@@ -42,12 +42,12 @@ const ProjectSpecDetail = ({
 
     let fieldString = projectFieldData;
     if (projectAttribute === "totalWeight") {
-      fieldString += intl.formatMessage({ id: "app.general.unit.g" });
+      fieldString += ` ${intl.formatMessage({ id: "app.general.unit.g" })}`;
     }
     if (projectAttribute === "targetPrice") {
-      fieldString =
-        parseFloat(fieldString as string) +
-        intl.formatMessage({ id: "app.general.currency.usd" });
+      fieldString = `${parseFloat(fieldString as string)} ${intl.formatMessage({
+        id: "app.general.currency.usd",
+      })}`;
     }
     return <Typography variant="caption">{fieldString}</Typography>;
   };

@@ -181,11 +181,11 @@ const SearchProjectDetail = () => {
               price: "",
             };
           }),
-          samplingFee: 0,
+          samplingFee: "",
           toolingFee:
             comp.componentSpec.productName ===
             PRODUCT_NAME_MOLDED_FIBER_TRAY.value
-              ? 0
+              ? ""
               : null,
         })),
       }));
@@ -273,7 +273,7 @@ const SearchProjectDetail = () => {
 
     const components = [...bidInput.components];
     const curComponent = bidInput.components[componentInd];
-    curComponent[type] = parseInt(val, 10);
+    curComponent[type] = val;
     components.splice(componentInd, 1, curComponent);
 
     setBidInput((prev) => ({
@@ -332,7 +332,7 @@ const SearchProjectDetail = () => {
       });
       setSnackbar({
         severity: "success",
-        message: "Bid created.",
+        message: intl.formatMessage({ id: "app.vendor.search.bidCreated" }),
       });
       navigate(GENERAL_ROUTES.PROJECTS);
     } catch (error) {
