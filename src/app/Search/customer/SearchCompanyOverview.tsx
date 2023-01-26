@@ -57,7 +57,13 @@ const SearchCompanyOverview = ({
               </Typography>
               <List>
                 <ProjectOverviewListItem>
-                  <Tooltip title="Manufacturing Products" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.vendor.attribute.products",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <CategoryIcon />
                   </Tooltip>
                   <Typography variant="caption">
@@ -72,7 +78,13 @@ const SearchCompanyOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Factory Locations" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.vendor.attribute.locations",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <FactoryIcon />
                   </Tooltip>
                   <Typography variant="caption">
@@ -81,12 +93,22 @@ const SearchCompanyOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Typical Lead Time" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.vendor.attribute.leadTime",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <AccessTimeIcon />
                   </Tooltip>
                   <Typography variant="caption">
-                    {companyData.leadTime}{" "}
-                    {intl.formatMessage({ id: "app.general.month" })}
+                    {intl.formatMessage(
+                      { id: "app.general.months" },
+                      {
+                        month: companyData.leadTime,
+                      }
+                    )}
                   </Typography>
                 </ProjectOverviewListItem>
 

@@ -671,7 +671,14 @@ export default function ComponentSpecDetail({
                   }
 
                   if (process.printingMethod) {
-                    res.push(<TableCell>{process.printingMethod}</TableCell>);
+                    res.push(
+                      <TableCell>
+                        {intl.formatMessage({
+                          id: productValueToLabelMap[process.printingMethod]
+                            .labelId,
+                        })}
+                      </TableCell>
+                    );
                   } else {
                     res.push(<TableCell>-</TableCell>);
                   }

@@ -279,13 +279,6 @@ const CreateOrUpdateComponentModal = ({
       }
       if (!isValidDimension(componentSpec.dimension)) return true;
 
-      if (componentSpec.postProcess) {
-        for (let process of componentSpec.postProcess) {
-          if (process.estimatedArea && !isValidDimension(process.estimatedArea))
-            return true;
-        }
-      }
-
       return false;
     };
 
@@ -316,6 +309,12 @@ const CreateOrUpdateComponentModal = ({
     const isInvalidPostProcess = () => {
       if (componentSpec.postProcess) {
         for (let process of componentSpec.postProcess) {
+          if (process.estimatedArea && !isValidDimension(process.estimatedArea))
+            return true;
+          if (process.numberOfColors) {
+            if (!process.numberOfColors.c || !process.numberOfColors.t)
+              return true;
+          }
           for (let key in process) {
             const attr = key as keyof PostProcessDetailInput;
             if (

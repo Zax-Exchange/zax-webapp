@@ -261,12 +261,6 @@ const CreateProjectComponentModal = ({
       }
       if (!isValidDimension(componentSpec.dimension)) return true;
 
-      if (componentSpec.postProcess) {
-        for (let process of componentSpec.postProcess) {
-          if (process.estimatedArea && !isValidDimension(process.estimatedArea))
-            return true;
-        }
-      }
       return false;
     };
 
@@ -281,6 +275,9 @@ const CreateProjectComponentModal = ({
           if (isInvalidComponentDimension()) return true;
         }
 
+        if (attribute === "postProcess") {
+          if (isInvalidPostProcess()) return true;
+        }
         const val = componentSpec[attribute];
 
         if (
@@ -298,6 +295,13 @@ const CreateProjectComponentModal = ({
     const isInvalidPostProcess = () => {
       if (componentSpec.postProcess) {
         for (let process of componentSpec.postProcess) {
+          if (process.estimatedArea && !isValidDimension(process.estimatedArea))
+            return true;
+
+          if (process.numberOfColors) {
+            if (!process.numberOfColors.c || !process.numberOfColors.t)
+              return true;
+          }
           for (let key in process) {
             const attr = key as keyof PostProcessDetailInput;
             if (

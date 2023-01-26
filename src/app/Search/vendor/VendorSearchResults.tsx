@@ -16,6 +16,9 @@ import {
   Checkbox,
   Button,
   useTheme,
+  TextField,
+  Autocomplete,
+  Paper,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -29,17 +32,22 @@ import { useSearchCustomerProjectsLazyQuery } from "../../gql/get/project/projec
 import FullScreenLoading from "../../Utils/Loading";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useIntl } from "react-intl";
+import { isValidFloat } from "../../Utils/inputValidators";
+import { Country } from "../../Signup/customer/CustomerSignup";
+import { countries } from "../../constants/countries";
 
 // Allowed search params, if user tempers the url we will not allow search request to fire
 const allowedParams = {
   userInput: true,
-  targetPrice: true,
+  targetPriceRange: true,
   deliveryDate: true,
+  countries: true,
 } as { [key: string]: boolean };
 
 type VendorFiltersType = {
-  targetPrice: string;
+  targetPriceRange: string[];
   deliveryDate: string;
+  countries: Record<string, boolean>;
 };
 
 const VendorSearchResults = () => {
@@ -60,8 +68,9 @@ const VendorSearchResults = () => {
 
   // Filter values, this will be initialized based on url if there is any, otherwise they will be empty string
   const [filters, setFilters] = useState<VendorFiltersType>({
-    targetPrice: "",
+    targetPriceRange: ["", ""],
     deliveryDate: "",
+    countries: {},
   });
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
@@ -110,10 +119,10 @@ const VendorSearchResults = () => {
     setQueryParamError(!valid);
 
     if (valid) {
-      if (queryMap.targetPrice) {
+      if (queryMap.targetPriceRange) {
         setFilters({
           ...filters,
-          targetPrice: queryMap.targetPrice as string,
+          targetPriceRange: queryMap.targetPriceRange as string[],
         });
       }
       if (queryMap.deliveryDate) {
@@ -132,11 +141,16 @@ const VendorSearchResults = () => {
         variables: {
           data: {
             userInput: queryMap.userInput as string,
-            targetPrice: queryMap.targetPrice
-              ? (queryMap.targetPrice as string)
+            targetPriceRange: queryMap.targetPriceRange
+              ? (queryMap.targetPriceRange as string[])
               : undefined,
             deliveryDate: queryMap.deliveryDate
               ? (queryMap.deliveryDate as string)
+              : undefined,
+            countries: queryMap.countries
+              ? Array.isArray(queryMap.countries)
+                ? (queryMap.countries as string[])
+                : [queryMap.countries as string]
               : undefined,
           },
         },
@@ -148,8 +162,9 @@ const VendorSearchResults = () => {
   // Clears all filters and sets searchParam to only contain userInput. This changes the url and thus trigger a search request
   const clearFilters = () => {
     setFilters({
-      targetPrice: "",
+      targetPriceRange: ["", ""],
       deliveryDate: "",
+      countries: {},
     });
     setSearchParams({
       userInput: queryMap.userInput as string,
@@ -162,12 +177,23 @@ const VendorSearchResults = () => {
       ...searchParams,
       userInput: queryMap.userInput,
     };
-    if (filters.targetPrice) {
-      currentSearchParams.targetPrice = filters.targetPrice;
+    if (
+      filters.targetPriceRange[0] !== "" &&
+      filters.targetPriceRange[1] !== ""
+    ) {
+      currentSearchParams.targetPriceRange = filters.targetPriceRange;
     }
 
     if (filters.deliveryDate) {
       currentSearchParams.deliveryDate = filters.deliveryDate;
+    }
+
+    if (filters.countries.length) {
+      currentSearchParams.countries = filters.countries;
+    }
+
+    if (Object.keys(filters.countries).length) {
+      currentSearchParams.countries = Object.keys(filters.countries);
     }
 
     setSearchParams(currentSearchParams);
@@ -220,30 +246,24 @@ const VendorSearchResults = () => {
   };
 
   const renderTargetPriceFilters = () => {
-    const setTargetPriceFilter = (targetPrice: string) => () => {
-      setFilters({
-        ...filters,
-        targetPrice,
-      });
-    };
+    const targetPriceOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      const isAllowed = isValidFloat(val);
 
-    const clearTargetPriceFilter = () => {
-      setFilters({
-        ...filters,
-        targetPrice: "",
-      });
-    };
-
-    const shouldDisable = (value: string) => {
-      // If no targetPrice filter is set, should not disable checkbox.
-      if (!filters.targetPrice) return false;
-
-      // If current filter value is not the same as selected, should disable.
-      return filters.targetPrice !== value;
-    };
-
-    const shouldCheck = (value: string) => {
-      return filters.targetPrice === value;
+      if (isAllowed) {
+        if (e.target.name === "min") {
+          setFilters((prev) => ({
+            ...prev,
+            targetPriceRange: [val, prev.targetPriceRange[1]],
+          }));
+        }
+        if (e.target.name === "max") {
+          setFilters((prev) => ({
+            ...prev,
+            targetPriceRange: [prev.targetPriceRange[0], val],
+          }));
+        }
+      }
     };
     return (
       <>
@@ -252,6 +272,7 @@ const VendorSearchResults = () => {
           flexDirection="row"
           justifyContent="space-between"
           mt={2}
+          mb={1}
         >
           <Typography variant="subtitle2" textAlign="left">
             {intl.formatMessage({
@@ -268,43 +289,25 @@ const VendorSearchResults = () => {
             })}
           </Typography>
         </Box>
-        <FormGroup>
-          {renderCheckBox(
-            "5000 +",
-            setTargetPriceFilter("5000"),
-            clearTargetPriceFilter,
-            shouldDisable("5000"),
-            shouldCheck("5000")
-          )}
-          {renderCheckBox(
-            "10000 +",
-            setTargetPriceFilter("10000"),
-            clearTargetPriceFilter,
-            shouldDisable("10000"),
-            shouldCheck("10000")
-          )}
-          {renderCheckBox(
-            "30000 +",
-            setTargetPriceFilter("30000"),
-            clearTargetPriceFilter,
-            shouldDisable("30000"),
-            shouldCheck("30000")
-          )}
-          {renderCheckBox(
-            "50000 +",
-            setTargetPriceFilter("50000"),
-            clearTargetPriceFilter,
-            shouldDisable("50000"),
-            shouldCheck("50000")
-          )}
-          {renderCheckBox(
-            "100000 +",
-            setTargetPriceFilter("100000"),
-            clearTargetPriceFilter,
-            shouldDisable("100000"),
-            shouldCheck("100000")
-          )}
-        </FormGroup>
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
+          <TextField
+            InputLabelProps={{ shrink: true }}
+            placeholder={intl.formatMessage({ id: "app.general.minimum" })}
+            value={filters.targetPriceRange[0]}
+            name="min"
+            onChange={targetPriceOnChange}
+            sx={{ flexBasis: "45%" }}
+          />
+
+          <TextField
+            InputLabelProps={{ shrink: true }}
+            placeholder={intl.formatMessage({ id: "app.general.maximum" })}
+            value={filters.targetPriceRange[1]}
+            name="max"
+            sx={{ flexBasis: "45%" }}
+            onChange={targetPriceOnChange}
+          />
+        </Box>
       </>
     );
   };
@@ -348,38 +351,129 @@ const VendorSearchResults = () => {
         </Box>
         <FormGroup>
           {renderCheckBox(
-            "in 3 months",
-            setDeliveryDateFilter(3),
-            clearDeliveryDateFilter,
-            shouldDisable(3),
-            shouldCheck(3)
-          )}
-          {renderCheckBox(
-            "in 6 months",
+            intl.formatMessage(
+              { id: "app.search.filter.inMonths" },
+              {
+                month: "6",
+              }
+            ),
             setDeliveryDateFilter(6),
             clearDeliveryDateFilter,
             shouldDisable(6),
             shouldCheck(6)
           )}
           {renderCheckBox(
-            "in 9 months",
-            setDeliveryDateFilter(9),
-            clearDeliveryDateFilter,
-            shouldDisable(9),
-            shouldCheck(9)
-          )}
-          {renderCheckBox(
-            "in 12 months",
+            intl.formatMessage(
+              { id: "app.search.filter.inMonths" },
+              {
+                month: "12",
+              }
+            ),
             setDeliveryDateFilter(12),
             clearDeliveryDateFilter,
             shouldDisable(12),
             shouldCheck(12)
+          )}
+          {renderCheckBox(
+            intl.formatMessage(
+              { id: "app.search.filter.inMonths" },
+              {
+                month: "18",
+              }
+            ),
+            setDeliveryDateFilter(18),
+            clearDeliveryDateFilter,
+            shouldDisable(18),
+            shouldCheck(18)
+          )}
+          {renderCheckBox(
+            intl.formatMessage(
+              { id: "app.search.filter.inMonths" },
+              {
+                month: "24",
+              }
+            ),
+            setDeliveryDateFilter(24),
+            clearDeliveryDateFilter,
+            shouldDisable(24),
+            shouldCheck(24)
           )}
         </FormGroup>
       </>
     );
   };
 
+  const renderCountriesFilter = () => {
+    const renderCountriesDropdown = () => {
+      const convertToFilters = (v: Country[]) => {
+        const res: Record<string, boolean> = {};
+        for (let country of v) {
+          res[country.label] = true;
+        }
+        return res;
+      };
+      return (
+        <Autocomplete
+          options={countries}
+          autoHighlight
+          getOptionLabel={(option) => option.label}
+          disableCloseOnSelect
+          onChange={(e, v) => {
+            setFilters({
+              ...filters,
+              countries: convertToFilters(v),
+            });
+          }}
+          value={countries.filter((country) =>
+            Object.keys(filters.countries).includes(country.label)
+          )}
+          multiple
+          renderOption={(props, option) => (
+            <Box
+              component="li"
+              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+              {...props}
+            >
+              <img
+                loading="lazy"
+                width="20"
+                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                alt=""
+              />
+              {option.label} ({option.code})
+            </Box>
+          )}
+          renderInput={(params) => (
+            <TextField
+              required
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password", // disable autocomplete and autofill
+              }}
+            />
+          )}
+        />
+      );
+    };
+    return (
+      <>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          mt={2}
+          mb={1}
+        >
+          <Typography variant="subtitle2" textAlign="left">
+            {intl.formatMessage({ id: "app.project.attribute.country" })}
+          </Typography>
+        </Box>
+        {renderCountriesDropdown()}
+      </>
+    );
+  };
   if (searchProjectsLoading) {
     return <FullScreenLoading />;
   }
@@ -387,20 +481,23 @@ const VendorSearchResults = () => {
   if (searchProjectsData) {
     return (
       <Grid container justifyContent="space-evenly" spacing={0.5}>
-        <Grid item xs={2} className="search-results-sortby-container">
-          <Box>
+        <Grid item xs={2.8} className="search-results-sortby-container">
+          <Paper sx={{ p: 2, pt: 0.5 }}>
             <Box>
-              <Box>{renderTargetPriceFilters()}</Box>
-              <Box>{renderDeliveryDateFilters()}</Box>
+              <Box>
+                <Box>{renderTargetPriceFilters()}</Box>
+                <Box>{renderDeliveryDateFilters()}</Box>
+                <Box>{renderCountriesFilter()}</Box>
+              </Box>
             </Box>
-          </Box>
-          <Box mt={2}>
-            <Button variant="outlined" onClick={applyFilters} fullWidth>
-              {intl.formatMessage({
-                id: "app.search.applyFilters",
-              })}
-            </Button>
-          </Box>
+            <Box mt={2}>
+              <Button variant="outlined" onClick={applyFilters} fullWidth>
+                {intl.formatMessage({
+                  id: "app.search.applyFilters",
+                })}
+              </Button>
+            </Box>
+          </Paper>
         </Grid>
 
         <Grid item xs={7} className="search-results-inner-container">
@@ -413,11 +510,6 @@ const VendorSearchResults = () => {
           )}
           {!!searchProjectsData.searchCustomerProjects.length && (
             <>
-              <Box>
-                <Typography variant="caption">
-                  {intl.formatMessage({ id: "app.search.resultsTitle" })}
-                </Typography>
-              </Box>
               <Stack direction="column">
                 {searchProjectsData.searchCustomerProjects.map(
                   (result: ProjectOverview, i: number) => {

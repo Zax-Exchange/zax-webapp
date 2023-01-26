@@ -233,7 +233,7 @@ const PostProcessInput = ({
 
           <Box display="flex" mt={2}>
             <Autocomplete
-              sx={{ width: 100, mr: 2 }}
+              sx={{ width: 150, mr: 2 }}
               options={["1C", "2C", "3C", "4C"]}
               autoHighlight
               value={postProcess.numberOfColors?.c}
@@ -264,7 +264,7 @@ const PostProcessInput = ({
               )}
             />
             <Autocomplete
-              sx={{ width: 100 }}
+              sx={{ width: 150 }}
               options={["0T", "1T", "2T", "3T", "4T"]}
               autoHighlight
               value={postProcess.numberOfColors?.t}

@@ -45,7 +45,10 @@
   "app.general.incomplete": "Incomplete",
   "app.general.loading": "Loading",
   "app.general.NA": "N/A",
-  
+  "app.general.minimum": "min",
+  "app.general.maximum": "max",
+  "app.general.months": "{month} month(s)",
+
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",
   "app.general.purchaseOrder": "Purchase Order",
@@ -245,6 +248,7 @@
   "app.project.attribute.companyName": "Company Name",
   "app.project.attribute.deliveryDate": "Delivery Date",
   "app.project.attribute.deliveryAddress": "Delivery Address",
+  "app.project.attribute.country": "Delivery Country/Region",
   "app.project.attribute.targetPrice": "Target Price Per Unit",
   "app.project.attribute.orderQuantities": "Order Quantities",
   "app.project.attribute.creationMode": "Creation Mode",
@@ -462,8 +466,9 @@
   "app.search.applyFilters": "Apply Filters",
   "app.search.clearFilters": "Clear Filters",
   "app.search.resultsTitle": "Search Results",
-  "app.search.noResults": "Sorry, but we could not find any projects based on your search terms. Try searching for other products!",
+  "app.search.noResults": "Sorry, but we could not find any projects based on your search terms. You can try searching for other products or use different filters.",
   "app.search.invalidSearch": "Invalid seach keywords",
+  "app.search.filter.inMonths": "in {month} months",
 
   "app.settings.accountSettings": "Account Settings",
   "app.settings.accountSettings.changePassword": "Change Password",

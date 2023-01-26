@@ -310,9 +310,14 @@ const VendorProfile = () => {
                       }
                     )}
                     {renderTypography(
-                      `${leadTime} ${intl.formatMessage({
-                        id: "app.general.month",
-                      })}`,
+                      `${intl.formatMessage(
+                        {
+                          id: "app.general.months",
+                        },
+                        {
+                          month: leadTime,
+                        }
+                      )}`,
                       {
                         variant: "caption",
                       }

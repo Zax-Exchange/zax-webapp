@@ -17,6 +17,8 @@ import {
   Button,
   useTheme,
   TextField,
+  Autocomplete,
+  Paper,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -31,6 +33,8 @@ import FullScreenLoading from "../../Utils/Loading";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import SearchCompanyOverview from "./SearchCompanyOverview";
 import { useIntl } from "react-intl";
+import { countries } from "../../constants/countries";
+import { Country } from "../../Signup/customer/CustomerSignup";
 
 // Allowed search params, if user tempers the url we will not allow search request to fire
 const allowedParams = {
@@ -58,7 +62,6 @@ const initialFilters = {
   moqMax: "",
 };
 
-// TODO: figure out how to display accurate filters for locations
 const CustomerSearchResults = () => {
   const intl = useIntl();
   const theme = useTheme();
@@ -109,7 +112,7 @@ const CustomerSearchResults = () => {
 
     if (queryParamError) {
       setSnackbar({
-        message: "Invalid search.",
+        message: intl.formatMessage({ id: "app.search.invalidSearch" }),
         severity: "error",
       });
       setSnackbarOpen(true);
@@ -299,6 +302,7 @@ const CustomerSearchResults = () => {
           flexDirection="row"
           justifyContent="space-between"
           mt={2}
+          mb={1}
         >
           <Typography variant="subtitle2" textAlign="left">
             {intl.formatMessage({ id: "app.vendor.attribute.leadTime" })}
@@ -308,44 +312,59 @@ const CustomerSearchResults = () => {
             onClick={clearFilters}
             style={{ cursor: "pointer", color: theme.palette.primary.main }}
           >
-            clear filters
+            {intl.formatMessage({
+              id: "app.search.clearFilters",
+            })}
           </Typography>
         </Box>
         <FormGroup>
           {renderCheckBox(
-            "3 month",
-            setLeadTimeFilter("3"),
-            clearLeadTimeFilter,
-            shouldDisable("3"),
-            shouldCheck("3")
-          )}
-          {renderCheckBox(
-            "6 month",
+            intl.formatMessage(
+              { id: "app.search.filter.inMonths" },
+              {
+                month: "6",
+              }
+            ),
             setLeadTimeFilter("6"),
             clearLeadTimeFilter,
             shouldDisable("6"),
             shouldCheck("6")
           )}
           {renderCheckBox(
-            "9 month",
-            setLeadTimeFilter("9"),
-            clearLeadTimeFilter,
-            shouldDisable("9"),
-            shouldCheck("9")
-          )}
-          {renderCheckBox(
-            "12 month",
+            intl.formatMessage(
+              { id: "app.search.filter.inMonths" },
+              {
+                month: "12",
+              }
+            ),
             setLeadTimeFilter("12"),
             clearLeadTimeFilter,
             shouldDisable("12"),
             shouldCheck("12")
           )}
           {renderCheckBox(
-            "18 month",
+            intl.formatMessage(
+              { id: "app.search.filter.inMonths" },
+              {
+                month: "18",
+              }
+            ),
             setLeadTimeFilter("18"),
             clearLeadTimeFilter,
             shouldDisable("18"),
             shouldCheck("18")
+          )}
+          {renderCheckBox(
+            intl.formatMessage(
+              { id: "app.search.filter.inMonths" },
+              {
+                month: "24",
+              }
+            ),
+            setLeadTimeFilter("24"),
+            clearLeadTimeFilter,
+            shouldDisable("24"),
+            shouldCheck("24")
           )}
         </FormGroup>
       </>
@@ -353,32 +372,58 @@ const CustomerSearchResults = () => {
   };
 
   const renderFactoryLocationsFilter = () => {
-    const setFactoryLocationsFilter = (location: string) => () => {
-      setFilters({
-        ...filters,
-        factoryLocations: {
-          ...filters.factoryLocations,
-          [location]: true,
-        },
-      });
-    };
-
-    const clearFactoryLocationsFilter = (location: string) => () => {
-      const currentFactoryLocations = { ...filters.factoryLocations };
-      delete currentFactoryLocations[location];
-      setFilters({
-        ...filters,
-        factoryLocations: currentFactoryLocations,
-      });
-    };
-
-    // Allow any country to be selected
-    const shouldDisable = () => {
-      return false;
-    };
-
-    const shouldCheck = (value: string) => {
-      return !!filters.factoryLocations[value];
+    const renderFactoryLocationDropdown = () => {
+      const convertToFilters = (v: Country[]) => {
+        const res: Record<string, boolean> = {};
+        for (let country of v) {
+          res[country.label] = true;
+        }
+        return res;
+      };
+      return (
+        <Autocomplete
+          options={countries}
+          autoHighlight
+          getOptionLabel={(option) => option.label}
+          value={countries.filter((country) =>
+            Object.keys(filters.factoryLocations).includes(country.label)
+          )}
+          disableCloseOnSelect
+          onChange={(e, v) => {
+            setFilters({
+              ...filters,
+              factoryLocations: convertToFilters(v),
+            });
+          }}
+          multiple
+          renderOption={(props, option) => (
+            <Box
+              component="li"
+              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+              {...props}
+            >
+              <img
+                loading="lazy"
+                width="20"
+                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                alt=""
+              />
+              {option.label} ({option.code})
+            </Box>
+          )}
+          renderInput={(params) => (
+            <TextField
+              required
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: "new-password", // disable autocomplete and autofill
+              }}
+            />
+          )}
+        />
+      );
     };
     return (
       <>
@@ -387,48 +432,13 @@ const CustomerSearchResults = () => {
           flexDirection="row"
           justifyContent="space-between"
           mt={2}
+          mb={1}
         >
           <Typography variant="subtitle2" textAlign="left">
             {intl.formatMessage({ id: "app.vendor.attribute.locations" })}
           </Typography>
         </Box>
-        <FormGroup>
-          {renderCheckBox(
-            "USA",
-            setFactoryLocationsFilter("USA"),
-            clearFactoryLocationsFilter("USA"),
-            shouldDisable(),
-            shouldCheck("USA")
-          )}
-          {renderCheckBox(
-            "China",
-            setFactoryLocationsFilter("China"),
-            clearFactoryLocationsFilter("China"),
-            shouldDisable(),
-            shouldCheck("China")
-          )}
-          {renderCheckBox(
-            "Vietnam",
-            setFactoryLocationsFilter("Vietnam"),
-            clearFactoryLocationsFilter("Vietnam"),
-            shouldDisable(),
-            shouldCheck("Vietnam")
-          )}
-          {renderCheckBox(
-            "Mexico",
-            setFactoryLocationsFilter("Mexico"),
-            clearFactoryLocationsFilter("Mexico"),
-            shouldDisable(),
-            shouldCheck("Mexico")
-          )}
-          {renderCheckBox(
-            "India",
-            setFactoryLocationsFilter("India"),
-            clearFactoryLocationsFilter("India"),
-            shouldDisable(),
-            shouldCheck("India")
-          )}
-        </FormGroup>
+        {renderFactoryLocationDropdown()}
       </>
     );
   };
@@ -482,26 +492,31 @@ const CustomerSearchResults = () => {
   if (searchVendorsData) {
     return (
       <Grid container justifyContent="space-evenly" spacing={0.5}>
-        <Grid item xs={2} className="search-results-sortby-container">
-          <Box>
+        <Grid item xs={2.8} className="search-results-sortby-container">
+          <Paper sx={{ p: 2, pt: 0.5 }}>
             <Box>
-              <Box>{renderLeadTimeFilters()}</Box>
-              {/* <Box>{renderMoqFilters()}</Box> */}
-              <Box>{renderFactoryLocationsFilter()}</Box>
+              <Box>
+                <Box>{renderLeadTimeFilters()}</Box>
+                {/* <Box>{renderMoqFilters()}</Box> */}
+                <Box>{renderFactoryLocationsFilter()}</Box>
+              </Box>
             </Box>
-          </Box>
-          <Box mt={2}>
-            <Button variant="outlined" onClick={applyFilters} fullWidth>
-              Apply Filters
-            </Button>
-          </Box>
+            <Box mt={2}>
+              <Button variant="outlined" onClick={applyFilters} fullWidth>
+                {intl.formatMessage({
+                  id: "app.search.applyFilters",
+                })}
+              </Button>
+            </Box>
+          </Paper>
         </Grid>
 
         <Grid item xs={7} className="search-results-inner-container">
           {!searchVendorsData.searchVendorCompanies.length && (
             <Typography variant="caption">
-              Sorry, but we could not find any vendors for your search. Try
-              searching for other products!
+              {intl.formatMessage({
+                id: "app.search.noResults",
+              })}
             </Typography>
           )}
 

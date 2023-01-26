@@ -45,6 +45,9 @@
   "app.general.incomplete": "尚未完成",
   "app.general.loading": "加载中",
   "app.general.NA": "不适用",
+  "app.general.minimum": "最少",
+  "app.general.maximum": "最多",
+  "app.general.months": "{month} 个月",
 
   "app.general.company.vendorName": "厂商名",
   "app.general.company.customerName": "客户名",
@@ -247,6 +250,7 @@
   "app.project.attribute.companyName": "企业名称",
   "app.project.attribute.deliveryDate": "交付日期",
   "app.project.attribute.deliveryAddress": "交货地址",
+  "app.project.attribute.country": "交货国家/地区",
   "app.project.attribute.targetPrice": "预估每单金额",
   "app.project.attribute.orderQuantities": "报价数量",
   "app.project.attribute.creationMode": "Creation Mode",
@@ -463,8 +467,9 @@
   "app.search.applyFilters": "使用筛选",
   "app.search.clearFilters": "清除筛选",
   "app.search.resultsTitle": "搜索結果",
-  "app.search.noResults": "抱歉，我们无法搜索到相关匹配的信息。您可以试试搜索其他的产品类型。",
+  "app.search.noResults": "抱歉，我们无法搜索到相关匹配的信息。您可以试着搜索其他的产品类型或变更筛选。",
   "app.search.invalidSearch": "搜索关键词有误",
+  "app.search.filter.inMonths": "{month}个月以内",
 
   "app.settings.accountSettings": "账号设置",
   "app.settings.accountSettings.changePassword": "更改密码",
