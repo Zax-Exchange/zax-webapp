@@ -70,7 +70,7 @@ const GuidedCreateBoxStyleSelection = ({
                     <CardMedia
                       component="img"
                       height="250"
-                      width="280"
+                      width="250"
                       src={`${cdn}/box-styles/${boxStyle.code}.png`}
                     />
                     <Typography variant="subtitle2" textAlign="center">

@@ -1481,9 +1481,10 @@ export type SearchCategoriesInput = {
 };
 
 export type SearchCustomerProjectInput = {
+  countries?: InputMaybe<Array<Scalars['String']>>;
   deliveryDate?: InputMaybe<Scalars['String']>;
   orderQuantities?: InputMaybe<Array<Scalars['String']>>;
-  targetPrice?: InputMaybe<Scalars['String']>;
+  targetPriceRange?: InputMaybe<Array<Scalars['String']>>;
   userInput: Scalars['String'];
 };
 

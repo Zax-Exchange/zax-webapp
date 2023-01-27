@@ -114,6 +114,8 @@
   "app.signup.completePayment": "请输入支付信息",
   "app.signup.reviewCompany": "确认企业信息",
   "app.signup.requestToJoin": "请求加入",
+  "app.signup.requestToJoin.companyDoesNotExist": "此企业名不存在。",
+  "app.signup.requestToJoin.companyFound": "已找到企业。",
   "app.signup.requestToJoin.success": "已发送申请到企业",
   "app.signup.duplicateEmail": "此邮箱已被使用",
   "app.signup.createAccount": "创建使用者",

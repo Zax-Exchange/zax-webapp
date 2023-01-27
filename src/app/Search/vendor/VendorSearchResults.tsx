@@ -131,6 +131,26 @@ const VendorSearchResults = () => {
           deliveryDate: queryMap.deliveryDate as string,
         });
       }
+      if (queryMap.countries) {
+        // If there's more than one factory location selected
+        if (Array.isArray(queryMap.countries)) {
+          const countriesMap = {} as Record<string, boolean>;
+          queryMap.countries.forEach((loc) => {
+            countriesMap[loc as string] = true;
+          });
+          setFilters({
+            ...filters,
+            countries: countriesMap,
+          });
+        } else {
+          setFilters({
+            ...filters,
+            countries: {
+              [queryMap.countries as string]: true,
+            },
+          });
+        }
+      }
     }
   }, [queries]);
 

@@ -37,6 +37,7 @@ import JoinOrCreateCompany from "../JoinOrCreateCompany";
 import JoinCompany from "../JoinCompany";
 import { StripePaymentIntent } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
+import { Email } from "@mui/icons-material";
 
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST!

@@ -113,6 +113,8 @@
   "app.signup.completePayment": "Complete Payment Information",
   "app.signup.reviewCompany": "Review Company Information",
   "app.signup.requestToJoin": "Request to join",
+  "app.signup.requestToJoin.companyDoesNotExist": "Company name does not exist.",
+  "app.signup.requestToJoin.companyFound": "Company found!",
   "app.signup.requestToJoin.success": "Join request has been sent to company admins!",
   "app.signup.duplicateEmail": "This email has been taken.",
   "app.signup.createAccount": "Create User Account",
@@ -126,7 +128,7 @@
   "app.signup.step.email": "Email",
   "app.signup.step.companyInfo": "Company Info",
   "app.signup.step.selectPlan": "Select Plan",
-  "app.signup.step.review": "Review & Create",
+  "app.signup.step.review": "Review",
   "app.signup.step.payment": "Payment",
   "app.signup.vendor.step.vendorInfo": "Vendor Info",
   
