@@ -264,6 +264,8 @@
   "app.bid.attribute.samplingFee": "Sampling Fee",  
   "app.bid.attribute.toolingFee": "Tooling Fee",  
   "app.bid.attribute.bidRemark": "Additional Remarks",
+  "app.bid.attribute.bidRemark.tooltip": "You can upload additional remarks/notes regarding this project.",  
+  "app.bid.attribute.bidRemark.noRemark": "You did not upload a remark file.",
   "app.bid.status.open.tooltip": "Bid is up-to-date.",
   "app.bid.status.outdated.tooltip": "Bid might be outdated since project spec has changed.",
   "app.bid.status.accepted": "Accepted",
@@ -442,6 +444,7 @@
   "app.vendor.projectDetail.updateBid": "Update Bid",
   "app.vendor.projectDetail.updateSuccess": "Update Success!",
   "app.vendor.projectDetail.noBid": "You did not bid for this component.",
+  
 
   "app.vendor.projects.yourBids": "Your Bids",
   "app.vendor.projectDetail.resubmitBid": "Resubmit bid if your bid still holds.",

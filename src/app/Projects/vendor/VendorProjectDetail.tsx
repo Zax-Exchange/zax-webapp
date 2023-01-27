@@ -1102,6 +1102,17 @@ const VendorProjectDetail = () => {
 
         <Box>
           <Box display="flex" alignItems="center" mt={2}>
+            {isEditMode && (
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.bid.attribute.bidRemark.tooltip",
+                })}
+                placement="top"
+                sx={{ mr: 1 }}
+              >
+                <InfoOutlined color="info" fontSize="small" />
+              </Tooltip>
+            )}
             <Typography variant="subtitle2">
               {intl.formatMessage({
                 id: "app.vendor.search.AdditionRemarks",
@@ -1117,12 +1128,19 @@ const VendorProjectDetail = () => {
           </Box>
 
           {!!remarkFile && (
-            <Box display="flex">
+            <Box display="flex" mt={1}>
               <AttachmentButton
                 label={remarkFile.filename}
                 onClick={() => openLink(remarkFile.url)}
               />
             </Box>
+          )}
+          {!remarkFile && (
+            <Typography variant="caption" color="GrayText">
+              {intl.formatMessage({
+                id: "app.bid.attribute.bidRemark.noRemark",
+              })}
+            </Typography>
           )}
         </Box>
       </>

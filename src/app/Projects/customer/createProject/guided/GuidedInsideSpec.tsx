@@ -94,7 +94,6 @@ const GuidedInsideSpec = ({
         z: "",
       },
       color: "",
-      manufacturingProcess: "",
       includeArtworkInQuote: false,
       postProcess: [],
     });
@@ -458,6 +457,7 @@ const GuidedInsideSpec = ({
                 })}
               </Typography>
               <ColorDropdown
+                displayLabel={false}
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />

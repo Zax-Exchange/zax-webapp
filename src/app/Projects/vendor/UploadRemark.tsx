@@ -76,13 +76,19 @@ const UploadRemark = ({
   return (
     <Tooltip
       placement="top"
-      arrow
       title={intl.formatMessage({
         id: "app.vendor.uploadRemark.tooltip",
       })}
     >
       <IconButton component="label" sx={{ borderRadius: 40 }} color="primary">
-        {!loading && <input hidden type="file" onChange={onUpload} />}
+        {!loading && (
+          <input
+            hidden
+            type="file"
+            onChange={onUpload}
+            accept=".pdf, .docx, .ppt"
+          />
+        )}
         {loading && <CircularProgress size={24} />}
         {!loading && <CloudUploadIcon />}
       </IconButton>

@@ -104,7 +104,6 @@ export default function UploadDesign({
   return (
     <Tooltip
       placement="top"
-      arrow
       title={intl.formatMessage({
         id: "app.customer.createProject.uploadDesign",
       })}

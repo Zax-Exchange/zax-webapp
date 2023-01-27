@@ -266,6 +266,8 @@
   "app.bid.attribute.samplingFee": "打样费",  
   "app.bid.attribute.toolingFee": "模具费",  
   "app.bid.attribute.bidRemark": "其他竞标信息",
+  "app.bid.attribute.bidRemark.tooltip": "您可以上传其他有关此项目的额外信息/补充。",  
+  "app.bid.attribute.bidRemark.noRemark": "您尚未上传任何其他竞标信息档案。",
   "app.bid.status.open.tooltip": "最新竞标",
   "app.bid.status.outdated.tooltip": "由于项目有变动，竞标有可能需要更新",
   "app.bid.status.accepted": "Accepted",

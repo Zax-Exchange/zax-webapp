@@ -9,6 +9,7 @@ import {
   CircularProgress,
   AlertColor,
   IconButton,
+  DialogTitle,
 } from "@mui/material";
 import React, { useContext } from "react";
 import { useIntl } from "react-intl";
@@ -55,21 +56,17 @@ const DeleteProjectModal = ({
             projectId,
           },
         },
-      });
-      await getCustomerProjects({
-        variables: {
-          data: {
-            userId: user!.id,
-          },
+        onCompleted: () => {
+          document.dispatchEvent(new CustomEvent("reload"));
         },
       });
       setSnackbar({
-        message: "Project deleted.",
+        message: intl.formatMessage({ id: "app.general.network.success" }),
         severity: "success",
       });
     } catch (e) {
       setSnackbar({
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
     } finally {
@@ -81,18 +78,27 @@ const DeleteProjectModal = ({
   const renderDeleteProjectConfirmation = () => {
     return (
       <>
-        <Typography variant="subtitle2">
-          {intl.formatMessage({
-            id: "app.customer.projects.modal.delete.title",
-          })}
-        </Typography>
-        <DialogActions>
-          <Button onClick={deleteProjectOnClick} color="error">
+        <DialogTitle>
+          <Typography variant="subtitle2">
+            {intl.formatMessage({
+              id: "app.customer.projects.modal.delete.title",
+            })}
+          </Typography>
+        </DialogTitle>
+        <DialogActions sx={{ mt: 1 }}>
+          <Button
+            onClick={deleteProjectOnClick}
+            color="error"
+            variant="contained"
+          >
             {intl.formatMessage({
               id: "app.general.confirm",
             })}
           </Button>
-          <Button onClick={() => setDeleteProjectModalOpen(false)}>
+          <Button
+            onClick={() => setDeleteProjectModalOpen(false)}
+            variant="outlined"
+          >
             {intl.formatMessage({
               id: "app.general.cancel",
             })}
@@ -109,11 +115,9 @@ const DeleteProjectModal = ({
       maxWidth="xs"
     >
       <DialogContent>
-        <Container>
-          {!deleteProjectLoading &&
-            !deleteProjectError &&
-            renderDeleteProjectConfirmation()}
-        </Container>
+        {!deleteProjectLoading &&
+          !deleteProjectError &&
+          renderDeleteProjectConfirmation()}
       </DialogContent>
     </Dialog>
   );

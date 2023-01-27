@@ -56,6 +56,7 @@ import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
 import { ProjectOverviewListItem } from "../../Projects/customer/CustomerProjectOverviewCard";
 import ProjectSpecDetail from "../../Projects/common/ProjectSpecDetail";
+import { InfoOutlined } from "@mui/icons-material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -748,6 +749,15 @@ const SearchProjectDetail = () => {
                 </Paper>
                 <Box>
                   <Box display="flex" alignItems="center" mt={2}>
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: "app.bid.attribute.bidRemark.tooltip",
+                      })}
+                      placement="top"
+                      sx={{ mr: 1 }}
+                    >
+                      <InfoOutlined color="info" fontSize="small" />
+                    </Tooltip>
                     <Typography variant="subtitle2">
                       {intl.formatMessage({
                         id: "app.vendor.search.AdditionRemarks",
@@ -763,7 +773,7 @@ const SearchProjectDetail = () => {
                   </Box>
 
                   {remarkFile && (
-                    <Box display="flex">
+                    <Box display="flex" mt={1}>
                       <AttachmentButton
                         label={remarkFile.filename}
                         onClick={() => openLink(remarkFile.url)}
