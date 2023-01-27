@@ -310,7 +310,7 @@ export default function GuidedCreateProject() {
       <Stepper activeStep={activeStep}>
         {GUIDED_CREATE_PROJECT_STEPS.map((label, index) => {
           return (
-            <Step key={label}>
+            <Step key={index}>
               <StepLabel>{label}</StepLabel>
             </Step>
           );

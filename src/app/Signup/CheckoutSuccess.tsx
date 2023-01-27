@@ -1,11 +1,23 @@
-import { Container } from "@mui/material"
+import { CheckCircle } from "@mui/icons-material";
+import { Box, Container, Typography } from "@mui/material";
 import React from "react";
-
+import { useIntl } from "react-intl";
 
 const CheckoutSuccess = () => {
-  return <Container maxWidth="md">
-      Company created successfully! Please check your email and create your account!
-  </Container>
-}
+  const intl = useIntl();
+
+  return (
+    <Container maxWidth="md">
+      <Box>
+        <CheckCircle color="success" fontSize="large" />
+      </Box>
+      <Box>
+        <Typography variant="subtitle2">
+          {intl.formatMessage({ id: "app.signup.checkoutSuccess" })}
+        </Typography>
+      </Box>
+    </Container>
+  );
+};
 
 export default CheckoutSuccess;

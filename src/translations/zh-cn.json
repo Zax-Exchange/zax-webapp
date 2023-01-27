@@ -122,6 +122,14 @@
   "app.signup.finishAndPay": "完成并支付",
   "app.signup.pricingDetail": "详细费用",
   "app.signup.invalidToken": "您的令牌不合法或已失效，请联系您的企业管理员并重新发送账号创建链接。",
+  "app.signup.checkoutSuccess": "企业创建成功！请查看您的邮箱并点击您的账号创建链接。",
+
+  "app.signup.step.email": "邮箱",
+  "app.signup.step.companyInfo": "企业信息",
+  "app.signup.step.selectPlan": "订阅计划",
+  "app.signup.step.review": "审查",
+  "app.signup.step.payment": "支付",
+  "app.signup.vendor.step.vendorInfo": "厂商信息",
 
   "app.login.resetPassword.success": "密码已被重置",
   "app.login.forgotPassword": "忘记密码",
@@ -266,7 +274,7 @@
   "app.bid.attribute.samplingFee": "打样费",  
   "app.bid.attribute.toolingFee": "模具费",  
   "app.bid.attribute.bidRemark": "其他竞标信息",
-  "app.bid.attribute.bidRemark.tooltip": "您可以上传其他有关此项目的额外信息/补充。",  
+  "app.bid.attribute.bidRemark.tooltip": "您可以上传其他有关此项目的额外信息给客户。",  
   "app.bid.attribute.bidRemark.noRemark": "您尚未上传任何其他竞标信息档案。",
   "app.bid.status.open.tooltip": "最新竞标",
   "app.bid.status.outdated.tooltip": "由于项目有变动，竞标有可能需要更新",

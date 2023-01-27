@@ -1,7 +1,10 @@
+import { Check } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
+  Button,
   CircularProgress,
+  Container,
   Stack,
   TextField,
   Typography,
@@ -34,6 +37,10 @@ const CompanyInfo = ({
     return throttle((cb: () => void) => {
       cb();
     }, 500);
+  }, []);
+
+  useEffect(() => {
+    setShouldDisableNext(true);
   }, []);
 
   useEffect(() => {
@@ -122,6 +129,23 @@ const CompanyInfo = ({
       />
     );
   };
+
+  const renderEndAdornment = () => {
+    if (loading) {
+      return <CircularProgress size={20} />;
+    }
+
+    if (
+      !loading &&
+      !error &&
+      data &&
+      !data.checkCompanyName &&
+      values.name !== ""
+    ) {
+      return <Check color="success" />;
+    }
+    return null;
+  };
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
@@ -140,7 +164,7 @@ const CompanyInfo = ({
           error={shouldCompanyNameInputError()}
           helperText={renderCompanyNameHelperText()}
           InputProps={{
-            endAdornment: loading && <CircularProgress size={20} />,
+            endAdornment: renderEndAdornment(),
           }}
         ></TextField>
         <TextField
