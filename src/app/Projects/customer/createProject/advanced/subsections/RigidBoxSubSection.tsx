@@ -67,27 +67,6 @@ const RigidBoxSubSection = ({
 }) => {
   const intl = useIntl();
 
-  // Checks and sets input-able component spec
-  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name) {
-      case "dimension":
-        isAllowed = isValidAlphanumeric(val);
-        break;
-      default:
-        break;
-    }
-
-    if (isAllowed) {
-      setComponentSpec({
-        ...componentSpec,
-        [e.target.name]: e.target.value,
-      });
-    }
-  };
-
   const renderAutocompleteDropdown = useCallback(
     (
       options: TranslatableAttribute[],

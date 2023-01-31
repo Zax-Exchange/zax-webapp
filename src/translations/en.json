@@ -339,6 +339,15 @@
   "app.component.postProcess.add": "Add Post Process",
   "app.component.side": "Side",
 
+  "app.versionHistory": "Version History",
+  "app.viewVersionHistory": "View Version History",
+  "app.versionHistory.revision": "Revision",
+  "app.versionHistory.latest": "latest",
+  "app.versionHistory.none": "None",
+  "app.versionHistory.removed": "Removed",
+  "app.versionHistory.uploaded": "Uploaded",
+   "app.versionHistory.removedSomeFiles": "Some files were removed",
+
   "app.customer.projects.title": "Your Projects",
   "app.customer.projects.sortBy": "Sort By",
   "app.customer.projects.sortBy.name": "Name",

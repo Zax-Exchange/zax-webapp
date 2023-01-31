@@ -104,6 +104,21 @@ const GET_PROJECT_CHANGELOG = gql`
   }
 `
 
+const GET_PROJECT_COMPONENT_CHANGELOG = gql`
+  query getProjectComponentChangelog($data: GetProjectComponentChangelogInput!) {
+    getProjectComponentChangelog(data: $data) {
+      projectComponentId
+      changedAt
+      changes {
+        projectComponentSpecId
+        propertyName
+        oldValue
+        newValue
+      }
+    }
+  }
+`
+
 const GET_PROJECT_DETAIL = gql`
   ${PROJECT_FRAGMENT}
   ${PROJECT_COMPONENT_FRAGMENT}

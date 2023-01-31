@@ -266,7 +266,6 @@ const CreateProjectComponentModal = ({
 
     const isInvalidComponentSpec = () => {
       if (Object.keys(componentSpec).length === 0) return true;
-
       for (let key in componentSpec) {
         const attribute: keyof CreateProjectComponentSpecInput =
           key as keyof CreateProjectComponentSpecInput;
@@ -295,6 +294,8 @@ const CreateProjectComponentModal = ({
     const isInvalidPostProcess = () => {
       if (componentSpec.postProcess) {
         for (let process of componentSpec.postProcess) {
+          if (!Object.keys(process).length) return true;
+
           if (process.estimatedArea && !isValidDimension(process.estimatedArea))
             return true;
 
@@ -315,6 +316,7 @@ const CreateProjectComponentModal = ({
       }
       return false;
     };
+
     if (isInvalidComponentSpec()) return true;
     if (isInvalidPostProcess()) return true;
 

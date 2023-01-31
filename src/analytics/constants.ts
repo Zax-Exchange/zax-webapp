@@ -2,7 +2,8 @@ export enum EVENT_ACTION {
   LOGIN = "login",
   LOGOUT = "logout",
   CLICK = "click",
-  INPUT = "user_input"
+  INPUT = "user_input",
+  MODAL_VIEW = "modal_view"
 }
 
 export enum EVENT_CATEGORY {
@@ -19,6 +20,10 @@ export enum EVENT_LABEL {
   ADVANCED_PROJECT_CREATION_TIME_ELAPSED = "advanced_project_creation_time_elapsed",
   GUIDED_PROJECT_CREATION_TIME_ELAPSED = "guided_project_creation_time_elapsed",
   SHARE_PROJECT = "share_project",
-  SHARE_BID = "share_bid"
+  SHARE_BID = "share_bid",
+  PROJECT_CHANGELOG = "project_changelog",
+  PROJECT_COMPONENT_CHANGELOG = "project_component_changelog"
 }
+
+
 

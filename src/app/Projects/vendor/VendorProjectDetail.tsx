@@ -38,6 +38,7 @@ import {
   Project,
   ProjectBidComponent,
   ProjectComponent,
+  ProjectComponentChangelog,
   ProjectComponentSpec,
   ProjectPermission,
   QuantityPrice,
@@ -77,6 +78,12 @@ import PermissionDenied from "../../Utils/PermissionDenied";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
+import {
+  useGetProjectChangelogQuery,
+  useGetProjectComponentChangelogLazyQuery,
+} from "../../gql/get/project/project.generated";
+import ProjectChangelogModal from "../customer/modals/ProjectChangelogModal";
+import ProjectComponentChangelogModal from "../customer/modals/ProjectComponentChangelogModal";
 
 type BidComponent = {
   quantityPrices: QuantityPrice[];
@@ -135,6 +142,15 @@ const VendorProjectDetail = () => {
 
   const [bidComponentsForCreate, setBidComponentsForCreate] =
     useState<BidComponentsForCreate>({});
+
+  const [componentChangelogModalOpen, setComponentChangelogModalOpen] =
+    useState(false);
+  const [projectChangelogModalOpen, setProjectChangelogModalOpen] =
+    useState(false);
+
+  const [componentsChangelog, setComponentsChangelog] = useState<
+    Record<string, ProjectComponentChangelog[]>
+  >({});
 
   const {
     data: getVendorProjectData,
@@ -198,6 +214,60 @@ const VendorProjectDetail = () => {
       data: resubmitBidData,
     },
   ] = useResubmitProjectBidMutation();
+
+  const {
+    data: getProjectChangelogData,
+    loading: getProjectChangelogLoading,
+    error: getProjectChangelogError,
+  } = useGetProjectChangelogQuery({
+    variables: {
+      data: {
+        projectId: projectId || "",
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
+
+  const [
+    getComponentChangelog,
+    {
+      loading: getComponentChangelogLoading,
+      data: getComponentChangelogData,
+      error: getComponentChangelogError,
+    },
+  ] = useGetProjectComponentChangelogLazyQuery();
+
+  useEffect(() => {
+    if (getVendorProjectData && getVendorProjectData.getVendorProject) {
+      const compIds = getVendorProjectData.getVendorProject.components.map(
+        (comp) => comp.id
+      );
+
+      getComponentChangelog({
+        variables: {
+          data: {
+            projectComponentIds: compIds,
+          },
+        },
+        fetchPolicy: "no-cache",
+      });
+    }
+  }, [getVendorProjectData]);
+
+  useEffect(() => {
+    if (
+      getComponentChangelogData &&
+      getComponentChangelogData.getProjectComponentChangelog
+    ) {
+      const res: Record<string, ProjectComponentChangelog[]> = {};
+      for (let changelog of getComponentChangelogData.getProjectComponentChangelog) {
+        if (changelog.length) {
+          res[changelog[0].projectComponentId] = changelog;
+        }
+      }
+      setComponentsChangelog(res);
+    }
+  }, [getComponentChangelogData]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -912,10 +982,45 @@ const VendorProjectDetail = () => {
             </Box>
           </Box>
 
-          <ProjectSpecDetail
-            projectData={getVendorProjectData.getVendorProject as VendorProject}
-            isVendorProject={true}
-          />
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ position: "relative" }}>
+              {!!getProjectChangelogData &&
+                !!getProjectChangelogData.getProjectChangelog.length && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      onClick={() => setProjectChangelogModalOpen(true)}
+                    >
+                      {" "}
+                      {intl.formatMessage({ id: "app.viewVersionHistory" })}
+                    </Button>
+                    <Dialog
+                      open={projectChangelogModalOpen}
+                      onClose={() => setProjectChangelogModalOpen(false)}
+                      maxWidth="md"
+                      fullWidth
+                    >
+                      <ProjectChangelogModal
+                        changelog={getProjectChangelogData.getProjectChangelog}
+                      />
+                    </Dialog>
+                  </Box>
+                )}
+
+              <ProjectSpecDetail
+                projectData={
+                  getVendorProjectData.getVendorProject as VendorProject
+                }
+                isVendorProject={true}
+              />
+            </Box>
+          </Box>
         </Paper>
 
         <Paper sx={{ position: "relative" }}>
@@ -1034,7 +1139,35 @@ const VendorProjectDetail = () => {
           {components.map((comp, i) => {
             return (
               <TabPanel value={currentTab} index={i}>
-                <Box>
+                <Box sx={{ position: "relative" }}>
+                  {!!componentsChangelog[comp.id] && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                      }}
+                    >
+                      <Button
+                        onClick={() => setComponentChangelogModalOpen(true)}
+                        variant="outlined"
+                      >
+                        {intl.formatMessage({
+                          id: "app.viewVersionHistory",
+                        })}
+                      </Button>
+                      <Dialog
+                        open={componentChangelogModalOpen}
+                        onClose={() => setComponentChangelogModalOpen(false)}
+                        maxWidth="lg"
+                        fullWidth
+                      >
+                        <ProjectComponentChangelogModal
+                          changelog={componentsChangelog[comp.id]}
+                        />
+                      </Dialog>
+                    </Box>
+                  )}
                   <Box>
                     <Typography variant="subtitle1" textAlign="left">
                       {intl.formatMessage({

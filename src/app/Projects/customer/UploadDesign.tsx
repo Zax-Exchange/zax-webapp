@@ -36,6 +36,7 @@ export default function UploadDesign({
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [mutate, { error, loading, data }] = useUploadProjectDesignMutation();
+
   const [
     deleteProjectDesign,
     { error: deleteProjectDesignError, data: deleteProjectDesignData },

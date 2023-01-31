@@ -87,14 +87,18 @@ export default function ComponentSpecDetail({
           </Box>
         </TableCell>
         <TableCell>
-          {designs.map((design) => {
-            return (
-              <AttachmentButton
-                label={design.filename}
-                onClick={() => openLink(design.url)}
-              />
-            );
-          })}
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            {designs.map((design) => {
+              return (
+                <Box mt={1} mb={1}>
+                  <AttachmentButton
+                    label={design.filename}
+                    onClick={() => openLink(design.url)}
+                  />
+                </Box>
+              );
+            })}
+          </Box>
         </TableCell>
       </TableRow>
     );

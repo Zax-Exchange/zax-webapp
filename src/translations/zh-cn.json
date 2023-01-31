@@ -341,6 +341,15 @@
   "app.component.postProcess.add": "添加后期加工",
   "app.component.side": "面",
 
+  "app.versionHistory": "变更历史",
+  "app.viewVersionHistory": "查看变更历史",
+  "app.versionHistory.revision": "变更版本",
+  "app.versionHistory.latest": "最新",
+  "app.versionHistory.none": "无",
+  "app.versionHistory.removed": "已被移除",
+  "app.versionHistory.uploaded": "新上传档案",
+  "app.versionHistory.removedSomeFiles": "部分档案被移除",
+
   "app.customer.projects.title": "项目列表",
   "app.customer.projects.sortBy": "Sort By",
   "app.customer.projects.sortBy.name": "Name",

@@ -309,6 +309,7 @@ const CreateOrUpdateComponentModal = ({
     const isInvalidPostProcess = () => {
       if (componentSpec.postProcess) {
         for (let process of componentSpec.postProcess) {
+          if (!Object.keys(process).length) return true;
           if (process.estimatedArea && !isValidDimension(process.estimatedArea))
             return true;
           if (process.numberOfColors) {

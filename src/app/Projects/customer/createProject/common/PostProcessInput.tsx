@@ -97,7 +97,7 @@ const PostProcessInput = ({
   const getDefaultPostProcessValues = (
     postProcessName: string
   ): PostProcessDetailInput => {
-    const res = {
+    const res: PostProcessDetailInput = {
       postProcessName,
     };
     switch (postProcessName) {
@@ -121,18 +121,21 @@ const PostProcessInput = ({
           },
         };
       case POST_PROCESS_PRINTING.value:
-        return {
+        const ret = {
           ...res,
           numberOfColors: {
             c: "",
             t: "",
           },
-          printingMethod: "",
           estimatedArea: {
             x: "",
             y: "",
           },
         };
+        if (componentSpec.productName === PRODUCT_NAME_CORRUGATE_BOX.value) {
+          ret.printingMethod = "";
+        }
+        return ret;
     }
     return res;
   };

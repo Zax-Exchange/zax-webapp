@@ -482,7 +482,7 @@ export type GetProjectChangelogInput = {
 };
 
 export type GetProjectComponentChangelogInput = {
-  projectComponentId: Scalars['String'];
+  projectComponentIds: Array<Scalars['String']>;
 };
 
 export type GetProjectDetailInput = {
@@ -1257,7 +1257,7 @@ export type Query = {
   getProjectBidUsers: Array<UserProjectPermission>;
   getProjectBidsForPo: Array<ProjectBidForPo>;
   getProjectChangelog: Array<ProjectChangelog>;
-  getProjectComponentChangelog: Array<ProjectComponentChangelog>;
+  getProjectComponentChangelog: Array<Array<ProjectComponentChangelog>>;
   getProjectDetail?: Maybe<Project>;
   getProjectUsers: Array<UserProjectPermission>;
   getPurchaseOrder?: Maybe<PurchaseOrder>;

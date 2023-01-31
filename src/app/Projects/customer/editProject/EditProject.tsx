@@ -483,8 +483,6 @@ const EditProject = () => {
             compsForUpdate.push(comp as UpdateProjectComponentData);
           }
         } else {
-          // we need to add projectId field because we're calling the standalone
-          // createProjectComponent gql endpoint instead of bundling it along with createProject
           compsForCreate.push({
             projectId: updateProjectInput.projectData.projectId,
             ...comp,

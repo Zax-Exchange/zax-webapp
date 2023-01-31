@@ -210,7 +210,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <SnackbarContextProvider>
-        <div className="App" style={{ minWidth: "960px" }}>
+        <div className="App" style={{ minWidth: "1280px" }}>
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <CustomSnackbar />
             <Nav />
