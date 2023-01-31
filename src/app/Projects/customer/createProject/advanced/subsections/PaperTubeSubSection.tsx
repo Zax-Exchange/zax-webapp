@@ -225,6 +225,7 @@ const PaperTubeSubSection = ({
             </Typography>
           </ListItem>
           <ListItem>
+            {/* TODO: fix */}
             <Typography variant="caption">
               Inside specs for Paper Tube will be default.
             </Typography>

@@ -47,13 +47,15 @@ const ProjectChangelogDetail = ({
     newValue: any,
     oldValue: any
   ) => {
-    if (
-      propertyName === "name" ||
-      propertyName === "category" ||
-      propertyName === "deliveryAddress" ||
-      propertyName === "deliveryDate"
-    ) {
-      return renderOldAndNewValueString(oldValue, newValue);
+    if (productValueToLabelMap[oldValue] && productValueToLabelMap[newValue]) {
+      return renderOldAndNewValueString(
+        intl.formatMessage({
+          id: productValueToLabelMap[oldValue].labelId,
+        }),
+        intl.formatMessage({
+          id: productValueToLabelMap[newValue].labelId,
+        })
+      );
     }
 
     if (propertyName === "orderQuantities") {
@@ -70,14 +72,7 @@ const ProjectChangelogDetail = ({
       );
     }
 
-    return renderOldAndNewValueString(
-      intl.formatMessage({
-        id: productValueToLabelMap[oldValue].labelId,
-      }),
-      intl.formatMessage({
-        id: productValueToLabelMap[newValue].labelId,
-      })
-    );
+    return renderOldAndNewValueString(oldValue, newValue);
   };
 
   return (

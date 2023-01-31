@@ -364,6 +364,7 @@ const ProjectComponentChangelogDetail = ({
       );
     }
     if (propertyName === "postProcess") {
+      console.log({ propertyName, newValue, oldValue });
       return (
         <Box>
           {renderPostProcess(JSON.parse(oldValue), true)}
@@ -373,18 +374,17 @@ const ProjectComponentChangelogDetail = ({
       );
     }
 
-    if (propertyName === "name") {
-      return renderOldAndNewValueString(oldValue, newValue);
+    if (productValueToLabelMap[oldValue] && productValueToLabelMap[newValue]) {
+      return renderOldAndNewValueString(
+        intl.formatMessage({
+          id: productValueToLabelMap[oldValue].labelId,
+        }),
+        intl.formatMessage({
+          id: productValueToLabelMap[newValue].labelId,
+        })
+      );
     }
-
-    return renderOldAndNewValueString(
-      intl.formatMessage({
-        id: productValueToLabelMap[oldValue].labelId,
-      }),
-      intl.formatMessage({
-        id: productValueToLabelMap[newValue].labelId,
-      })
-    );
+    return renderOldAndNewValueString(oldValue, newValue);
   };
   return (
     <Box>

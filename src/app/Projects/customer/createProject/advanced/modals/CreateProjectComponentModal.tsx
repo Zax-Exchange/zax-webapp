@@ -338,7 +338,7 @@ const CreateProjectComponentModal = ({
 
     return (
       <Autocomplete
-        sx={{ width: 200 }}
+        sx={{ width: 250 }}
         options={ALL_PRODUCT_NAMES}
         getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight

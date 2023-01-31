@@ -106,7 +106,7 @@ export default function ComponentSpecDetail({
   if (productName) {
     res.push(
       <TableRow>
-        <TableCell>
+        <TableCell sx={{ width: "10rem" }}>
           <Typography variant="subtitle2">
             {intl.formatMessage({ id: "app.component.attribute.product" })}
           </Typography>
