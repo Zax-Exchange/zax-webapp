@@ -21,6 +21,7 @@ import {
 } from "../../../../../generated/graphql";
 import {
   B_FLUTE,
+  DEFAULT_POST_PROCESS,
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
   GUIDED_PROJECT_PAPER_POST_PROCESS,
@@ -238,6 +239,7 @@ const GuidedInsideSpec = ({
             setComponentSpec((prev) => ({
               ...prev,
               postProcess: v.map((p) => ({
+                ...DEFAULT_POST_PROCESS,
                 postProcessName: p.value,
                 estimatedArea: { x: "", y: "" },
               })),

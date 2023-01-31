@@ -40,6 +40,7 @@ import {
   PRODUCT_NAME_PAPER_TUBE,
   PRODUCT_NAME_RIGID_BOX,
   PRODUCT_NAME_SLEEVE,
+  DEFAULT_POST_PROCESS,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import AttachmentButton from "../../../../Utils/AttachmentButton";
@@ -388,6 +389,7 @@ const GuidedOutsideSpec = ({
             setComponentSpec((prev) => ({
               ...prev,
               postProcess: v.map((p) => ({
+                ...DEFAULT_POST_PROCESS,
                 postProcessName: p.value,
                 estimatedArea: { x: "", y: "" },
               })),

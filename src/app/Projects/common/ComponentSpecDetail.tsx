@@ -125,7 +125,7 @@ export default function ComponentSpecDetail({
     const dims = Object.entries(dimension);
     const output = [];
     for (let [attr, dim] of dims) {
-      if (!dim || attr === "__typename") continue;
+      if (!dim) continue;
       output.push(parseFloat(dim));
     }
     res.push(
@@ -623,7 +623,7 @@ export default function ComponentSpecDetail({
                   const dims = Object.entries(process.estimatedArea || {});
                   const estimatedArea = [];
                   for (let [attr, dim] of dims) {
-                    if (!dim || attr === "__typename") continue;
+                    if (!dim) continue;
                     estimatedArea.push(parseFloat(dim));
                   }
 

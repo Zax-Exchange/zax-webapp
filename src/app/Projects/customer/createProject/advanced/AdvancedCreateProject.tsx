@@ -80,6 +80,7 @@ import {
   EVENT_CATEGORY,
   EVENT_LABEL,
 } from "../../../../../analytics/constants";
+import { PRODUCT_NAME_STICKER } from "../../../../constants/products";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -196,25 +197,10 @@ const AdvancedCreateProject = () => {
           const copyComp: any = JSON.parse(JSON.stringify(comp));
 
           // get rid of ids and typenames so data between getProjectData and createProjectData is uniform
-          delete copyComp.__typename;
           delete copyComp.id;
           delete copyComp.projectId;
           delete copyComp.designs;
           delete copySpec.id;
-          delete copySpec.__typename;
-          delete copySpec.dimension.__typename;
-
-          if (copySpec.postProcess) {
-            for (let process of copySpec.postProcess) {
-              delete process.__typename;
-              if (process.estimatedArea) {
-                delete process.estimatedArea.__typename;
-              }
-              if (process.numberOfColors) {
-                delete process.numberOfColors.__typename;
-              }
-            }
-          }
 
           return {
             ...copyComp,

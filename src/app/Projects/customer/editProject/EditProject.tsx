@@ -59,6 +59,7 @@ import CreateProjectComponentModal from "../createProject/advanced/modals/Create
 import { useGetProjectDetailQuery } from "../../../gql/get/project/project.generated";
 import CreateOrUpdateComponentModal from "./modals/CreateOrUpdateComponentModal";
 import PermissionDenied from "../../../Utils/PermissionDenied";
+import { PRODUCT_NAME_STICKER } from "../../../constants/products";
 
 type EditProjectErrors = Record<keyof UpdateProjectData, boolean>;
 
@@ -211,24 +212,11 @@ const EditProject = () => {
 
       const sanitizedComponents: UpdateProjectComponentData[] = components.map(
         (comp) => {
+          console.log(comp.componentSpec.postProcess);
           const copySpec: any = JSON.parse(JSON.stringify(comp.componentSpec));
-          delete copySpec.__typename;
-          delete copySpec.dimension.__typename;
 
           copySpec.componentSpecId = copySpec.id;
           delete copySpec.id;
-
-          if (copySpec.postProcess) {
-            for (let process of copySpec.postProcess) {
-              delete process.__typename;
-              if (process.estimatedArea) {
-                delete process.estimatedArea.__typename;
-              }
-              if (process.numberOfColors) {
-                delete process.numberOfColors.__typename;
-              }
-            }
-          }
 
           return {
             componentId: comp.id,
@@ -489,7 +477,7 @@ const EditProject = () => {
           });
         }
       }
-
+      console.log(compsForUpdate);
       await Promise.all([
         updateProjectMutation({
           variables: {

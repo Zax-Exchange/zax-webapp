@@ -30,6 +30,7 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import {
   BOOKLET_STYLES,
   DEFAULT_BOOKLET_SPEC,
+  DEFAULT_POST_PROCESS,
   DEFAULT_SLEEVE_SPEC,
   DEFAULT_STICKER_SPEC,
   FINISH_MATTE,
@@ -243,6 +244,7 @@ const GuidedOtherSubSection = ({
             setComponentSpec((prev) => ({
               ...prev,
               postProcess: v.map((p) => ({
+                ...DEFAULT_POST_PROCESS,
                 postProcessName: p.value,
                 estimatedArea: { x: "", y: "" },
               })),

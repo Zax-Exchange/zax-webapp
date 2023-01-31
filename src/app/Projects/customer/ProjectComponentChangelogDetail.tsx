@@ -58,7 +58,7 @@ const ProjectComponentChangelogDetail = ({
   };
 
   const renderDimension = (dimension: ProductDimension) => {
-    const dims = Object.entries(dimension);
+    const dims = Object.entries(dimension).filter(([k, v]) => v !== null);
     const output = [];
     for (let [attr, dim] of dims) {
       output.push(parseFloat(dim as string));
@@ -127,7 +127,7 @@ const ProjectComponentChangelogDetail = ({
                 const dims = Object.entries(process.estimatedArea || {});
                 const estimatedArea = [];
                 for (let [attr, dim] of dims) {
-                  if (!dim || attr === "__typename") continue;
+                  if (!dim) continue;
                   estimatedArea.push(parseFloat(dim));
                 }
 

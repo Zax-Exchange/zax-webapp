@@ -17,6 +17,7 @@ import {
 import { TranslatableAttribute } from "../../../../../type/common";
 import {
   ALL_PRINTING_METHODS,
+  DEFAULT_POST_PROCESS,
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
@@ -97,9 +98,15 @@ const PostProcessInput = ({
   const getDefaultPostProcessValues = (
     postProcessName: string
   ): PostProcessDetailInput => {
+    // setting initial values to null so that when server is doing comparison between previous/new version there won't be missing fields that messes up the comparison
+    // since when we use gql GET, empty fields will be null and we use the gql result to initialize componentSpec.postProcess values which includes null
+    // so it's easier to just set them at null upon creation
     const res: PostProcessDetailInput = {
+      ...DEFAULT_POST_PROCESS,
       postProcessName,
     };
+
+    // overwriting partial fields to empty string which will later on be populated when user enters data
     switch (postProcessName) {
       case POST_PROCESS_DEBOSS.value:
       case POST_PROCESS_EMBOSS.value:

@@ -32,6 +32,7 @@ import {
   UpdateProjectData,
   UpdateGuestProjectInput,
 } from "../../../generated/graphql";
+import { PRODUCT_NAME_STICKER } from "../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
 import {
@@ -195,24 +196,10 @@ const GuestEditProject = ({
 
       const sanitizedComponents: UpdateProjectComponentData[] = components.map(
         (comp) => {
-          const copySpec: any = JSON.parse(JSON.stringify(comp.componentSpec));
-          delete copySpec.__typename;
-          delete copySpec.dimension.__typename;
+          const copySpec = JSON.parse(JSON.stringify(comp.componentSpec));
 
           copySpec.componentSpecId = copySpec.id;
           delete copySpec.id;
-
-          if (copySpec.postProcess) {
-            for (let process of copySpec.postProcess) {
-              delete process.__typename;
-              if (process.estimatedArea) {
-                delete process.estimatedArea.__typename;
-              }
-              if (process.numberOfColors) {
-                delete process.numberOfColors.__typename;
-              }
-            }
-          }
 
           return {
             componentId: comp.id,
