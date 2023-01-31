@@ -42,7 +42,7 @@ const CustomerProjects = () => {
     },
     fetchPolicy: "no-cache",
   });
-  console.log(getCustomerProjectsData);
+
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
 
   const [sortMenuAnchor, setSortMenuAnchor] =

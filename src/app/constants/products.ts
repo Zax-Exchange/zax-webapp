@@ -933,7 +933,6 @@ export const DEFAULT_SLEEVE_SPEC: CreateProjectComponentSpecInput = {
     z: ""
   },
   includeArtworkInQuote: false,
-  boxStyle: "",
   thickness: "",
   material: "",
   materialSource: "",

@@ -266,6 +266,7 @@ const CreateProjectComponentModal = ({
 
     const isInvalidComponentSpec = () => {
       if (Object.keys(componentSpec).length === 0) return true;
+
       for (let key in componentSpec) {
         const attribute: keyof CreateProjectComponentSpecInput =
           key as keyof CreateProjectComponentSpecInput;

@@ -568,13 +568,12 @@ const VendorSignup = () => {
       );
     } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
       if (getAllPlansData && getAllPlansData.getAllPlans) {
-        const plans = getAllPlansData.getAllPlans.filter(
-          (p) => p!.companySize === companySize
-        );
+        const plans = getAllPlansData.getAllPlans;
+
         return (
           <>
             <Typography variant="h6" sx={{ marginBottom: 4 }}>
-              Pick a plan for your company
+              {intl.formatMessage({ id: "app.signup.pickAPlan" })}
             </Typography>
             <Stack direction="row" justifyContent="space-around">
               {plans.map((plan) => (
