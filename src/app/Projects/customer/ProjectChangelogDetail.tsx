@@ -20,7 +20,6 @@ const ProjectChangelogDetail = ({
 }) => {
   const intl = useIntl();
   const theme = useTheme();
-  console.log(changelog);
 
   const renderOldAndNewValueString = (oldValue: string, newValue: string) => {
     return (
@@ -48,7 +47,12 @@ const ProjectChangelogDetail = ({
     newValue: any,
     oldValue: any
   ) => {
-    if (propertyName === "name" || propertyName === "category") {
+    if (
+      propertyName === "name" ||
+      propertyName === "category" ||
+      propertyName === "deliveryAddress" ||
+      propertyName === "deliveryDate"
+    ) {
       return renderOldAndNewValueString(oldValue, newValue);
     }
 

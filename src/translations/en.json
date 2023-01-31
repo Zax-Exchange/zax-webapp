@@ -339,7 +339,8 @@
   "app.component.postProcess.add": "Add Post Process",
   "app.component.side": "Side",
 
-  "app.versionHistory": "Version History",
+  "app.versionHistory.project": "Project Version History",
+  "app.versionHistory.component": "Component Version History",
   "app.viewVersionHistory": "View Version History",
   "app.versionHistory.revision": "Revision",
   "app.versionHistory.latest": "latest",

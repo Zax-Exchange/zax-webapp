@@ -47,7 +47,7 @@ export type SearchVendorCompaniesQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, leadTime: number }> };
+export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorSearchItem', vendor: { __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, leadTime: number }, highlight: { __typename?: 'VendorSearchHighlight', products?: Array<string | null> | null, name?: Array<string | null> | null } }> };
 
 export type GetVendorPosQueryVariables = Types.Exact<{
   data: Types.GetVendorPosInput;
@@ -298,15 +298,21 @@ export type GetVendorGuestProjectQueryResult = Apollo.QueryResult<GetVendorGuest
 export const SearchVendorCompaniesDocument = gql`
     query searchVendorCompanies($data: SearchVendorCompanyInput!) {
   searchVendorCompanies(data: $data) {
-    id
-    name
-    contactEmail
-    logo
-    country
-    isVerified
-    locations
-    products
-    leadTime
+    vendor {
+      id
+      name
+      contactEmail
+      logo
+      country
+      isVerified
+      locations
+      products
+      leadTime
+    }
+    highlight {
+      products
+      name
+    }
   }
 }
     `;

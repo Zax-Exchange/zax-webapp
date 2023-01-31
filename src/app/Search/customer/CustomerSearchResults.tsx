@@ -175,8 +175,6 @@ const CustomerSearchResults = () => {
                 ? (queryMap.factoryLocations as string[])
                 : [queryMap.factoryLocations as string]
               : undefined,
-            moqMin: queryMap.moqMin ? (queryMap.moqMin as string) : undefined,
-            moqMax: queryMap.moqMax ? (queryMap.moqMax as string) : undefined,
           },
         },
         fetchPolicy: "no-cache",
@@ -523,7 +521,7 @@ const CustomerSearchResults = () => {
           {!!searchVendorsData.searchVendorCompanies.length && (
             <Stack direction="column">
               {searchVendorsData.searchVendorCompanies.map((result, i) => {
-                return <SearchCompanyOverview companyData={result} key={i} />;
+                return <SearchCompanyOverview searchResult={result} key={i} />;
               })}
             </Stack>
           )}

@@ -125,7 +125,7 @@ const UserSignup = () => {
         },
         fetchPolicy: "no-cache",
       });
-      console.log(data);
+
       if (data && data.checkSignupJwtToken) {
         await createUser({
           variables: {

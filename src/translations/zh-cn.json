@@ -341,7 +341,8 @@
   "app.component.postProcess.add": "添加后期加工",
   "app.component.side": "面",
 
-  "app.versionHistory": "变更历史",
+  "app.versionHistory.project": "项目变更历史",
+  "app.versionHistory.component": "部件变更历史",
   "app.viewVersionHistory": "查看变更历史",
   "app.versionHistory.revision": "变更版本",
   "app.versionHistory.latest": "最新",

@@ -42,7 +42,7 @@ const ProjectChangelogModal = ({
       <DialogContent>
         <Box mb={2} display="flex" alignItems="center">
           <Typography variant="h6" sx={{ mr: 2 }}>
-            {intl.formatMessage({ id: "app.versionHistory" })}
+            {intl.formatMessage({ id: "app.versionHistory.project" })}
           </Typography>
           <Select onChange={versionOnChange} defaultValue={0}>
             {changelog.map((_, ind) => {

@@ -360,7 +360,7 @@ const CustomerProjectDetail = () => {
                         <Dialog
                           open={projectChangelogModalOpen}
                           onClose={() => setProjectChangelogModalOpen(false)}
-                          maxWidth="md"
+                          maxWidth="lg"
                           fullWidth
                         >
                           <ProjectChangelogModal

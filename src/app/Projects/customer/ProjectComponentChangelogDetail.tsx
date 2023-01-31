@@ -36,11 +36,10 @@ const ProjectComponentChangelogDetail = ({
   const theme = useTheme();
   const intl = useIntl();
 
-  const putPostProcessChangeToLast = (
-    changes: ProjectComponentPropertyChange[]
-  ) => {
+  const reorderChanges = (changes: ProjectComponentPropertyChange[]) => {
+    // put postprocess change to first
     let postProcessChange: ProjectComponentPropertyChange | null = null;
-    const otherChanges = [];
+    let otherChanges = [];
     for (let change of changes) {
       if (change.propertyName === "postProcess") {
         postProcessChange = change;
@@ -48,6 +47,9 @@ const ProjectComponentChangelogDetail = ({
         otherChanges.push(change);
       }
     }
+    otherChanges = otherChanges.sort((a, b) =>
+      a.propertyName.localeCompare(b.propertyName)
+    );
     if (!!postProcessChange) {
       otherChanges.push(postProcessChange);
     }
@@ -371,6 +373,10 @@ const ProjectComponentChangelogDetail = ({
       );
     }
 
+    if (propertyName === "name") {
+      return renderOldAndNewValueString(oldValue, newValue);
+    }
+
     return renderOldAndNewValueString(
       intl.formatMessage({
         id: productValueToLabelMap[oldValue].labelId,
@@ -384,7 +390,7 @@ const ProjectComponentChangelogDetail = ({
     <Box>
       <TableContainer>
         <TableBody>
-          {putPostProcessChangeToLast(changelog.changes).map((change) => {
+          {reorderChanges(changelog.changes).map((change) => {
             return (
               <TableRow>
                 <TableCell>
