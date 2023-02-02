@@ -21,6 +21,7 @@ import React, { useCallback } from "react";
 import { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import {
+  CreateGuestProjectInput,
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
@@ -116,15 +117,13 @@ const CreateProjectComponentModal = ({
   existingDesigns,
   defaultComponentIndex,
 }: {
-  setProjectData: React.Dispatch<
-    React.SetStateAction<Partial<CreateProjectInput>>
-  >;
+  setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
   setComponentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setComponentsDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[][]>>;
   setComponentIndexToEdit: React.Dispatch<React.SetStateAction<number | null>>;
   setTemporaryDesignIdsToDelete: React.Dispatch<React.SetStateAction<string[]>>;
   componentModalOnClose: () => void;
-  projectData: Partial<CreateProjectInput>;
+  projectData: CreateProjectInput;
   existingDesigns?: ProjectDesign[];
   defaultComponentIndex?: number;
 }) => {

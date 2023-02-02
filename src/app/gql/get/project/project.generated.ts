@@ -52,7 +52,7 @@ export type SearchCustomerProjectsQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, category: string, products: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any }> };
+export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', id: string, name: string, category: string, products: Array<string>, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any }> };
 
 export const ProjectComponentFragmentFragmentDoc = gql`
     fragment ProjectComponentFragment on ProjectComponent {
@@ -292,12 +292,10 @@ export type GetProjectDetailQueryResult = Apollo.QueryResult<GetProjectDetailQue
 export const SearchCustomerProjectsDocument = gql`
     query searchCustomerProjects($data: SearchCustomerProjectInput!) {
   searchCustomerProjects(data: $data) {
+    id
     name
-    companyName
     category
     products
-    id
-    companyId
     deliveryDate
     deliveryAddress
     targetPrice

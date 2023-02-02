@@ -10,6 +10,7 @@ import {
   InputProps,
   List,
   ListItem,
+  MenuItem,
   Paper,
   Stack,
   Tab,
@@ -30,6 +31,7 @@ import {
   ProjectCreationMode,
   ProjectDesign,
   ProjectPermission,
+  ProjectVisibility,
   UpdateProjectComponentData,
   UpdateProjectData,
   UpdateProjectInput,
@@ -117,6 +119,7 @@ const EditProject = () => {
   const [updateProjectInput, setUpdateProjectInput] =
     useState<UpdateProjectInput>({
       projectData: {
+        // values here are just for initializing purposes
         projectId: projectId || "",
         name: "",
         deliveryAddress: "",
@@ -126,6 +129,7 @@ const EditProject = () => {
         deliveryDate: new Date().toISOString().split("T")[0],
         targetPrice: "",
         orderQuantities: [],
+        visibility: ProjectVisibility.Private,
       },
       componentIdsToDelete: [],
       componentsForCreate: [],
@@ -208,11 +212,11 @@ const EditProject = () => {
         deliveryDate,
         orderQuantities,
         components,
+        visibility,
       } = getCustomerProjectData.getCustomerProject;
 
       const sanitizedComponents: UpdateProjectComponentData[] = components.map(
         (comp) => {
-          console.log(comp.componentSpec.postProcess);
           const copySpec: any = JSON.parse(JSON.stringify(comp.componentSpec));
 
           copySpec.componentSpecId = copySpec.id;
@@ -239,6 +243,7 @@ const EditProject = () => {
           deliveryDate,
           targetPrice,
           orderQuantities,
+          visibility,
         },
       }));
 
@@ -477,7 +482,7 @@ const EditProject = () => {
           });
         }
       }
-      console.log(compsForUpdate);
+
       await Promise.all([
         updateProjectMutation({
           variables: {
@@ -835,6 +840,40 @@ const EditProject = () => {
                   renderOption={() => null}
                 />
               </Box>
+            </ListItem>
+
+            <ListItem>
+              <TextField
+                select
+                id="visibility-select"
+                label={intl.formatMessage({
+                  id: "app.project.attribute.visibility",
+                })}
+                onChange={(e) => {
+                  setUpdateProjectInput((prev) => ({
+                    ...prev,
+                    projectData: {
+                      ...prev.projectData,
+                      visibility: e.target.value as ProjectVisibility,
+                    },
+                  }));
+                }}
+                value={projectData.visibility}
+                helperText={intl.formatMessage({
+                  id: "app.customer.createProject.visibility.tooltip",
+                })}
+              >
+                <MenuItem value={ProjectVisibility.Private}>
+                  {intl.formatMessage({
+                    id: "app.project.attribute.visibility.private",
+                  })}
+                </MenuItem>
+                <MenuItem value={ProjectVisibility.Public}>
+                  {intl.formatMessage({
+                    id: "app.project.attribute.visibility.public",
+                  })}
+                </MenuItem>
+              </TextField>
             </ListItem>
           </Stack>
         </Container>

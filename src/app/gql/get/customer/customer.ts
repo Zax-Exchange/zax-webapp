@@ -14,6 +14,7 @@ const GET_CUSTOMER_PROJECT = gql`
       country
       creationMode
       permission
+      visibility
       components {
         ...ProjectComponentFragment
       }
@@ -37,6 +38,7 @@ const GET_CUSTOMER_PROJECTS = gql`
       orderQuantities
       status
       permission
+      visibility
       totalWeight
       category
       createdAt

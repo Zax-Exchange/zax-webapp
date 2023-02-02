@@ -27,6 +27,7 @@ import {
   CreateProjectComponentInput,
   CreateProjectInput,
   ProjectDesign,
+  ProjectVisibility,
 } from "../../../../../generated/graphql";
 import {
   CUSTOMER_ROUTES,
@@ -181,6 +182,18 @@ const GuidedReview = ({
     }
   };
 
+  const getVisibilityText = (visibility: ProjectVisibility) => {
+    switch (visibility) {
+      case ProjectVisibility.Private:
+        return intl.formatMessage({
+          id: "app.project.attribute.visibility.private",
+        });
+      case ProjectVisibility.Public:
+        return intl.formatMessage({
+          id: "app.project.attribute.visibility.public",
+        });
+    }
+  };
   const renderTypography = (
     value: string | number | number[],
     props: TypographyProps & { variant: TypographyVariant }
@@ -311,6 +324,17 @@ const GuidedReview = ({
                 { variant: "subtitle2" }
               )}
               {renderTypography(projectData.orderQuantities, {
+                variant: "caption",
+              })}
+            </ProjectDetailListItem>
+            <ProjectDetailListItem>
+              {renderTypography(
+                intl.formatMessage({
+                  id: "app.project.attribute.visibility",
+                }),
+                { variant: "subtitle2" }
+              )}
+              {renderTypography(getVisibilityText(projectData.visibility), {
                 variant: "caption",
               })}
             </ProjectDetailListItem>

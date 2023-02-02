@@ -21,6 +21,7 @@ import {
   CreateProjectInput,
   ProjectCreationMode,
   ProjectDesign,
+  ProjectVisibility,
 } from "../../../../../generated/graphql";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
@@ -105,6 +106,7 @@ export default function GuidedCreateProject() {
     targetPrice: "",
     orderQuantities: [],
     components: [],
+    visibility: ProjectVisibility.Public,
   });
 
   const [componentsData, setComponentsData] =

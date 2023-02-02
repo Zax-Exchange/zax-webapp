@@ -364,7 +364,6 @@ const ProjectComponentChangelogDetail = ({
       );
     }
     if (propertyName === "postProcess") {
-      console.log({ propertyName, newValue, oldValue });
       return (
         <Box>
           {renderPostProcess(JSON.parse(oldValue), true)}

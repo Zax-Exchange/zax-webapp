@@ -31,6 +31,7 @@ import {
   UpdateProjectComponentData,
   UpdateProjectData,
   UpdateGuestProjectInput,
+  ProjectVisibility,
 } from "../../../generated/graphql";
 import { PRODUCT_NAME_STICKER } from "../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
@@ -118,6 +119,8 @@ const GuestEditProject = ({
         deliveryDate: new Date().toISOString().split("T")[0],
         targetPrice: "",
         orderQuantities: [],
+        // initi visibility here to comply with UpdateProjectData type, but not used since guest project is always private
+        visibility: ProjectVisibility.Private,
       },
       componentIdsToDelete: [],
       componentsForCreate: [],
@@ -213,6 +216,7 @@ const GuestEditProject = ({
       setUpdateProjectInput((prev) => ({
         ...prev,
         projectData: {
+          ...prev.projectData,
           projectId,
           name,
           deliveryAddress,

@@ -138,12 +138,10 @@ const GET_PROJECT_DETAIL = gql`
 const SEARCH_CUSTOMER_PROJECTS = gql`
   query searchCustomerProjects($data: SearchCustomerProjectInput!) {
     searchCustomerProjects(data: $data) {
+      id
       name
-      companyName
       category
       products
-      id
-      companyId
       deliveryDate
       deliveryAddress
       targetPrice

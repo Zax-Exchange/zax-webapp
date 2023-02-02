@@ -212,6 +212,7 @@ export type CreateProjectInput = {
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type CreatePurchaseOrderInput = {
@@ -329,6 +330,7 @@ export type CustomerProject = ProjectInterface & {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type CustomerProjectOverview = {
@@ -346,6 +348,7 @@ export type CustomerProjectOverview = {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type DeactivateUserInput = {
@@ -1172,8 +1175,6 @@ export type ProjectInterface = {
 export type ProjectOverview = {
   __typename?: 'ProjectOverview';
   category: Scalars['String'];
-  companyId: Scalars['String'];
-  companyName: Scalars['String'];
   createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
@@ -1204,6 +1205,11 @@ export enum ProjectStatus {
   InProgress = 'IN_PROGRESS',
   Open = 'OPEN',
   Overdue = 'OVERDUE'
+}
+
+export enum ProjectVisibility {
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
 }
 
 export type PurchaseOrder = FileInterface & {
@@ -1623,6 +1629,7 @@ export type UpdateProjectData = {
   projectId: Scalars['String'];
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type UpdateProjectInput = {

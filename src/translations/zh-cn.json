@@ -265,6 +265,9 @@
   "app.project.attribute.orderQuantities": "报价数量",
   "app.project.attribute.creationMode": "Creation Mode",
   "app.project.attribute.guestEmail": "客户邮箱",
+  "app.project.attribute.visibility": "可见度",
+  "app.project.attribute.visibility.private": "私人",
+  "app.project.attribute.visibility.public": "公开",
   "app.project.status.open": "Open",
   "app.project.status.inProgress": "In progress",
   "app.project.status.completed": "Completed",
@@ -409,6 +412,7 @@
   "app.customer.createProject.guidedCreate.tooltip": "若您不熟悉项目的创建流程，您可以使用指导流程来帮助您开始。",
   "app.customer.createProject.advancedCreate.tooltip": "若您已熟悉项目创建流程，您可以使用进阶流程来微调每个项目细节。",
   "app.customer.createProject.import.tooltip": "从现有的项目选择您想要载入的项目。",
+  "app.customer.createProject.visibility.tooltip": "您可以选择可见度来决定厂商是否能通过搜索来找到您的项目。",
 
   "app.customer.projectDetail.bid.menu.viewVendorProfile": "查看厂商信息",
   "app.customer.projectDetail.bid.menu.openConversation": "打开对话栏",

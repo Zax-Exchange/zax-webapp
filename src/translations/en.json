@@ -263,6 +263,9 @@
   "app.project.attribute.orderQuantities": "Order Quantities",
   "app.project.attribute.creationMode": "Creation Mode",
   "app.project.attribute.guestEmail": "Guest Email",
+  "app.project.attribute.visibility": "Visibility",
+  "app.project.attribute.visibility.private": "Private",
+  "app.project.attribute.visibility.public": "Public",
   "app.project.status.open": "Open",
   "app.project.status.inProgress": "In progress",
   "app.project.status.completed": "Completed",
@@ -373,6 +376,7 @@
   "app.customer.createProject.selectBoxStyle": "Select Box Style",
   "app.customer.createProject.noDesignPlaceholder": "No designs uploaded yet.",
   "app.customer.createProject.projectCreated": "Project created!",
+  "app.customer.createProject.visibility.tooltip": "Visibility allows you to control whether vendors can find your project through searching or not.",
 
   "app.customer.editProject.restoreComponent": "Restore Component",
   "app.customer.editProject.removedComponents": "Removed Components",

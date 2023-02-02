@@ -39,7 +39,7 @@ const SearchCompanyOverview = ({
   searchResult: VendorSearchItem;
 }) => {
   const { vendor: companyData, highlight } = searchResult;
-  console.log(highlight);
+
   const intl = useIntl();
   const navigate = useNavigate();
   const openVendorDetail = () => {
