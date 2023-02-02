@@ -11,6 +11,7 @@ import {
   Tabs,
   Tab,
   Dialog,
+  Button,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
@@ -18,10 +19,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Tooltip } from "stream-chat-react";
 import { AuthContext } from "../../../context/AuthContext";
 import {
+  ProjectComponentChangelog,
   ProjectPermission,
   VendorGuestProject,
 } from "../../../generated/graphql";
 import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
+import {
+  useGetProjectChangelogLazyQuery,
+  useGetProjectChangelogQuery,
+  useGetProjectComponentChangelogLazyQuery,
+} from "../../gql/get/project/project.generated";
 import { useGetVendorGuestProjectQuery } from "../../gql/get/vendor/vendor.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../Utils/Loading";
@@ -29,6 +36,8 @@ import PermissionDenied from "../../Utils/PermissionDenied";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
 import { ProjectOverviewListItem } from "../customer/CustomerProjectOverviewCard";
+import ProjectChangelogModal from "../customer/modals/ProjectChangelogModal";
+import ProjectComponentChangelogModal from "../customer/modals/ProjectComponentChangelogModal";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -65,6 +74,15 @@ const VendorGuestProjectDetail = () => {
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [permissionedDenied, setPermissionDenied] = useState(false);
 
+  const [componentChangelogModalOpen, setComponentChangelogModalOpen] =
+    useState(false);
+  const [projectChangelogModalOpen, setProjectChangelogModalOpen] =
+    useState(false);
+
+  const [componentsChangelog, setComponentsChangelog] = useState<
+    Record<string, ProjectComponentChangelog[]>
+  >({});
+
   const {
     loading: getGuestProjectLoading,
     data: getGuestProjectData,
@@ -79,9 +97,62 @@ const VendorGuestProjectDetail = () => {
     fetchPolicy: "no-cache",
   });
 
+  const [
+    getProjectChangelog,
+    {
+      data: getProjectChangelogData,
+      loading: getProjectChangelogLoading,
+      error: getProjectChangelogError,
+    },
+  ] = useGetProjectChangelogLazyQuery();
+
+  const [
+    getComponentChangelog,
+    {
+      loading: getComponentChangelogLoading,
+      data: getComponentChangelogData,
+      error: getComponentChangelogError,
+    },
+  ] = useGetProjectComponentChangelogLazyQuery();
+
+  // wait until we actually fetched projectData (authorized users) so we don't fetch changelog data before knowing user is authorized or not
   useEffect(() => {
-    if (getGuestProjectError) {
-      if (getGuestProjectError.message.includes("permission denied")) {
+    if (getGuestProjectData && getGuestProjectData.getVendorGuestProject) {
+      getProjectChangelog({
+        variables: {
+          data: {
+            projectId: projectId || "",
+          },
+        },
+        fetchPolicy: "no-cache",
+      });
+    }
+  }, [getGuestProjectData]);
+
+  useEffect(() => {
+    if (getGuestProjectData && getGuestProjectData.getVendorGuestProject) {
+      const compIds = getGuestProjectData.getVendorGuestProject.components.map(
+        (comp) => comp.id
+      );
+
+      getComponentChangelog({
+        variables: {
+          data: {
+            projectComponentIds: compIds,
+          },
+        },
+        fetchPolicy: "no-cache",
+      });
+    }
+  }, [getGuestProjectData]);
+
+  useEffect(() => {
+    if (
+      getGuestProjectError ||
+      getComponentChangelogError ||
+      getProjectChangelogError
+    ) {
+      if (getGuestProjectError?.message.includes("permission denied")) {
         setPermissionDenied(true);
       } else {
         setSnackbar({
@@ -91,7 +162,26 @@ const VendorGuestProjectDetail = () => {
         setSnackbarOpen(true);
       }
     }
-  }, [getGuestProjectError]);
+  }, [
+    getGuestProjectError,
+    getComponentChangelogError,
+    getProjectChangelogError,
+  ]);
+
+  useEffect(() => {
+    if (
+      getComponentChangelogData &&
+      getComponentChangelogData.getProjectComponentChangelog
+    ) {
+      const res: Record<string, ProjectComponentChangelog[]> = {};
+      for (let changelog of getComponentChangelogData.getProjectComponentChangelog) {
+        if (changelog.length) {
+          res[changelog[0].projectComponentId] = changelog;
+        }
+      }
+      setComponentsChangelog(res);
+    }
+  }, [getComponentChangelogData]);
 
   const componentTabOnChange = (
     event: React.SyntheticEvent,
@@ -102,30 +192,6 @@ const VendorGuestProjectDetail = () => {
 
   const backButtonHandler = () => {
     navigate(GENERAL_ROUTES.PROJECTS);
-  };
-
-  const renderAttributeTitle = (attr: string) => {
-    return <Typography variant="subtitle2">{attr}</Typography>;
-  };
-
-  const renderProjectField = (
-    projectAttribute: keyof VendorGuestProject,
-    projectFieldData: string | number | number[]
-  ) => {
-    if (Array.isArray(projectFieldData)) {
-      return (
-        <Typography variant="caption">{projectFieldData.join(", ")}</Typography>
-      );
-    }
-
-    let fieldString = projectFieldData;
-    if (projectAttribute === "totalWeight") {
-      fieldString += " g";
-    }
-    if (projectAttribute === "targetPrice") {
-      fieldString = parseFloat(fieldString as string);
-    }
-    return <Typography variant="caption">{fieldString}</Typography>;
   };
 
   if (getGuestProjectLoading) {
@@ -168,7 +234,42 @@ const VendorGuestProjectDetail = () => {
               </Typography>
             </Box>
           </Box>
-          <ProjectSpecDetail projectData={projectData} isGuestProject={true} />
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ position: "relative" }}>
+              {!!getProjectChangelogData &&
+                !!getProjectChangelogData.getProjectChangelog.length && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      onClick={() => setProjectChangelogModalOpen(true)}
+                    >
+                      {" "}
+                      {intl.formatMessage({ id: "app.viewVersionHistory" })}
+                    </Button>
+                    <Dialog
+                      open={projectChangelogModalOpen}
+                      onClose={() => setProjectChangelogModalOpen(false)}
+                      maxWidth="lg"
+                      fullWidth
+                    >
+                      <ProjectChangelogModal
+                        changelog={getProjectChangelogData.getProjectChangelog}
+                      />
+                    </Dialog>
+                  </Box>
+                )}
+              <ProjectSpecDetail
+                projectData={projectData}
+                isGuestProject={true}
+              />
+            </Box>
+          </Box>
         </Paper>
 
         {/* COMPONENTS SECTION */}
@@ -202,10 +303,40 @@ const VendorGuestProjectDetail = () => {
           {projectData.components.map((comp, i) => {
             return (
               <TabPanel value={currentTab} index={i} key={i}>
-                <ComponentSpecDetail
-                  spec={comp.componentSpec}
-                  designs={comp.designs}
-                />
+                <Box sx={{ position: "relative" }}>
+                  {!!componentsChangelog[comp.id] && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                      }}
+                    >
+                      <Button
+                        onClick={() => setComponentChangelogModalOpen(true)}
+                        variant="outlined"
+                      >
+                        {intl.formatMessage({
+                          id: "app.viewVersionHistory",
+                        })}
+                      </Button>
+                      <Dialog
+                        open={componentChangelogModalOpen}
+                        onClose={() => setComponentChangelogModalOpen(false)}
+                        maxWidth="lg"
+                        fullWidth
+                      >
+                        <ProjectComponentChangelogModal
+                          changelog={componentsChangelog[comp.id]}
+                        />
+                      </Dialog>
+                    </Box>
+                  )}
+                  <ComponentSpecDetail
+                    spec={comp.componentSpec}
+                    designs={comp.designs}
+                  />
+                </Box>
               </TabPanel>
             );
           })}

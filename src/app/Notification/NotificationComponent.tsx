@@ -25,7 +25,7 @@ import {
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import styled from "@emotion/styled";
 import MuiListItem from "@mui/material/ListItem";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import React from "react";
 import {
@@ -105,12 +105,14 @@ const NotificationComponent = () => {
     socket.on(
       ReceiveEventType.NEW_NOTIFICATION,
       (notification: Notification) => {
-        if (notification.notificationType === NotificationType.PROJECT) {
-          if (
-            window.location.href.includes(
-              GENERAL_ROUTES.PROJECT_DETAIL.split("/")[1]
-            )
-          ) {
+        if (
+          notification.notificationType === NotificationType.PROJECT ||
+          notification.notificationType === NotificationType.GUEST_PROJECT
+        ) {
+          const notificationProjectId = notification.data.projectId;
+
+          // using location.href here so we get real time url, useParams from react router cannot since notificationComponent doesn't rerender
+          if (window.location.href.includes(notificationProjectId || "")) {
             document.dispatchEvent(new CustomEvent("reload"));
           }
         }

@@ -45,7 +45,12 @@ import {
 import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import { useIntl } from "react-intl";
 import CustomerPermissionModal from "./modals/CustomerPermissionModal";
-import { Create, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Create,
+  Visibility,
+  VisibilityOff,
+  VisibilityOffOutlined,
+} from "@mui/icons-material";
 import ReactGA from "react-ga4";
 import {
   EVENT_ACTION,
@@ -175,7 +180,7 @@ const CustomerProjectOverviewCard = ({
             })}
             placement="right"
           >
-            <VisibilityOff />
+            <VisibilityOffOutlined color="info" />
           </Tooltip>
         );
       case ProjectVisibility.Public:
@@ -186,7 +191,7 @@ const CustomerProjectOverviewCard = ({
             })}
             placement="right"
           >
-            <Visibility />
+            <Visibility color="info" />
           </Tooltip>
         );
     }

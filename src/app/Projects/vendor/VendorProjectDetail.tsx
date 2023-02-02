@@ -79,6 +79,7 @@ import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
 import {
+  useGetProjectChangelogLazyQuery,
   useGetProjectChangelogQuery,
   useGetProjectComponentChangelogLazyQuery,
 } from "../../gql/get/project/project.generated";
@@ -215,18 +216,14 @@ const VendorProjectDetail = () => {
     },
   ] = useResubmitProjectBidMutation();
 
-  const {
-    data: getProjectChangelogData,
-    loading: getProjectChangelogLoading,
-    error: getProjectChangelogError,
-  } = useGetProjectChangelogQuery({
-    variables: {
-      data: {
-        projectId: projectId || "",
-      },
+  const [
+    getProjectChangelog,
+    {
+      data: getProjectChangelogData,
+      loading: getProjectChangelogLoading,
+      error: getProjectChangelogError,
     },
-    fetchPolicy: "no-cache",
-  });
+  ] = useGetProjectChangelogLazyQuery();
 
   const [
     getComponentChangelog,
@@ -236,6 +233,20 @@ const VendorProjectDetail = () => {
       error: getComponentChangelogError,
     },
   ] = useGetProjectComponentChangelogLazyQuery();
+
+  // wait until we actually fetched projectData (authorized users) so we don't fetch changelog data before knowing user is authorized or not
+  useEffect(() => {
+    if (getVendorProjectData && getVendorProjectData.getVendorProject) {
+      getProjectChangelog({
+        variables: {
+          data: {
+            projectId: projectId || "",
+          },
+        },
+        fetchPolicy: "no-cache",
+      });
+    }
+  }, [getVendorProjectData]);
 
   useEffect(() => {
     if (getVendorProjectData && getVendorProjectData.getVendorProject) {
@@ -276,7 +287,13 @@ const VendorProjectDetail = () => {
   }, [isEditMode]);
 
   useEffect(() => {
-    if (getVendorDetailError || getVendorProjectError || resubmitBidError) {
+    if (
+      getVendorDetailError ||
+      getVendorProjectError ||
+      resubmitBidError ||
+      getComponentChangelogError ||
+      getProjectChangelogError
+    ) {
       if (getVendorProjectError?.message === "permission denied") {
         setPermissionError(true);
       } else {
@@ -287,7 +304,13 @@ const VendorProjectDetail = () => {
         setSnackbarOpen(true);
       }
     }
-  }, [getVendorDetailError, getVendorProjectError, resubmitBidError]);
+  }, [
+    getVendorDetailError,
+    getVendorProjectError,
+    resubmitBidError,
+    getComponentChangelogError,
+    getProjectChangelogError,
+  ]);
 
   useEffect(() => {
     if (getVendorProjectData && getVendorProjectData.getVendorProject) {

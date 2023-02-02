@@ -641,7 +641,9 @@ const SearchProjectDetail = () => {
                   </Typography>
                 </Box>
               </Box>
-              <ProjectSpecDetail projectData={projectData} />
+              <Box sx={{ p: 2 }}>
+                <ProjectSpecDetail projectData={projectData} />
+              </Box>
             </Paper>
 
             <Paper sx={{ mt: 1 }}>

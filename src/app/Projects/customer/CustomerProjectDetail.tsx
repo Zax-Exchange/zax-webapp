@@ -72,6 +72,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
 import {
+  useGetProjectChangelogLazyQuery,
   useGetProjectChangelogQuery,
   useGetProjectComponentChangelogLazyQuery,
   useGetProjectComponentChangelogQuery,
@@ -135,9 +136,6 @@ const CustomerProjectDetail = () => {
   // For project component section.
   const [currentTab, setCurrentTab] = useState(0);
 
-  // State variable to store order quantity input when user enables edit mode on project detail section.
-  const [orderQuantity, setOrderQuantity] = useState("");
-
   const {
     data: getProjectData,
     loading: getProjectLoading,
@@ -152,18 +150,14 @@ const CustomerProjectDetail = () => {
     fetchPolicy: "no-cache",
   });
 
-  const {
-    data: getProjectChangelogData,
-    loading: getProjectChangelogLoading,
-    error: getProjectChangelogError,
-  } = useGetProjectChangelogQuery({
-    variables: {
-      data: {
-        projectId: projectId || "",
-      },
+  const [
+    getProjectChangelog,
+    {
+      data: getProjectChangelogData,
+      loading: getProjectChangelogLoading,
+      error: getProjectChangelogError,
     },
-    fetchPolicy: "no-cache",
-  });
+  ] = useGetProjectChangelogLazyQuery();
 
   const [
     getComponentChangelog,
@@ -173,6 +167,20 @@ const CustomerProjectDetail = () => {
       error: getComponentChangelogError,
     },
   ] = useGetProjectComponentChangelogLazyQuery();
+
+  // wait until we actually fetched projectData (authorized users) so we don't fetch changelog data before knowing user is authorized or not
+  useEffect(() => {
+    if (getProjectData && getProjectData.getCustomerProject) {
+      getProjectChangelog({
+        variables: {
+          data: {
+            projectId: projectId || "",
+          },
+        },
+        fetchPolicy: "no-cache",
+      });
+    }
+  }, [getProjectData]);
 
   useEffect(() => {
     if (getProjectData && getProjectData.getCustomerProject) {
@@ -208,8 +216,12 @@ const CustomerProjectDetail = () => {
 
   // For snackbar display purposes based on update mutation status
   useEffect(() => {
-    if (getProjectError) {
-      if (getProjectError.message.includes("permission denied")) {
+    if (
+      getProjectError ||
+      getProjectChangelogError ||
+      getComponentChangelogError
+    ) {
+      if (getProjectError?.message.includes("permission denied")) {
         setPermissionDenied(true);
       } else {
         setSnackbar({
@@ -219,7 +231,7 @@ const CustomerProjectDetail = () => {
         setSnackbarOpen(true);
       }
     }
-  }, [getProjectError]);
+  }, [getProjectError, getProjectChangelogError, getComponentChangelogError]);
 
   // set selected projectChangelog version based on number of returned changelogs
   useEffect(() => {}, []);
