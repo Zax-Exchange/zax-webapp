@@ -1,9 +1,7 @@
 import styled from "@emotion/styled";
 import {
-  Button,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   List,
@@ -13,7 +11,6 @@ import {
 import React from "react";
 import { Plan } from "../../../generated/graphql";
 import { SubscriptionInfo } from "./CustomerSignup";
-import singlePlan from "../../../static/singlePlan.svg";
 import groupPlan from "../../../static/groupPlan.svg";
 import businessPlan from "../../../static/businessPlan.svg";
 

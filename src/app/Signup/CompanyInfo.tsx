@@ -2,16 +2,14 @@ import { Check } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
-  Button,
   CircularProgress,
-  Container,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { throttle } from "lodash";
 import React, { useMemo } from "react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useIntl } from "react-intl";
 import { countries } from "../constants/countries";
 import { useCheckCompanyNameLazyQuery } from "../gql/utils/company/company.generated";

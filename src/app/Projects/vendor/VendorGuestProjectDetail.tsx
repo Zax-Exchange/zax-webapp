@@ -1,13 +1,10 @@
-import styled from "@emotion/styled";
 import { KeyboardBackspace } from "@mui/icons-material";
 import {
   Container,
   IconButton,
-  Grid,
   Paper,
   Box,
   Typography,
-  List,
   Tabs,
   Tab,
   Dialog,
@@ -16,17 +13,11 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate, useParams } from "react-router-dom";
-import { Tooltip } from "stream-chat-react";
 import { AuthContext } from "../../../context/AuthContext";
-import {
-  ProjectComponentChangelog,
-  ProjectPermission,
-  VendorGuestProject,
-} from "../../../generated/graphql";
+import { ProjectComponentChangelog } from "../../../generated/graphql";
 import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import {
   useGetProjectChangelogLazyQuery,
-  useGetProjectChangelogQuery,
   useGetProjectComponentChangelogLazyQuery,
 } from "../../gql/get/project/project.generated";
 import { useGetVendorGuestProjectQuery } from "../../gql/get/vendor/vendor.generated";
@@ -35,7 +26,6 @@ import FullScreenLoading from "../../Utils/Loading";
 import PermissionDenied from "../../Utils/PermissionDenied";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
-import { ProjectOverviewListItem } from "../customer/CustomerProjectOverviewCard";
 import ProjectChangelogModal from "../customer/modals/ProjectChangelogModal";
 import ProjectComponentChangelogModal from "../customer/modals/ProjectComponentChangelogModal";
 
@@ -59,11 +49,6 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
-const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
-  flexDirection: "column",
-  alignItems: "flex-start",
-}));
 
 const VendorGuestProjectDetail = () => {
   const intl = useIntl();
@@ -99,20 +84,12 @@ const VendorGuestProjectDetail = () => {
 
   const [
     getProjectChangelog,
-    {
-      data: getProjectChangelogData,
-      loading: getProjectChangelogLoading,
-      error: getProjectChangelogError,
-    },
+    { data: getProjectChangelogData, error: getProjectChangelogError },
   ] = useGetProjectChangelogLazyQuery();
 
   const [
     getComponentChangelog,
-    {
-      loading: getComponentChangelogLoading,
-      data: getComponentChangelogData,
-      error: getComponentChangelogError,
-    },
+    { data: getComponentChangelogData, error: getComponentChangelogError },
   ] = useGetProjectComponentChangelogLazyQuery();
 
   // wait until we actually fetched projectData (authorized users) so we don't fetch changelog data before knowing user is authorized or not

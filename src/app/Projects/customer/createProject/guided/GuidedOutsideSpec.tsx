@@ -1,13 +1,10 @@
 import { Cancel, ChangeCircle } from "@mui/icons-material";
-import Add from "@mui/icons-material/Add";
 import {
   Autocomplete,
   Box,
   Button,
   Dialog,
   IconButton,
-  Link,
-  List,
   ListItem,
   Stack,
   TextField,
@@ -22,7 +19,6 @@ import {
   ProductDimensionInput,
   ProjectDesign,
 } from "../../../../../generated/graphql";
-import { TranslatableAttribute } from "../../../../../type/common";
 import {
   GUIDED_PROJECT_FINISH,
   GUIDED_PROJECT_OUTSIDE_PRODUCTS,
@@ -44,10 +40,7 @@ import {
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import AttachmentButton from "../../../../Utils/AttachmentButton";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-} from "../../../../Utils/inputValidators";
+import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
 import { openLink } from "../../../../Utils/openLink";
 import UploadDesign from "../../UploadDesign";
 import DimensionsInput, { isValidDimension } from "../common/DimensionsInput";
@@ -121,6 +114,7 @@ const GuidedOutsideSpec = ({
   activeStep: number;
 }) => {
   const intl = useIntl();
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [componentSpec, setComponentSpec] =
     useState<CreateProjectComponentSpecInput>({
       productName: "",
@@ -136,9 +130,20 @@ const GuidedOutsideSpec = ({
 
   const [boxStyleModalOpen, setBoxStyleModalOpen] = useState(false);
 
-  const [selectedPostProcess, setSelectedPostProcess] = useState<string | null>(
-    null
-  );
+  const [
+    deleteProjectDesign,
+    { error: deleteProjectDesignError, data: deleteProjectDesignData },
+  ] = useDeleteProjectDesignMutation();
+
+  useEffect(() => {
+    if (deleteProjectDesignError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [deleteProjectDesignError]);
 
   // inject existing comp data if there is any
   useEffect(() => {
@@ -148,28 +153,6 @@ const GuidedOutsideSpec = ({
       setComponentSpec(componentData.componentSpec);
     }
   }, [componentData]);
-
-  const [
-    deleteProjectDesign,
-    { error: deleteProjectDesignError, data: deleteProjectDesignData },
-  ] = useDeleteProjectDesignMutation();
-
-  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name) {
-      default:
-        break;
-    }
-
-    if (isAllowed) {
-      setComponentSpec((prev) => ({
-        ...prev,
-        [e.target.name]: e.target.value,
-      }));
-    }
-  };
 
   const getAdditionalDefatulSpec = (productName: string) => {
     switch (productName) {
@@ -240,8 +223,6 @@ const GuidedOutsideSpec = ({
   };
 
   const shouldDisableNextButton = () => {
-    let res = false;
-
     if (!isValidDimension(componentSpec.dimension)) return true;
 
     if (

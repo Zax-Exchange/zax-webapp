@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "@mui/material/Button";
 import {
   Chip,
   Container,
@@ -12,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Dialog, DialogContent } from "@mui/material";
-import { Card, CardActionArea, CardContent, Grid, Paper } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
@@ -21,26 +20,13 @@ import CreateIcon from "@mui/icons-material/Create";
 import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
-import BusinessIcon from "@mui/icons-material/Business";
 import {
-  BidStatus,
-  CustomerProjectOverview,
-  Exact,
-  GetVendorProjectsInput,
-  InputMaybe,
-  PermissionedProject,
   ProjectPermission,
-  ProjectStatus,
   VendorGuestProjectOverview,
-  VendorProject,
-  VendorProjectOverview,
 } from "../../../generated/graphql";
-import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
-import { GENERAL_ROUTES, VENDOR_ROUTES } from "../../constants/loggedInRoutes";
-import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
+import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { useIntl } from "react-intl";
-import VendorPermissionModal from "./modals/VendorPermissionModal";
 import { AccountCircle } from "@mui/icons-material";
 import CustomerPermissionModal from "../customer/modals/CustomerPermissionModal";
 

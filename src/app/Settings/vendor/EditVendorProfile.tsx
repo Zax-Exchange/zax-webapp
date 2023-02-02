@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import React from "react";
 
@@ -23,7 +23,6 @@ import FullScreenLoading from "../../Utils/Loading";
 import { validate } from "email-validator";
 import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.generated";
 import {
-  ProductAndMoq,
   ProductAndMoqInput,
   UpdateVendorInfoInput,
 } from "../../../generated/graphql";
@@ -31,7 +30,6 @@ import {
   ALL_PRODUCT_NAMES,
   productValueToLabelMap,
 } from "../../constants/products";
-import { TranslatableAttribute } from "../../../type/common";
 import { useIntl } from "react-intl";
 import { Cancel } from "@mui/icons-material";
 

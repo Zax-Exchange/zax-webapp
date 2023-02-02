@@ -2,7 +2,6 @@ import {
   Home,
   Logout,
   ReceiptLong,
-  ReceiptLongRounded,
   Settings,
   TextSnippet,
 } from "@mui/icons-material";
@@ -15,15 +14,11 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-  VENDOR_ROUTES,
-} from "../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 
 export default function VendorSideNav({
   sideNavOpen,

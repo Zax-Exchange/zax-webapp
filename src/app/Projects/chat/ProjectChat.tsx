@@ -1,34 +1,13 @@
-import {
-  Box,
-  Container,
-  DialogTitle,
-  DialogContent,
-  Dialog,
-  Paper,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Box, DialogTitle, DialogContent, Dialog } from "@mui/material";
 import { StreamChat } from "stream-chat";
-import {
-  Chat,
-  Channel,
-  ChannelHeader,
-  ChannelList,
-  LoadingIndicator,
-  MessageList,
-  Thread,
-  useMessageContext,
-  Window,
-  useChannelStateContext,
-  VirtualizedMessageList,
-  MessageInput,
-} from "stream-chat-react";
+import { Chat, Channel, Thread, Window, MessageInput } from "stream-chat-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import Messages from "./Messages";
 import CustomMessageInput from "./MessageInput";
 import React from "react";
 import "./Chat.scss";
-import { client } from "../../../ApolloClient/client";
+
 const streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
 const streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
 const filters = { type: "messaging", members: { $in: ["ancient-mountain-4"] } };

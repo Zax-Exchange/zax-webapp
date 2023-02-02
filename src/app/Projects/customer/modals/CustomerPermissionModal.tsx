@@ -4,7 +4,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  CircularProgress,
   Container,
   DialogActions,
   IconButton,
@@ -21,7 +20,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { AuthContext } from "../../../../context/AuthContext";
 import {
-  CustomerProjectOverview,
   GenericUser,
   ProjectPermission,
   UserProjectPermission,
@@ -43,7 +41,6 @@ const CustomerPermissionModal = ({
   const intl = useIntl();
   const { user: loggedInUser } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const isVendor = loggedInUser!.isVendor;
   const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
 
   const [allProjectUsers, setAllProjectUsers] = useState<
@@ -68,7 +65,6 @@ const CustomerPermissionModal = ({
     updateProjectPermission,
     {
       error: updateProjectPermissionError,
-      data: updateProjectPermissionData,
       loading: updateProjectPermissionLoading,
     },
   ] = useUpdateProjectPermissionsMutation();
@@ -76,7 +72,6 @@ const CustomerPermissionModal = ({
   const [
     deleteProjectPermission,
     {
-      data: deleteProjectPermissionData,
       error: deleteProjectPermissionError,
       loading: deleteProjectPermissionLoading,
     },
@@ -87,6 +82,15 @@ const CustomerPermissionModal = ({
     { data: getProjectUsersData, refetch: getProjectUsersRefetch },
   ] = useGetProjectUsersLazyQuery();
 
+  useEffect(() => {
+    if (updateProjectPermissionError || deleteProjectPermissionError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [updateProjectPermissionError, deleteProjectPermissionError]);
   useEffect(() => {
     // init allProjectUsers list
 
@@ -123,7 +127,7 @@ const CustomerPermissionModal = ({
       const isDisabled = getAllCompanyUsersData && !selectedEmails.length;
       setIsAddButtonDisabled(isDisabled);
     }
-  }, [selectedEmails]);
+  }, [selectedEmails, getAllCompanyUsersData]);
 
   // this sets the email list for input dropdown
   useEffect(() => {

@@ -2,37 +2,20 @@ import { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../../context/AuthContext";
 import {
-  connect,
-  DefaultGenerics,
-  FeedAPIResponse,
-  NotificationActivity,
-  StreamFeed,
-} from "getstream";
-import {
   Badge,
   Box,
   Button,
-  CircularProgress,
-  Container,
   IconButton,
   List,
-  Paper,
   Popover,
-  Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import styled from "@emotion/styled";
 import MuiListItem from "@mui/material/ListItem";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import React from "react";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-  VENDOR_ROUTES,
-} from "../constants/loggedInRoutes";
+import { GENERAL_ROUTES, VENDOR_ROUTES } from "../constants/loggedInRoutes";
 import {
   EmitEventType,
   NotificationStatus,
@@ -42,6 +25,7 @@ import {
 } from "./types/common";
 import { io } from "socket.io-client";
 import { useIntl } from "react-intl";
+import { Notifications } from "@mui/icons-material";
 
 const socket = io("http://localhost:8080", {
   transports: ["websocket"],
@@ -332,7 +316,11 @@ const NotificationComponent = () => {
           }
           color="error"
         >
-          <NotificationsNoneIcon />
+          {!!notifications.length ? (
+            <Notifications />
+          ) : (
+            <NotificationsNoneIcon />
+          )}
         </Badge>
       </IconButton>
       {renderNotifications()}

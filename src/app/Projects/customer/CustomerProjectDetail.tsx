@@ -7,44 +7,24 @@ import {
   ListItem,
   IconButton,
   Button,
-  Link,
-  TableRow,
-  TableCell,
-  Stack,
-  TableContainer,
-  Table,
-  TableBody,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Box,
   Tabs,
   Tab,
   Tooltip,
   useTheme,
-  TextField,
-  ButtonGroup,
-  InputAdornment,
-  InputProps,
-  Autocomplete,
   Dialog,
 } from "@mui/material";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import VendorBidOverview from "./VendorBidOverview";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
-import { ProjectOverviewListItem } from "./CustomerProjectOverviewCard";
-import styled from "@emotion/styled";
 import {
-  CreateProjectComponentSpecInput,
-  CreateProjectInput,
   Project,
   ProjectBid,
   ProjectComponent,
   ProjectComponentChangelog,
-  ProjectComponentSpec,
   ProjectPermission,
 } from "../../../generated/graphql";
 import React from "react";
@@ -54,32 +34,17 @@ import {
 } from "../../constants/loggedInRoutes";
 import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useIntl } from "react-intl";
 import EditIcon from "@mui/icons-material/Edit";
-import { useUpdateProjectMutation } from "../../gql/update/project/project.generated";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-  isValidInt,
-} from "../../Utils/inputValidators";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import GoogleMaps from "../../Utils/GoogleMapAutocomplete";
-import CancelIcon from "@mui/icons-material/Cancel";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
-import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
 import {
   useGetProjectChangelogLazyQuery,
-  useGetProjectChangelogQuery,
   useGetProjectComponentChangelogLazyQuery,
-  useGetProjectComponentChangelogQuery,
 } from "../../gql/get/project/project.generated";
 import PermissionDenied from "../../Utils/PermissionDenied";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
-import { ContentCopy, CopyAll } from "@mui/icons-material";
+import { ContentCopy } from "@mui/icons-material";
 import {
   EVENT_ACTION,
   EVENT_CATEGORY,
@@ -110,13 +75,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
-  flexDirection: "column",
-  alignItems: "flex-start",
-}));
-
 const CustomerProjectDetail = () => {
-  const theme = useTheme();
   const intl = useIntl();
   const { projectId } = useParams();
   const { user } = useContext(AuthContext);
@@ -161,11 +120,7 @@ const CustomerProjectDetail = () => {
 
   const [
     getComponentChangelog,
-    {
-      loading: getComponentChangelogLoading,
-      data: getComponentChangelogData,
-      error: getComponentChangelogError,
-    },
+    { data: getComponentChangelogData, error: getComponentChangelogError },
   ] = useGetProjectComponentChangelogLazyQuery();
 
   // wait until we actually fetched projectData (authorized users) so we don't fetch changelog data before knowing user is authorized or not

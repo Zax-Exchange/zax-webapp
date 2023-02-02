@@ -3,7 +3,6 @@ import {
   Container,
   Typography,
   Button,
-  Input,
   Stack,
   TextField,
   List,
@@ -26,7 +25,6 @@ const ProjectBidComponent = ({
 
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
-  const [qpList, setQpList] = useState([]);
 
   const handleQpInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "quantity") {

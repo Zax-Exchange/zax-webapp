@@ -1,30 +1,18 @@
 import {
-  Autocomplete,
   Box,
-  Button,
-  CircularProgress,
   Dialog,
-  DialogContent,
-  DialogTitle,
   Menu,
   MenuItem,
   MenuList,
-  TextField,
   Tooltip,
   Typography,
-  useTheme,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useIntl } from "react-intl";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
-import {
-  CustomerProjectOverview,
-  ProjectOverview,
-} from "../../../generated/graphql";
+
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
-import { useGetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
-import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import ReactGA from "react-ga4";
 import {
   EVENT_ACTION,

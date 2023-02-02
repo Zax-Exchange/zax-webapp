@@ -1,25 +1,14 @@
-import { ApolloQueryResult } from "@apollo/client";
 import {
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
   Typography,
-  CircularProgress,
-  AlertColor,
-  IconButton,
   DialogTitle,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React from "react";
 import { useIntl } from "react-intl";
-import { AuthContext } from "../../../../context/AuthContext";
-import { Exact, InputMaybe } from "../../../../generated/graphql";
 import { useDeleteProjectMutation } from "../../../gql/delete/project/project.generated";
-import {
-  GetCustomerProjectsQuery,
-  useGetCustomerProjectsLazyQuery,
-} from "../../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 
 const DeleteProjectModal = ({
@@ -34,16 +23,10 @@ const DeleteProjectModal = ({
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const intl = useIntl();
-  const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [getCustomerProjects] = useGetCustomerProjectsLazyQuery();
   const [
     deleteProjectMutation,
-    {
-      data: deleteProjectData,
-      error: deleteProjectError,
-      loading: deleteProjectLoading,
-    },
+    { error: deleteProjectError, loading: deleteProjectLoading },
   ] = useDeleteProjectMutation();
 
   const deleteProjectOnClick = async () => {

@@ -1,17 +1,13 @@
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { Cancel, Email } from "@mui/icons-material";
+import { Cancel } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
   Container,
   Typography,
-  Card,
-  Input,
   List,
   ListItem,
   Select,
   MenuItem,
-  ListItemButton,
   TextField,
   DialogActions,
   Stack,
@@ -20,7 +16,6 @@ import {
   IconButton,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
 
 import {
   GenericUser,
@@ -73,7 +68,6 @@ const VendorPermissionModal = ({
   const [
     updateProjectBidPermission,
     {
-      data: updateProjectBidPermissionData,
       error: updateProjectBidPermissionError,
       loading: updateProjectBidPermissionLoading,
     },
@@ -82,16 +76,23 @@ const VendorPermissionModal = ({
   const [
     deleteProjectBidPermission,
     {
-      data: deleteProjectBidPermissionData,
       error: deleteProjectBidPermissionError,
       loading: deleteProjectBidPermissionLoading,
     },
   ] = useDeleteProjectBidPermissionsMutation();
 
-  const [
-    getProjectBidUsers,
-    { data: getProjectBidUsersData, refetch: getProjectBidUsersRefetch },
-  ] = useGetProjectBidUsersLazyQuery();
+  const [getProjectBidUsers, { data: getProjectBidUsersData }] =
+    useGetProjectBidUsersLazyQuery();
+
+  useEffect(() => {
+    if (updateProjectBidPermissionError || deleteProjectBidPermissionError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [updateProjectBidPermissionError, deleteProjectBidPermissionError]);
 
   useEffect(() => {
     // init allProjectUsers list
@@ -318,14 +319,6 @@ const VendorPermissionModal = ({
     } finally {
       setPermissionModalOpen(false);
     }
-  };
-
-  const isUserOwner = () => {
-    // not used for now
-    if (isVendor) {
-      return project.permission === ProjectPermission.Owner;
-    }
-    return project.permission === ProjectPermission.Owner;
   };
 
   const renderPermissionedUsers = () => {

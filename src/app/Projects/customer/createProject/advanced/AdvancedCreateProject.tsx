@@ -1,66 +1,28 @@
-import { gql, useMutation } from "@apollo/client";
 import {
   Button,
   Container,
-  ListItem,
-  TextField,
   Typography,
   Box,
-  Stack,
-  Dialog,
   Paper,
-  List,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
   IconButton,
-  InputAdornment,
   Drawer,
-  ClickAwayListener,
   Tabs,
   Tab,
-  CSSObject,
   Tooltip,
-  Autocomplete,
-  Chip,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../../../context/AuthContext";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import AddIcon from "@mui/icons-material/Add";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useLocation, useNavigate } from "react-router-dom";
 import FullScreenLoading from "../../../../Utils/Loading";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-  isValidInt,
-} from "../../../../Utils/inputValidators";
-import GoogleMapAutocomplete from "../../../../Utils/GoogleMapAutocomplete";
-import UploadDesign from "../../UploadDesign";
+
 import React from "react";
 
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
-import {
-  useGetCustomerProjectLazyQuery,
-  useGetCustomerProjectsLazyQuery,
-} from "../../../../gql/get/customer/customer.generated";
+import { useGetCustomerProjectLazyQuery } from "../../../../gql/get/customer/customer.generated";
 import {
   CreateProjectComponentInput,
-  CreateProjectComponentSpecInput,
   CreateProjectInput,
   ProjectCreationMode,
   ProjectDesign,
@@ -68,12 +30,9 @@ import {
 } from "../../../../../generated/graphql";
 import CreateProjectComponentModal from "./modals/CreateProjectComponentModal";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../../../common/ComponentSpecDetail";
-import ProjectCategoryDropdown from "../../../../Utils/ProjectCategoryDropdown";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
-import { v4 as uuidv4 } from "uuid";
 import Edit from "@mui/icons-material/Edit";
 import ReactGA from "react-ga4";
 import {
@@ -81,7 +40,6 @@ import {
   EVENT_CATEGORY,
   EVENT_LABEL,
 } from "../../../../../analytics/constants";
-import { PRODUCT_NAME_STICKER } from "../../../../constants/products";
 import ProjectSpecInput from "../common/ProjectSpecInput";
 
 interface TabPanelProps {
@@ -112,8 +70,10 @@ const AdvancedCreateProject = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [createProjectMutation, { loading: createProjectLoading }] =
-    useCreateProjectMutation();
+  const [
+    createProjectMutation,
+    { loading: createProjectLoading, error: createProjectError },
+  ] = useCreateProjectMutation();
   const [startingTime, setStartingTime] = useState(performance.now());
 
   const [
@@ -163,6 +123,16 @@ const AdvancedCreateProject = () => {
   const [temporaryDesignIdsToDelete, setTemporaryDesignIdsToDelete] = useState<
     string[]
   >([]);
+
+  useEffect(() => {
+    if (getCustomerProjectError || deleteDesignError || createProjectError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getCustomerProjectError, deleteDesignError, createProjectError]);
 
   // get project data if user chooses to import
   useEffect(() => {
@@ -350,16 +320,8 @@ const AdvancedCreateProject = () => {
           id: "app.customer.createProject.projectCreated",
         }),
       });
-    } catch (e) {
-      setSnackbar({
-        severity: "error",
-        message: intl.formatMessage({
-          id: "app.general.network.error",
-        }),
-      });
-    } finally {
-      // setSnackbarOpen(true);
-    }
+      setSnackbarOpen(true);
+    } catch (e) {}
   };
 
   const isLoading = createProjectLoading || getCustomerProjectLoading;

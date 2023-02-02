@@ -1,21 +1,14 @@
 import {
   Box,
-  Stack,
-  TextField,
   Typography,
   Container,
-  Button,
   Card,
   CardActionArea,
   CardMedia,
   CardContent,
   Fade,
 } from "@mui/material";
-import { useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
-import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 import vendor from "../../static/vendor.svg";
 import customer from "../../static/customer.svg";
 import React from "react";

@@ -1,43 +1,17 @@
-import { gql, useMutation } from "@apollo/client";
 import {
   Button,
   Container,
-  ListItem,
-  TextField,
   Typography,
   Box,
-  Stack,
-  Dialog,
   Paper,
-  List,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  TableContainer,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
   IconButton,
-  InputAdornment,
   Drawer,
-  ClickAwayListener,
   Tabs,
   Tab,
-  CSSObject,
   Tooltip,
-  Autocomplete,
-  Chip,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import AddIcon from "@mui/icons-material/Add";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useEffect, useState } from "react";
 import React from "react";
-import { v4 as uuidv4 } from "uuid";
 import Edit from "@mui/icons-material/Edit";
 import { useIntl } from "react-intl";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
@@ -49,15 +23,8 @@ import {
   ProjectDesign,
   ProjectVisibility,
 } from "../../../generated/graphql";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-  isValidInt,
-} from "../../Utils/inputValidators";
 import { useCreateGuestProjectMutation } from "../../gql/create/project/project.generated";
 import FullScreenLoading from "../../Utils/Loading";
-import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
-import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
 import { Cancel } from "@mui/icons-material";
 import CreateProjectComponentModal from "../../Projects/customer/createProject/advanced/modals/CreateProjectComponentModal";
@@ -100,11 +67,7 @@ const GuestAdvamcedCreate = ({
 
   const [
     createGuestProject,
-    {
-      loading: createGuestProjectLoading,
-      error: createGuestProjectError,
-      data: createGuestProjectData,
-    },
+    { loading: createGuestProjectLoading, error: createGuestProjectError },
   ] = useCreateGuestProjectMutation();
 
   const [projectData, setProjectData] = useState<CreateProjectInput>({
@@ -131,7 +94,6 @@ const GuestAdvamcedCreate = ({
   // For project component section.
   const [currentTab, setCurrentTab] = useState(0);
 
-  const [orderQuantity, setOrderQuantity] = useState("");
   const [componentModalOpen, setComponentModalOpen] = useState(false);
 
   // record designs for added components
@@ -153,18 +115,22 @@ const GuestAdvamcedCreate = ({
     }
   }, [temporaryDesignIdsToDelete, componentModalOpen]);
 
+  useEffect(() => {
+    if (deleteDesignError || createGuestProjectError) {
+      setSnackbar({
+        severity: "error",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+      });
+      setSnackbarOpen(true);
+    }
+  }, [deleteDesignError, createGuestProjectError]);
+
   // Switch tab for components detail section.
   const componentTabOnChange = (
     event: React.SyntheticEvent,
     newTab: number
   ) => {
     setCurrentTab(newTab);
-  };
-
-  const orderQuantityOnChange = (val: string) => {
-    if (isValidInt(val)) {
-      setOrderQuantity(val);
-    }
   };
 
   const deleteDesignFiles = async (id: string) => {
@@ -221,32 +187,6 @@ const GuestAdvamcedCreate = ({
     setComponentIndexToEdit(ind);
     setComponentModalOpen(true);
   };
-  const projectInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val: string | number = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name as keyof CreateGuestProjectInput) {
-      case "name":
-        isAllowed = isValidAlphanumeric(val);
-        break;
-      case "orderQuantities":
-        isAllowed = isValidInt(val);
-        val = parseInt(val, 10);
-        break;
-      case "targetPrice":
-      case "totalWeight":
-        isAllowed = isValidFloat(val);
-        break;
-      default:
-        break;
-    }
-    if (isAllowed) {
-      setProjectData({
-        ...projectData,
-        [e.target.name]: val,
-      });
-    }
-  };
 
   // check if create project button should be disabled
   const shouldDisableCreateProjectButton = () => {
@@ -300,13 +240,7 @@ const GuestAdvamcedCreate = ({
       });
 
       setProjectCreated(true);
-    } catch (e) {
-      setSnackbar({
-        severity: "error",
-        message: intl.formatMessage({ id: "app.general.network.error" }),
-      });
-      setSnackbarOpen(true);
-    }
+    } catch (e) {}
   };
 
   const isLoading = createGuestProjectLoading;

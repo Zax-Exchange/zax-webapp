@@ -2,7 +2,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  CircularProgress,
   DialogActions,
   DialogContent,
   DialogTitle,

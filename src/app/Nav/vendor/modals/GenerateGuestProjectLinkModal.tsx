@@ -5,7 +5,6 @@ import {
   DialogActions,
   DialogTitle,
   TextField,
-  Typography,
 } from "@mui/material";
 import { validate } from "email-validator";
 import React, { useContext, useEffect, useState } from "react";

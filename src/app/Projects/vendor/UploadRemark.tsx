@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useIntl } from "react-intl";
 import { BidRemark } from "../../../generated/graphql";
 import { Target } from "../../../type/common";
-import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useUploadBidRemarkMutation } from "../../gql/upload/bid/uploadBidRemark.generated";

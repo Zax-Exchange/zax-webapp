@@ -4,7 +4,6 @@ import {
   Typography,
   Button,
   Paper,
-  Stack,
   Box,
   TableRow,
   TableCell,
@@ -19,12 +18,9 @@ import {
   InputAdornment,
   Tooltip,
   IconButton,
-  Link,
-  List,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
-import CustomSnackbar from "../../Utils/CustomSnackbar";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import {
@@ -34,13 +30,9 @@ import {
   Project,
   ProjectBid,
   ProjectComponent,
-  ProjectComponentSpec,
 } from "../../../generated/graphql";
 import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
-import { SearchProjectDetailLocationState } from "./SearchProjectOverview";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MuiListItem from "@mui/material/ListItem";
-import { GENERAL_ROUTES, VENDOR_ROUTES } from "../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
 import { isValidFloat, isValidInt } from "../../Utils/inputValidators";
 import { AuthContext } from "../../../context/AuthContext";
@@ -54,7 +46,6 @@ import UploadRemark from "../../Projects/vendor/UploadRemark";
 import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
-import { ProjectOverviewListItem } from "../../Projects/customer/CustomerProjectOverviewCard";
 import ProjectSpecDetail from "../../Projects/common/ProjectSpecDetail";
 import { InfoOutlined } from "@mui/icons-material";
 
@@ -79,11 +70,6 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
-const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
-  flexDirection: "column",
-  alignItems: "flex-start",
-}));
 
 export const BidInputPriceTextField = styled((props: TextFieldProps) => {
   return (
@@ -212,14 +198,24 @@ const SearchProjectDetail = () => {
   }, [getProjectBidData]);
 
   useEffect(() => {
-    if (getProjectDetailError || getProjectBidError || deleteRemarkError) {
+    if (
+      getProjectDetailError ||
+      getProjectBidError ||
+      deleteRemarkError ||
+      createProjectBidError
+    ) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [getProjectDetailError, getProjectBidError, deleteRemarkError]);
+  }, [
+    getProjectDetailError,
+    getProjectBidError,
+    deleteRemarkError,
+    createProjectBidError,
+  ]);
 
   const navigateToExistingBid = (projectId: string) => {
     const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
@@ -344,32 +340,6 @@ const SearchProjectDetail = () => {
     } finally {
       setSnackbarOpen(true);
     }
-  };
-
-  const renderAttributeTitle = (attr: string) => {
-    return <Typography variant="subtitle2">{attr}</Typography>;
-  };
-
-  const renderProjectField = (
-    projectAttribute: keyof Project,
-    projectFieldData: string | number | number[]
-  ) => {
-    if (Array.isArray(projectFieldData)) {
-      return (
-        <Typography variant="caption">{projectFieldData.join(", ")}</Typography>
-      );
-    }
-
-    let fieldString = projectFieldData;
-    if (projectAttribute === "totalWeight") {
-      fieldString += intl.formatMessage({ id: "app.general.unit.g" });
-    }
-    if (projectAttribute === "targetPrice") {
-      fieldString =
-        parseFloat(fieldString as string) +
-        intl.formatMessage({ id: "app.general.currency.usd" });
-    }
-    return <Typography variant="caption">{fieldString}</Typography>;
   };
 
   const renderBidInputSection = (components: ProjectComponent[]) => {
@@ -734,7 +704,10 @@ const SearchProjectDetail = () => {
                         <Button
                           onClick={submitBid}
                           variant="contained"
-                          disabled={shouldDisableSubmitBidButton()}
+                          disabled={
+                            shouldDisableSubmitBidButton() ||
+                            deleteRemarkLoading
+                          }
                         >
                           {intl.formatMessage({
                             id: "app.vendor.search.submitBids",

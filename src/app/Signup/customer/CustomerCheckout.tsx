@@ -1,23 +1,16 @@
-import { Button, Container, Typography } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import {
-  Elements,
   useStripe,
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
 import { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
-import { useNavigate } from "react-router-dom";
 import { StripePaymentIntent } from "../../../generated/graphql";
 import { useCreateCustomerMutation } from "../../gql/create/customer/customer.generated";
-import {
-  useUpdateCompanyPlanSubscriptionInfoMutation,
-  useUpdateCompanyStatusMutation,
-} from "../../gql/update/company/company.generated";
+
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import FullScreenLoading from "../../Utils/Loading";
 import { CustomerSignupData, CustomerSignupPage } from "./CustomerSignup";
 
 const CustomerCheckout = ({
@@ -34,18 +27,10 @@ const CustomerCheckout = ({
   const intl = useIntl();
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  const [
-    createCustomerMutation,
-    {
-      data: createCustomerData,
-      loading: createCustomerLoading,
-      error: createCustomerError,
-    },
-  ] = useCreateCustomerMutation();
+  const [createCustomerMutation] = useCreateCustomerMutation();
 
   useEffect(() => {
     setIsLoading(true);

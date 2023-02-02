@@ -1,11 +1,4 @@
-import {
-  Button,
-  Container,
-  Stack,
-  TextField,
-  ThemeProvider,
-  Typography,
-} from "@mui/material";
+import { Button, Container, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
 import { useContext, useState } from "react";
 import { useIntl } from "react-intl";
@@ -18,14 +11,8 @@ const ChangePassword = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [
-    updateUserPassword,
-    {
-      data: updateUserPasswordData,
-      error: updateUserPasswordError,
-      loading: updateUserPasswordLoading,
-    },
-  ] = useUpdateUserPasswordMutation();
+  const [updateUserPassword, { loading: updateUserPasswordLoading }] =
+    useUpdateUserPasswordMutation();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");

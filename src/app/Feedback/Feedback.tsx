@@ -1,16 +1,10 @@
 import { BugReport, TextSnippet } from "@mui/icons-material";
-import {
-  Dialog,
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon,
-} from "@mui/material";
-import React, { useContext, useState } from "react";
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
+import React, { useContext } from "react";
 import { useIntl } from "react-intl";
 import { AuthContext } from "../../context/AuthContext";
 import { Locale } from "../../context/LocaleContext";
 import { openLink } from "../Utils/openLink";
-import BugReportForm from "./modal/BugReportForm";
 
 const Feedback = () => {
   const intl = useIntl();

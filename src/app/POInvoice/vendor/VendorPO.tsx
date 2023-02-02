@@ -1,13 +1,10 @@
 import { ChangeCircleOutlined, CloudUploadOutlined } from "@mui/icons-material";
 import {
   Box,
-  Button,
-  CircularProgress,
   Container,
   Dialog,
   DialogContent,
   IconButton,
-  Link,
   Paper,
   Table,
   TableBody,
@@ -18,11 +15,10 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
-import { Invoice } from "../../../generated/graphql";
 import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import { useGetVendorPosQuery } from "../../gql/get/vendor/vendor.generated";
 import AttachmentButton from "../../Utils/AttachmentButton";
@@ -59,6 +55,16 @@ const VendorPO = () => {
     },
     fetchPolicy: "no-cache",
   });
+
+  useEffect(() => {
+    if (getVendorPosError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [getVendorPosError]);
 
   const createInvoiceOnClick = (
     projectId: string,

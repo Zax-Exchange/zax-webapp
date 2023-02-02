@@ -1,16 +1,7 @@
 import {
   Box,
-  Button,
   Collapse,
-  Container,
-  DialogActions,
-  Divider,
   IconButton,
-  Link,
-  List,
-  ListItem,
-  Paper,
-  Stack,
   styled,
   Table,
   TableBody,
@@ -28,17 +19,13 @@ import {
   ProjectBid,
   ProjectBidComponent,
   ProjectComponent,
-  ProjectComponentSpec,
   VendorDetail,
 } from "../../../../generated/graphql";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../../common/ComponentSpecDetail";
-import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../../constants/products";
 import { countries } from "../../../constants/countries";
 import AttachmentButton from "../../../Utils/AttachmentButton";
 import { openLink } from "../../../Utils/openLink";
-import ReactGA from "react-ga4";
-import { CUSTOMER_ROUTES } from "../../../constants/loggedInRoutes";
 
 /**
  * Bid modal shown in CustomerProjectDetail

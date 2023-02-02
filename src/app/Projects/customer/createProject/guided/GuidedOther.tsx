@@ -1,54 +1,28 @@
-import { Cancel, InfoOutlined } from "@mui/icons-material";
+import { InfoOutlined } from "@mui/icons-material";
 import {
-  Autocomplete,
   Box,
   Button,
   Divider,
-  IconButton,
-  Link,
   ListItem,
   Stack,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { useIntl } from "react-intl";
 import {
   CreateProjectComponentInput,
-  CreateProjectComponentSpecInput,
-  CreateProjectInput,
   ProjectDesign,
 } from "../../../../../generated/graphql";
-import { TranslatableAttribute } from "../../../../../type/common";
 import {
-  BOOKLET_STYLES,
-  GUIDED_PROJECT_ALL_POST_PROCESS,
-  GUIDED_PROJECT_INSIDE_PRODUCTS,
-  GUIDED_PROJECT_OTHER_PRODUCTS,
-  productValueToLabelMap,
   PRODUCT_NAME_BOOKLET,
-  PRODUCT_NAME_CORRUGATE_TRAY,
-  PRODUCT_NAME_PAPER_TRAY,
   PRODUCT_NAME_SLEEVE,
   PRODUCT_NAME_STICKER,
-  STICKER_PURPOSES,
-  STICKER_SHAPES,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-} from "../../../../Utils/inputValidators";
-import UploadDesign from "../../UploadDesign";
-import DimensionsInput, { isValidDimension } from "../common/DimensionsInput";
-import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
+import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
+
+import { isValidDimension } from "../common/DimensionsInput";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedOtherSubSection from "./subsections/GuidedOtherSubSection";
 
@@ -79,11 +53,21 @@ const GuidedOther = ({
   activeStep: number;
 }) => {
   const intl = useIntl();
-
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [
     deleteProjectDesign,
     { error: deleteProjectDesignError, data: deleteProjectDesignData },
   ] = useDeleteProjectDesignMutation();
+
+  useEffect(() => {
+    if (deleteProjectDesignError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [deleteProjectDesignError]);
 
   const shouldDisableNextButton = () => {
     // no outer box and inner tray and no additional components added

@@ -3,15 +3,12 @@ import {
   Button,
   Checkbox,
   Chip,
-  CircularProgress,
   Container,
   Grid,
   IconButton,
   List,
   ListItem,
-  Stack,
   TextField,
-  ThemeProvider,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -20,15 +17,13 @@ import { validate } from "email-validator";
 
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
-import { LoggedInUser } from "../../generated/graphql";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
-import { LoadingButton } from "@mui/lab";
 import {
   useDeletePendingJoinRequestsMutation,
   useGetAllPendingJoinRequestsQuery,
 } from "../gql/utils/company/company.generated";
 import { useInviteUsersMutation } from "../gql/utils/user/user.generated";
-import { DoneAll, PlaylistAddCheck, PlaylistRemove } from "@mui/icons-material";
+import { PlaylistAddCheck, PlaylistRemove } from "@mui/icons-material";
 import { useIntl } from "react-intl";
 
 /** ADMIN VIEW */

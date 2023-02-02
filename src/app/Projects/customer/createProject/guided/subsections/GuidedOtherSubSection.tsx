@@ -2,27 +2,18 @@ import { Cancel } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
-  Button,
   IconButton,
-  Link,
   ListItem,
   Stack,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect } from "react";
 import { useIntl } from "react-intl";
 import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
-  CreateProjectInput,
   ProductDimensionInput,
   ProjectDesign,
 } from "../../../../../../generated/graphql";
@@ -36,14 +27,11 @@ import {
   FINISH_MATTE,
   FINISH_UNCOATED,
   GUIDED_PROJECT_ALL_POST_PROCESS,
-  GUIDED_PROJECT_INSIDE_PRODUCTS,
   GUIDED_PROJECT_OTHER_PRODUCTS,
   MATERIAL_C1S,
   MATERIAL_SOURCE_STANDARD,
   productValueToLabelMap,
   PRODUCT_NAME_BOOKLET,
-  PRODUCT_NAME_CORRUGATE_TRAY,
-  PRODUCT_NAME_PAPER_TRAY,
   PRODUCT_NAME_SLEEVE,
   PRODUCT_NAME_STICKER,
   STICKER_PURPOSES,
@@ -51,11 +39,8 @@ import {
 } from "../../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../../gql/delete/project/project.generated";
 import AttachmentButton from "../../../../../Utils/AttachmentButton";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-  isValidInt,
-} from "../../../../../Utils/inputValidators";
+import useCustomSnackbar from "../../../../../Utils/CustomSnackbar";
+import { isValidInt } from "../../../../../Utils/inputValidators";
 import { openLink } from "../../../../../Utils/openLink";
 import UploadDesign from "../../../UploadDesign";
 import DimensionsInput from "../../common/DimensionsInput";
@@ -90,11 +75,21 @@ const GuidedOtherSubSection = ({
   componentData: CreateProjectComponentInput;
 }) => {
   const intl = useIntl();
-
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [
     deleteProjectDesign,
     { error: deleteProjectDesignError, data: deleteProjectDesignData },
   ] = useDeleteProjectDesignMutation();
+
+  useEffect(() => {
+    if (deleteProjectDesignError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [deleteProjectDesignError]);
 
   const deleteDesign = async (id: string, ind: number) => {
     try {

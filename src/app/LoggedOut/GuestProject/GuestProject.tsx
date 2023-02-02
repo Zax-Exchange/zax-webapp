@@ -2,7 +2,6 @@ import { CheckCircleOutline } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -20,8 +19,6 @@ import { useIntl } from "react-intl";
 import { useParams } from "react-router-dom";
 import { ProjectCreationMode, ProjectStatus } from "../../../generated/graphql";
 import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
-import GuidedCreateProject from "../../Projects/customer/createProject/guided/GuidedCreateProject";
-import EditProject from "../../Projects/customer/editProject/EditProject";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../Utils/Loading";
 import GuestAdvancedCreate from "./GuestAdvanceCreate";

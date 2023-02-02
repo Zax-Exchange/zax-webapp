@@ -3,7 +3,6 @@ import {
   Grid,
   Container,
   Fade,
-  IconButton,
   Menu,
   MenuList,
   MenuItem,
@@ -12,7 +11,6 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 
 // import CustomSnackbar from "../Utils/CustomSnackbar";
-import SortIcon from "@mui/icons-material/Sort";
 import { AuthContext } from "../../../context/AuthContext";
 
 import CustomerProjectOverviewCard from "./CustomerProjectOverviewCard";
@@ -33,7 +31,6 @@ const CustomerProjects = () => {
     data: getCustomerProjectsData,
     error: getCustomerProjectsError,
     loading: getCustomerProjectsLoading,
-    refetch: getCustomerProjectsRefetch,
   } = useGetCustomerProjectsQuery({
     variables: {
       data: {

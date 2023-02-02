@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Container, List, Stack, Typography } from "@mui/material";
+import { Container, List, Typography } from "@mui/material";
 import MuiListItem from "@mui/material/ListItem";
 import React from "react";
 import { useIntl } from "react-intl";
@@ -25,9 +25,6 @@ const CustomerCompanyReview = ({
   subscriptionInfo: SubscriptionInfo;
 }) => {
   const intl = useIntl();
-  const plan = getAllPlansData!.getAllPlans!.find(
-    (plan) => plan!.id === values.planId
-  );
 
   return (
     <>

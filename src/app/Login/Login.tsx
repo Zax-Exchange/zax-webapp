@@ -4,8 +4,6 @@ import {
   TextField,
   Typography,
   Container,
-  Button,
-  ThemeProvider,
   Fade,
   Paper,
   useTheme,
@@ -15,7 +13,6 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
-import FullScreenLoading from "../Utils/Loading";
 import React from "react";
 import { LoggedInUser } from "../../generated/graphql";
 import { useLoginLazyQuery } from "../gql/utils/user/user.generated";
@@ -26,9 +23,8 @@ import ReactGA from "react-ga4";
 import { EVENT_ACTION, EVENT_CATEGORY } from "../../analytics/constants";
 
 const Login = () => {
-  const theme = useTheme();
   const intl = useIntl();
-  const { user, login, logout } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [userLogin, { error, loading, data }] = useLoginLazyQuery();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const navigate = useNavigate();

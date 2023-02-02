@@ -4,24 +4,19 @@ import {
   TextField,
   Typography,
   Container,
-  Button,
   Paper,
 } from "@mui/material";
 import { useContext, useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
-import { JwtPayload } from "jwt-decode";
 import FullScreenLoading from "../Utils/Loading";
 import React from "react";
-import { CreateUserInput, LoggedInUser } from "../../generated/graphql";
-import { GENERAL_ROUTES } from "../constants/loggedInRoutes";
+import { CreateUserInput } from "../../generated/graphql";
 import { useCreateUserMutation } from "../gql/create/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { useIntl } from "react-intl";
 import { validate } from "email-validator";
-import jwt from "jwt-decode";
 import InvalidToken from "./InvalidToken";
 import {
   useCheckSignupJwtTokenLazyQuery,
@@ -35,10 +30,8 @@ const UserSignup = () => {
   const intl = useIntl();
   const { token } = useParams();
   const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
-  const [noTokenError, setNoTokenError] = useState(false);
   const [emailTakenError, setEmailTakenError] = useState(false);
 
   const [createUser, { error: createUserError, loading: createUserLoading }] =

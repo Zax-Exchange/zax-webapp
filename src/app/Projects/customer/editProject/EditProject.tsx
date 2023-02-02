@@ -28,7 +28,6 @@ import { AuthContext } from "../../../../context/AuthContext";
 import {
   CreateProjectComponentInput,
   CreateProjectInput,
-  ProjectCreationMode,
   ProjectDesign,
   ProjectPermission,
   ProjectVisibility,
@@ -36,15 +35,9 @@ import {
   UpdateProjectData,
   UpdateProjectInput,
 } from "../../../../generated/graphql";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../../constants/loggedInRoutes";
 import { useDeleteProjectDesignMutation } from "../../../gql/delete/project/project.generated";
-import {
-  useGetCustomerProjectLazyQuery,
-  useGetCustomerProjectQuery,
-} from "../../../gql/get/customer/customer.generated";
+import { useGetCustomerProjectQuery } from "../../../gql/get/customer/customer.generated";
 import { useUpdateProjectMutation } from "../../../gql/update/project/project.generated";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 import {
@@ -57,11 +50,8 @@ import ProjectCategoryDropdown from "../../../Utils/ProjectCategoryDropdown";
 import GoogleMapAutocomplete from "../../../Utils/GoogleMapAutocomplete";
 import { ArrowBack, Cancel, Edit, Restore } from "@mui/icons-material";
 import ComponentSpecDetail from "../../common/ComponentSpecDetail";
-import CreateProjectComponentModal from "../createProject/advanced/modals/CreateProjectComponentModal";
-import { useGetProjectDetailQuery } from "../../../gql/get/project/project.generated";
 import CreateOrUpdateComponentModal from "./modals/CreateOrUpdateComponentModal";
 import PermissionDenied from "../../../Utils/PermissionDenied";
-import { PRODUCT_NAME_STICKER } from "../../../constants/products";
 
 type EditProjectErrors = Record<keyof UpdateProjectData, boolean>;
 
@@ -91,7 +81,6 @@ const EditProject = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
   const { projectId } = useParams();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
@@ -181,14 +170,14 @@ const EditProject = () => {
   const [permissionError, setPermissionError] = useState(false);
 
   useEffect(() => {
-    if (getCustomerProjectError) {
+    if (getCustomerProjectError || deleteDesignError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [getCustomerProjectError]);
+  }, [getCustomerProjectError, deleteDesignError]);
 
   // initialize all project data
   useEffect(() => {
@@ -339,16 +328,6 @@ const EditProject = () => {
     }
   };
 
-  const deleteDesignFiles = async (id: string) => {
-    deleteDesign({
-      variables: {
-        data: {
-          fileId: id,
-        },
-      },
-    });
-  };
-
   const restoreComponent = (i: number) => {
     const allRemovedComponents = [...removedComponents];
     const allRemovedComponentDesigns = [...removedComponentsDesigns];
@@ -391,11 +370,6 @@ const EditProject = () => {
     // need this because we want to know the last opened component if there is one for reverting purpose.
     setComponentIndexToEdit(null);
     setComponentModalOpen(true);
-  };
-
-  // fires when user closes drawer by clicking outside of it
-  const componentModalOnClose = () => {
-    setComponentModalOpen(false);
   };
 
   const editComponent = (ind: number) => {
@@ -452,8 +426,6 @@ const EditProject = () => {
   ) => {
     // only pre-existing components have componentId
     if ((comp as UpdateProjectComponentData).componentId) {
-      const id = (comp as UpdateProjectComponentData).componentId;
-
       return true;
     }
     return false;

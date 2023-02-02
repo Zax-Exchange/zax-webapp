@@ -1,12 +1,11 @@
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, CircularProgress, TextField } from "@mui/material";
+import { Box, CircularProgress, TextField } from "@mui/material";
 import { validate } from "email-validator";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
 import { useCheckCompanyNameLazyQuery } from "../gql/utils/company/company.generated";
 import { useRequestToJoinMutation } from "../gql/utils/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
-import { isValidAlphanumeric } from "../Utils/inputValidators";
 
 const JoinCompany = () => {
   const intl = useIntl();
@@ -19,21 +18,11 @@ const JoinCompany = () => {
 
   const [
     checkCompanyName,
-    {
-      loading: checkCompanyNameLoading,
-      data: checkCompanyNameData,
-      error: checkCompanyNameError,
-    },
+    { loading: checkCompanyNameLoading, data: checkCompanyNameData },
   ] = useCheckCompanyNameLazyQuery();
 
-  const [
-    requestToJoin,
-    {
-      loading: requestToJoinLoading,
-      error: requestToJoinError,
-      data: requestToJoinData,
-    },
-  ] = useRequestToJoinMutation();
+  const [requestToJoin, { loading: requestToJoinLoading }] =
+    useRequestToJoinMutation();
 
   const renderCompanyNameHelper = () => {
     if (checkCompanyNameData) {

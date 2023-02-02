@@ -5,11 +5,8 @@ import {
   Button,
   CircularProgress,
   Container,
-  DialogActions,
-  DialogContent,
   Divider,
   IconButton,
-  Link,
   List,
   ListItem,
   Stack,
@@ -18,7 +15,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useCallback } from "react";
+import React from "react";
 import { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import {

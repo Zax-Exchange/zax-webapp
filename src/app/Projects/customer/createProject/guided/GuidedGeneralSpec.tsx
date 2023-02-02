@@ -1,34 +1,9 @@
-import {
-  Autocomplete,
-  Box,
-  Button,
-  IconButton,
-  InputAdornment,
-  List,
-  ListItem,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import GoogleMapAutocomplete from "../../../../Utils/GoogleMapAutocomplete";
-import AddCircle from "@mui/icons-material/AddCircle";
-import Cancel from "@mui/icons-material/Cancel";
-import React, { Dispatch, ReactElement, SetStateAction, useState } from "react";
+import { Box, Button, Typography } from "@mui/material";
+import React, { Dispatch, SetStateAction } from "react";
 import { useIntl } from "react-intl";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-  isValidInt,
-} from "../../../../Utils/inputValidators";
-import {
-  CreateProjectInput,
-  UpdateProjectInput,
-} from "../../../../../generated/graphql";
-import UploadDesign from "../../UploadDesign";
-import ProjectCategoryDropdown from "../../../../Utils/ProjectCategoryDropdown";
+
+import { CreateProjectInput } from "../../../../../generated/graphql";
+
 import ProjectSpecInput from "../common/ProjectSpecInput";
 
 export default function GuidedGeneralSpec({

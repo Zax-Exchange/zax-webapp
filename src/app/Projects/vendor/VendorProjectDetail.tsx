@@ -1,16 +1,10 @@
 import {
-  Stack,
   Container,
   Typography,
   Button,
   Paper,
-  List,
-  DialogActions,
-  Grid,
   IconButton,
   Dialog,
-  DialogContent,
-  Link,
   Box,
   TableRow,
   TableCell,
@@ -35,11 +29,9 @@ import {
   BidRemark,
   BidStatus,
   CreateProjectBidComponentInput,
-  Project,
   ProjectBidComponent,
   ProjectComponent,
   ProjectComponentChangelog,
-  ProjectComponentSpec,
   ProjectPermission,
   QuantityPrice,
   QuantityPriceInput,
@@ -50,25 +42,16 @@ import {
   useGetVendorDetailQuery,
   useGetVendorProjectQuery,
 } from "../../gql/get/vendor/vendor.generated";
-import MuiListItem from "@mui/material/ListItem";
-import styled from "@emotion/styled";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import {
-  ChangeCircleOutlined,
-  Edit,
-  ErrorOutline,
-  InfoOutlined,
-  Sync,
-} from "@mui/icons-material";
+import { Edit, ErrorOutline, InfoOutlined, Sync } from "@mui/icons-material";
 import {
   useResubmitProjectBidMutation,
   useUpdateProjectBidComponentsMutation,
   useUpdateProjectBidMutation,
 } from "../../gql/update/bid/bid.generated";
-import { BidInputPriceTextField } from "../../Search/vendor/SearchProjectDetail";
 import { isValidFloat, isValidInt } from "../../Utils/inputValidators";
 import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../constants/products";
 import { useCreateProjectBidComponentsMutation } from "../../gql/create/bid/bid.generated";
@@ -80,7 +63,6 @@ import { openLink } from "../../Utils/openLink";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
 import {
   useGetProjectChangelogLazyQuery,
-  useGetProjectChangelogQuery,
   useGetProjectComponentChangelogLazyQuery,
 } from "../../gql/get/project/project.generated";
 import ProjectChangelogModal from "../customer/modals/ProjectChangelogModal";
@@ -122,7 +104,6 @@ const VendorProjectDetail = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const theme = useTheme();
-  const location = useLocation();
   const { projectId } = useParams();
   const [currentTab, setCurrentTab] = useState(0);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
@@ -209,31 +190,38 @@ const VendorProjectDetail = () => {
 
   const [
     resubmitBid,
-    {
-      loading: resubmitBidLoading,
-      error: resubmitBidError,
-      data: resubmitBidData,
-    },
+    { loading: resubmitBidLoading, error: resubmitBidError },
   ] = useResubmitProjectBidMutation();
 
   const [
     getProjectChangelog,
-    {
-      data: getProjectChangelogData,
-      loading: getProjectChangelogLoading,
-      error: getProjectChangelogError,
-    },
+    { data: getProjectChangelogData, error: getProjectChangelogError },
   ] = useGetProjectChangelogLazyQuery();
 
   const [
     getComponentChangelog,
-    {
-      loading: getComponentChangelogLoading,
-      data: getComponentChangelogData,
-      error: getComponentChangelogError,
-    },
+    { data: getComponentChangelogData, error: getComponentChangelogError },
   ] = useGetProjectComponentChangelogLazyQuery();
 
+  useEffect(() => {
+    if (
+      deleteRemarkError ||
+      updateProjectBidError ||
+      updateProjectBidComponentsError ||
+      createProjectBidComponentsError
+    ) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [
+    deleteRemarkError,
+    updateProjectBidError,
+    updateProjectBidComponentsError,
+    createProjectBidComponentsError,
+  ]);
   // wait until we actually fetched projectData (authorized users) so we don't fetch changelog data before knowing user is authorized or not
   useEffect(() => {
     if (getVendorProjectData && getVendorProjectData.getVendorProject) {
@@ -919,7 +907,6 @@ const VendorProjectDetail = () => {
       companyName: customerName,
       bidInfo,
     } = getVendorProjectData.getVendorProject;
-    const projectData = getVendorProjectData.getVendorProject;
 
     const bids: Record<string, BidComponent> = {};
 

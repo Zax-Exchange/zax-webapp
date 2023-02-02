@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, DialogActions, Link, Typography } from "@mui/material";
+import { Box, Button, DialogActions, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import {
@@ -10,10 +10,7 @@ import {
 } from "../../../../generated/graphql";
 import { useCreateInvoiceMutation } from "../../../gql/create/vendor/vendor.generated";
 import { useDeleteInvoiceMutation } from "../../../gql/delete/vendor/vendor.generated";
-import {
-  GetVendorPosQuery,
-  useGetInvoiceQuery,
-} from "../../../gql/get/vendor/vendor.generated";
+import { GetVendorPosQuery } from "../../../gql/get/vendor/vendor.generated";
 import AttachmentButton from "../../../Utils/AttachmentButton";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 import { openLink } from "../../../Utils/openLink";

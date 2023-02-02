@@ -13,7 +13,6 @@ import {
   MenuList,
   Chip,
   Tooltip,
-  AlertColor,
   Box,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -21,36 +20,20 @@ import MoreIcon from "@mui/icons-material/MoreHoriz";
 import DeleteProjectModal from "./modals/DeleteProjectModal";
 import MuiListItem from "@mui/material/ListItem";
 import { styled } from "@mui/system";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PlaceIcon from "@mui/icons-material/Place";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import {
-  CustomerProject,
   CustomerProjectOverview,
-  Exact,
-  GetCustomerProjectsInput,
-  InputMaybe,
   ProjectPermission,
   ProjectStatus,
   ProjectVisibility,
 } from "../../../generated/graphql";
-import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
-import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../constants/loggedInRoutes";
-import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
+import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import { useIntl } from "react-intl";
 import CustomerPermissionModal from "./modals/CustomerPermissionModal";
-import {
-  Create,
-  Visibility,
-  VisibilityOff,
-  VisibilityOffOutlined,
-} from "@mui/icons-material";
+import { Create, Visibility, VisibilityOffOutlined } from "@mui/icons-material";
 import ReactGA from "react-ga4";
 import {
   EVENT_ACTION,

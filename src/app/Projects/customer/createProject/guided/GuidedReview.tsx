@@ -1,19 +1,5 @@
 import styled from "@emotion/styled";
-import { Cancel } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  IconButton,
-  Link,
-  List,
-  ListItem,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, List, Tab, Tabs, Typography } from "@mui/material";
 import { TypographyProps } from "@mui/system";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
@@ -29,10 +15,7 @@ import {
   ProjectDesign,
   ProjectVisibility,
 } from "../../../../../generated/graphql";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../../../constants/loggedInRoutes";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../../../Utils/Loading";
@@ -206,14 +189,6 @@ const GuidedReview = ({
 
   const renderProjectDetail = () => {
     let compInd = 0;
-
-    const allDesigns = [
-      ...Object.values(componentsDesigns).map((d) => {
-        if (!d) return [];
-        return d;
-      }),
-      ...additionalComponentsDesigns,
-    ];
 
     const tabs: JSX.Element[] = [];
     const tabPanels: JSX.Element[] = [];

@@ -1,5 +1,5 @@
 import { Box, List, ListItem, Typography } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { StreamMessage, useChannelStateContext } from "stream-chat-react";
 import { DefaultStreamChatGenerics } from "stream-chat-react/dist/types/types";
 

@@ -1,8 +1,6 @@
 import { ArrowRightAlt, South } from "@mui/icons-material";
 import {
   Box,
-  List,
-  ListItem,
   Table,
   TableBody,
   TableCell,
@@ -16,7 +14,6 @@ import React from "react";
 import { useIntl } from "react-intl";
 import {
   ProjectComponentChangelog,
-  ProjectComponentSpec,
   ProductDimension,
   PostProcessDetail,
   ProjectComponentPropertyChange,
@@ -70,12 +67,6 @@ const ProjectComponentChangelogDetail = ({
     postProcess: PostProcessDetail[],
     isOld: boolean
   ) => {
-    const getTextColor = () => {
-      if (isOld) {
-        return theme.palette.error.main;
-      }
-      return theme.palette.success.main;
-    };
     if (isOld && !postProcess.length) {
       return intl.formatMessage({ id: "app.versionHistory.none" });
     }

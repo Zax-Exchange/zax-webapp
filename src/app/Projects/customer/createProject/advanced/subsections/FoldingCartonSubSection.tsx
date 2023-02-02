@@ -1,40 +1,27 @@
 import {
   Autocomplete,
-  Button,
-  IconButton,
   ListItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
-import { useCallback, useState } from "react";
+import React from "react";
+import { useCallback } from "react";
 import {
   CreateProjectComponentSpecInput,
-  PostProcessDetail,
   ProductDimensionInput,
 } from "../../../../../../generated/graphql";
 import {
-  FOLDING_CARTON_BOX_STYLES,
   FOLDING_CARTON_FINISHES,
   FOLDING_CARTON_MATERIALS,
   FOLDING_CARTON_MATERIAL_SOURCES,
   FOLDING_CARTON_POST_PROCESSES,
-  POST_PROCESS_DEBOSS,
-  POST_PROCESS_EMBOSS,
-  POST_PROCESS_FOIL_STAMP,
-  POST_PROCESS_PRINTING,
   productValueToLabelMap,
 } from "../../../../../constants/products";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-} from "../../../../../Utils/inputValidators";
-import CancelIcon from "@mui/icons-material/Cancel";
+import { isValidFloat } from "../../../../../Utils/inputValidators";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
-import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
 import BoxStyleDropdown from "./common/BoxStyleDropdown";
 import ThicknessInput from "../../common/ThicknessInput";
@@ -65,6 +52,7 @@ const FoldingCartonSubSection = ({
     switch (e.target.name as keyof CreateProjectComponentSpecInput) {
       case "thickness":
         isAllowed = isValidFloat(val);
+        break;
       default:
         break;
     }

@@ -31,13 +31,13 @@ const VendorCompanyReview = ({
     (plan) => plan!.id === values.planId
   );
 
-  const renderFrequency = () => {
-    if (subscriptionInfo.billingFrequency === "annual") {
-      return "year";
-    } else {
-      return "month";
-    }
-  };
+  // const renderFrequency = () => {
+  //   if (subscriptionInfo.billingFrequency === "annual") {
+  //     return "year";
+  //   } else {
+  //     return "month";
+  //   }
+  // };
 
   return (
     <>

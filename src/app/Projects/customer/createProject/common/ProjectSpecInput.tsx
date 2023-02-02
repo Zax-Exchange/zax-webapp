@@ -1,19 +1,11 @@
 import {
   Autocomplete,
   Box,
-  Button,
-  Container,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   InputAdornment,
   ListItem,
   MenuItem,
-  Paper,
-  Select,
   Stack,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -32,9 +24,6 @@ import {
   isValidFloat,
   isValidInt,
 } from "../../../../Utils/inputValidators";
-import { InfoOutlined } from "@mui/icons-material";
-
-type ProjectInput = {};
 
 const ProjectSpecInput = ({
   setProjectData,

@@ -1,16 +1,14 @@
 import "./App.scss";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Nav from "./app/Nav/Nav";
 import Home from "./app/Home/Home";
 import Settings from "./app/Settings/Settings";
-import Profile from "./app/Profile/Profile";
 import VendorSearchResults from "./app/Search/vendor/VendorSearchResults";
 import CustomerSearchResults from "./app/Search/customer/CustomerSearchResults";
 import SearchProjectDetail from "./app/Search/vendor/SearchProjectDetail";
 // import ProjectBid from './app/Projects/ProjectBid';
 import { Container, createTheme, PaletteOptions } from "@mui/material";
-import CustomerProjectDetail from "./app/Projects/customer/CustomerProjectDetail";
 import RequireAuth from "./app/Auth/RequireAuth";
 import Login from "./app/Login/Login";
 import UserSignup from "./app/Login/UserSignup";
@@ -19,12 +17,9 @@ import CompanySignup from "./app/Signup/CompanySignup";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./app/ErrorBoundary/ErrorBoundary";
 import CustomerSignup from "./app/Signup/customer/CustomerSignup";
-import VendorProjectDetail from "./app/Projects/vendor/VendorProjectDetail";
 import { ThemeProvider } from "@mui/system";
 import AdvancedCreateProject from "./app/Projects/customer/createProject/advanced/AdvancedCreateProject";
 import useCustomSnackbar from "./app/Utils/CustomSnackbar";
-import CustomerProjects from "./app/Projects/customer/CustomerProjects";
-import VendorProjects from "./app/Projects/vendor/VendorProjects";
 import LoggedOutRoute from "./app/Auth/LoggedOutRoute";
 import { AuthContext } from "./context/AuthContext";
 import { SnackbarContextProvider } from "./context/SnackbarContext";
@@ -33,9 +28,6 @@ import {
   VENDOR_ROUTES,
   CUSTOMER_ROUTES,
 } from "./app/constants/loggedInRoutes";
-import { IntlProvider } from "react-intl";
-import en from "./translations/en.json";
-import zhCn from "./translations/zh-cn.json";
 import GuidedCreateProject from "./app/Projects/customer/createProject/guided/GuidedCreateProject";
 import VendorProfile from "./app/Profile/vendor/VendorProfile";
 import ProjectDetail from "./app/Projects/ProjectDetail";
@@ -48,14 +40,9 @@ import ResetPassword from "./app/Login/ResetPassword";
 import GuestProject from "./app/LoggedOut/GuestProject/GuestProject";
 import VendorGuestProjectDetail from "./app/Projects/vendor/VendorGuestProjectDetail";
 import Footer from "./app/Footer/Footer";
-import {
-  Locale,
-  LocaleContext,
-  LocaleContextProvider,
-} from "./context/LocaleContext";
+
 import Feedback from "./app/Feedback/Feedback";
 import ReactGA from "react-ga4";
-import { EVENT_ACTION, EVENT_CATEGORY } from "./analytics/constants";
 
 const theme = createTheme({
   palette: {
@@ -168,7 +155,6 @@ const theme = createTheme({
 
 function App() {
   const { CustomSnackbar } = useCustomSnackbar();
-  const { locale } = useContext(LocaleContext);
   const { user, logout } = useContext(AuthContext);
 
   useEffect(() => {

@@ -3,12 +3,10 @@ import {
   Grid,
   Container,
   Fade,
-  IconButton,
   Menu,
   MenuList,
   MenuItem,
   Box,
-  CircularProgress,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -18,7 +16,6 @@ import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
 import {
   ProjectStatus,
-  VendorProject,
   VendorProjectOverview,
 } from "../../../generated/graphql";
 import VendorProjectOverviewCard from "./VendorProjectOverviewCard";
@@ -34,7 +31,6 @@ const VendorProjects = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const isVendor = user!.isVendor;
 
   const userId = user!.id;
 

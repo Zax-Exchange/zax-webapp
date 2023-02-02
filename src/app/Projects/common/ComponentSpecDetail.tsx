@@ -1,9 +1,6 @@
-import { CheckCircle, ImageOutlined, InfoOutlined } from "@mui/icons-material";
+import { CheckCircle, ImageOutlined } from "@mui/icons-material";
 import {
   Box,
-  Link,
-  List,
-  ListItem,
   Stack,
   Table,
   TableBody,
@@ -17,9 +14,7 @@ import {
 import React from "react";
 import { useIntl } from "react-intl";
 import {
-  CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
-  ProjectComponent,
   ProjectComponentSpec,
   ProjectDesign,
 } from "../../../generated/graphql";
@@ -124,7 +119,7 @@ export default function ComponentSpecDetail({
   if (dimension) {
     const dims = Object.entries(dimension);
     const output = [];
-    for (let [attr, dim] of dims) {
+    for (let [_, dim] of dims) {
       if (!dim) continue;
       output.push(parseFloat(dim));
     }
@@ -622,7 +617,7 @@ export default function ComponentSpecDetail({
                 {postProcess.map((process) => {
                   const dims = Object.entries(process.estimatedArea || {});
                   const estimatedArea = [];
-                  for (let [attr, dim] of dims) {
+                  for (let [_, dim] of dims) {
                     if (!dim) continue;
                     estimatedArea.push(parseFloat(dim));
                   }
