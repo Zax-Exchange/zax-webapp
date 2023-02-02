@@ -21,6 +21,7 @@ import {
 } from "../../../../../generated/graphql";
 import {
   B_FLUTE,
+  DEFAULT_POST_PROCESS,
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
   GUIDED_PROJECT_PAPER_POST_PROCESS,
@@ -45,7 +46,7 @@ import {
 import { openLink } from "../../../../Utils/openLink";
 import UploadDesign from "../../UploadDesign";
 import ColorDropdown from "../common/ColorDropdown";
-import DimensionsInput from "../common/DimensionsInput";
+import DimensionsInput, { isValidDimension } from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 
@@ -94,7 +95,6 @@ const GuidedInsideSpec = ({
         z: "",
       },
       color: "",
-      manufacturingProcess: "",
       includeArtworkInQuote: false,
       postProcess: [],
     });
@@ -234,10 +234,12 @@ const GuidedInsideSpec = ({
             }
             return option.value === value.value;
           }}
+          disableCloseOnSelect
           onChange={(e, v) => {
             setComponentSpec((prev) => ({
               ...prev,
               postProcess: v.map((p) => ({
+                ...DEFAULT_POST_PROCESS,
                 postProcessName: p.value,
                 estimatedArea: { x: "", y: "" },
               })),
@@ -278,12 +280,7 @@ const GuidedInsideSpec = ({
   };
 
   const shouldDisableNextButton = () => {
-    if (
-      !componentSpec.dimension.x ||
-      !componentSpec.dimension.y ||
-      !componentSpec.dimension.z
-    )
-      return true;
+    if (!isValidDimension(componentSpec.dimension)) return true;
 
     if (
       componentSpec.includeArtworkInQuote &&
@@ -446,6 +443,7 @@ const GuidedInsideSpec = ({
                 })}
               </Typography>
               <DimensionsInput
+                displayTitle={false}
                 dimension={componentSpec.dimension}
                 setDimension={(data: ProductDimensionInput) => {
                   setComponentSpec((prev) => ({ ...prev, dimension: data }));
@@ -461,6 +459,7 @@ const GuidedInsideSpec = ({
                 })}
               </Typography>
               <ColorDropdown
+                displayLabel={false}
                 setComponentSpec={setComponentSpec}
                 componentSpec={componentSpec}
               />

@@ -56,6 +56,7 @@ import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
 import { ProjectOverviewListItem } from "../../Projects/customer/CustomerProjectOverviewCard";
 import ProjectSpecDetail from "../../Projects/common/ProjectSpecDetail";
+import { InfoOutlined } from "@mui/icons-material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -107,6 +108,7 @@ export const BidInputPriceTextField = styled((props: TextFieldProps) => {
         "& .MuiInputBase-root": {
           pl: 1,
         },
+        width: "7rem",
       }}
     />
   );
@@ -180,11 +182,11 @@ const SearchProjectDetail = () => {
               price: "",
             };
           }),
-          samplingFee: 0,
+          samplingFee: "",
           toolingFee:
             comp.componentSpec.productName ===
             PRODUCT_NAME_MOLDED_FIBER_TRAY.value
-              ? 0
+              ? ""
               : null,
         })),
       }));
@@ -272,7 +274,7 @@ const SearchProjectDetail = () => {
 
     const components = [...bidInput.components];
     const curComponent = bidInput.components[componentInd];
-    curComponent[type] = parseInt(val, 10);
+    curComponent[type] = val;
     components.splice(componentInd, 1, curComponent);
 
     setBidInput((prev) => ({
@@ -331,7 +333,7 @@ const SearchProjectDetail = () => {
       });
       setSnackbar({
         severity: "success",
-        message: "Bid created.",
+        message: intl.formatMessage({ id: "app.vendor.search.bidCreated" }),
       });
       navigate(GENERAL_ROUTES.PROJECTS);
     } catch (error) {
@@ -620,7 +622,7 @@ const SearchProjectDetail = () => {
       <Container>
         {createProjectBidLoading && <FullScreenLoading />}
         <Grid container>
-          <Grid item xs={7}>
+          <Grid item xs={8}>
             <Paper elevation={1}>
               <Box
                 sx={{
@@ -690,7 +692,7 @@ const SearchProjectDetail = () => {
           </Grid>
 
           {!getProjectBidLoading && (
-            <Grid item xs={5}>
+            <Grid item xs={4}>
               <Container>
                 <Box display="flex" justifyContent="space-between" mb={1.5}>
                   <Box
@@ -725,20 +727,20 @@ const SearchProjectDetail = () => {
                         </Tooltip>
                       </Box>
                     )}
+                    {!existingBid && (
+                      <Box>
+                        <Button
+                          onClick={submitBid}
+                          variant="contained"
+                          disabled={shouldDisableSubmitBidButton()}
+                        >
+                          {intl.formatMessage({
+                            id: "app.vendor.search.submitBids",
+                          })}
+                        </Button>
+                      </Box>
+                    )}
                   </Box>
-                  {!existingBid && (
-                    <Box>
-                      <Button
-                        onClick={submitBid}
-                        variant="contained"
-                        disabled={shouldDisableSubmitBidButton()}
-                      >
-                        {intl.formatMessage({
-                          id: "app.vendor.search.submitBids",
-                        })}
-                      </Button>
-                    </Box>
-                  )}
                 </Box>
                 <Paper sx={{ mt: 1 }}>
                   {!!existingBid
@@ -747,6 +749,15 @@ const SearchProjectDetail = () => {
                 </Paper>
                 <Box>
                   <Box display="flex" alignItems="center" mt={2}>
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: "app.bid.attribute.bidRemark.tooltip",
+                      })}
+                      placement="top"
+                      sx={{ mr: 1 }}
+                    >
+                      <InfoOutlined color="info" fontSize="small" />
+                    </Tooltip>
                     <Typography variant="subtitle2">
                       {intl.formatMessage({
                         id: "app.vendor.search.AdditionRemarks",
@@ -762,7 +773,7 @@ const SearchProjectDetail = () => {
                   </Box>
 
                   {remarkFile && (
-                    <Box display="flex">
+                    <Box display="flex" mt={1}>
                       <AttachmentButton
                         label={remarkFile.filename}
                         onClick={() => openLink(remarkFile.url)}

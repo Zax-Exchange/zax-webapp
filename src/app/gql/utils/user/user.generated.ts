@@ -46,6 +46,13 @@ export type ResetPasswordMutationVariables = Types.Exact<{
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword?: boolean | null };
 
+export type CheckSignupJwtTokenQueryVariables = Types.Exact<{
+  data: Types.CheckSignupJwtTokenInput;
+}>;
+
+
+export type CheckSignupJwtTokenQuery = { __typename?: 'Query', checkSignupJwtToken: boolean };
+
 
 export const CheckUserEmailDocument = gql`
     query checkUserEmail($data: CheckUserEmailInput!) {
@@ -246,3 +253,36 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const CheckSignupJwtTokenDocument = gql`
+    query checkSignupJwtToken($data: CheckSignupJwtTokenInput!) {
+  checkSignupJwtToken(data: $data)
+}
+    `;
+
+/**
+ * __useCheckSignupJwtTokenQuery__
+ *
+ * To run a query within a React component, call `useCheckSignupJwtTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckSignupJwtTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckSignupJwtTokenQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCheckSignupJwtTokenQuery(baseOptions: Apollo.QueryHookOptions<CheckSignupJwtTokenQuery, CheckSignupJwtTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckSignupJwtTokenQuery, CheckSignupJwtTokenQueryVariables>(CheckSignupJwtTokenDocument, options);
+      }
+export function useCheckSignupJwtTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckSignupJwtTokenQuery, CheckSignupJwtTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckSignupJwtTokenQuery, CheckSignupJwtTokenQueryVariables>(CheckSignupJwtTokenDocument, options);
+        }
+export type CheckSignupJwtTokenQueryHookResult = ReturnType<typeof useCheckSignupJwtTokenQuery>;
+export type CheckSignupJwtTokenLazyQueryHookResult = ReturnType<typeof useCheckSignupJwtTokenLazyQuery>;
+export type CheckSignupJwtTokenQueryResult = Apollo.QueryResult<CheckSignupJwtTokenQuery, CheckSignupJwtTokenQueryVariables>;

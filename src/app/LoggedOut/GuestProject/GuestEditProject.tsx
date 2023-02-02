@@ -31,7 +31,9 @@ import {
   UpdateProjectComponentData,
   UpdateProjectData,
   UpdateGuestProjectInput,
+  ProjectVisibility,
 } from "../../../generated/graphql";
+import { PRODUCT_NAME_STICKER } from "../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
 import {
@@ -117,6 +119,8 @@ const GuestEditProject = ({
         deliveryDate: new Date().toISOString().split("T")[0],
         targetPrice: "",
         orderQuantities: [],
+        // initi visibility here to comply with UpdateProjectData type, but not used since guest project is always private
+        visibility: ProjectVisibility.Private,
       },
       componentIdsToDelete: [],
       componentsForCreate: [],
@@ -195,24 +199,10 @@ const GuestEditProject = ({
 
       const sanitizedComponents: UpdateProjectComponentData[] = components.map(
         (comp) => {
-          const copySpec: any = JSON.parse(JSON.stringify(comp.componentSpec));
-          delete copySpec.__typename;
-          delete copySpec.dimension.__typename;
+          const copySpec = JSON.parse(JSON.stringify(comp.componentSpec));
 
           copySpec.componentSpecId = copySpec.id;
           delete copySpec.id;
-
-          if (copySpec.postProcess) {
-            for (let process of copySpec.postProcess) {
-              delete process.__typename;
-              if (process.estimatedArea) {
-                delete process.estimatedArea.__typename;
-              }
-              if (process.numberOfColors) {
-                delete process.numberOfColors.__typename;
-              }
-            }
-          }
 
           return {
             componentId: comp.id,
@@ -226,6 +216,7 @@ const GuestEditProject = ({
       setUpdateProjectInput((prev) => ({
         ...prev,
         projectData: {
+          ...prev.projectData,
           projectId,
           name,
           deliveryAddress,

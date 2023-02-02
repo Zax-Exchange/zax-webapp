@@ -21,6 +21,7 @@ import {
   CreateProjectInput,
   ProjectCreationMode,
   ProjectDesign,
+  ProjectVisibility,
 } from "../../../../../generated/graphql";
 import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
@@ -91,6 +92,7 @@ export default function GuidedCreateProject() {
   const [activeStep, setActiveStep] = useState(0);
   const [currentView, setCurrentView] = useState(GuidedView.GENERAL_SPEC);
   const [projectCreated, setProjectCreated] = useState(false);
+  const [startingTime, setStartingTime] = useState(performance.now());
 
   const [projectData, setProjectData] = useState<CreateProjectInput>({
     userId: user!.id,
@@ -104,6 +106,7 @@ export default function GuidedCreateProject() {
     targetPrice: "",
     orderQuantities: [],
     components: [],
+    visibility: ProjectVisibility.Public,
   });
 
   const [componentsData, setComponentsData] =
@@ -299,6 +302,7 @@ export default function GuidedCreateProject() {
           componentsData={componentsData}
           additionalComponents={additionalComponents}
           additionalComponentsDesigns={additionalComponentsDesigns}
+          startingTime={startingTime}
         />
       );
     }
@@ -308,7 +312,7 @@ export default function GuidedCreateProject() {
       <Stepper activeStep={activeStep}>
         {GUIDED_CREATE_PROJECT_STEPS.map((label, index) => {
           return (
-            <Step key={label}>
+            <Step key={index}>
               <StepLabel>{label}</StepLabel>
             </Step>
           );

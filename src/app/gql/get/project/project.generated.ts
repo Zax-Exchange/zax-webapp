@@ -33,6 +33,13 @@ export type GetProjectChangelogQueryVariables = Types.Exact<{
 
 export type GetProjectChangelogQuery = { __typename?: 'Query', getProjectChangelog: Array<{ __typename?: 'ProjectChangelog', projectId: string, changedAt: any, changes: Array<{ __typename?: 'ProjectPropertyChange', propertyName: string, oldValue?: any | null, newValue?: any | null }> }> };
 
+export type GetProjectComponentChangelogQueryVariables = Types.Exact<{
+  data: Types.GetProjectComponentChangelogInput;
+}>;
+
+
+export type GetProjectComponentChangelogQuery = { __typename?: 'Query', getProjectComponentChangelog: Array<Array<{ __typename?: 'ProjectComponentChangelog', projectComponentId: string, changedAt: any, changes: Array<{ __typename?: 'ProjectComponentPropertyChange', projectComponentSpecId?: string | null, propertyName: string, oldValue?: any | null, newValue?: any | null }> }>> };
+
 export type GetProjectDetailQueryVariables = Types.Exact<{
   data: Types.GetProjectDetailInput;
 }>;
@@ -45,7 +52,7 @@ export type SearchCustomerProjectsQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', name: string, companyName: string, category: string, products: Array<string>, id: string, companyId: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any }> };
+export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', id: string, name: string, category: string, products: Array<string>, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any }> };
 
 export const ProjectComponentFragmentFragmentDoc = gql`
     fragment ProjectComponentFragment on ProjectComponent {
@@ -199,6 +206,48 @@ export function useGetProjectChangelogLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetProjectChangelogQueryHookResult = ReturnType<typeof useGetProjectChangelogQuery>;
 export type GetProjectChangelogLazyQueryHookResult = ReturnType<typeof useGetProjectChangelogLazyQuery>;
 export type GetProjectChangelogQueryResult = Apollo.QueryResult<GetProjectChangelogQuery, GetProjectChangelogQueryVariables>;
+export const GetProjectComponentChangelogDocument = gql`
+    query getProjectComponentChangelog($data: GetProjectComponentChangelogInput!) {
+  getProjectComponentChangelog(data: $data) {
+    projectComponentId
+    changedAt
+    changes {
+      projectComponentSpecId
+      propertyName
+      oldValue
+      newValue
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectComponentChangelogQuery__
+ *
+ * To run a query within a React component, call `useGetProjectComponentChangelogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectComponentChangelogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectComponentChangelogQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetProjectComponentChangelogQuery(baseOptions: Apollo.QueryHookOptions<GetProjectComponentChangelogQuery, GetProjectComponentChangelogQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectComponentChangelogQuery, GetProjectComponentChangelogQueryVariables>(GetProjectComponentChangelogDocument, options);
+      }
+export function useGetProjectComponentChangelogLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectComponentChangelogQuery, GetProjectComponentChangelogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectComponentChangelogQuery, GetProjectComponentChangelogQueryVariables>(GetProjectComponentChangelogDocument, options);
+        }
+export type GetProjectComponentChangelogQueryHookResult = ReturnType<typeof useGetProjectComponentChangelogQuery>;
+export type GetProjectComponentChangelogLazyQueryHookResult = ReturnType<typeof useGetProjectComponentChangelogLazyQuery>;
+export type GetProjectComponentChangelogQueryResult = Apollo.QueryResult<GetProjectComponentChangelogQuery, GetProjectComponentChangelogQueryVariables>;
 export const GetProjectDetailDocument = gql`
     query getProjectDetail($data: GetProjectDetailInput!) {
   getProjectDetail(data: $data) {
@@ -243,12 +292,10 @@ export type GetProjectDetailQueryResult = Apollo.QueryResult<GetProjectDetailQue
 export const SearchCustomerProjectsDocument = gql`
     query searchCustomerProjects($data: SearchCustomerProjectInput!) {
   searchCustomerProjects(data: $data) {
+    id
     name
-    companyName
     category
     products
-    id
-    companyId
     deliveryDate
     deliveryAddress
     targetPrice

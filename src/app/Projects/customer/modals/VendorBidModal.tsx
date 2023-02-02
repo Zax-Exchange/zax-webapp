@@ -11,6 +11,7 @@ import {
   ListItem,
   Paper,
   Stack,
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -21,7 +22,7 @@ import {
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import {
   ProjectBid,
@@ -36,6 +37,8 @@ import { PRODUCT_NAME_MOLDED_FIBER_TRAY } from "../../../constants/products";
 import { countries } from "../../../constants/countries";
 import AttachmentButton from "../../../Utils/AttachmentButton";
 import { openLink } from "../../../Utils/openLink";
+import ReactGA from "react-ga4";
+import { CUSTOMER_ROUTES } from "../../../constants/loggedInRoutes";
 
 /**
  * Bid modal shown in CustomerProjectDetail
@@ -50,6 +53,12 @@ type ProjectComponentRow = {
   projectComponent: ProjectComponent;
   isLast: boolean;
 };
+
+const StyledTableBody = styled(TableBody)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: "#f9f9f9",
+  },
+}));
 
 const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
   const intl = useIntl();
@@ -88,7 +97,7 @@ const BidComponentRow = ({ row }: { row: ProjectComponentRow }) => {
           {row.isLast
             ? row.bidComponent.toolingFee
               ? `$${row.bidComponent.toolingFee}`
-              : "-"
+              : intl.formatMessage({ id: "app.general.NA" })
             : "-"}
         </TableCell>
       </TableRow>
@@ -131,6 +140,8 @@ const VendorBidModal = ({
     return countries.find((country) => country.label === vendorData.country)!
       .phone;
   };
+
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -180,7 +191,7 @@ const VendorBidModal = ({
       </Box>
 
       <TableContainer component={Box}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: 650 }} size="small">
           {bid.components.map((comp, bidCompIndex) => {
             const rows: ProjectComponentRow[] = [];
             const projectComponent = getComponent(comp.projectComponentId)!;
@@ -199,7 +210,16 @@ const VendorBidModal = ({
 
             return (
               <>
-                {bidCompIndex === 0 && (
+                {bidCompIndex === 0 && !rows.length && (
+                  <Box display="flex" justifyContent="center">
+                    <Typography variant="caption" color="GrayText">
+                      {intl.formatMessage({
+                        id: "app.customer.projectDetail.bidWasCleared",
+                      })}
+                    </Typography>
+                  </Box>
+                )}
+                {bidCompIndex === 0 && !!rows.length && (
                   <TableHead>
                     <TableRow>
                       <TableCell width="10%" />
@@ -230,14 +250,14 @@ const VendorBidModal = ({
                     </TableRow>
                   </TableHead>
                 )}
-                <TableBody>
+                <StyledTableBody>
                   {rows.map((row) => (
                     <>
                       <BidComponentRow row={row} />
                     </>
                   ))}
-                </TableBody>
-                <TableBody sx={{ height: 20 }} />
+                </StyledTableBody>
+                <Box height={20}></Box>
               </>
             );
           })}

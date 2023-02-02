@@ -227,8 +227,12 @@ const UploadPOModal = ({
         <Box>
           <Autocomplete
             openOnFocus
+            loading={getCustomerProjectsLoading}
+            loadingText={intl.formatMessage({ id: "app.general.loading" })}
             options={
-              getCustomerProjectsData?.getCustomerProjects as CustomerProjectOverview[]
+              getCustomerProjectsData
+                ? getCustomerProjectsData.getCustomerProjects
+                : []
             }
             getOptionLabel={(option) => option.name}
             value={getProject()}
@@ -262,6 +266,9 @@ const UploadPOModal = ({
               options={
                 getProjectBidsForPoData.getProjectBidsForPo as ProjectBidForPo[]
               }
+              noOptionsText={intl.formatMessage({
+                id: "app.customer.projectDetail.noBids",
+              })}
               value={getVendor()}
               getOptionLabel={(option) => option.companyName}
               autoComplete

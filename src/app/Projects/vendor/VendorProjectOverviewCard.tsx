@@ -39,6 +39,12 @@ import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
 import VendorPermissionModal from "./modals/VendorPermissionModal";
 import { ErrorOutline, EventAvailableOutlined } from "@mui/icons-material";
+import {
+  EVENT_ACTION,
+  EVENT_CATEGORY,
+  EVENT_LABEL,
+} from "../../../analytics/constants";
+import ReactGA from "react-ga4";
 
 type ProjectMenuOption = "view-detail" | "share";
 
@@ -99,6 +105,11 @@ const VendorProjectOverviewCard = ({
       viewDetailHandler();
     }
     if (action === "share" && canShare()) {
+      ReactGA.event({
+        action: EVENT_ACTION.CLICK,
+        category: EVENT_CATEGORY.PROJECT,
+        label: EVENT_LABEL.SHARE_BID,
+      });
       setPermissionModalOpen(true);
     }
 
@@ -111,8 +122,7 @@ const VendorProjectOverviewCard = ({
         return (
           <Tooltip
             title={intl.formatMessage({ id: "app.bid.status.open.tooltip" })}
-            placement="top"
-            arrow
+            placement="right"
           >
             <EventAvailableOutlined color="success" />
           </Tooltip>
@@ -123,8 +133,7 @@ const VendorProjectOverviewCard = ({
             title={intl.formatMessage({
               id: "app.bid.status.outdated.tooltip",
             })}
-            placement="top"
-            arrow
+            placement="right"
           >
             <ErrorOutline color="warning" />
           </Tooltip>

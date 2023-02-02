@@ -5,6 +5,9 @@ import {
   Button,
   Paper,
   Fade,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +37,7 @@ import JoinOrCreateCompany from "../JoinOrCreateCompany";
 import JoinCompany from "../JoinCompany";
 import { StripePaymentIntent } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
+import { Email } from "@mui/icons-material";
 import { envConfig as config } from "../../Config/EnvConfig";
 
 const stripePromise = loadStripe(config.stripePublishableKey);
@@ -76,9 +80,28 @@ export type Country = {
   phone: string;
   suggested?: boolean;
 };
+
 const CustomerSignup = () => {
   const navigate = useNavigate();
   const intl = useIntl();
+  const CUSTOMER_SIGNUP_STEPS = [
+    intl.formatMessage({
+      id: "app.signup.step.email",
+    }),
+    intl.formatMessage({
+      id: "app.signup.step.companyInfo",
+    }),
+    intl.formatMessage({
+      id: "app.signup.step.selectPlan",
+    }),
+    intl.formatMessage({
+      id: "app.signup.step.review",
+    }),
+    intl.formatMessage({
+      id: "app.signup.step.payment",
+    }),
+  ];
+
   const [
     createStripeCustomerInStripe,
     {
@@ -87,6 +110,7 @@ const CustomerSignup = () => {
       error: createStripeCustomerError,
     },
   ] = useCreateStripeCustomerInStripeForCustomerMutation();
+  const [activeStep, setActiveStep] = useState(0);
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
     variables: {
@@ -130,6 +154,34 @@ const CustomerSignup = () => {
     userEmail: "",
   } as CustomerSignupData);
 
+  useEffect(() => {
+    switch (currentPage) {
+      case CustomerSignupPage.EMAIL_PAGE:
+        setActiveStep(0);
+        break;
+      case CustomerSignupPage.COMPANY_INFO_PAGE:
+        setActiveStep(1);
+        break;
+      case CustomerSignupPage.PLAN_SELECTION_PAGE:
+        setActiveStep(2);
+        break;
+      case CustomerSignupPage.REVIEW_PAGE:
+        setActiveStep(3);
+        break;
+      case CustomerSignupPage.PAYMENT_PAGE:
+        setActiveStep(4);
+        break;
+    }
+  }, [currentPage]);
+  const shouldShowStepper = () => {
+    if (
+      currentPage === CustomerSignupPage.JOIN_OR_CREATE ||
+      currentPage === CustomerSignupPage.JOIN ||
+      currentPage === CustomerSignupPage.SUCCESS_PAGE
+    )
+      return false;
+    return true;
+  };
   const paymentIntentCreated = () => {
     return Object.values(stripePaymentIntent).every((v) => !!v);
   };
@@ -412,6 +464,17 @@ const CustomerSignup = () => {
 
   return (
     <Container maxWidth="lg">
+      {shouldShowStepper() && (
+        <Stepper activeStep={activeStep} sx={{ mb: 2 }}>
+          {CUSTOMER_SIGNUP_STEPS.map((label, index) => {
+            return (
+              <Step key={index}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+      )}
       {(createStripeCustomerInStripeLoading || isLoading) && (
         <FullScreenLoading />
       )}

@@ -104,7 +104,8 @@ const GET_VENDOR_GUEST_PROJECT = gql`
 const SEARCH_VENDOR_COMPANIES = gql`
   query searchVendorCompanies($data: SearchVendorCompanyInput!) {
     searchVendorCompanies(data: $data) {
-      id
+      vendor {
+        id
       name
       contactEmail
       logo
@@ -113,6 +114,11 @@ const SEARCH_VENDOR_COMPANIES = gql`
       locations
       products
       leadTime
+      }
+      highlight {
+        products
+        name
+      }
     }
   }
 `;

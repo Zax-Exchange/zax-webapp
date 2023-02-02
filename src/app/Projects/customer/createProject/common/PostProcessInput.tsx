@@ -17,6 +17,7 @@ import {
 import { TranslatableAttribute } from "../../../../../type/common";
 import {
   ALL_PRINTING_METHODS,
+  DEFAULT_POST_PROCESS,
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
@@ -97,9 +98,15 @@ const PostProcessInput = ({
   const getDefaultPostProcessValues = (
     postProcessName: string
   ): PostProcessDetailInput => {
-    const res = {
+    // setting initial values to null so that when server is doing comparison between previous/new version there won't be missing fields that messes up the comparison
+    // since when we use gql GET, empty fields will be null and we use the gql result to initialize componentSpec.postProcess values which includes null
+    // so it's easier to just set them at null upon creation
+    const res: PostProcessDetailInput = {
+      ...DEFAULT_POST_PROCESS,
       postProcessName,
     };
+
+    // overwriting partial fields to empty string which will later on be populated when user enters data
     switch (postProcessName) {
       case POST_PROCESS_DEBOSS.value:
       case POST_PROCESS_EMBOSS.value:
@@ -121,18 +128,21 @@ const PostProcessInput = ({
           },
         };
       case POST_PROCESS_PRINTING.value:
-        return {
+        const ret = {
           ...res,
           numberOfColors: {
             c: "",
             t: "",
           },
-          printingMethod: "",
           estimatedArea: {
             x: "",
             y: "",
           },
         };
+        if (componentSpec.productName === PRODUCT_NAME_CORRUGATE_BOX.value) {
+          ret.printingMethod = "";
+        }
+        return ret;
     }
     return res;
   };
@@ -143,6 +153,29 @@ const PostProcessInput = ({
     return productValueToLabelMap[postProcess.postProcessName];
   };
 
+  const renderEstimatedAreaInput = () => {
+    return (
+      <Box>
+        <Box mb={1.5}>
+          <Typography variant="caption">
+            {intl.formatMessage({
+              id: "app.component.postProcess.estimatedArea",
+            })}
+          </Typography>
+        </Box>
+        <DimensionsInput
+          displayTitle={false}
+          dimension={postProcess.estimatedArea}
+          setDimension={(data: ProductDimensionInput) => {
+            setPostProcess({
+              ...postProcess,
+              estimatedArea: data,
+            });
+          }}
+        />
+      </Box>
+    );
+  };
   const renderPrintingPostProcessSection = () => {
     const getPrintingMethodLabel = () => {
       if (!postProcess.printingMethod) return null;
@@ -210,7 +243,7 @@ const PostProcessInput = ({
 
           <Box display="flex" mt={2}>
             <Autocomplete
-              sx={{ width: 100, mr: 2 }}
+              sx={{ width: 150, mr: 2 }}
               options={["1C", "2C", "3C", "4C"]}
               autoHighlight
               value={postProcess.numberOfColors?.c}
@@ -241,7 +274,7 @@ const PostProcessInput = ({
               )}
             />
             <Autocomplete
-              sx={{ width: 100 }}
+              sx={{ width: 150 }}
               options={["0T", "1T", "2T", "3T", "4T"]}
               autoHighlight
               value={postProcess.numberOfColors?.t}
@@ -273,24 +306,7 @@ const PostProcessInput = ({
             />
           </Box>
         </Box>
-        <Box>
-          <Box>
-            <Typography variant="caption">
-              {intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
-              })}
-            </Typography>
-          </Box>
-          <DimensionsInput
-            dimension={postProcess.estimatedArea}
-            setDimension={(data: ProductDimensionInput) => {
-              setPostProcess({
-                ...postProcess,
-                estimatedArea: data,
-              });
-            }}
-          />
-        </Box>
+        {renderEstimatedAreaInput()}
       </>
     );
   };
@@ -308,7 +324,7 @@ const PostProcessInput = ({
               ${intl.formatMessage({
                 id: "app.general.unit",
               })}
-              : ${intl.formatMessage({ id: "app.general.unit.mm" })}`}
+              : ${intl.formatMessage({ id: "app.general.unit.px" })}`}
             FormHelperTextProps={{
               sx: {
                 fontStyle: "italic",
@@ -321,24 +337,7 @@ const PostProcessInput = ({
             value={postProcess.fontSize}
           />
         </Box>
-        <Box>
-          <Box>
-            <Typography variant="caption">
-              {intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
-              })}
-            </Typography>
-          </Box>
-          <DimensionsInput
-            dimension={postProcess.estimatedArea}
-            setDimension={(data: ProductDimensionInput) => {
-              setPostProcess({
-                ...postProcess,
-                estimatedArea: data,
-              });
-            }}
-          />
-        </Box>
+        {renderEstimatedAreaInput()}
       </>
     );
   };
@@ -354,24 +353,7 @@ const PostProcessInput = ({
             }
           />
         </Box>
-        <Box>
-          <Box>
-            <Typography variant="caption">
-              {intl.formatMessage({
-                id: "app.component.postProcess.estimatedArea",
-              })}
-            </Typography>
-          </Box>
-          <DimensionsInput
-            dimension={postProcess.estimatedArea}
-            setDimension={(data: ProductDimensionInput) => {
-              setPostProcess({
-                ...postProcess,
-                estimatedArea: data,
-              });
-            }}
-          />
-        </Box>
+        {renderEstimatedAreaInput()}
       </>
     );
   };

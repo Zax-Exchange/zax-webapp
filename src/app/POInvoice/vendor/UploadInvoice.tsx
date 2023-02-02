@@ -46,6 +46,13 @@ const UploadInvoice = ({
     target.value = "";
 
     try {
+      if (file.type !== "application/pdf") {
+        throw new Error(
+          intl.formatMessage({
+            id: "app.customer.createProject.upload.fileTypeError",
+          })
+        );
+      }
       const uploadResult = await mutate({
         variables: { file },
         fetchPolicy: "no-cache",
@@ -76,7 +83,9 @@ const UploadInvoice = ({
       })}
     >
       <IconButton component="label" sx={{ borderRadius: 40 }} color="primary">
-        {!loading && <input hidden type="file" onChange={onUpload} />}
+        {!loading && (
+          <input hidden type="file" onChange={onUpload} accept=".pdf" />
+        )}
         {loading && <CircularProgress size={24} />}
         {!loading && <CloudUploadIcon />}
       </IconButton>

@@ -32,7 +32,8 @@ const StickerSubSection = ({
   const intl = useIntl();
   const renderAutocompleteDropdown = (
     options: TranslatableAttribute[],
-    attribute: keyof CreateProjectComponentSpecInput
+    attribute: keyof CreateProjectComponentSpecInput,
+    width: number = 200
   ) => {
     const getDefaultValue = () => {
       if (
@@ -48,7 +49,7 @@ const StickerSubSection = ({
 
     return (
       <Autocomplete
-        sx={{ width: 200 }}
+        sx={{ width }}
         options={options}
         getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
@@ -85,7 +86,7 @@ const StickerSubSection = ({
             <Typography variant="subtitle2">
               {intl.formatMessage({ id: "app.component.attribute.purpose" })}
             </Typography>
-            {renderAutocompleteDropdown(STICKER_PURPOSES, "purpose")}
+            {renderAutocompleteDropdown(STICKER_PURPOSES, "purpose", 220)}
           </Box>
         </ListItem>
         <ListItem>
@@ -102,6 +103,7 @@ const StickerSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
+              displayTitle={false}
               dimension={componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));

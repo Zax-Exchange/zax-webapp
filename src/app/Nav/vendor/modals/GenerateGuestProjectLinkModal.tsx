@@ -66,7 +66,7 @@ const GenerateGuestProjectLinkModal = ({
   return (
     <Container>
       <Box>
-        <DialogTitle>
+        <DialogTitle sx={{ pl: 0 }}>
           {intl.formatMessage({
             id: "app.vendor.guestProject.modal.title",
           })}
@@ -83,6 +83,9 @@ const GenerateGuestProjectLinkModal = ({
             width: "100%",
             mt: 1,
           }}
+          helperText={intl.formatMessage({
+            id: "app.vendor.guestProject.modal.helperText",
+          })}
         />
       </Box>
       <DialogActions sx={{ mt: 4 }}>

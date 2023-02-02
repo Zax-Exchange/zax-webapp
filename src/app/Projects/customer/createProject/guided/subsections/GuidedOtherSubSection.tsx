@@ -30,6 +30,7 @@ import { TranslatableAttribute } from "../../../../../../type/common";
 import {
   BOOKLET_STYLES,
   DEFAULT_BOOKLET_SPEC,
+  DEFAULT_POST_PROCESS,
   DEFAULT_SLEEVE_SPEC,
   DEFAULT_STICKER_SPEC,
   FINISH_MATTE,
@@ -238,10 +239,12 @@ const GuidedOtherSubSection = ({
             }
             return option.value === value.value;
           }}
+          disableCloseOnSelect
           onChange={(e, v) => {
             setComponentSpec((prev) => ({
               ...prev,
               postProcess: v.map((p) => ({
+                ...DEFAULT_POST_PROCESS,
                 postProcessName: p.value,
                 estimatedArea: { x: "", y: "" },
               })),
@@ -345,6 +348,7 @@ const GuidedOtherSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
+              displayTitle={false}
               dimension={componentData!.componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));
@@ -381,6 +385,7 @@ const GuidedOtherSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
+              displayTitle={false}
               dimension={componentData!.componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));
@@ -401,6 +406,7 @@ const GuidedOtherSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
+              displayTitle={false}
               dimension={componentData!.componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));

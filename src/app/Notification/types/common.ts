@@ -32,6 +32,7 @@ export enum NotificationType {
   PROJECT = "PROJECT",
   GUEST_PROJECT = "GUEST_PROJECT",
   PO_INVOICE = "PO_INVOICE",
+  RELOAD = "RELOAD",
   LOG_OUT = "LOG_OUT"
 }
 

@@ -47,6 +47,7 @@ import {
   CreateProjectInput,
   ProjectCreationMode,
   ProjectDesign,
+  ProjectVisibility,
 } from "../../../generated/graphql";
 import {
   isValidAlphanumeric,
@@ -60,6 +61,7 @@ import GoogleMapAutocomplete from "../../Utils/GoogleMapAutocomplete";
 import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
 import { Cancel } from "@mui/icons-material";
 import CreateProjectComponentModal from "../../Projects/customer/createProject/advanced/modals/CreateProjectComponentModal";
+import ProjectSpecInput from "../../Projects/customer/createProject/common/ProjectSpecInput";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -105,9 +107,7 @@ const GuestAdvamcedCreate = ({
     },
   ] = useCreateGuestProjectMutation();
 
-  const [projectData, setProjectData] = useState<
-    Partial<CreateGuestProjectInput>
-  >({
+  const [projectData, setProjectData] = useState<CreateProjectInput>({
     name: "",
     deliveryAddress: "",
     country: "",
@@ -117,6 +117,9 @@ const GuestAdvamcedCreate = ({
     targetPrice: "",
     orderQuantities: [],
     components: [],
+    creationMode: ProjectCreationMode.Advanced,
+    userId: "",
+    visibility: ProjectVisibility.Private,
   });
 
   // index of component if use clicks edit button on one of the component detail
@@ -248,7 +251,8 @@ const GuestAdvamcedCreate = ({
   // check if create project button should be disabled
   const shouldDisableCreateProjectButton = () => {
     for (let key in projectData) {
-      const attr = key as keyof Partial<CreateGuestProjectInput>;
+      const attr = key as keyof CreateProjectInput;
+      if (attr === "userId") continue;
 
       if (Array.isArray(projectData[attr])) {
         if ((projectData[attr] as []).length === 0) return true;
@@ -257,18 +261,41 @@ const GuestAdvamcedCreate = ({
       }
     }
 
+    if (
+      isNaN(parseFloat(projectData.totalWeight!)) ||
+      parseFloat(projectData.totalWeight!) === 0
+    ) {
+      return true;
+    }
+
     return false;
   };
 
+  const convertProjectInputToGuestProjectInput = (
+    data: CreateProjectInput
+  ): CreateGuestProjectInput => {
+    return {
+      category: data.category,
+      components: data.components,
+      country: data.country,
+      creationMode: data.creationMode,
+      deliveryAddress: data.deliveryAddress,
+      deliveryDate: data.deliveryDate,
+      name: data.name,
+      orderQuantities: data.orderQuantities,
+      projectId,
+      targetPrice: data.targetPrice,
+      totalWeight: data.totalWeight,
+    };
+  };
   const createProject = async () => {
     try {
       await createGuestProject({
         variables: {
           data: {
-            ...(projectData as CreateGuestProjectInput),
+            ...convertProjectInputToGuestProjectInput(projectData),
             projectId,
-            creationMode: ProjectCreationMode.Advanced,
-          },
+          } as CreateGuestProjectInput,
         },
       });
 
@@ -276,7 +303,7 @@ const GuestAdvamcedCreate = ({
     } catch (e) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again later.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
       setSnackbarOpen(true);
     }
@@ -325,163 +352,11 @@ const GuestAdvamcedCreate = ({
           </Box>
         </Box>
         <Container maxWidth="sm">
-          <Stack
-            spacing={2}
-            textAlign="left"
-            sx={{ "& .MuiListItem-root div": { flexGrow: 2 } }}
-          >
-            <ListItem>
-              <TextField
-                autoComplete="new-password"
-                label={intl.formatMessage({
-                  id: "app.project.attribute.name",
-                })}
-                onChange={projectInputOnChange}
-                name="name"
-                value={projectData.name}
-              />
-            </ListItem>
-            <ListItem>
-              <ProjectCategoryDropdown
-                defaultCategory={projectData.category!}
-                parentSetDataCallback={(category: string) => {
-                  setProjectData((prev) => ({ ...prev, category }));
-                }}
-                label={intl.formatMessage({
-                  id: "app.project.attribute.category",
-                })}
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                autoComplete="new-password"
-                label={intl.formatMessage({
-                  id: "app.project.attribute.totalWeight",
-                })}
-                onChange={projectInputOnChange}
-                name="totalWeight"
-                value={projectData.totalWeight}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">g</InputAdornment>
-                  ),
-                }}
-              />
-            </ListItem>
-            <ListItem>
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <DesktopDatePicker
-                  disablePast
-                  label={intl.formatMessage({
-                    id: "app.project.attribute.deliveryDate",
-                  })}
-                  inputFormat="YYYY-MM-DD"
-                  value={projectData.deliveryDate}
-                  onChange={(v: any) => {
-                    if (!v || !v._isValid) return;
-
-                    setProjectData({
-                      ...projectData,
-                      deliveryDate: new Date(v._d).toISOString().split("T")[0],
-                    });
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      name="deliveryDate"
-                      value={projectData.deliveryDate}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </ListItem>
-
-            <ListItem>
-              <GoogleMapAutocomplete
-                parentSetDataHandler={handleAddressOnChange}
-                label={intl.formatMessage({
-                  id: "app.project.attribute.deliveryAddress",
-                })}
-                defaultAddress={projectData.deliveryAddress}
-              />
-            </ListItem>
-
-            <ListItem>
-              <TextField
-                autoComplete="new-password"
-                type="tel"
-                label={intl.formatMessage({
-                  id: "app.project.attribute.targetPrice",
-                })}
-                onChange={projectInputOnChange}
-                name="targetPrice"
-                value={projectData.targetPrice || ""}
-              />
-            </ListItem>
-
-            <ListItem>
-              <Box>
-                <Autocomplete
-                  options={[]}
-                  freeSolo
-                  multiple
-                  value={[...projectData.orderQuantities!]}
-                  inputValue={orderQuantity}
-                  onInputChange={(e, v) => orderQuantityOnChange(v)}
-                  onBlur={() => {
-                    if (orderQuantity) {
-                      setProjectData((prev) => ({
-                        ...prev,
-                        orderQuantities: [
-                          ...prev.orderQuantities!,
-                          +orderQuantity,
-                        ],
-                      }));
-                    }
-                    setOrderQuantity("");
-                  }}
-                  onChange={(e, v) => {
-                    if (!v) {
-                      setProjectData((prev) => ({
-                        ...prev,
-                        orderQuantities: [],
-                      }));
-                    } else {
-                      setProjectData((prev) => ({
-                        ...prev,
-                        orderQuantities: v.map((v) => +v),
-                      }));
-                    }
-                  }}
-                  renderInput={(params) => {
-                    return (
-                      <TextField
-                        {...params}
-                        autoComplete="new-password"
-                        type="tel"
-                        label={intl.formatMessage({
-                          id: "app.project.attribute.orderQuantities",
-                        })}
-                        inputProps={{
-                          ...params.inputProps,
-                          autoComplete: "new-password", // disable autocomplete and autofill
-                        }}
-                        InputLabelProps={{
-                          sx: {
-                            fontSize: 16,
-                            top: -7,
-                          },
-                        }}
-                        value={orderQuantity}
-                        onChange={(e) => orderQuantityOnChange(e.target.value)}
-                      />
-                    );
-                  }}
-                  renderOption={() => null}
-                />
-              </Box>
-            </ListItem>
-          </Stack>
+          <ProjectSpecInput
+            projectData={projectData}
+            setProjectData={setProjectData}
+            isGuest={true}
+          />
         </Container>
       </Paper>
 

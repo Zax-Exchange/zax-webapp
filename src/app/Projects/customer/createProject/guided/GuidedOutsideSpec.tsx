@@ -40,6 +40,7 @@ import {
   PRODUCT_NAME_PAPER_TUBE,
   PRODUCT_NAME_RIGID_BOX,
   PRODUCT_NAME_SLEEVE,
+  DEFAULT_POST_PROCESS,
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import AttachmentButton from "../../../../Utils/AttachmentButton";
@@ -49,7 +50,7 @@ import {
 } from "../../../../Utils/inputValidators";
 import { openLink } from "../../../../Utils/openLink";
 import UploadDesign from "../../UploadDesign";
-import DimensionsInput from "../common/DimensionsInput";
+import DimensionsInput, { isValidDimension } from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedCreateBoxStyleSelection from "./modals/GuidedCreateBoxStyleSelection";
@@ -240,12 +241,8 @@ const GuidedOutsideSpec = ({
 
   const shouldDisableNextButton = () => {
     let res = false;
-    if (
-      !componentSpec.dimension.x ||
-      !componentSpec.dimension.y ||
-      !componentSpec.dimension.z
-    )
-      return true;
+
+    if (!isValidDimension(componentSpec.dimension)) return true;
 
     if (
       componentSpec.includeArtworkInQuote &&
@@ -387,10 +384,12 @@ const GuidedOutsideSpec = ({
             }
             return option.value === value.value;
           }}
+          disableCloseOnSelect
           onChange={(e, v) => {
             setComponentSpec((prev) => ({
               ...prev,
               postProcess: v.map((p) => ({
+                ...DEFAULT_POST_PROCESS,
                 postProcessName: p.value,
                 estimatedArea: { x: "", y: "" },
               })),
@@ -494,6 +493,7 @@ const GuidedOutsideSpec = ({
                 })}
               </Typography>
               <DimensionsInput
+                displayTitle={false}
                 dimension={componentSpec.dimension}
                 setDimension={(data: ProductDimensionInput) => {
                   setComponentSpec((prev) => ({ ...prev, dimension: data }));

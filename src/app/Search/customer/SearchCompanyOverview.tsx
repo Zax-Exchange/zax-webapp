@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useState } from "react";
-import { VendorOverview } from "../../../generated/graphql";
 import FactoryIcon from "@mui/icons-material/Factory";
 import MuiListItem from "@mui/material/ListItem";
 import BusinessIcon from "@mui/icons-material/Business";
@@ -23,6 +22,7 @@ import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useNavigate } from "react-router-dom";
 import { useIntl } from "react-intl";
 import { productValueToLabelMap } from "../../constants/products";
+import { VendorSearchItem } from "../../../generated/graphql";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -34,10 +34,12 @@ const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 }));
 
 const SearchCompanyOverview = ({
-  companyData,
+  searchResult,
 }: {
-  companyData: VendorOverview;
+  searchResult: VendorSearchItem;
 }) => {
+  const { vendor: companyData, highlight } = searchResult;
+
   const intl = useIntl();
   const navigate = useNavigate();
   const openVendorDetail = () => {
@@ -57,7 +59,13 @@ const SearchCompanyOverview = ({
               </Typography>
               <List>
                 <ProjectOverviewListItem>
-                  <Tooltip title="Manufacturing Products" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.vendor.attribute.products",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <CategoryIcon />
                   </Tooltip>
                   <Typography variant="caption">
@@ -72,7 +80,13 @@ const SearchCompanyOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Factory Locations" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.vendor.attribute.locations",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <FactoryIcon />
                   </Tooltip>
                   <Typography variant="caption">
@@ -81,12 +95,22 @@ const SearchCompanyOverview = ({
                 </ProjectOverviewListItem>
 
                 <ProjectOverviewListItem>
-                  <Tooltip title="Typical Lead Time" arrow placement="top">
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "app.vendor.attribute.leadTime",
+                    })}
+                    arrow
+                    placement="top"
+                  >
                     <AccessTimeIcon />
                   </Tooltip>
                   <Typography variant="caption">
-                    {companyData.leadTime}{" "}
-                    {intl.formatMessage({ id: "app.general.month" })}
+                    {intl.formatMessage(
+                      { id: "app.general.months" },
+                      {
+                        month: companyData.leadTime,
+                      }
+                    )}
                   </Typography>
                 </ProjectOverviewListItem>
 

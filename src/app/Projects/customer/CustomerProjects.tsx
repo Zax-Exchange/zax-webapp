@@ -40,8 +40,9 @@ const CustomerProjects = () => {
         userId,
       },
     },
-    fetchPolicy: "network-only",
+    fetchPolicy: "no-cache",
   });
+
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
 
   const [sortMenuAnchor, setSortMenuAnchor] =

@@ -1,12 +1,16 @@
+import { Check } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
+  Button,
   CircularProgress,
+  Container,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import { throttle } from "lodash";
+import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { countries } from "../constants/countries";
@@ -29,6 +33,16 @@ const CompanyInfo = ({
   const [checkCompanyNameQuery, { data, loading, error }] =
     useCheckCompanyNameLazyQuery();
 
+  const checkCompanyName = useMemo(() => {
+    return throttle((cb: () => void) => {
+      cb();
+    }, 500);
+  }, []);
+
+  useEffect(() => {
+    setShouldDisableNext(true);
+  }, []);
+
   useEffect(() => {
     if (data && data.checkCompanyName) {
       setShouldDisableNext(true);
@@ -36,6 +50,20 @@ const CompanyInfo = ({
       setShouldDisableNext(false);
     }
   }, [data, setShouldDisableNext]);
+
+  useEffect(() => {
+    checkCompanyName(() => {
+      checkCompanyNameQuery({
+        variables: {
+          data: {
+            companyName: values.name,
+          },
+        },
+        fetchPolicy: "no-cache",
+      });
+    });
+  }, [values.name]);
+
   const renderCompanyNameHelperText = () => {
     if ((data && !data.checkCompanyName) || !data) {
       return "";
@@ -45,27 +73,13 @@ const CompanyInfo = ({
     });
   };
 
-  const companyNameOnChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onChange(e);
-
-    await checkCompanyNameQuery({
-      variables: {
-        data: {
-          companyName: e.target.value,
-        },
-      },
-      fetchPolicy: "no-cache",
-    });
-  };
-
   const shouldCompanyNameInputError = () => {
     if (data) {
       return data.checkCompanyName!;
     }
     return false;
   };
+
   const renderCountryDropdown = () => {
     return (
       <Autocomplete
@@ -115,6 +129,23 @@ const CompanyInfo = ({
       />
     );
   };
+
+  const renderEndAdornment = () => {
+    if (loading) {
+      return <CircularProgress size={20} />;
+    }
+
+    if (
+      !loading &&
+      !error &&
+      data &&
+      !data.checkCompanyName &&
+      values.name !== ""
+    ) {
+      return <Check color="success" />;
+    }
+    return null;
+  };
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
@@ -129,11 +160,11 @@ const CompanyInfo = ({
           type="text"
           name="name"
           value={values.name}
-          onChange={companyNameOnChange}
+          onChange={onChange}
           error={shouldCompanyNameInputError()}
           helperText={renderCompanyNameHelperText()}
           InputProps={{
-            endAdornment: loading && <CircularProgress size={20} />,
+            endAdornment: renderEndAdornment(),
           }}
         ></TextField>
         <TextField

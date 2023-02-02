@@ -154,7 +154,6 @@ const FoldingCartonSubSection = ({
             <BoxStyleDropdown
               componentSpec={componentSpec}
               setComponentSpec={setComponentSpec}
-              options={FOLDING_CARTON_BOX_STYLES}
             />
           </ListItem>
           <ListItem>

@@ -42,6 +42,8 @@ const EmailPage = ({
     }
   }, [data]);
 
+  // not used right now, as billing email are allowed to be same
+  // if we want to use this in the future, should implement throttle function
   const emailOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e);
     try {
@@ -56,7 +58,7 @@ const EmailPage = ({
     } catch (error) {
       setSnackbar({
         severity: "error",
-        message: "Something went wrong. Please try again.",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
       });
       setSnackbarOpen(true);
     }

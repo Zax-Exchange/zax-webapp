@@ -1,4 +1,4 @@
-import { Cancel } from "@mui/icons-material";
+import { Cancel, InfoOutlined } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
@@ -9,6 +9,7 @@ import {
   ListItem,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, {
@@ -46,7 +47,7 @@ import {
   isValidFloat,
 } from "../../../../Utils/inputValidators";
 import UploadDesign from "../../UploadDesign";
-import DimensionsInput from "../common/DimensionsInput";
+import DimensionsInput, { isValidDimension } from "../common/DimensionsInput";
 import IncludeArtworkInQuoteDropdown from "../common/IncludeArtworkInQuoteDropdown";
 import { GuidedCreateSetComponentData } from "./GuidedCreateProject";
 import GuidedOtherSubSection from "./subsections/GuidedOtherSubSection";
@@ -98,15 +99,13 @@ const GuidedOther = ({
       if (comp.componentSpec.productName === PRODUCT_NAME_BOOKLET.value) {
         if (!comp.componentSpec.numberOfPages) return true;
         if (!comp.componentSpec.style) return true;
-        if (!comp.componentSpec.dimension.x || !comp.componentSpec.dimension.y)
-          return true;
+        if (!isValidDimension(comp.componentSpec.dimension)) return true;
       }
 
       if (comp.componentSpec.productName === PRODUCT_NAME_STICKER.value) {
         if (!comp.componentSpec.purpose) return true;
         if (!comp.componentSpec.shape) return true;
-        if (!comp.componentSpec.dimension.x || !comp.componentSpec.dimension.y)
-          return true;
+        if (!isValidDimension(comp.componentSpec.dimension)) return true;
 
         if (!comp.designIds || !comp.designIds.length) {
           // no designs but chose to include artworks
@@ -116,12 +115,7 @@ const GuidedOther = ({
       }
 
       if (comp.componentSpec.productName === PRODUCT_NAME_SLEEVE.value) {
-        if (
-          !comp.componentSpec.dimension.x ||
-          !comp.componentSpec.dimension.y ||
-          !comp.componentSpec.dimension.z
-        )
-          return true;
+        if (!isValidDimension(comp.componentSpec.dimension)) return true;
 
         if (!comp.designIds || !comp.designIds.length) {
           // no designs but chose to include artworks
@@ -300,7 +294,13 @@ const GuidedOther = ({
             {intl.formatMessage({ id: "app.general.back" })}
           </Button>
         </Box>
-        <Box ml="auto">
+        <Box
+          sx={{
+            ml: "auto",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <Button
             variant="contained"
             onClick={handleNext}
@@ -308,6 +308,17 @@ const GuidedOther = ({
           >
             {intl.formatMessage({ id: "app.general.next" })}
           </Button>
+          {isRequired && additionalComponents.length === 0 && (
+            <Tooltip
+              title={intl.formatMessage({
+                id: "app.customer.createProject.guidedCreate.isRequired.tooltip",
+              })}
+              placement="top"
+              sx={{ ml: 1.5 }}
+            >
+              <InfoOutlined color="warning" fontSize="small" />
+            </Tooltip>
+          )}
         </Box>
         {!isRequired && (
           <Box mr={-5} ml={1}>

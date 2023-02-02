@@ -38,9 +38,13 @@ const JoinCompany = () => {
   const renderCompanyNameHelper = () => {
     if (checkCompanyNameData) {
       if (checkCompanyNameData.checkCompanyName) {
-        return "Company Found!";
+        return intl.formatMessage({
+          id: "app.signup.requestToJoin.companyFound",
+        });
       } else {
-        return "Company Does Not Exist";
+        return intl.formatMessage({
+          id: "app.signup.requestToJoin.companyDoesNotExist",
+        });
       }
     }
     return " ";

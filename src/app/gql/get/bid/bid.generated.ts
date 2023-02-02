@@ -5,11 +5,11 @@ import { gql } from '@apollo/client';
 import { FileFragmentFragmentDoc } from '../../utils/common/file.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ProjectBidComponentFragmentFragment = { __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> };
+export type ProjectBidComponentFragmentFragment = { __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: string, toolingFee?: string | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> };
 
-export type ProjectBidFragmentFragment = { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null };
+export type ProjectBidFragmentFragment = { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: string, toolingFee?: string | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null };
 
-export type PermissionedProjectBidFragmentFragment = { __typename?: 'PermissionedProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null };
+export type PermissionedProjectBidFragmentFragment = { __typename?: 'PermissionedProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: string, toolingFee?: string | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null };
 
 export type GetProjectBidUsersQueryVariables = Types.Exact<{
   data: Types.GetProjectBidUsersInput;
@@ -23,7 +23,7 @@ export type GetProjectBidQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectBidQuery = { __typename?: 'Query', getProjectBid?: { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null } | null };
+export type GetProjectBidQuery = { __typename?: 'Query', getProjectBid?: { __typename?: 'ProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: string, toolingFee?: string | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null } | null };
 
 export type GetProjectBidsForPoQueryVariables = Types.Exact<{
   data: Types.GetProjectBidsForPoInput;

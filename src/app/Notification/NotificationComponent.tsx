@@ -25,7 +25,7 @@ import {
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import styled from "@emotion/styled";
 import MuiListItem from "@mui/material/ListItem";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import React from "react";
 import {
@@ -67,7 +67,6 @@ const NotificationComponent = () => {
   const navigate = useNavigate();
   const intl = useIntl();
   const { user } = useContext(AuthContext);
-
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [anchorEl, setAnchorEl] = useState(null as any);
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -106,6 +105,24 @@ const NotificationComponent = () => {
     socket.on(
       ReceiveEventType.NEW_NOTIFICATION,
       (notification: Notification) => {
+        if (notification.notificationType === NotificationType.PROJECT) {
+          if (
+            window.location.href.includes(
+              GENERAL_ROUTES.PROJECT_DETAIL.split("/")[1]
+            )
+          ) {
+            document.dispatchEvent(new CustomEvent("reload"));
+          }
+        }
+        if (notification.notificationType === NotificationType.PO_INVOICE) {
+          if (
+            window.location.href.includes(
+              GENERAL_ROUTES.PO_INVOICE.split("/")[1]
+            )
+          ) {
+            document.dispatchEvent(new CustomEvent("reload"));
+          }
+        }
         setNotifications((prev) => [notification, ...prev]);
       }
     );
@@ -115,6 +132,9 @@ const NotificationComponent = () => {
       (notification: Notification) => {
         if (notification.notificationType === NotificationType.LOG_OUT) {
           document.dispatchEvent(new CustomEvent("logout"));
+        }
+        if (notification.notificationType === NotificationType.RELOAD) {
+          document.dispatchEvent(new CustomEvent("reload"));
         }
       }
     );
@@ -263,7 +283,18 @@ const NotificationComponent = () => {
                         justifyContent="center"
                         p={2}
                       >
-                        {renderNotificationMessage(noti)}
+                        <Typography
+                          variant="caption"
+                          color="InfoText"
+                          component={"p"}
+                          sx={{
+                            overflow: "visible",
+                            textOverflow: "clip",
+                            whiteSpace: "break-spaces",
+                          }}
+                        >
+                          {renderNotificationMessage(noti)}
+                        </Typography>
                       </Box>
                     </ListItem>
                   );

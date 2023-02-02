@@ -42,19 +42,19 @@ const ProjectSpecDetail = ({
 
     let fieldString = projectFieldData;
     if (projectAttribute === "totalWeight") {
-      fieldString += intl.formatMessage({ id: "app.general.unit.g" });
+      fieldString += ` ${intl.formatMessage({ id: "app.general.unit.g" })}`;
     }
     if (projectAttribute === "targetPrice") {
-      fieldString =
-        parseFloat(fieldString as string) +
-        intl.formatMessage({ id: "app.general.currency.usd" });
+      fieldString = `${parseFloat(fieldString as string)} ${intl.formatMessage({
+        id: "app.general.currency.usd",
+      })}`;
     }
     return <Typography variant="caption">{fieldString}</Typography>;
   };
 
   return (
     <>
-      <Box display="flex" p={3}>
+      <Box display="flex">
         <List sx={{ mr: 16 }}>
           {isVendorProject && (
             <ProjectDetailListItem>
@@ -115,15 +115,6 @@ const ProjectSpecDetail = ({
 
             {renderProjectField("deliveryDate", projectData.deliveryDate)}
           </ProjectDetailListItem>
-          <ProjectDetailListItem>
-            {renderAttributeTitle(
-              intl.formatMessage({
-                id: "app.project.attribute.deliveryAddress",
-              })
-            )}
-
-            {renderProjectField("deliveryAddress", projectData.deliveryAddress)}
-          </ProjectDetailListItem>
         </List>
         <List>
           <ProjectDetailListItem>
@@ -161,6 +152,19 @@ const ProjectSpecDetail = ({
             <Typography variant="caption">
               {projectData.updatedAt.slice(0, 10)}
             </Typography>
+          </ProjectDetailListItem>
+        </List>
+      </Box>
+      <Box>
+        <List sx={{ pt: 0 }}>
+          <ProjectDetailListItem>
+            {renderAttributeTitle(
+              intl.formatMessage({
+                id: "app.project.attribute.deliveryAddress",
+              })
+            )}
+
+            {renderProjectField("deliveryAddress", projectData.deliveryAddress)}
           </ProjectDetailListItem>
         </List>
       </Box>

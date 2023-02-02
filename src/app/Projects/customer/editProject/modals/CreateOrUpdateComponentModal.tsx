@@ -24,6 +24,7 @@ import { useIntl } from "react-intl";
 import {
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
+  PostProcessDetailInput,
   ProjectDesign,
   UpdateProjectComponentData,
   UpdateProjectComponentSpecData,
@@ -67,6 +68,7 @@ import PaperTubeSubSection from "../../createProject/advanced/subsections/PaperT
 import RigidBoxSubSection from "../../createProject/advanced/subsections/RigidBoxSubSection";
 import SleeveSubSection from "../../createProject/advanced/subsections/SleeveSubSection";
 import StickerSubSection from "../../createProject/advanced/subsections/StickerSubSection";
+import { isValidDimension } from "../../createProject/common/DimensionsInput";
 import UploadDesign from "../../UploadDesign";
 
 const getComponentSpecDefaultState = (
@@ -275,19 +277,8 @@ const CreateOrUpdateComponentModal = ({
       if (!Object.keys(componentSpec).length) {
         return true;
       }
-      if (componentSpec.productName === PRODUCT_NAME_STICKER.value) {
-        if (!componentSpec.dimension.x || !componentSpec.dimension.y) {
-          return true;
-        }
-        return false;
-      }
-      if (
-        !componentSpec.dimension.x ||
-        !componentSpec.dimension.y ||
-        !componentSpec.dimension.z
-      ) {
-        return true;
-      }
+      if (!isValidDimension(componentSpec.dimension)) return true;
+
       return false;
     };
 
@@ -315,7 +306,30 @@ const CreateOrUpdateComponentModal = ({
       }
       return false;
     };
-
+    const isInvalidPostProcess = () => {
+      if (componentSpec.postProcess) {
+        for (let process of componentSpec.postProcess) {
+          if (!Object.keys(process).length) return true;
+          if (process.estimatedArea && !isValidDimension(process.estimatedArea))
+            return true;
+          if (process.numberOfColors) {
+            if (!process.numberOfColors.c || !process.numberOfColors.t)
+              return true;
+          }
+          for (let key in process) {
+            const attr = key as keyof PostProcessDetailInput;
+            if (
+              typeof process[attr] === "string" &&
+              (process[attr] as string).length === 0
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    };
+    if (isInvalidPostProcess()) return true;
     if (isInvalidComponentSpec()) return true;
 
     if (!componentData.name) return false;
@@ -330,7 +344,7 @@ const CreateOrUpdateComponentModal = ({
     return (
       <>
         <Autocomplete
-          sx={{ width: 200 }}
+          sx={{ width: 250 }}
           options={ALL_PRODUCT_NAMES}
           getOptionLabel={(option) =>
             intl.formatMessage({ id: option.labelId })
@@ -596,7 +610,7 @@ const CreateOrUpdateComponentModal = ({
                 value={componentData.name}
               />
             </ListItem>
-            <ListItem>{renderProductsDropdown()}</ListItem>
+            <ListItem sx={{ mt: 1 }}>{renderProductsDropdown()}</ListItem>
           </Stack>
           <Stack>
             <ListItem>

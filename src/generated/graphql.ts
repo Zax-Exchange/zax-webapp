@@ -39,8 +39,19 @@ export type CancelStripeSubscriptionInput = {
   email: Scalars['String'];
 };
 
+export type Category = {
+  __typename?: 'Category';
+  children: Array<Scalars['String']>;
+  name: Scalars['String'];
+  parent: Scalars['String'];
+};
+
 export type CheckCompanyNameInput = {
   companyName: Scalars['String'];
+};
+
+export type CheckSignupJwtTokenInput = {
+  token: Scalars['String'];
 };
 
 export type CheckUserEmailInput = {
@@ -144,8 +155,8 @@ export type CreateProjectBidComponentInput = {
   projectBidId?: InputMaybe<Scalars['String']>;
   projectComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPriceInput>;
-  samplingFee: Scalars['Int'];
-  toolingFee?: InputMaybe<Scalars['Int']>;
+  samplingFee: Scalars['String'];
+  toolingFee?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateProjectBidInput = {
@@ -201,6 +212,7 @@ export type CreateProjectInput = {
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type CreatePurchaseOrderInput = {
@@ -221,10 +233,10 @@ export type CreateStripeCustomerInStripeForVendorInput = {
 };
 
 export type CreateUserInput = {
-  companyId: Scalars['String'];
   email: Scalars['String'];
   name: Scalars['String'];
   password: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type CreateVendorInput = {
@@ -318,6 +330,7 @@ export type CustomerProject = ProjectInterface & {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type CustomerProjectOverview = {
@@ -335,6 +348,7 @@ export type CustomerProjectOverview = {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type DeactivateUserInput = {
@@ -410,6 +424,10 @@ export type GetAllUsersWithinCompanyInput = {
   userStatus: Array<UserStatus>;
 };
 
+export type GetCategoryInput = {
+  id: Scalars['String'];
+};
+
 export type GetCompanyDetailInput = {
   companyId: Scalars['String'];
 };
@@ -467,7 +485,7 @@ export type GetProjectChangelogInput = {
 };
 
 export type GetProjectComponentChangelogInput = {
-  projectComponentId: Scalars['String'];
+  projectComponentIds: Array<Scalars['String']>;
 };
 
 export type GetProjectDetailInput = {
@@ -1044,8 +1062,8 @@ export type ProjectBidComponent = {
   projectBidId: Scalars['String'];
   projectComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPrice>;
-  samplingFee: Scalars['Int'];
-  toolingFee?: Maybe<Scalars['Int']>;
+  samplingFee: Scalars['String'];
+  toolingFee?: Maybe<Scalars['String']>;
 };
 
 export type ProjectBidForPo = {
@@ -1157,8 +1175,6 @@ export type ProjectInterface = {
 export type ProjectOverview = {
   __typename?: 'ProjectOverview';
   category: Scalars['String'];
-  companyId: Scalars['String'];
-  companyName: Scalars['String'];
   createdAt: Scalars['Date'];
   deliveryAddress: Scalars['String'];
   deliveryDate: Scalars['String'];
@@ -1191,6 +1207,11 @@ export enum ProjectStatus {
   Overdue = 'OVERDUE'
 }
 
+export enum ProjectVisibility {
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
+}
+
 export type PurchaseOrder = FileInterface & {
   __typename?: 'PurchaseOrder';
   fileId: Scalars['String'];
@@ -1220,11 +1241,15 @@ export type QuantityPriceInput = {
 
 export type Query = {
   __typename?: 'Query';
+  allProducts: Array<Scalars['String']>;
   checkCompanyName: Scalars['Boolean'];
+  checkSignupJwtToken: Scalars['Boolean'];
   checkUserEmail: Scalars['Boolean'];
+  getAllCategories: Array<Category>;
   getAllPendingJoinRequests: Array<Scalars['String']>;
   getAllPlans: Array<Plan>;
   getAllUsersWithinCompany: Array<GenericUser>;
+  getCategory?: Maybe<Category>;
   getCompanyDetail?: Maybe<CompanyDetail>;
   getCompanyPlanDetail: CompanyPlanDetail;
   getCustomerDetail: CustomerDetail;
@@ -1238,7 +1263,7 @@ export type Query = {
   getProjectBidUsers: Array<UserProjectPermission>;
   getProjectBidsForPo: Array<ProjectBidForPo>;
   getProjectChangelog: Array<ProjectChangelog>;
-  getProjectComponentChangelog: Array<ProjectComponentChangelog>;
+  getProjectComponentChangelog: Array<Array<ProjectComponentChangelog>>;
   getProjectDetail?: Maybe<Project>;
   getProjectUsers: Array<UserProjectPermission>;
   getPurchaseOrder?: Maybe<PurchaseOrder>;
@@ -1251,13 +1276,20 @@ export type Query = {
   getVendorProject?: Maybe<VendorProject>;
   getVendorProjects: Array<VendorProjectOverview>;
   login: LoggedInUser;
+  searchCategories: Array<Category>;
   searchCustomerProjects: Array<ProjectOverview>;
-  searchVendorCompanies: Array<VendorOverview>;
+  searchProducts: Array<Scalars['String']>;
+  searchVendorCompanies: Array<VendorSearchItem>;
 };
 
 
 export type QueryCheckCompanyNameArgs = {
   data: CheckCompanyNameInput;
+};
+
+
+export type QueryCheckSignupJwtTokenArgs = {
+  data: CheckSignupJwtTokenInput;
 };
 
 
@@ -1278,6 +1310,11 @@ export type QueryGetAllPlansArgs = {
 
 export type QueryGetAllUsersWithinCompanyArgs = {
   data: GetAllUsersWithinCompanyInput;
+};
+
+
+export type QueryGetCategoryArgs = {
+  data: GetCategoryInput;
 };
 
 
@@ -1411,8 +1448,18 @@ export type QueryLoginArgs = {
 };
 
 
+export type QuerySearchCategoriesArgs = {
+  data?: InputMaybe<SearchCategoriesInput>;
+};
+
+
 export type QuerySearchCustomerProjectsArgs = {
   data: SearchCustomerProjectInput;
+};
+
+
+export type QuerySearchProductsArgs = {
+  data?: InputMaybe<SearchProductsInput>;
 };
 
 
@@ -1435,19 +1482,26 @@ export type ResubmitProjectBidInput = {
   projectBidId: Scalars['String'];
 };
 
+export type SearchCategoriesInput = {
+  searchText: Scalars['String'];
+};
+
 export type SearchCustomerProjectInput = {
+  countries?: InputMaybe<Array<Scalars['String']>>;
   deliveryDate?: InputMaybe<Scalars['String']>;
   orderQuantities?: InputMaybe<Array<Scalars['String']>>;
-  targetPrice?: InputMaybe<Scalars['String']>;
+  targetPriceRange?: InputMaybe<Array<Scalars['String']>>;
   userInput: Scalars['String'];
+};
+
+export type SearchProductsInput = {
+  searchText: Scalars['String'];
 };
 
 export type SearchVendorCompanyInput = {
   countries?: InputMaybe<Array<Scalars['String']>>;
   factoryLocations?: InputMaybe<Array<Scalars['String']>>;
   leadTime?: InputMaybe<Scalars['String']>;
-  moqMax?: InputMaybe<Scalars['String']>;
-  moqMin?: InputMaybe<Scalars['String']>;
   userInput: Scalars['String'];
 };
 
@@ -1508,8 +1562,8 @@ export type UpdateGuestProjectInput = {
 export type UpdateProjectBidComponentInput = {
   bidComponentId: Scalars['String'];
   quantityPrices: Array<QuantityPriceInput>;
-  samplingFee: Scalars['Int'];
-  toolingFee?: InputMaybe<Scalars['Int']>;
+  samplingFee: Scalars['String'];
+  toolingFee?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateProjectBidInput = {
@@ -1575,6 +1629,7 @@ export type UpdateProjectData = {
   projectId: Scalars['String'];
   targetPrice: Scalars['String'];
   totalWeight: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type UpdateProjectInput = {
@@ -1789,4 +1844,16 @@ export type VendorProjectOverview = {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+};
+
+export type VendorSearchHighlight = {
+  __typename?: 'VendorSearchHighlight';
+  name?: Maybe<Array<Maybe<Scalars['String']>>>;
+  products?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type VendorSearchItem = {
+  __typename?: 'VendorSearchItem';
+  highlight: VendorSearchHighlight;
+  vendor: VendorOverview;
 };

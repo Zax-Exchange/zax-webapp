@@ -36,6 +36,7 @@ export default function UploadDesign({
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [mutate, { error, loading, data }] = useUploadProjectDesignMutation();
+
   const [
     deleteProjectDesign,
     { error: deleteProjectDesignError, data: deleteProjectDesignData },
@@ -104,7 +105,6 @@ export default function UploadDesign({
   return (
     <Tooltip
       placement="top"
-      arrow
       title={intl.formatMessage({
         id: "app.customer.createProject.uploadDesign",
       })}

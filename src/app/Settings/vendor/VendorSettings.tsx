@@ -209,35 +209,38 @@ const VendorSettings = () => {
                 </AccordionDetails>
               </SettingsAccordion>
 
-              <SettingsAccordion
-                expanded={expanded === "panel2"}
-                onChange={handleChange("panel2")}
-              >
-                <SettingsAccordionSummary>
-                  <SettingsTitleTypography>
-                    {intl.formatMessage({ id: "app.settings.companySettings" })}
-                  </SettingsTitleTypography>
-                </SettingsAccordionSummary>
-                <AccordionDetails>
-                  <Stack>
-                    <ListItem
-                      disableGutters
-                      onClick={() =>
-                        renderSettingsView(
-                          VENDOR_SETTINGS_ROUTE.EDIT_COMPANY_PROFILE
-                        )
-                      }
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText
-                          text={intl.formatMessage({
-                            id: "app.settings.companySettings.editCompanyProfile",
-                          })}
-                        ></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
+              {isAdmin && (
+                <SettingsAccordion
+                  expanded={expanded === "panel2"}
+                  onChange={handleChange("panel2")}
+                >
+                  <SettingsAccordionSummary>
+                    <SettingsTitleTypography>
+                      {intl.formatMessage({
+                        id: "app.settings.companySettings",
+                      })}
+                    </SettingsTitleTypography>
+                  </SettingsAccordionSummary>
+                  <AccordionDetails>
+                    <Stack>
+                      <ListItem
+                        disableGutters
+                        onClick={() =>
+                          renderSettingsView(
+                            VENDOR_SETTINGS_ROUTE.EDIT_COMPANY_PROFILE
+                          )
+                        }
+                      >
+                        <ListItemButton>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.companySettings.editCompanyProfile",
+                            })}
+                          ></NoWrapListItemText>
+                        </ListItemButton>
+                      </ListItem>
 
-                    {/* <ListItem disableGutters>
+                      {/* <ListItem disableGutters>
                       <ListItemButton>
                         <NoWrapListItemText text="Upload certifications"></NoWrapListItemText>
                       </ListItemButton>
@@ -254,106 +257,111 @@ const VendorSettings = () => {
                         <NoWrapListItemText text="Deactivate company"></NoWrapListItemText>
                       </ListItemButton>
                     </ListItem> */}
-                  </Stack>
-                </AccordionDetails>
-              </SettingsAccordion>
+                    </Stack>
+                  </AccordionDetails>
+                </SettingsAccordion>
+              )}
 
-              <SettingsAccordion
-                expanded={expanded === "panel3"}
-                onChange={handleChange("panel3")}
-              >
-                <SettingsAccordionSummary>
-                  <SettingsTitleTypography>
-                    {intl.formatMessage({
-                      id: "app.settings.manageCompanyUsers",
-                    })}
-                  </SettingsTitleTypography>
-                </SettingsAccordionSummary>
-                <AccordionDetails>
-                  <Stack>
-                    <ListItem
-                      disableGutters
-                      onClick={() =>
-                        renderSettingsView(
-                          VENDOR_SETTINGS_ROUTE.MANAGE_INVITATIONS
-                        )
-                      }
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText
-                          text={intl.formatMessage({
-                            id: "app.settings.manageCompanyUsers.manageInvitations",
-                          })}
-                        ></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
+              {isAdmin && (
+                <SettingsAccordion
+                  expanded={expanded === "panel3"}
+                  onChange={handleChange("panel3")}
+                >
+                  <SettingsAccordionSummary>
+                    <SettingsTitleTypography>
+                      {intl.formatMessage({
+                        id: "app.settings.manageCompanyUsers",
+                      })}
+                    </SettingsTitleTypography>
+                  </SettingsAccordionSummary>
+                  <AccordionDetails>
+                    <Stack>
+                      <ListItem
+                        disableGutters
+                        onClick={() =>
+                          renderSettingsView(
+                            VENDOR_SETTINGS_ROUTE.MANAGE_INVITATIONS
+                          )
+                        }
+                      >
+                        <ListItemButton>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.manageCompanyUsers.manageInvitations",
+                            })}
+                          ></NoWrapListItemText>
+                        </ListItemButton>
+                      </ListItem>
 
-                    <ListItem
-                      disableGutters
-                      onClick={() =>
-                        renderSettingsView(
-                          VENDOR_SETTINGS_ROUTE.DEACTIVATE_USERS
-                        )
-                      }
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText
-                          text={intl.formatMessage({
-                            id: "app.settings.manageCompanyUsers.deactivateUsers",
-                          })}
-                        ></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
+                      <ListItem
+                        disableGutters
+                        onClick={() =>
+                          renderSettingsView(
+                            VENDOR_SETTINGS_ROUTE.DEACTIVATE_USERS
+                          )
+                        }
+                      >
+                        <ListItemButton>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.manageCompanyUsers.deactivateUsers",
+                            })}
+                          ></NoWrapListItemText>
+                        </ListItemButton>
+                      </ListItem>
 
-                    <ListItem
-                      disableGutters
-                      onClick={() =>
-                        renderSettingsView(
-                          VENDOR_SETTINGS_ROUTE.UPDATE_USER_POWER
-                        )
-                      }
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText
-                          text={intl.formatMessage({
-                            id: "app.settings.manageCompanyUsers.updateUserPower",
-                          })}
-                        ></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
-                  </Stack>
-                </AccordionDetails>
-              </SettingsAccordion>
+                      <ListItem
+                        disableGutters
+                        onClick={() =>
+                          renderSettingsView(
+                            VENDOR_SETTINGS_ROUTE.UPDATE_USER_POWER
+                          )
+                        }
+                      >
+                        <ListItemButton>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.manageCompanyUsers.updateUserPower",
+                            })}
+                          ></NoWrapListItemText>
+                        </ListItemButton>
+                      </ListItem>
+                    </Stack>
+                  </AccordionDetails>
+                </SettingsAccordion>
+              )}
 
-              <SettingsAccordion
-                expanded={expanded === "panel4"}
-                onChange={handleChange("panel4")}
-              >
-                <SettingsAccordionSummary>
-                  <SettingsTitleTypography>
-                    {intl.formatMessage({
-                      id: "app.settings.manageBillingInfo",
-                    })}
-                  </SettingsTitleTypography>
-                </SettingsAccordionSummary>
-                <AccordionDetails>
-                  <Stack>
-                    <ListItem
-                      disableGutters
-                      onClick={fetchAndOpenStatementLink}
-                    >
-                      <ListItemButton>
-                        <NoWrapListItemText
-                          text={intl.formatMessage({
-                            id: "app.settings.manageBillingInfo.viewStatements",
-                          })}
-                        ></NoWrapListItemText>
-                        <OpenInNew color="action" />
-                      </ListItemButton>
-                    </ListItem>
-                  </Stack>
-                </AccordionDetails>
-              </SettingsAccordion>
+              {isAdmin && (
+                <SettingsAccordion
+                  expanded={expanded === "panel4"}
+                  onChange={handleChange("panel4")}
+                >
+                  <SettingsAccordionSummary>
+                    <SettingsTitleTypography>
+                      {intl.formatMessage({
+                        id: "app.settings.manageBillingInfo",
+                      })}
+                    </SettingsTitleTypography>
+                  </SettingsAccordionSummary>
+                  <AccordionDetails>
+                    <Stack>
+                      <ListItem
+                        disableGutters
+                        onClick={fetchAndOpenStatementLink}
+                      >
+                        <ListItemButton>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.manageBillingInfo.viewStatements",
+                            })}
+                          ></NoWrapListItemText>
+                          <OpenInNew color="action" />
+                        </ListItemButton>
+                      </ListItem>
+                    </Stack>
+                  </AccordionDetails>
+                </SettingsAccordion>
+              )}
             </Paper>
           </Grid>
           <Grid item xs={8}>

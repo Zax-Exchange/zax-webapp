@@ -17,8 +17,6 @@ const Feedback = () => {
   const { user } = useContext(AuthContext);
   const locale: Locale = intl.locale as Locale;
 
-  const [bugFormOpen, setBugFormOpen] = useState(false);
-
   const openBugForm = () => {
     switch (locale) {
       case "en":
@@ -33,17 +31,27 @@ const Feedback = () => {
   const openFeedbackForm = () => {
     switch (locale) {
       case "en":
-        if (user!.isVendor) {
-          openLink("https://forms.gle/UrKrewdvgM8NeX4q7");
+        if (user) {
+          if (user!.isVendor) {
+            openLink("https://forms.gle/YwDLF25KHgDZFSnMA");
+          } else {
+            openLink("https://forms.gle/YwDLF25KHgDZFSnMA");
+          }
         } else {
-          openLink("https://forms.gle/HErQubMk4hLoAGkE7");
+          // signup feedback
+          openLink("https://forms.gle/8iihHkRz8qYyRWAP9");
         }
         break;
       case "zh-cn":
-        if (user!.isVendor) {
-          openLink("https://forms.gle/381CAV3LcST6jdbE9");
+        if (user) {
+          if (user!.isVendor) {
+            openLink("https://forms.gle/cBVPa8ALikDU2uf77");
+          } else {
+            openLink("https://forms.gle/cBVPa8ALikDU2uf77");
+          }
         } else {
-          openLink("https://forms.gle/BF23PFXn9aLtLuW37");
+          // signup feedback
+          openLink("https://forms.gle/oX24k1jEas1oE92Q9");
         }
         break;
     }
@@ -67,16 +75,16 @@ const Feedback = () => {
           })}
           onClick={openBugForm}
         />
-        {!!user && (
-          <SpeedDialAction
-            key="feedback-form"
-            icon={<TextSnippet />}
-            tooltipTitle={intl.formatMessage({
-              id: "app.feedback.action.feedbackForm",
-            })}
-            onClick={openFeedbackForm}
-          />
-        )}
+        (
+        <SpeedDialAction
+          key="feedback-form"
+          icon={<TextSnippet />}
+          tooltipTitle={intl.formatMessage({
+            id: "app.feedback.action.feedbackForm",
+          })}
+          onClick={openFeedbackForm}
+        />
+        )
       </SpeedDial>
     </>
   );

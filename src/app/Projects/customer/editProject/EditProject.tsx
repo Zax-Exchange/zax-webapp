@@ -10,6 +10,7 @@ import {
   InputProps,
   List,
   ListItem,
+  MenuItem,
   Paper,
   Stack,
   Tab,
@@ -30,6 +31,7 @@ import {
   ProjectCreationMode,
   ProjectDesign,
   ProjectPermission,
+  ProjectVisibility,
   UpdateProjectComponentData,
   UpdateProjectData,
   UpdateProjectInput,
@@ -59,6 +61,7 @@ import CreateProjectComponentModal from "../createProject/advanced/modals/Create
 import { useGetProjectDetailQuery } from "../../../gql/get/project/project.generated";
 import CreateOrUpdateComponentModal from "./modals/CreateOrUpdateComponentModal";
 import PermissionDenied from "../../../Utils/PermissionDenied";
+import { PRODUCT_NAME_STICKER } from "../../../constants/products";
 
 type EditProjectErrors = Record<keyof UpdateProjectData, boolean>;
 
@@ -116,6 +119,7 @@ const EditProject = () => {
   const [updateProjectInput, setUpdateProjectInput] =
     useState<UpdateProjectInput>({
       projectData: {
+        // values here are just for initializing purposes
         projectId: projectId || "",
         name: "",
         deliveryAddress: "",
@@ -125,6 +129,7 @@ const EditProject = () => {
         deliveryDate: new Date().toISOString().split("T")[0],
         targetPrice: "",
         orderQuantities: [],
+        visibility: ProjectVisibility.Private,
       },
       componentIdsToDelete: [],
       componentsForCreate: [],
@@ -207,28 +212,15 @@ const EditProject = () => {
         deliveryDate,
         orderQuantities,
         components,
+        visibility,
       } = getCustomerProjectData.getCustomerProject;
 
       const sanitizedComponents: UpdateProjectComponentData[] = components.map(
         (comp) => {
           const copySpec: any = JSON.parse(JSON.stringify(comp.componentSpec));
-          delete copySpec.__typename;
-          delete copySpec.dimension.__typename;
 
           copySpec.componentSpecId = copySpec.id;
           delete copySpec.id;
-
-          if (copySpec.postProcess) {
-            for (let process of copySpec.postProcess) {
-              delete process.__typename;
-              if (process.estimatedArea) {
-                delete process.estimatedArea.__typename;
-              }
-              if (process.numberOfColors) {
-                delete process.numberOfColors.__typename;
-              }
-            }
-          }
 
           return {
             componentId: comp.id,
@@ -251,6 +243,7 @@ const EditProject = () => {
           deliveryDate,
           targetPrice,
           orderQuantities,
+          visibility,
         },
       }));
 
@@ -445,7 +438,12 @@ const EditProject = () => {
     for (let val of Object.values(projectEditError)) {
       if (val) return true;
     }
-
+    if (
+      isNaN(parseFloat(projectData.totalWeight)) ||
+      parseFloat(projectData.totalWeight) === 0
+    ) {
+      return true;
+    }
     return components.length === 0;
   };
 
@@ -478,8 +476,6 @@ const EditProject = () => {
             compsForUpdate.push(comp as UpdateProjectComponentData);
           }
         } else {
-          // we need to add projectId field because we're calling the standalone
-          // createProjectComponent gql endpoint instead of bundling it along with createProject
           compsForCreate.push({
             projectId: updateProjectInput.projectData.projectId,
             ...comp,
@@ -670,7 +666,16 @@ const EditProject = () => {
               {renderTextField(
                 "totalWeight",
                 projectData.totalWeight,
-                intl.formatMessage({ id: "app.project.attribute.totalWeight" })
+                intl.formatMessage({ id: "app.project.attribute.totalWeight" }),
+                {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({ id: "app.general.unit.g" })}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }
               )}
             </ListItem>
             <ListItem>
@@ -743,7 +748,16 @@ const EditProject = () => {
               {renderTextField(
                 "targetPrice",
                 projectData.targetPrice,
-                intl.formatMessage({ id: "app.project.attribute.targetPrice" })
+                intl.formatMessage({ id: "app.project.attribute.targetPrice" }),
+                {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({ id: "app.general.currency.usd" })}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }
               )}
             </ListItem>
 
@@ -826,6 +840,40 @@ const EditProject = () => {
                   renderOption={() => null}
                 />
               </Box>
+            </ListItem>
+
+            <ListItem>
+              <TextField
+                select
+                id="visibility-select"
+                label={intl.formatMessage({
+                  id: "app.project.attribute.visibility",
+                })}
+                onChange={(e) => {
+                  setUpdateProjectInput((prev) => ({
+                    ...prev,
+                    projectData: {
+                      ...prev.projectData,
+                      visibility: e.target.value as ProjectVisibility,
+                    },
+                  }));
+                }}
+                value={projectData.visibility}
+                helperText={intl.formatMessage({
+                  id: "app.customer.createProject.visibility.tooltip",
+                })}
+              >
+                <MenuItem value={ProjectVisibility.Private}>
+                  {intl.formatMessage({
+                    id: "app.project.attribute.visibility.private",
+                  })}
+                </MenuItem>
+                <MenuItem value={ProjectVisibility.Public}>
+                  {intl.formatMessage({
+                    id: "app.project.attribute.visibility.public",
+                  })}
+                </MenuItem>
+              </TextField>
             </ListItem>
           </Stack>
         </Container>

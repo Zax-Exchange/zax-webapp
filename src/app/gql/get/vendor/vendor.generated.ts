@@ -19,7 +19,7 @@ export type GetVendorProjectQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: number, toolingFee?: number | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null } } | null };
+export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: string, toolingFee?: string | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null } } | null };
 
 export type GetVendorProjectsQueryVariables = Types.Exact<{
   data: Types.GetVendorProjectsInput;
@@ -47,7 +47,7 @@ export type SearchVendorCompaniesQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, leadTime: number }> };
+export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorSearchItem', vendor: { __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, leadTime: number }, highlight: { __typename?: 'VendorSearchHighlight', products?: Array<string | null> | null, name?: Array<string | null> | null } }> };
 
 export type GetVendorPosQueryVariables = Types.Exact<{
   data: Types.GetVendorPosInput;
@@ -298,15 +298,21 @@ export type GetVendorGuestProjectQueryResult = Apollo.QueryResult<GetVendorGuest
 export const SearchVendorCompaniesDocument = gql`
     query searchVendorCompanies($data: SearchVendorCompanyInput!) {
   searchVendorCompanies(data: $data) {
-    id
-    name
-    contactEmail
-    logo
-    country
-    isVerified
-    locations
-    products
-    leadTime
+    vendor {
+      id
+      name
+      contactEmail
+      logo
+      country
+      isVerified
+      locations
+      products
+      leadTime
+    }
+    highlight {
+      products
+      name
+    }
   }
 }
     `;

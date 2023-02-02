@@ -21,9 +21,11 @@ import React, { useCallback } from "react";
 import { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import {
+  CreateGuestProjectInput,
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
+  PostProcessDetailInput,
   ProjectDesign,
 } from "../../../../../../generated/graphql";
 import {
@@ -64,6 +66,7 @@ import useCustomSnackbar from "../../../../../Utils/CustomSnackbar";
 import { isValidAlphanumeric } from "../../../../../Utils/inputValidators";
 import { openLink } from "../../../../../Utils/openLink";
 import UploadDesign from "../../../UploadDesign";
+import { isValidDimension } from "../../common/DimensionsInput";
 import BookletSubSection from "../subsections/BookletSubSection";
 import CorrugateBoxSubSection from "../subsections/CorrugateBoxSubSection";
 import CorrugateTraySubSection from "../subsections/CorrugateTraySubSection";
@@ -114,15 +117,13 @@ const CreateProjectComponentModal = ({
   existingDesigns,
   defaultComponentIndex,
 }: {
-  setProjectData: React.Dispatch<
-    React.SetStateAction<Partial<CreateProjectInput>>
-  >;
+  setProjectData: React.Dispatch<React.SetStateAction<CreateProjectInput>>;
   setComponentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setComponentsDesigns: React.Dispatch<React.SetStateAction<ProjectDesign[][]>>;
   setComponentIndexToEdit: React.Dispatch<React.SetStateAction<number | null>>;
   setTemporaryDesignIdsToDelete: React.Dispatch<React.SetStateAction<string[]>>;
   componentModalOnClose: () => void;
-  projectData: Partial<CreateProjectInput>;
+  projectData: CreateProjectInput;
   existingDesigns?: ProjectDesign[];
   defaultComponentIndex?: number;
 }) => {
@@ -257,19 +258,8 @@ const CreateProjectComponentModal = ({
       if (!Object.keys(componentSpec).length) {
         return true;
       }
-      if (componentSpec.productName === PRODUCT_NAME_STICKER.value) {
-        if (!componentSpec.dimension.x || !componentSpec.dimension.y) {
-          return true;
-        }
-        return false;
-      }
-      if (
-        !componentSpec.dimension.x ||
-        !componentSpec.dimension.y ||
-        !componentSpec.dimension.z
-      ) {
-        return true;
-      }
+      if (!isValidDimension(componentSpec.dimension)) return true;
+
       return false;
     };
 
@@ -284,6 +274,9 @@ const CreateProjectComponentModal = ({
           if (isInvalidComponentDimension()) return true;
         }
 
+        if (attribute === "postProcess") {
+          if (isInvalidPostProcess()) return true;
+        }
         const val = componentSpec[attribute];
 
         if (
@@ -298,9 +291,36 @@ const CreateProjectComponentModal = ({
       return false;
     };
 
-    if (isInvalidComponentSpec()) return true;
+    const isInvalidPostProcess = () => {
+      if (componentSpec.postProcess) {
+        for (let process of componentSpec.postProcess) {
+          if (!Object.keys(process).length) return true;
 
-    if (!componentData.name) return false;
+          if (process.estimatedArea && !isValidDimension(process.estimatedArea))
+            return true;
+
+          if (process.numberOfColors) {
+            if (!process.numberOfColors.c || !process.numberOfColors.t)
+              return true;
+          }
+          for (let key in process) {
+            const attr = key as keyof PostProcessDetailInput;
+            if (
+              typeof process[attr] === "string" &&
+              (process[attr] as string).length === 0
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    };
+
+    if (isInvalidComponentSpec()) return true;
+    if (isInvalidPostProcess()) return true;
+
+    if (!componentData.name) return true;
     return false;
   };
 
@@ -317,7 +337,7 @@ const CreateProjectComponentModal = ({
 
     return (
       <Autocomplete
-        sx={{ width: 200 }}
+        sx={{ width: 250 }}
         options={ALL_PRODUCT_NAMES}
         getOptionLabel={(option) => intl.formatMessage({ id: option.labelId })}
         autoHighlight
@@ -572,7 +592,7 @@ const CreateProjectComponentModal = ({
                 value={componentData.name}
               />
             </ListItem>
-            <ListItem>{renderProductsDropdown()}</ListItem>
+            <ListItem sx={{ mt: 1 }}>{renderProductsDropdown()}</ListItem>
           </Stack>
           <Stack>
             <ListItem>

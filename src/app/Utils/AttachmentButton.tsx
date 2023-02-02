@@ -5,12 +5,15 @@ import React from "react";
 const AttachmentButton = ({
   onClick,
   label,
+  disabled = false,
 }: {
   onClick: () => void;
   label: string;
+  disabled?: boolean;
 }) => {
   return (
     <Chip
+      disabled={disabled}
       icon={<AttachFile sx={{ fontSize: "16px" }} />}
       label={label}
       onClick={onClick}

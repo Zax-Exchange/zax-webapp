@@ -54,6 +54,8 @@ import {
   LocaleContextProvider,
 } from "./context/LocaleContext";
 import Feedback from "./app/Feedback/Feedback";
+import ReactGA from "react-ga4";
+import { EVENT_ACTION, EVENT_CATEGORY } from "./analytics/constants";
 
 const theme = createTheme({
   palette: {
@@ -164,16 +166,6 @@ const theme = createTheme({
   },
 });
 
-const getIntlFile = (locale: Locale) => {
-  switch (locale) {
-    case "en":
-      return en;
-    case "zh-cn":
-      return zhCn;
-  }
-  return undefined;
-};
-
 function App() {
   const { CustomSnackbar } = useCustomSnackbar();
   const { locale } = useContext(LocaleContext);
@@ -183,15 +175,42 @@ function App() {
     document.addEventListener("logout", () => {
       logout();
     });
+
+    document.addEventListener("reload", () => {
+      window.location.reload();
+    });
+
+    ReactGA.initialize(process.env.REACT_APP_GA4_ID!);
+
     return () => {
       document.removeEventListener("logout", () => {});
+      document.removeEventListener("reload", () => {});
     };
   }, []);
+
+  useEffect(() => {
+    ReactGA.set({
+      userId: user ? user.id : "null",
+      isVendor: user ? user.isVendor : "null",
+    });
+  }, [user]);
+
+  // useEffect(() => {
+  //   const initialValue: any = (document.body.style as any).zoom;
+
+  //   // Change zoom level on mount
+  //   (document.body.style as any).zoom = "90%";
+
+  //   return () => {
+  //     // Restore default value
+  //     (document.body.style as any).zoom = initialValue;
+  //   };
+  // }, []);
 
   return (
     <ThemeProvider theme={theme}>
       <SnackbarContextProvider>
-        <div className="App" style={{ minWidth: "960px" }}>
+        <div className="App" style={{ minWidth: "1280px" }}>
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <CustomSnackbar />
             <Nav />
@@ -215,14 +234,14 @@ function App() {
                     </RequireAuth>
                   }
                 />
-                <Route
+                {/* <Route
                   path={GENERAL_ROUTES.PROFILE}
                   element={
                     <RequireAuth isAllowed={true}>
                       <Profile />
                     </RequireAuth>
                   }
-                />
+                /> */}
                 <Route
                   path={GENERAL_ROUTES.PROJECT_DETAIL}
                   element={

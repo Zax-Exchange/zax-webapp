@@ -11,6 +11,9 @@ import {
   CardActionArea,
   CardContent,
   Fade,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import { MouseEventHandler, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -91,7 +94,26 @@ const stripePromise = loadStripe(config.stripePublishableKey);
 
 const VendorSignup = () => {
   const intl = useIntl();
-
+  const VENDOR_SIGNUP_STEPS = [
+    intl.formatMessage({
+      id: "app.signup.step.email",
+    }),
+    intl.formatMessage({
+      id: "app.signup.step.companyInfo",
+    }),
+    intl.formatMessage({
+      id: "app.signup.vendor.step.vendorInfo",
+    }),
+    intl.formatMessage({
+      id: "app.signup.step.selectPlan",
+    }),
+    intl.formatMessage({
+      id: "app.signup.step.review",
+    }),
+    intl.formatMessage({
+      id: "app.signup.step.payment",
+    }),
+  ];
   const [
     createStripeCustomerMutation,
     {
@@ -114,7 +136,9 @@ const VendorSignup = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
-  const [companySize, setCompanySize] = useState("");
+
+  // TODO: review pricing model and determine whether we need it or not
+  const [companySize, setCompanySize] = useState("M");
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -142,12 +166,45 @@ const VendorSignup = () => {
   } as StripePaymentIntent);
 
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const [activeStep, setActiveStep] = useState(0);
 
   const [subscriptionInfo, setSubscriptionInfo] = useState({
     subscriptionPriceId: "",
     perUserPriceId: "",
     billingFrequency: "",
   } as VendorSubscriptionInfo);
+
+  useEffect(() => {
+    switch (currentPage) {
+      case VendorSignupPage.EMAIL_PAGE:
+        setActiveStep(0);
+        break;
+      case VendorSignupPage.COMPANY_INFO_PAGE:
+        setActiveStep(1);
+        break;
+      case VendorSignupPage.VENDOR_INFO_PAGE:
+        setActiveStep(2);
+        break;
+      case VendorSignupPage.PLAN_SELECTION_PAGE:
+        setActiveStep(3);
+        break;
+      case VendorSignupPage.REVIEW_PAGE:
+        setActiveStep(4);
+        break;
+      case VendorSignupPage.PAYMENT_PAGE:
+        setActiveStep(5);
+        break;
+    }
+  }, [currentPage]);
+  const shouldShowStepper = () => {
+    if (
+      currentPage === VendorSignupPage.JOIN_OR_CREATE ||
+      currentPage === VendorSignupPage.JOIN ||
+      currentPage === VendorSignupPage.SUCCESS_PAGE
+    )
+      return false;
+    return true;
+  };
 
   // set stripePaymentIntent.customerId once createStripeCustomer succeeds
   useEffect(() => {
@@ -270,10 +327,12 @@ const VendorSignup = () => {
       setValues({
         ...values,
       });
-      setCurrentPage(VendorSignupPage.COMPANY_SIZE_PAGE);
-    } else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
       setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
-    } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+    }
+    // else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
+    //   setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
+    // }
+    else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(VendorSignupPage.REVIEW_PAGE);
     } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
       try {
@@ -317,11 +376,11 @@ const VendorSignup = () => {
       case VendorSignupPage.VENDOR_INFO_PAGE:
         setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
         break;
-      case VendorSignupPage.COMPANY_SIZE_PAGE:
-        setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
-        break;
+      // case VendorSignupPage.COMPANY_SIZE_PAGE:
+      //   setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
+      //   break;
       case VendorSignupPage.PLAN_SELECTION_PAGE:
-        setCurrentPage(VendorSignupPage.COMPANY_SIZE_PAGE);
+        setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
         break;
       case VendorSignupPage.REVIEW_PAGE:
         setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
@@ -508,13 +567,12 @@ const VendorSignup = () => {
       );
     } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
       if (getAllPlansData && getAllPlansData.getAllPlans) {
-        const plans = getAllPlansData.getAllPlans.filter(
-          (p) => p!.companySize === companySize
-        );
+        const plans = getAllPlansData.getAllPlans;
+
         return (
           <>
             <Typography variant="h6" sx={{ marginBottom: 4 }}>
-              Pick a plan for your company
+              {intl.formatMessage({ id: "app.signup.pickAPlan" })}
             </Typography>
             <Stack direction="row" justifyContent="space-around">
               {plans.map((plan) => (
@@ -573,6 +631,17 @@ const VendorSignup = () => {
 
   return (
     <Container maxWidth="lg">
+      {shouldShowStepper() && (
+        <Stepper activeStep={activeStep} sx={{ mb: 2 }}>
+          {VENDOR_SIGNUP_STEPS.map((label, index) => {
+            return (
+              <Step key={index}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+      )}
       {(createStripeCustomerLoading || isLoading) && <FullScreenLoading />}
       <Paper sx={{ padding: 8, position: "relative" }}>
         {/* <CustomSnackbar

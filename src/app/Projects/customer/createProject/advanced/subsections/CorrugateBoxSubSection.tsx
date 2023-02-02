@@ -24,6 +24,8 @@ import {
   FOLDING_CARTON_MATERIALS,
   FOLDING_CARTON_MATERIAL_SOURCES,
   FOLDING_CARTON_POST_PROCESSES,
+  MATERIAL_DEFAULT_CORRUGATE,
+  MATERIAL_SOURCE_OCC,
   POST_PROCESS_DEBOSS,
   POST_PROCESS_EMBOSS,
   POST_PROCESS_FOIL_STAMP,
@@ -159,7 +161,6 @@ const CorrugateBoxSubSection = ({
             <BoxStyleDropdown
               componentSpec={componentSpec}
               setComponentSpec={setComponentSpec}
-              options={CORRUGATE_BOX_BOX_STYLES}
             />
           </ListItem>
           <ListItem>
@@ -196,7 +197,9 @@ const CorrugateBoxSubSection = ({
               label={intl.formatMessage({
                 id: "app.component.attribute.material",
               })}
-              value="Default Corrugate"
+              value={intl.formatMessage({
+                id: MATERIAL_DEFAULT_CORRUGATE.labelId,
+              })}
             />
           </ListItem>
           <ListItem>
@@ -207,7 +210,7 @@ const CorrugateBoxSubSection = ({
               label={intl.formatMessage({
                 id: "app.component.attribute.materialSource",
               })}
-              value="OCC / Recycled Materials"
+              value={intl.formatMessage({ id: MATERIAL_SOURCE_OCC.labelId })}
             />
           </ListItem>
         </Stack>

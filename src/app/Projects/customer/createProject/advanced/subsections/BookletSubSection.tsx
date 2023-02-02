@@ -135,6 +135,7 @@ const BookletSubSection = ({
               {intl.formatMessage({ id: "app.component.attribute.dimension" })}
             </Typography>
             <DimensionsInput
+              displayTitle={false}
               dimension={componentSpec.dimension}
               setDimension={(data: ProductDimensionInput) => {
                 setComponentSpec((prev) => ({ ...prev, dimension: data }));

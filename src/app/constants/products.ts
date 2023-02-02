@@ -1,4 +1,4 @@
-import { CreateProjectComponentSpecInput, ProductDimension } from '../../generated/graphql';
+import { CreateProjectComponentSpecInput, PostProcessDetailInput, ProductDimension } from '../../generated/graphql';
 import { TranslatableAttribute } from '../../type/common';
 
 /** Product names */
@@ -933,7 +933,6 @@ export const DEFAULT_SLEEVE_SPEC: CreateProjectComponentSpecInput = {
     z: ""
   },
   includeArtworkInQuote: false,
-  boxStyle: "",
   thickness: "",
   material: "",
   materialSource: "",
@@ -1019,6 +1018,7 @@ export const DEFAULT_STICKER_SPEC: CreateProjectComponentSpecInput = {
   dimension: {
     x: "",
     y: "",
+    z: null
   },
   purpose: "",
   shape: "",
@@ -1037,3 +1037,12 @@ export const DEFAULT_BOOKLET_SPEC: CreateProjectComponentSpecInput = {
   style: ""
 }
 
+export const DEFAULT_POST_PROCESS: PostProcessDetailInput = {
+  postProcessName: "",
+  color: null,
+  estimatedArea: null,
+  fontSize: null,
+  isInside: null,
+  numberOfColors: null,
+  printingMethod: null,
+}

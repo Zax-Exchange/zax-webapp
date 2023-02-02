@@ -63,6 +63,7 @@ const GuestProject = () => {
     }
   }, [getProjectDetailError]);
 
+  // TODO: should verify email before GETing the project since project data can be inspected through network tab
   const verifyEmail = () => {
     if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
       if (getProjectDetailData.getProjectDetail.guestEmail === email) {
@@ -73,6 +74,11 @@ const GuestProject = () => {
     }
   };
 
+  const onEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter") {
+      verifyEmail();
+    }
+  };
   const renderCreationModeDropdown = () => {
     return (
       <Box>
@@ -135,6 +141,7 @@ const GuestProject = () => {
                   })
             }
             sx={{ mt: 2, width: "100%" }}
+            onKeyDown={onEnter}
           />
         </DialogContent>
         <DialogActions>

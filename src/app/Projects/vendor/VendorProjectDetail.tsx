@@ -38,6 +38,7 @@ import {
   Project,
   ProjectBidComponent,
   ProjectComponent,
+  ProjectComponentChangelog,
   ProjectComponentSpec,
   ProjectPermission,
   QuantityPrice,
@@ -77,11 +78,18 @@ import PermissionDenied from "../../Utils/PermissionDenied";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
+import {
+  useGetProjectChangelogQuery,
+  useGetProjectComponentChangelogLazyQuery,
+} from "../../gql/get/project/project.generated";
+import ProjectChangelogModal from "../customer/modals/ProjectChangelogModal";
+import ProjectComponentChangelogModal from "../customer/modals/ProjectComponentChangelogModal";
 
 type BidComponent = {
   quantityPrices: QuantityPrice[];
-  samplingFee: number;
-  toolingFee?: number | null;
+  samplingFee: string;
+  toolingFee?: string | null;
+  bidClearedByCustomer?: boolean;
 };
 
 interface TabPanelProps {
@@ -135,6 +143,15 @@ const VendorProjectDetail = () => {
   const [bidComponentsForCreate, setBidComponentsForCreate] =
     useState<BidComponentsForCreate>({});
 
+  const [componentChangelogModalOpen, setComponentChangelogModalOpen] =
+    useState(false);
+  const [projectChangelogModalOpen, setProjectChangelogModalOpen] =
+    useState(false);
+
+  const [componentsChangelog, setComponentsChangelog] = useState<
+    Record<string, ProjectComponentChangelog[]>
+  >({});
+
   const {
     data: getVendorProjectData,
     error: getVendorProjectError,
@@ -148,6 +165,7 @@ const VendorProjectDetail = () => {
       },
     },
     fetchPolicy: "no-cache",
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
@@ -197,6 +215,60 @@ const VendorProjectDetail = () => {
     },
   ] = useResubmitProjectBidMutation();
 
+  const {
+    data: getProjectChangelogData,
+    loading: getProjectChangelogLoading,
+    error: getProjectChangelogError,
+  } = useGetProjectChangelogQuery({
+    variables: {
+      data: {
+        projectId: projectId || "",
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
+
+  const [
+    getComponentChangelog,
+    {
+      loading: getComponentChangelogLoading,
+      data: getComponentChangelogData,
+      error: getComponentChangelogError,
+    },
+  ] = useGetProjectComponentChangelogLazyQuery();
+
+  useEffect(() => {
+    if (getVendorProjectData && getVendorProjectData.getVendorProject) {
+      const compIds = getVendorProjectData.getVendorProject.components.map(
+        (comp) => comp.id
+      );
+
+      getComponentChangelog({
+        variables: {
+          data: {
+            projectComponentIds: compIds,
+          },
+        },
+        fetchPolicy: "no-cache",
+      });
+    }
+  }, [getVendorProjectData]);
+
+  useEffect(() => {
+    if (
+      getComponentChangelogData &&
+      getComponentChangelogData.getProjectComponentChangelog
+    ) {
+      const res: Record<string, ProjectComponentChangelog[]> = {};
+      for (let changelog of getComponentChangelogData.getProjectComponentChangelog) {
+        if (changelog.length) {
+          res[changelog[0].projectComponentId] = changelog;
+        }
+      }
+      setComponentsChangelog(res);
+    }
+  }, [getComponentChangelogData]);
+
   useEffect(() => {
     if (isEditMode) {
       initializeBidComponents();
@@ -225,16 +297,33 @@ const VendorProjectDetail = () => {
 
   const resubmitProjectBid = async () => {
     if (getVendorProjectData && getVendorProjectData.getVendorProject) {
-      await resubmitBid({
-        variables: {
-          data: {
-            projectBidId: getVendorProjectData.getVendorProject.bidInfo.id,
+      try {
+        await resubmitBid({
+          variables: {
+            data: {
+              projectBidId: getVendorProjectData.getVendorProject.bidInfo.id,
+            },
           },
-        },
-        onCompleted() {
-          getVendorProjectRefetch();
-        },
-      });
+          onCompleted() {
+            getVendorProjectRefetch();
+          },
+        });
+        setSnackbar({
+          message: intl.formatMessage({
+            id: "app.vendor.projectDetail.updateSuccess",
+          }),
+          severity: "success",
+        });
+      } catch (error) {
+        setSnackbar({
+          message: intl.formatMessage({
+            id: "app.general.network.error",
+          }),
+          severity: "error",
+        });
+      } finally {
+        setSnackbarOpen(true);
+      }
     }
   };
 
@@ -302,7 +391,7 @@ const VendorProjectDetail = () => {
             projectBidId: bidId,
             projectComponentId: comp.id,
             quantityPrices: getAllQp(null),
-            samplingFee: 0,
+            samplingFee: "",
           };
 
           // check whether productName is moldedFiber before initializing the attribute
@@ -310,7 +399,7 @@ const VendorProjectDetail = () => {
             comp.componentSpec.productName ===
             PRODUCT_NAME_MOLDED_FIBER_TRAY.value
           ) {
-            compsForCreate[comp.id].toolingFee = 0;
+            compsForCreate[comp.id].toolingFee = "";
           } else {
             compsForCreate[comp.id].toolingFee = null;
           }
@@ -346,6 +435,18 @@ const VendorProjectDetail = () => {
   };
 
   const renderBidDetail = (bid: BidComponent | null) => {
+    if (bid?.bidClearedByCustomer) {
+      return (
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <InfoOutlined color="warning" />
+          <Typography variant="caption" color="CaptionText">
+            {intl.formatMessage({
+              id: "app.vendor.projectDetail.bidWasCleared",
+            })}
+          </Typography>
+        </Box>
+      );
+    }
     return (
       <>
         {!!bid && (
@@ -386,21 +487,25 @@ const VendorProjectDetail = () => {
                     <TableRow>
                       <TableCell align="right">{qp.quantity}</TableCell>
                       <TableCell align="right">
-                        {parseFloat(qp.price)}
+                        ${parseFloat(qp.price)}
                       </TableCell>
                       {isLast ? (
                         <>
-                          <TableCell align="right">{bid.samplingFee}</TableCell>
+                          <TableCell align="right">
+                            ${bid.samplingFee}
+                          </TableCell>
                           {!!bid.toolingFee && (
                             <TableCell align="right">
-                              {bid.toolingFee}
+                              ${bid.toolingFee}
                             </TableCell>
                           )}
                         </>
                       ) : (
                         <>
-                          <TableCell></TableCell>
-                          {!!bid.toolingFee && <TableCell></TableCell>}
+                          <TableCell align="right">-</TableCell>
+                          {!!bid.toolingFee && (
+                            <TableCell align="right">-</TableCell>
+                          )}
                         </>
                       )}
                     </TableRow>
@@ -485,7 +590,7 @@ const VendorProjectDetail = () => {
           ...bidComponentsForUpdate,
           [component.id]: {
             ...bidComponentsForUpdate[component.id],
-            [type]: +val,
+            [type]: val,
           },
         });
       }
@@ -606,7 +711,7 @@ const VendorProjectDetail = () => {
           ...bidComponentsForCreate,
           [component.id]: {
             ...bidComponentsForCreate[component.id],
-            [type]: +val,
+            [type]: val,
           },
         });
       }
@@ -693,19 +798,35 @@ const VendorProjectDetail = () => {
     );
   };
 
+  // nothing is filled out
+  const isAllEmpty = () => {
+    if (
+      getVendorProjectData!.getVendorProject!.components.every((comp) => {
+        const bidComponent = !!bidComponentsForUpdate[comp.id]
+          ? bidComponentsForUpdate[comp.id]
+          : bidComponentsForCreate[comp.id];
+        return isEmptyBidComponent(bidComponent);
+      })
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const isEmptyBidComponent = (
+    comp: UpdateProjectBidComponentInput | CreateProjectBidComponentInput
+  ) => {
+    for (let qp of comp.quantityPrices) {
+      if (qp.price) return false;
+    }
+    if (comp.samplingFee) return false;
+    if (comp.toolingFee !== null && comp.toolingFee) return false;
+
+    return true;
+  };
+
   const updateBids = async () => {
     setUpdateBidClicked(true);
-    const isCompleteBidComponent = (
-      comp: UpdateProjectBidComponentInput | CreateProjectBidComponentInput
-    ) => {
-      for (let qp of comp.quantityPrices) {
-        if (!qp.price) return false;
-      }
-      if (!comp.samplingFee) return false;
-      if (comp.toolingFee !== null && !comp.toolingFee) return false;
-
-      return true;
-    };
 
     const componentsValidated = () => {
       for (let comp of getVendorProjectData!.getVendorProject!.components) {
@@ -716,10 +837,10 @@ const VendorProjectDetail = () => {
           return false;
         }
       }
+
       return true;
     };
-
-    if (!componentsValidated()) return;
+    if (!componentsValidated() || isAllEmpty()) return;
 
     try {
       await Promise.all([
@@ -734,21 +855,20 @@ const VendorProjectDetail = () => {
         }),
         updateProjectBidComponents({
           variables: {
-            data: Object.values(bidComponentsForUpdate).filter((comp) =>
-              isCompleteBidComponent(comp)
-            ),
+            data: Object.values(bidComponentsForUpdate),
           },
         }),
         createProjectBidComponents({
           variables: {
-            data: Object.values(bidComponentsForCreate).filter((comp) =>
-              isCompleteBidComponent(comp)
+            data: Object.values(bidComponentsForCreate).filter(
+              (comp) => !isEmptyBidComponent(comp)
             ),
           },
         }),
       ]);
+      await getVendorProjectRefetch();
+      setUpdateBidClicked(false);
       setIsEditMode(false);
-      getVendorProjectRefetch();
       setSnackbar({
         message: intl.formatMessage({
           id: "app.vendor.projectDetail.updateSuccess",
@@ -780,8 +900,18 @@ const VendorProjectDetail = () => {
 
     const bids: Record<string, BidComponent> = {};
 
+    // a bid's qp gets cleared when customer deletes order quantities that originally had bids on them
+    // samplingFee/toolingFee remains, this flag is used to determine whether to display resubmit button or not
+    let bidClearedByCustomer = false;
+
     bidInfo.components.forEach((comp) => {
-      bids[comp.projectComponentId] = comp;
+      bids[comp.projectComponentId] = {
+        ...comp,
+      };
+      if (!comp.quantityPrices.length) {
+        bidClearedByCustomer = true;
+        bids[comp.projectComponentId].bidClearedByCustomer = true;
+      }
     });
 
     return (
@@ -852,10 +982,45 @@ const VendorProjectDetail = () => {
             </Box>
           </Box>
 
-          <ProjectSpecDetail
-            projectData={getVendorProjectData.getVendorProject as VendorProject}
-            isVendorProject={true}
-          />
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ position: "relative" }}>
+              {!!getProjectChangelogData &&
+                !!getProjectChangelogData.getProjectChangelog.length && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      onClick={() => setProjectChangelogModalOpen(true)}
+                    >
+                      {" "}
+                      {intl.formatMessage({ id: "app.viewVersionHistory" })}
+                    </Button>
+                    <Dialog
+                      open={projectChangelogModalOpen}
+                      onClose={() => setProjectChangelogModalOpen(false)}
+                      maxWidth="lg"
+                      fullWidth
+                    >
+                      <ProjectChangelogModal
+                        changelog={getProjectChangelogData.getProjectChangelog}
+                      />
+                    </Dialog>
+                  </Box>
+                )}
+
+              <ProjectSpecDetail
+                projectData={
+                  getVendorProjectData.getVendorProject as VendorProject
+                }
+                isVendorProject={true}
+              />
+            </Box>
+          </Box>
         </Paper>
 
         <Paper sx={{ position: "relative" }}>
@@ -883,6 +1048,7 @@ const VendorProjectDetail = () => {
                     </Button>
                     <Button
                       onClick={updateBids}
+                      disabled={isAllEmpty()}
                       variant="contained"
                       sx={{ mr: 2 }}
                     >
@@ -893,18 +1059,19 @@ const VendorProjectDetail = () => {
                   </>
                 ) : (
                   <>
-                    {bidInfo.status === BidStatus.Outdated && (
-                      <IconButton onClick={resubmitProjectBid}>
-                        <Tooltip
-                          title={intl.formatMessage({
-                            id: "app.vendor.projectDetail.resubmitBid",
-                          })}
-                          placement="top"
-                        >
-                          <Sync color="primary" />
-                        </Tooltip>
-                      </IconButton>
-                    )}
+                    {bidInfo.status === BidStatus.Outdated &&
+                      !bidClearedByCustomer && (
+                        <IconButton onClick={resubmitProjectBid}>
+                          <Tooltip
+                            title={intl.formatMessage({
+                              id: "app.vendor.projectDetail.resubmitBid",
+                            })}
+                            placement="top"
+                          >
+                            <Sync color="primary" />
+                          </Tooltip>
+                        </IconButton>
+                      )}
                     <IconButton onClick={() => setIsEditMode(true)}>
                       <Tooltip
                         title={intl.formatMessage({
@@ -943,7 +1110,12 @@ const VendorProjectDetail = () => {
                     key={i}
                     iconPosition="end"
                     icon={
-                      isIncomplete && updateBidClicked ? (
+                      !isEditMode && !!bids[comp.id]?.bidClearedByCustomer ? (
+                        <InfoOutlined
+                          sx={{ fontSize: "20px" }}
+                          color="warning"
+                        />
+                      ) : isIncomplete && updateBidClicked ? (
                         <Tooltip
                           title={intl.formatMessage({
                             id: "app.general.incomplete",
@@ -967,7 +1139,35 @@ const VendorProjectDetail = () => {
           {components.map((comp, i) => {
             return (
               <TabPanel value={currentTab} index={i}>
-                <Box>
+                <Box sx={{ position: "relative" }}>
+                  {!!componentsChangelog[comp.id] && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                      }}
+                    >
+                      <Button
+                        onClick={() => setComponentChangelogModalOpen(true)}
+                        variant="outlined"
+                      >
+                        {intl.formatMessage({
+                          id: "app.viewVersionHistory",
+                        })}
+                      </Button>
+                      <Dialog
+                        open={componentChangelogModalOpen}
+                        onClose={() => setComponentChangelogModalOpen(false)}
+                        maxWidth="lg"
+                        fullWidth
+                      >
+                        <ProjectComponentChangelogModal
+                          changelog={componentsChangelog[comp.id]}
+                        />
+                      </Dialog>
+                    </Box>
+                  )}
                   <Box>
                     <Typography variant="subtitle1" textAlign="left">
                       {intl.formatMessage({
@@ -992,7 +1192,20 @@ const VendorProjectDetail = () => {
                         id: "app.vendor.projectDetail.bidDetail",
                       })}
                     </Typography>
-                    {isEditMode && (
+                    {isEditMode && !!bids[comp.id]?.bidClearedByCustomer && (
+                      <Tooltip
+                        title={intl.formatMessage({
+                          id: "app.vendor.projectDetail.bidWasCleared.tooltip",
+                        })}
+                        placement="right"
+                      >
+                        <InfoOutlined
+                          sx={{ fontSize: "20px" }}
+                          color="warning"
+                        />
+                      </Tooltip>
+                    )}
+                    {isEditMode && !bids[comp.id]?.bidClearedByCustomer && (
                       <Tooltip
                         title={
                           !!bidComponentsForUpdate[comp.id]
@@ -1022,6 +1235,17 @@ const VendorProjectDetail = () => {
 
         <Box>
           <Box display="flex" alignItems="center" mt={2}>
+            {isEditMode && (
+              <Tooltip
+                title={intl.formatMessage({
+                  id: "app.bid.attribute.bidRemark.tooltip",
+                })}
+                placement="top"
+                sx={{ mr: 1 }}
+              >
+                <InfoOutlined color="info" fontSize="small" />
+              </Tooltip>
+            )}
             <Typography variant="subtitle2">
               {intl.formatMessage({
                 id: "app.vendor.search.AdditionRemarks",
@@ -1037,12 +1261,19 @@ const VendorProjectDetail = () => {
           </Box>
 
           {!!remarkFile && (
-            <Box display="flex">
+            <Box display="flex" mt={1}>
               <AttachmentButton
                 label={remarkFile.filename}
                 onClick={() => openLink(remarkFile.url)}
               />
             </Box>
+          )}
+          {!remarkFile && (
+            <Typography variant="caption" color="GrayText">
+              {intl.formatMessage({
+                id: "app.bid.attribute.bidRemark.noRemark",
+              })}
+            </Typography>
           )}
         </Box>
       </>
@@ -1056,9 +1287,6 @@ const VendorProjectDetail = () => {
     updateProjectBidComponentsLoading ||
     createProjectBidComponentsLoading;
 
-  if (isLoading) {
-    return <FullScreenLoading />;
-  }
   if (permissionError) {
     return (
       <Dialog open={true}>
@@ -1067,7 +1295,12 @@ const VendorProjectDetail = () => {
     );
   }
 
-  return <Container>{renderProjectDetail()}</Container>;
+  return (
+    <Container>
+      {isLoading && <FullScreenLoading />}
+      {renderProjectDetail()}
+    </Container>
+  );
 };
 
 export default VendorProjectDetail;

@@ -14,6 +14,7 @@ import {
   Chip,
   Tooltip,
   AlertColor,
+  Box,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
@@ -32,6 +33,7 @@ import {
   InputMaybe,
   ProjectPermission,
   ProjectStatus,
+  ProjectVisibility,
 } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
@@ -43,7 +45,13 @@ import {
 import { GetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import { useIntl } from "react-intl";
 import CustomerPermissionModal from "./modals/CustomerPermissionModal";
-import { Create } from "@mui/icons-material";
+import { Create, Visibility, VisibilityOff } from "@mui/icons-material";
+import ReactGA from "react-ga4";
+import {
+  EVENT_ACTION,
+  EVENT_CATEGORY,
+  EVENT_LABEL,
+} from "../../../analytics/constants";
 
 type ProjectOverviewMenuOption = "view-detail" | "share" | "delete";
 
@@ -65,8 +73,8 @@ const CustomerProjectOverviewCard = ({
 }) => {
   const intl = useIntl();
   const navigate = useNavigate();
-  const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
+  const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [projectMenuAnchor, setProjectMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
 
@@ -95,7 +103,14 @@ const CustomerProjectOverviewCard = ({
         viewDetailHandler();
         break;
       case "share":
-        if (canShare()) setPermissionModalOpen(true);
+        if (canShare()) {
+          ReactGA.event({
+            action: EVENT_ACTION.CLICK,
+            category: EVENT_CATEGORY.PROJECT,
+            label: EVENT_LABEL.SHARE_PROJECT,
+          });
+          setPermissionModalOpen(true);
+        }
         break;
       case "delete":
         if (canDelete()) setDeleteProjectModalOpen(true);
@@ -117,7 +132,6 @@ const CustomerProjectOverviewCard = ({
     );
   };
 
-  // TODO: use intl for chip label
   const renderProjectStatusChip = () => {
     switch (project.status) {
       case ProjectStatus.Open:
@@ -151,6 +165,32 @@ const CustomerProjectOverviewCard = ({
     }
   };
 
+  const renderVisibilityIcon = () => {
+    switch (project.visibility) {
+      case ProjectVisibility.Private:
+        return (
+          <Tooltip
+            title={intl.formatMessage({
+              id: "app.project.attribute.visibility.private",
+            })}
+            placement="right"
+          >
+            <VisibilityOff />
+          </Tooltip>
+        );
+      case ProjectVisibility.Public:
+        return (
+          <Tooltip
+            title={intl.formatMessage({
+              id: "app.project.attribute.visibility.public",
+            })}
+            placement="right"
+          >
+            <Visibility />
+          </Tooltip>
+        );
+    }
+  };
   return (
     <Grid item xs={4} minHeight={300}>
       <Paper
@@ -170,7 +210,7 @@ const CustomerProjectOverviewCard = ({
           <MoreIcon />
         </IconButton>
         <Menu
-          id="long-menu"
+          id="customer-project-overview-menu"
           anchorEl={projectMenuAnchor}
           open={projectMenuOpen}
           onClose={moreOnClose}
@@ -211,7 +251,14 @@ const CustomerProjectOverviewCard = ({
           {/* <Typography align="left">Company: {project.companyId}</Typography> */}
           <List>
             <ProjectOverviewListItem>
-              {renderProjectStatusChip()}
+              <Box
+                sx={{
+                  display: "flex",
+                }}
+              >
+                <Box>{renderProjectStatusChip()}</Box>
+                <Box ml={1}>{renderVisibilityIcon()}</Box>
+              </Box>
             </ProjectOverviewListItem>
 
             <ProjectOverviewListItem>
