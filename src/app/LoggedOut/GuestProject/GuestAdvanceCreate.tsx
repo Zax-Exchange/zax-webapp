@@ -309,14 +309,6 @@ const GuestAdvamcedCreate = ({
     }
   };
 
-  const handleAddressOnChange = (address: string, country: string) => {
-    setProjectData({
-      ...projectData,
-      deliveryAddress: address,
-      country,
-    });
-  };
-
   const isLoading = createGuestProjectLoading;
 
   return (

@@ -43,49 +43,6 @@ export default function GuidedGeneralSpec({
   setActiveStep: Dispatch<SetStateAction<number>>;
 }) {
   const intl = useIntl();
-  const [orderQuantity, setOrderQuantity] = useState("");
-
-  const projectInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val: string | number = e.target.value;
-    let isAllowed = true;
-    const attr = e.target.name as keyof CreateProjectInput;
-
-    switch (attr) {
-      case "name":
-        isAllowed = isValidAlphanumeric(val);
-        break;
-      case "orderQuantities":
-        isAllowed = isValidInt(val);
-        val = parseInt(val, 10);
-        break;
-      case "targetPrice":
-      case "totalWeight":
-        isAllowed = isValidFloat(val);
-        break;
-      default:
-        break;
-    }
-    if (isAllowed) {
-      setProjectData({
-        ...projectData,
-        [attr]: val,
-      });
-    }
-  };
-
-  const handleAddressOnChange = (address: string, country: string) => {
-    setProjectData({
-      ...projectData,
-      deliveryAddress: address,
-      country,
-    });
-  };
-
-  const orderQuantityOnChange = (val: string) => {
-    if (isValidInt(val)) {
-      setOrderQuantity(val);
-    }
-  };
 
   const shouldDisableNextButton = () => {
     for (let key in projectData) {

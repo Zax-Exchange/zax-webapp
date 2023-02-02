@@ -27,6 +27,7 @@ import {
   useCheckSignupJwtTokenLazyQuery,
   useCheckSignupJwtTokenQuery,
 } from "../gql/utils/user/user.generated";
+import { LoadingButton } from "@mui/lab";
 
 // TODO: refactor url/route
 // TODO: intl
@@ -154,7 +155,6 @@ const UserSignup = () => {
 
   return (
     <Container maxWidth="sm">
-      {!!createUserLoading && <FullScreenLoading />}
       <Paper elevation={2} sx={{ padding: 3 }}>
         <Box>
           <Typography variant="h6" sx={{ mb: 5 }}>
@@ -193,13 +193,14 @@ const UserSignup = () => {
             onKeyDown={onEnter}
           ></TextField>
 
-          <Button
+          <LoadingButton
             variant="contained"
             onClick={createUserHandler}
             disabled={shouldDisableCreateButton()}
+            loading={checkTokenLoading || createUserLoading}
           >
             {intl.formatMessage({ id: "app.general.create" })}
-          </Button>
+          </LoadingButton>
         </Stack>
       </Paper>
     </Container>
