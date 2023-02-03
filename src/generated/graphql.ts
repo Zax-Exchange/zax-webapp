@@ -375,6 +375,7 @@ export type DeleteProjectBidPermissionsInput = {
 
 export type DeleteProjectComponentInput = {
   componentId: Scalars['String'];
+  componentName: Scalars['String'];
 };
 
 export type DeleteProjectDesignInput = {
@@ -1553,8 +1554,8 @@ export type UpdateCustomerInfoInput = {
 };
 
 export type UpdateGuestProjectInput = {
-  componentIdsToDelete: Array<Scalars['String']>;
   componentsForCreate: Array<CreateProjectComponentInput>;
+  componentsForDelete: Array<DeleteProjectComponentInput>;
   componentsForUpdate: Array<UpdateProjectComponentData>;
   projectData: UpdateProjectData;
 };
@@ -1633,8 +1634,8 @@ export type UpdateProjectData = {
 };
 
 export type UpdateProjectInput = {
-  componentIdsToDelete: Array<Scalars['String']>;
   componentsForCreate: Array<CreateProjectComponentInput>;
+  componentsForDelete: Array<DeleteProjectComponentInput>;
   componentsForUpdate: Array<UpdateProjectComponentData>;
   projectData: UpdateProjectData;
 };

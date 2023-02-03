@@ -328,7 +328,7 @@ const ProjectComponentChangelogDetail = ({
           res.push(
             renderDesignFileChangelog(
               design.filename,
-              intl.formatMessage({ id: "app.versionHistory.uploaded" }),
+              intl.formatMessage({ id: "app.versionHistory.added" }),
               theme.palette.success.main,
               false
             )

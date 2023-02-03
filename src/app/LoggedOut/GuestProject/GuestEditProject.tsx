@@ -114,7 +114,7 @@ const GuestEditProject = ({
         // initi visibility here to comply with UpdateProjectData type, but not used since guest project is always private
         visibility: ProjectVisibility.Private,
       },
-      componentIdsToDelete: [],
+      componentsForDelete: [],
       componentsForCreate: [],
       componentsForUpdate: [],
     });
@@ -442,14 +442,15 @@ const GuestEditProject = ({
               ...updateProjectInput,
               componentsForUpdate: compsForUpdate,
               componentsForCreate: compsForCreate,
-              componentIdsToDelete: removedComponents
+              componentsForDelete: removedComponents
                 .filter((comp) => {
                   // only existing components are sent for deletion
                   return !!(comp as UpdateProjectComponentData).componentId;
                 })
-                .map(
-                  (comp) => (comp as UpdateProjectComponentData).componentId
-                ),
+                .map((comp) => ({
+                  componentId: (comp as UpdateProjectComponentData).componentId,
+                  componentName: comp.name,
+                })),
             },
           },
         }),

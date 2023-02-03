@@ -487,96 +487,6 @@ const SearchProjectDetail = () => {
     );
   };
 
-  const renderExistingBidDetail = (components: ProjectComponent[]) => {
-    const compIdToNameMap: Record<string, string> = {};
-    components.forEach((comp) => {
-      compIdToNameMap[comp.id] = comp.name;
-    });
-
-    return (
-      <>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={currentBidTab}
-            onChange={bidsTabOnChange}
-            variant="scrollable"
-            scrollButtons="auto"
-          >
-            {existingBid!.components.map((comp, i) => {
-              return (
-                <Tab label={compIdToNameMap[comp.projectComponentId]} key={i} />
-              );
-            })}
-          </Tabs>
-        </Box>
-
-        {existingBid!.components.map((comp, componentIndex) => {
-          return (
-            <TabPanel value={currentBidTab} index={componentIndex}>
-              <TableContainer>
-                <Table size="small">
-                  {/* <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.quantity",
-                        })}
-                      </TableCell>
-                      <TableCell>
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.price",
-                        })}
-                      </TableCell>
-                      <TableCell>
-                        {intl.formatMessage({
-                          id: "app.component.attribute.samplingFee",
-                        })}
-                      </TableCell>
-                    </TableRow>
-                  </TableHead> */}
-                  <TableBody>
-                    {comp.quantityPrices.map((qp, componentQpIndex) => {
-                      return (
-                        <TableRow>
-                          <TableCell>
-                            {intl.formatMessage({
-                              id: "app.bid.attribute.quantity",
-                            })}
-                          </TableCell>
-                          <TableCell>{qp.quantity}</TableCell>
-                          <TableCell>$ {qp.price}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                    <TableRow>
-                      <TableCell colSpan={2} sx={{ textAlign: "center" }}>
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.samplingFee",
-                        })}
-                      </TableCell>
-                      <TableCell>$ {comp.samplingFee}</TableCell>
-                    </TableRow>
-
-                    {!!comp.toolingFee && (
-                      <TableRow>
-                        <TableCell colSpan={2} sx={{ textAlign: "center" }}>
-                          {intl.formatMessage({
-                            id: "app.bid.attribute.toolingFee",
-                          })}
-                        </TableCell>
-                        <TableCell>$ {comp.toolingFee}</TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </TabPanel>
-          );
-        })}
-      </>
-    );
-  };
-
   if (getProjectDetailLoading) {
     return <FullScreenLoading />;
   }
@@ -693,6 +603,7 @@ const SearchProjectDetail = () => {
                             onClick={() =>
                               navigateToExistingBid(existingBid.projectId)
                             }
+                            color="primary"
                           >
                             <AssistantDirectionRoundedIcon />
                           </IconButton>
@@ -708,6 +619,7 @@ const SearchProjectDetail = () => {
                             shouldDisableSubmitBidButton() ||
                             deleteRemarkLoading
                           }
+                          color="primary"
                         >
                           {intl.formatMessage({
                             id: "app.vendor.search.submitBids",
@@ -717,45 +629,56 @@ const SearchProjectDetail = () => {
                     )}
                   </Box>
                 </Box>
-                <Paper sx={{ mt: 1 }}>
-                  {!!existingBid
-                    ? renderExistingBidDetail(components)
-                    : renderBidInputSection(components)}
-                </Paper>
-                <Box>
-                  <Box display="flex" alignItems="center" mt={2}>
-                    <Tooltip
-                      title={intl.formatMessage({
-                        id: "app.bid.attribute.bidRemark.tooltip",
-                      })}
-                      placement="top"
-                      sx={{ mr: 1 }}
-                    >
-                      <InfoOutlined color="info" fontSize="small" />
-                    </Tooltip>
-                    <Typography variant="subtitle2">
+                {!existingBid && (
+                  <Paper sx={{ mt: 1 }}>
+                    {renderBidInputSection(components)}
+                  </Paper>
+                )}
+                {existingBid && (
+                  <Box>
+                    <Typography variant="caption" color="GrayText">
                       {intl.formatMessage({
-                        id: "app.vendor.search.AdditionRemarks",
+                        id: "app.vendor.search.existingBid.helerText",
                       })}
                     </Typography>
-                    {!existingBid && (
-                      <UploadRemark
-                        setRemarkFile={setRemarkFile}
-                        setRemarkId={setRemarkId}
-                        deleteExistingRemark={deleteExistingRemark}
-                      />
+                  </Box>
+                )}
+                {!existingBid && (
+                  <Box>
+                    <Box display="flex" alignItems="center" mt={2}>
+                      <Tooltip
+                        title={intl.formatMessage({
+                          id: "app.bid.attribute.bidRemark.tooltip",
+                        })}
+                        placement="top"
+                        sx={{ mr: 1 }}
+                      >
+                        <InfoOutlined color="info" fontSize="small" />
+                      </Tooltip>
+                      <Typography variant="subtitle2">
+                        {intl.formatMessage({
+                          id: "app.vendor.search.AdditionRemarks",
+                        })}
+                      </Typography>
+                      {!existingBid && (
+                        <UploadRemark
+                          setRemarkFile={setRemarkFile}
+                          setRemarkId={setRemarkId}
+                          deleteExistingRemark={deleteExistingRemark}
+                        />
+                      )}
+                    </Box>
+
+                    {remarkFile && (
+                      <Box display="flex" mt={1}>
+                        <AttachmentButton
+                          label={remarkFile.filename}
+                          onClick={() => openLink(remarkFile.url)}
+                        />
+                      </Box>
                     )}
                   </Box>
-
-                  {remarkFile && (
-                    <Box display="flex" mt={1}>
-                      <AttachmentButton
-                        label={remarkFile.filename}
-                        onClick={() => openLink(remarkFile.url)}
-                      />
-                    </Box>
-                  )}
-                </Box>
+                )}
               </Container>
             </Grid>
           )}

@@ -21,6 +21,35 @@ const ProjectChangelogDetail = ({
   const intl = useIntl();
   const theme = useTheme();
 
+  const processOldAndNewComponents = (
+    oldComps: { id: string; name: string }[],
+    newComps: { id: string | null; name: string }[]
+  ) => {
+    const res: { name: string; isNew: boolean; isRemoved: boolean }[] = [];
+
+    for (let comp of oldComps) {
+      if (!newComps.find((d) => d.id === comp.id)) {
+        // comp is removed
+        res.push({
+          name: comp.name,
+          isNew: false,
+          isRemoved: true,
+        });
+      }
+    }
+    for (let comp of newComps) {
+      if (!oldComps.find((d) => d.id === comp.id)) {
+        // comp is newly uploaded
+        res.push({
+          name: comp.name,
+          isNew: true,
+          isRemoved: false,
+        });
+      }
+    }
+    return res;
+  };
+
   const renderOldAndNewValueString = (oldValue: string, newValue: string) => {
     return (
       <>
@@ -42,6 +71,25 @@ const ProjectChangelogDetail = ({
       </>
     );
   };
+
+  const renderComponentChangelog = (
+    componentName: string,
+    description: string,
+    color: string
+  ) => {
+    return (
+      <Box display="flex" alignItems="center" mt={1} mb={1}>
+        <Typography variant="overline" sx={{ minWidth: "200px" }}>
+          {componentName}
+        </Typography>
+        <ArrowRightAlt fontSize="small" sx={{ ml: 3, mr: 3 }} />
+        <Typography variant="overline" color={color} sx={{ minWidth: "200px" }}>
+          {description}
+        </Typography>
+      </Box>
+    );
+  };
+
   const renderChangeValue = (
     propertyName: keyof Project,
     newValue: any,
@@ -58,6 +106,38 @@ const ProjectChangelogDetail = ({
       );
     }
 
+    if (propertyName === "components") {
+      const comps = processOldAndNewComponents(oldValue, newValue);
+
+      const res: JSX.Element[] = [];
+
+      for (let comp of comps) {
+        if (comp.isRemoved) {
+          res.push(
+            renderComponentChangelog(
+              comp.name,
+              intl.formatMessage({ id: "app.versionHistory.removed" }),
+              theme.palette.error.main
+            )
+          );
+        }
+        if (comp.isNew) {
+          res.push(
+            renderComponentChangelog(
+              comp.name,
+              intl.formatMessage({ id: "app.versionHistory.added" }),
+              theme.palette.success.main
+            )
+          );
+        }
+      }
+
+      return (
+        <Box display="flex" flexDirection="column">
+          {res}
+        </Box>
+      );
+    }
     if (propertyName === "orderQuantities") {
       return renderOldAndNewValueString(
         oldValue.join(", "),

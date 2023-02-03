@@ -120,7 +120,7 @@ const EditProject = () => {
         orderQuantities: [],
         visibility: ProjectVisibility.Private,
       },
-      componentIdsToDelete: [],
+      componentsForDelete: [],
       componentsForCreate: [],
       componentsForUpdate: [],
     });
@@ -462,14 +462,15 @@ const EditProject = () => {
               ...updateProjectInput,
               componentsForUpdate: compsForUpdate,
               componentsForCreate: compsForCreate,
-              componentIdsToDelete: removedComponents
+              componentsForDelete: removedComponents
                 .filter((comp) => {
                   // only existing components are sent for deletion
                   return !!(comp as UpdateProjectComponentData).componentId;
                 })
-                .map(
-                  (comp) => (comp as UpdateProjectComponentData).componentId
-                ),
+                .map((comp) => ({
+                  componentId: (comp as UpdateProjectComponentData).componentId,
+                  componentName: comp.name,
+                })),
             },
           },
         }),
