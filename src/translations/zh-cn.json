@@ -92,6 +92,7 @@
   "app.notification.company.newJoinRequest": "您的企业有一个新的用户加入请求，您可以到管理用户查看。",
   "app.notification.noNewNotifications": "您目前没有新提醒！",
   "app.notification.clearAll": "清除所有提醒",
+  "app.notification.project.newInvitation": "{customerName}邀请您对项目{projectName}进行竞标！",
 
   "app.feedback.action.bugReport": "Bug反馈",
    "app.feedback.action.bugReport.whatAreYouTryingToDo": "请描述当下您在尝试做什么",
@@ -274,6 +275,7 @@
   "app.project.status.completed": "Completed",
   "app.project.status.incomplete": "Incomplete",
   "app.project.status.closed": "Closed",
+  "app.project.projectInvitations": "竞标邀请",
 
   "app.bid.attribute.quantity": "数量",
   "app.bid.attribute.price": "价格",
@@ -426,6 +428,8 @@
   "app.customer.projectDetail.bidWasCleared": "由于您的项目报价数量有变动，厂商原本的报价已被清除。待厂商重新提交竞标后便可查看新的报价细节。",
   "app.customer.projectDetail.noBids": "此项目尚无厂商竞标。",
   "app.customer.projectDetail.copyProject": "复制项目",
+  "app.customer.projectDetail.inviteVendors": "邀请厂商竞标",
+  "app.customer.projectDetail.inviteVendors.noInvitations": "项目尚未邀请厂商来竞标。",
 
   "app.customer.poInvoice.create": "新订单",
   "app.customer.poInvoice.createSuccess": "订单创建完成",

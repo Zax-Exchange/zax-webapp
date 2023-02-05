@@ -163,6 +163,7 @@ const AdvancedCreateProject = () => {
         deliveryDate,
         orderQuantities,
         components,
+        visibility,
       } = getCustomerProjectData.getCustomerProject;
 
       const sanitizedComponents: CreateProjectComponentInput[] = components.map(
@@ -194,6 +195,7 @@ const AdvancedCreateProject = () => {
         targetPrice,
         orderQuantities,
         components: sanitizedComponents,
+        visibility,
       }));
 
       // initialize empty design arrays for each component

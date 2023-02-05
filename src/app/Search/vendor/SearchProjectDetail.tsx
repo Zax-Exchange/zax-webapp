@@ -18,6 +18,7 @@ import {
   InputAdornment,
   Tooltip,
   IconButton,
+  Dialog,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
@@ -31,7 +32,6 @@ import {
   ProjectBid,
   ProjectComponent,
 } from "../../../generated/graphql";
-import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
 import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
 import { isValidFloat, isValidInt } from "../../Utils/inputValidators";
@@ -48,6 +48,8 @@ import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
 import ProjectSpecDetail from "../../Projects/common/ProjectSpecDetail";
 import { InfoOutlined } from "@mui/icons-material";
+import { useGetSearchProjectDetailQuery } from "../../gql/get/vendor/vendor.generated";
+import PermissionDenied from "../../Utils/PermissionDenied";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -107,16 +109,19 @@ const SearchProjectDetail = () => {
   const [currentComponentTab, setCurrentComponentTab] = useState(0);
   const [currentBidTab, setCurrentBidTab] = useState(0);
   const [existingBid, setExistingBid] = useState<ProjectBid | null>(null);
-  const [currentExistingBidTab, setCurrentExistingBidTab] = useState(0);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+
+  const [permissionedDenied, setPermissionDenied] = useState(false);
+
   const {
     data: getProjectDetailData,
     error: getProjectDetailError,
     loading: getProjectDetailLoading,
-  } = useGetProjectDetailQuery({
+  } = useGetSearchProjectDetailQuery({
     variables: {
       data: {
         projectId: projectId || "",
+        companyId: user!.companyId,
       },
     },
     fetchPolicy: "no-cache",
@@ -154,9 +159,9 @@ const SearchProjectDetail = () => {
 
   // initialize componentsQpData with componentIds
   useEffect(() => {
-    if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
+    if (getProjectDetailData && getProjectDetailData.getSearchProjectDetail) {
       const { components, orderQuantities } =
-        getProjectDetailData.getProjectDetail;
+        getProjectDetailData.getSearchProjectDetail;
 
       setBidInput((prev) => ({
         ...prev,
@@ -181,7 +186,7 @@ const SearchProjectDetail = () => {
         variables: {
           data: {
             companyId: user!.companyId,
-            projectId: getProjectDetailData.getProjectDetail.id,
+            projectId: getProjectDetailData.getSearchProjectDetail.id,
           },
         },
         fetchPolicy: "no-cache",
@@ -204,11 +209,15 @@ const SearchProjectDetail = () => {
       deleteRemarkError ||
       createProjectBidError
     ) {
-      setSnackbar({
-        message: intl.formatMessage({ id: "app.general.network.error" }),
-        severity: "error",
-      });
-      setSnackbarOpen(true);
+      if (getProjectDetailError?.message.includes("permission denied")) {
+        setPermissionDenied(true);
+      } else {
+        setSnackbar({
+          message: intl.formatMessage({ id: "app.general.network.error" }),
+          severity: "error",
+        });
+        setSnackbarOpen(true);
+      }
     }
   }, [
     getProjectDetailError,
@@ -491,13 +500,22 @@ const SearchProjectDetail = () => {
     return <FullScreenLoading />;
   }
 
+  if (permissionedDenied) {
+    return (
+      <Dialog open={true}>
+        <PermissionDenied />
+      </Dialog>
+    );
+  }
+
   if (
     getProjectDetailData &&
-    getProjectDetailData.getProjectDetail &&
+    getProjectDetailData.getSearchProjectDetail &&
     Object.keys(bidInput.components).length
   ) {
-    const { components } = getProjectDetailData.getProjectDetail as Project;
-    const projectData = getProjectDetailData.getProjectDetail;
+    const { components } =
+      getProjectDetailData.getSearchProjectDetail as Project;
+    const projectData = getProjectDetailData.getSearchProjectDetail;
     return (
       <Container>
         {createProjectBidLoading && <FullScreenLoading />}

@@ -13,6 +13,7 @@ import {
   Tooltip,
   useTheme,
   Dialog,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -25,14 +26,19 @@ import {
   ProjectBid,
   ProjectComponent,
   ProjectComponentChangelog,
+  ProjectInvitation,
   ProjectPermission,
+  ProjectVisibility,
 } from "../../../generated/graphql";
 import React from "react";
 import {
   CUSTOMER_ROUTES,
   GENERAL_ROUTES,
 } from "../../constants/loggedInRoutes";
-import { useGetCustomerProjectQuery } from "../../gql/get/customer/customer.generated";
+import {
+  useGetCustomerProjectInvitationsQuery,
+  useGetCustomerProjectQuery,
+} from "../../gql/get/customer/customer.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useIntl } from "react-intl";
 import EditIcon from "@mui/icons-material/Edit";
@@ -44,7 +50,7 @@ import {
 } from "../../gql/get/project/project.generated";
 import PermissionDenied from "../../Utils/PermissionDenied";
 import ProjectSpecDetail from "../common/ProjectSpecDetail";
-import { ContentCopy } from "@mui/icons-material";
+import { ContentCopy, GroupAddOutlined } from "@mui/icons-material";
 import {
   EVENT_ACTION,
   EVENT_CATEGORY,
@@ -53,6 +59,8 @@ import {
 import ReactGA from "react-ga4";
 import ProjectComponentChangelogModal from "./modals/ProjectComponentChangelogModal";
 import ProjectChangelogModal from "./modals/ProjectChangelogModal";
+import ProjectInvitationModal from "./modals/ProjectInvitationModal";
+import ProjectInvitationCard from "./ProjectInvitationCard";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -91,6 +99,9 @@ const CustomerProjectDetail = () => {
   const [componentsChangelog, setComponentsChangelog] = useState<
     Record<string, ProjectComponentChangelog[]>
   >({});
+
+  const [projectInvitationModalOpen, setProjectInvitationModalOpen] =
+    useState(false);
 
   // For project component section.
   const [currentTab, setCurrentTab] = useState(0);
@@ -207,6 +218,11 @@ const CustomerProjectDetail = () => {
 
     navigate(dest);
   };
+
+  const openProjectInvitationModal = () => {
+    setProjectInvitationModalOpen(true);
+  };
+
   const backButtonHandler = () => {
     navigate(GENERAL_ROUTES.PROJECTS);
   };
@@ -232,6 +248,16 @@ const CustomerProjectDetail = () => {
       return (
         <ListItem sx={{ pl: 0 }} key={i}>
           <VendorBidOverview bid={bid} projectComponents={projectComponents} />
+        </ListItem>
+      );
+    });
+  };
+
+  const renderProjectInvitations = (invitations: ProjectInvitation[]) => {
+    return invitations.map((invitation, i) => {
+      return (
+        <ListItem sx={{ pl: 0 }} key={i}>
+          <ProjectInvitationCard invitation={invitation} />
         </ListItem>
       );
     });
@@ -285,6 +311,18 @@ const CustomerProjectDetail = () => {
                 </Box>
                 {projectData.permission !== ProjectPermission.Viewer && (
                   <Box>
+                    {projectData.visibility === ProjectVisibility.Private && (
+                      <IconButton onClick={openProjectInvitationModal}>
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "app.customer.projectDetail.inviteVendors",
+                          })}
+                          placement="top"
+                        >
+                          <GroupAddOutlined color="primary" />
+                        </Tooltip>
+                      </IconButton>
+                    )}
                     <IconButton onClick={copyProject}>
                       <Tooltip
                         title={intl.formatMessage({
@@ -343,85 +381,6 @@ const CustomerProjectDetail = () => {
                 </Box>
               </Box>
             </Paper>
-
-            {/* COMPONENTS SECTION */}
-            <Paper sx={{ mt: 3 }}>
-              {/* <Paper sx={{ mt: 1 }}> */}
-              <Box
-                sx={{
-                  borderBottom: 1,
-                  borderColor: "divider",
-                  display: "flex",
-                }}
-              >
-                <Box
-                  sx={{
-                    padding: "8px",
-                    margin: "0 8px",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="h6" textAlign="left">
-                    {intl.formatMessage({
-                      id: "app.customer.projects.componentsDetail",
-                    })}
-                  </Typography>
-                </Box>
-                <Tabs
-                  value={currentTab}
-                  onChange={componentTabOnChange}
-                  variant="scrollable"
-                  scrollButtons="auto"
-                >
-                  {projectData.components.map((comp, i) => {
-                    return <Tab label={comp.name} key={i} />;
-                  })}
-                </Tabs>
-              </Box>
-              {projectData.components.map((comp, i) => {
-                return (
-                  <TabPanel value={currentTab} index={i} key={i}>
-                    <Box sx={{ position: "relative" }}>
-                      {!!componentsChangelog[comp.id] && (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            top: 0,
-                            right: 0,
-                          }}
-                        >
-                          <Button
-                            onClick={() => setComponentChangelogModalOpen(true)}
-                            variant="outlined"
-                          >
-                            {intl.formatMessage({
-                              id: "app.viewVersionHistory",
-                            })}
-                          </Button>
-                          <Dialog
-                            open={componentChangelogModalOpen}
-                            onClose={() =>
-                              setComponentChangelogModalOpen(false)
-                            }
-                            maxWidth="lg"
-                            fullWidth
-                          >
-                            <ProjectComponentChangelogModal
-                              changelog={componentsChangelog[comp.id]}
-                            />
-                          </Dialog>
-                        </Box>
-                      )}
-                      <ComponentSpecDetail
-                        spec={comp.componentSpec}
-                        designs={comp.designs}
-                      />
-                    </Box>
-                  </TabPanel>
-                );
-              })}
-            </Paper>
           </Grid>
 
           {/* BID SECTION */}
@@ -449,18 +408,87 @@ const CustomerProjectDetail = () => {
             )}
           </Grid>
         </Grid>
-
-        {/* <Box mt={2}>
-          <Box>
-            <Typography variant="h6">
-              {intl.formatMessage({
-                id: "app.customer.projects.versionHistory",
+        {/* COMPONENTS SECTION */}
+        <Paper sx={{ mt: 3 }}>
+          {/* <Paper sx={{ mt: 1 }}> */}
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: "divider",
+              display: "flex",
+            }}
+          >
+            <Box
+              sx={{
+                padding: "8px",
+                margin: "0 8px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6" textAlign="left">
+                {intl.formatMessage({
+                  id: "app.customer.projects.componentsDetail",
+                })}
+              </Typography>
+            </Box>
+            <Tabs
+              value={currentTab}
+              onChange={componentTabOnChange}
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              {projectData.components.map((comp, i) => {
+                return <Tab label={comp.name} key={i} />;
               })}
-            </Typography>
+            </Tabs>
           </Box>
-
-          <Box></Box>
-        </Box> */}
+          {projectData.components.map((comp, i) => {
+            return (
+              <TabPanel value={currentTab} index={i} key={i}>
+                <Box sx={{ position: "relative" }}>
+                  {!!componentsChangelog[comp.id] && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                      }}
+                    >
+                      <Button
+                        onClick={() => setComponentChangelogModalOpen(true)}
+                        variant="outlined"
+                      >
+                        {intl.formatMessage({
+                          id: "app.viewVersionHistory",
+                        })}
+                      </Button>
+                      <Dialog
+                        open={componentChangelogModalOpen}
+                        onClose={() => setComponentChangelogModalOpen(false)}
+                        maxWidth="lg"
+                        fullWidth
+                      >
+                        <ProjectComponentChangelogModal
+                          changelog={componentsChangelog[comp.id]}
+                        />
+                      </Dialog>
+                    </Box>
+                  )}
+                  <ComponentSpecDetail
+                    spec={comp.componentSpec}
+                    designs={comp.designs}
+                  />
+                </Box>
+              </TabPanel>
+            );
+          })}
+        </Paper>
+        <Dialog open={projectInvitationModalOpen}>
+          <ProjectInvitationModal
+            setProjectInvitationModalOpen={setProjectInvitationModalOpen}
+          />
+        </Dialog>
       </Container>
     );
   }

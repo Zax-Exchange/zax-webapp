@@ -17,3 +17,9 @@ mutation createGuestProject($data: CreateGuestProjectInput!) {
     createGuestProject(data: $data)
   }
 `
+
+const CREATE_PROJECT_INVITATION = gql`
+  mutation createProjectInvitation($data: CreateProjectInvitationInput!) {
+    createProjectInvitation(data: $data)
+  }
+`

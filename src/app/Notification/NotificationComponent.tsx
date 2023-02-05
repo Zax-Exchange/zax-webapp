@@ -180,6 +180,17 @@ const NotificationComponent = () => {
     if (noti.notificationType === NotificationType.COMPANY) {
       navigate(GENERAL_ROUTES.SETTINGS);
     }
+
+    if (noti.notificationType === NotificationType.PROJECT_INVITATION) {
+      if (user!.isVendor) {
+        const dest = VENDOR_ROUTES.SEARCH_PROJECT_DETAIL.split(":");
+
+        dest[1] = noti.data.projectId!;
+
+        navigate(`${dest.join("")}`);
+      }
+    }
+
     clearNotification(noti.notificationId);
   };
 
@@ -189,6 +200,15 @@ const NotificationComponent = () => {
         { id: noti.data.message },
         {
           projectName: noti.data.projectName,
+          customerName: noti.data.customerName,
+        }
+      );
+    } else if (noti.notificationType === NotificationType.PROJECT_INVITATION) {
+      return intl.formatMessage(
+        { id: noti.data.message },
+        {
+          projectName: noti.data.projectName,
+          customerName: noti.data.customerName,
         }
       );
     } else if (noti.notificationType === NotificationType.PO_INVOICE) {

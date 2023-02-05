@@ -12,6 +12,7 @@ const EmailPage = ({
   setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const intl = useIntl();
+  setShouldDisableNext(false);
   // const [checkUserEmailQuery, { data, loading, error }] =
   //   useCheckUserEmailLazyQuery();
 

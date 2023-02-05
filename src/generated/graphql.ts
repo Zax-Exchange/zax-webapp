@@ -16,6 +16,12 @@ export type Scalars = {
   Upload: any;
 };
 
+export enum BidIntentStatus {
+  Accepted = 'ACCEPTED',
+  ExpressedIntent = 'EXPRESSED_INTENT',
+  Rejected = 'REJECTED'
+}
+
 export type BidRemark = FileInterface & {
   __typename?: 'BidRemark';
   fileId: Scalars['String'];
@@ -215,6 +221,12 @@ export type CreateProjectInput = {
   visibility: ProjectVisibility;
 };
 
+export type CreateProjectInvitationInput = {
+  customerCompanyId: Scalars['String'];
+  projectId: Scalars['String'];
+  vendorCompanyIds: Array<Scalars['String']>;
+};
+
 export type CreatePurchaseOrderInput = {
   projectBidId: Scalars['String'];
   projectId: Scalars['String'];
@@ -386,6 +398,12 @@ export type DeleteProjectInput = {
   projectId: Scalars['String'];
 };
 
+export type DeleteProjectInvitationInput = {
+  customerCompanyId: Scalars['String'];
+  projectId: Scalars['String'];
+  vendorCompanyIds: Array<Scalars['String']>;
+};
+
 export type DeleteProjectPermissionsInput = {
   projectId: Scalars['String'];
   userIds: Array<Scalars['String']>;
@@ -450,6 +468,10 @@ export type GetCustomerProjectInput = {
   userId: Scalars['String'];
 };
 
+export type GetCustomerProjectInvitationsInput = {
+  projectId: Scalars['String'];
+};
+
 export type GetCustomerProjectsInput = {
   permissions?: InputMaybe<Array<ProjectPermission>>;
   userId: Scalars['String'];
@@ -499,6 +521,11 @@ export type GetProjectUsersInput = {
 
 export type GetPurchaseOrderInput = {
   projectBidId: Scalars['String'];
+  projectId: Scalars['String'];
+};
+
+export type GetSearchProjectDetailInput = {
+  companyId: Scalars['String'];
   projectId: Scalars['String'];
 };
 
@@ -580,6 +607,7 @@ export type Mutation = {
   createProject: Scalars['Boolean'];
   createProjectBid: Scalars['Boolean'];
   createProjectBidComponents: Scalars['Boolean'];
+  createProjectInvitation: Scalars['Boolean'];
   createPurchaseOrder: Scalars['Boolean'];
   createStripeCustomerInStripeForCustomer: StripePaymentIntent;
   createStripeCustomerInStripeForVendor: StripePaymentIntent;
@@ -593,6 +621,7 @@ export type Mutation = {
   deleteProject: Scalars['Boolean'];
   deleteProjectBidPermissions: Scalars['Boolean'];
   deleteProjectDesign: Scalars['Boolean'];
+  deleteProjectInvitation: Scalars['Boolean'];
   deleteProjectPermissions: Scalars['Boolean'];
   deletePurchaseOrder: Scalars['Boolean'];
   inviteUsers: Scalars['Boolean'];
@@ -669,6 +698,11 @@ export type MutationCreateProjectBidComponentsArgs = {
 };
 
 
+export type MutationCreateProjectInvitationArgs = {
+  data: CreateProjectInvitationInput;
+};
+
+
 export type MutationCreatePurchaseOrderArgs = {
   data: CreatePurchaseOrderInput;
 };
@@ -731,6 +765,11 @@ export type MutationDeleteProjectBidPermissionsArgs = {
 
 export type MutationDeleteProjectDesignArgs = {
   data: DeleteProjectDesignInput;
+};
+
+
+export type MutationDeleteProjectInvitationArgs = {
+  data: DeleteProjectInvitationInput;
 };
 
 
@@ -911,6 +950,7 @@ export type PermissionedProject = ProjectInterface & {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type PermissionedProjectBid = ProjectBidInterface & {
@@ -1042,6 +1082,7 @@ export type Project = ProjectInterface & {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type ProjectBid = ProjectBidInterface & {
@@ -1171,6 +1212,17 @@ export type ProjectInterface = {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
+};
+
+export type ProjectInvitation = {
+  __typename?: 'ProjectInvitation';
+  customerCompanyId: Scalars['String'];
+  customerName: Scalars['String'];
+  projectId: Scalars['String'];
+  projectName: Scalars['String'];
+  vendorCompanyId: Scalars['String'];
+  vendorName: Scalars['String'];
 };
 
 export type ProjectOverview = {
@@ -1187,6 +1239,7 @@ export type ProjectOverview = {
 };
 
 export enum ProjectPermission {
+  Bidder = 'BIDDER',
   Editor = 'EDITOR',
   Owner = 'OWNER',
   Viewer = 'VIEWER'
@@ -1256,6 +1309,7 @@ export type Query = {
   getCustomerDetail: CustomerDetail;
   getCustomerPos: Array<CustomerPo>;
   getCustomerProject: CustomerProject;
+  getCustomerProjectInvitations: Array<ProjectInvitation>;
   getCustomerProjects: Array<CustomerProjectOverview>;
   getGuestProjectDetail?: Maybe<Project>;
   getInvoice?: Maybe<Invoice>;
@@ -1268,6 +1322,7 @@ export type Query = {
   getProjectDetail?: Maybe<Project>;
   getProjectUsers: Array<UserProjectPermission>;
   getPurchaseOrder?: Maybe<PurchaseOrder>;
+  getSearchProjectDetail?: Maybe<Project>;
   getStatementsLink: Scalars['String'];
   getUser: GenericUser;
   getVendorDetail?: Maybe<VendorDetail>;
@@ -1344,6 +1399,11 @@ export type QueryGetCustomerProjectArgs = {
 };
 
 
+export type QueryGetCustomerProjectInvitationsArgs = {
+  data: GetCustomerProjectInvitationsInput;
+};
+
+
 export type QueryGetCustomerProjectsArgs = {
   data: GetCustomerProjectsInput;
 };
@@ -1401,6 +1461,11 @@ export type QueryGetProjectUsersArgs = {
 
 export type QueryGetPurchaseOrderArgs = {
   data: GetPurchaseOrderInput;
+};
+
+
+export type QueryGetSearchProjectDetailArgs = {
+  data: GetSearchProjectDetailInput;
 };
 
 
@@ -1753,6 +1818,7 @@ export type VendorGuestProject = ProjectInterface & {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type VendorGuestProjectOverview = {
@@ -1825,6 +1891,7 @@ export type VendorProject = ProjectInterface & {
   totalWeight: Scalars['String'];
   updatedAt: Scalars['Date'];
   userId: Scalars['String'];
+  visibility: ProjectVisibility;
 };
 
 export type VendorProjectOverview = {

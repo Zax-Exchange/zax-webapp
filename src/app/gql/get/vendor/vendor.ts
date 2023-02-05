@@ -160,3 +160,17 @@ ${FILE_FRAGMENT}
   }
 `
 
+const GET_SEARCH_RPOJECT_DETAIL = gql`
+  ${PROJECT_FRAGMENT}
+  ${PROJECT_COMPONENT_FRAGMENT}
+  query getSearchProjectDetail($data: GetSearchProjectDetailInput!) {
+    getSearchProjectDetail(data: $data) {
+      ...ProjectFragment
+      country
+      components {
+        ...ProjectComponentFragment
+      }
+      
+    }
+  }
+`

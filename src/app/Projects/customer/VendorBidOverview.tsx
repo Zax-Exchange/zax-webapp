@@ -194,10 +194,7 @@ const VendorBidOverview = ({
               <List>
                 <ListItem>{renderBidStatus(bid.status)}</ListItem>
                 <ListItem>
-                  <Typography variant="subtitle2">
-                    {intl.formatMessage({ id: "app.general.vendor" })}:{" "}
-                    {vendorData.name}
-                  </Typography>
+                  <Typography variant="subtitle2">{vendorData.name}</Typography>
                 </ListItem>
                 <ListItem>
                   <Typography variant="caption">
