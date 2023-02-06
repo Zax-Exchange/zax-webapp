@@ -223,9 +223,9 @@ const CreateProjectComponentModal = ({
     let isAllowed = true;
 
     switch (e.target.name) {
-      case "name":
-        isAllowed = isValidAlphanumeric(val);
-        break;
+      // case "name":
+      //   isAllowed = isValidAlphanumeric(val);
+      //   break;
       default:
         break;
     }

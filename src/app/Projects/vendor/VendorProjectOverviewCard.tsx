@@ -197,7 +197,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.companyName",
                 })}
-                arrow
                 placement="top"
               >
                 <BusinessIcon />
@@ -209,7 +208,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.deliveryDate",
                 })}
-                arrow
                 placement="top"
               >
                 <LocalShippingOutlinedIcon />
@@ -222,7 +220,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.deliveryAddress",
                 })}
-                arrow
                 placement="top"
               >
                 <PlaceIcon />
@@ -237,7 +234,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.targetPrice",
                 })}
-                arrow
                 placement="top"
               >
                 <AttachMoneyIcon />
@@ -252,7 +248,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.general.createdAt",
                 })}
-                arrow
                 placement="top"
               >
                 <CreateIcon />

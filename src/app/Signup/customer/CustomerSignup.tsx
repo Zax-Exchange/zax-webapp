@@ -192,9 +192,9 @@ const CustomerSignup = () => {
       case "fax":
         isAllowed = isValidInt(val);
         break;
-      case "name":
-        isAllowed = isValidAlphanumeric(val);
-        break;
+      // case "name":
+      //   isAllowed = isValidAlphanumeric(val);
+      //   break;
       default:
         break;
     }

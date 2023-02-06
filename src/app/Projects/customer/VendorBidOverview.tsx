@@ -198,7 +198,6 @@ const VendorBidOverview = ({
                 </ListItem>
                 <ListItem>
                   <Typography variant="caption">
-                    {intl.formatMessage({ id: "app.general.createdAt" })}:{" "}
                     {bid.createdAt.slice(0, 10)}
                   </Typography>
                 </ListItem>

@@ -4,6 +4,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  CircularProgress,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -83,23 +84,16 @@ const ProjectInvitationModal = ({
         userId: user!.id,
       },
     },
+    fetchPolicy: "no-cache",
   });
 
   const [
     deleteInvitation,
-    {
-      data: deleteInvitationData,
-      loading: deleteInvitationLoading,
-      error: deleteInvitationError,
-    },
+    { loading: deleteInvitationLoading, error: deleteInvitationError },
   ] = useDeleteProjectInvitationMutation();
   const [
     createInvitation,
-    {
-      data: createInvitationData,
-      loading: createInvitationLoading,
-      error: createInvitationError,
-    },
+    { loading: createInvitationLoading, error: createInvitationError },
   ] = useCreateProjectInvitationMutation();
 
   const [
@@ -120,7 +114,7 @@ const ProjectInvitationModal = ({
       { leading: true }
     );
   }, []);
-
+  console.log(getProjectData);
   useEffect(() => {
     if (
       getProjectData &&
@@ -387,6 +381,7 @@ const ProjectInvitationModal = ({
         </Box>
         <Box sx={{ overflow: "hidden" }}>
           <List sx={{ maxHeight: "240px", overflow: "scroll" }}>
+            {getProjectInvitationsLoading && <CircularProgress />}
             {vendorsList.map((vendor) => {
               return (
                 <>{renderInvitationListItem(vendor.vendorName, vendor.id)}</>

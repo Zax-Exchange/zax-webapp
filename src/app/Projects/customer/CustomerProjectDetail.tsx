@@ -60,7 +60,7 @@ import ReactGA from "react-ga4";
 import ProjectComponentChangelogModal from "./modals/ProjectComponentChangelogModal";
 import ProjectChangelogModal from "./modals/ProjectChangelogModal";
 import ProjectInvitationModal from "./modals/ProjectInvitationModal";
-import ProjectInvitationCard from "./ProjectInvitationCard";
+import ProjectInvitationCard from "../vendor/ProjectInvitationCard";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -292,7 +292,7 @@ const CustomerProjectDetail = () => {
         <Grid container spacing={2}>
           {/* PROJECT SECTION */}
           <Grid item xs={9}>
-            <Paper elevation={1}>
+            <Paper elevation={1} sx={{ maxHeight: "37rem", height: "100%" }}>
               <Box
                 sx={{
                   padding: 1,
@@ -402,7 +402,7 @@ const CustomerProjectDetail = () => {
               </Box>
             )}
             {!!bids && (
-              <List sx={{ maxHeight: "800px", overflow: "scroll" }}>
+              <List sx={{ maxHeight: "35rem", overflow: "scroll", p: 2 }}>
                 {renderVendorBidOverview(bids, projectData.components)}
               </List>
             )}

@@ -179,8 +179,8 @@ const CustomerProjectOverviewCard = ({
         );
     }
   };
-  return (
-    <Grid item xs={4} minHeight={300}>
+  const renderOverviewCard = () => {
+    return (
       <Paper
         variant="elevation"
         elevation={1}
@@ -310,6 +310,11 @@ const CustomerProjectOverviewCard = ({
           {/* {project.permission !== "VIEWER" && <Button onClick={() => setPermissionModalOpen(true)} style={{alignSelf: "center"}}>Share</Button>} */}
         </Container>
       </Paper>
+    );
+  };
+  return (
+    <Grid item xs={4} minHeight={300}>
+      {renderOverviewCard()}
 
       <DeleteProjectModal
         deleteProjectModalOpen={deleteProjectModalOpen}

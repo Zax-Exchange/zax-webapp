@@ -559,6 +559,10 @@ export type GetVendorProjectInput = {
   userId: Scalars['String'];
 };
 
+export type GetVendorProjectInvitationsInput = {
+  companyId: Scalars['String'];
+};
+
 export type GetVendorProjectsInput = {
   userId: Scalars['String'];
 };
@@ -1330,6 +1334,7 @@ export type Query = {
   getVendorGuestProjects: Array<VendorGuestProjectOverview>;
   getVendorPos: Array<VendorPo>;
   getVendorProject?: Maybe<VendorProject>;
+  getVendorProjectInvitations: Array<ProjectInvitation>;
   getVendorProjects: Array<VendorProjectOverview>;
   login: LoggedInUser;
   searchCategories: Array<Category>;
@@ -1501,6 +1506,11 @@ export type QueryGetVendorPosArgs = {
 
 export type QueryGetVendorProjectArgs = {
   data: GetVendorProjectInput;
+};
+
+
+export type QueryGetVendorProjectInvitationsArgs = {
+  data: GetVendorProjectInvitationsInput;
 };
 
 

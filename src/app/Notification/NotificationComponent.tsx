@@ -100,6 +100,15 @@ const NotificationComponent = () => {
             document.dispatchEvent(new CustomEvent("reload"));
           }
         }
+        if (
+          notification.notificationType === NotificationType.PROJECT_INVITATION
+        ) {
+          if (
+            window.location.href.includes(GENERAL_ROUTES.PROJECTS.split("/")[1])
+          ) {
+            document.dispatchEvent(new CustomEvent("reload"));
+          }
+        }
         if (notification.notificationType === NotificationType.PO_INVOICE) {
           if (
             window.location.href.includes(
