@@ -92,7 +92,7 @@ const ProjectSpecInput = ({
     );
   };
   return (
-    <>
+    <Box sx={{ display: "flex", justifyContent: "space-around" }}>
       <List>
         <ListItem>
           <Box>
@@ -114,26 +114,6 @@ const ProjectSpecInput = ({
           </Box>
         </ListItem>
 
-        <ListItem>
-          <Box width="100%">
-            <Box>
-              {renderSpecTitle(
-                intl.formatMessage({
-                  id: "app.project.attribute.category",
-                })
-              )}
-            </Box>
-            <Box width="100%">
-              <ProjectCategoryDropdown
-                defaultCategory={projectData.category!}
-                parentSetDataCallback={(category: string) => {
-                  setProjectData((prev) => ({ ...prev, category }));
-                }}
-                width="100%"
-              />
-            </Box>
-          </Box>
-        </ListItem>
         <ListItem>
           <Box>
             <Box>
@@ -197,24 +177,7 @@ const ProjectSpecInput = ({
             </Box>
           </Box>
         </ListItem>
-        <ListItem>
-          <Box width="100%">
-            <Box>
-              {renderSpecTitle(
-                intl.formatMessage({
-                  id: "app.project.attribute.deliveryAddress",
-                })
-              )}
-            </Box>
-            <Box>
-              <GoogleMapAutocomplete
-                parentSetDataHandler={handleAddressOnChange}
-                defaultAddress={projectData.deliveryAddress}
-                width="100%"
-              />
-            </Box>
-          </Box>
-        </ListItem>
+
         <ListItem>
           <Box>
             <Box>
@@ -241,6 +204,94 @@ const ProjectSpecInput = ({
                   ),
                 }}
                 sx={{ width: "10rem" }}
+              />
+            </Box>
+          </Box>
+        </ListItem>
+
+        {!isGuest && (
+          <ListItem>
+            <Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                {renderSpecTitle(
+                  intl.formatMessage({
+                    id: "app.project.attribute.visibility",
+                  })
+                )}
+                <Box ml={1}>
+                  {renderTooltip(
+                    intl.formatMessage({
+                      id: "app.customer.createProject.visibility.tooltip",
+                    })
+                  )}
+                </Box>
+              </Box>
+              <Box>
+                <TextField
+                  select
+                  onChange={(e) => {
+                    setProjectData((prev) => ({
+                      ...prev,
+                      visibility: e.target.value as ProjectVisibility,
+                    }));
+                  }}
+                  value={projectData.visibility}
+                  helperText={intl.formatMessage({
+                    id: "app.customer.createProject.visibility.helperText",
+                  })}
+                >
+                  <MenuItem value={ProjectVisibility.Private}>
+                    {intl.formatMessage({
+                      id: "app.project.attribute.visibility.private",
+                    })}
+                  </MenuItem>
+                  <MenuItem value={ProjectVisibility.Public}>
+                    {intl.formatMessage({
+                      id: "app.project.attribute.visibility.public",
+                    })}
+                  </MenuItem>
+                </TextField>
+              </Box>
+            </Box>
+          </ListItem>
+        )}
+      </List>
+
+      <List sx={{ flexBasis: "50%" }}>
+        <ListItem>
+          <Box width="100%">
+            <Box>
+              {renderSpecTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.category",
+                })
+              )}
+            </Box>
+            <Box width="100%">
+              <ProjectCategoryDropdown
+                defaultCategory={projectData.category!}
+                parentSetDataCallback={(category: string) => {
+                  setProjectData((prev) => ({ ...prev, category }));
+                }}
+                width="100%"
+              />
+            </Box>
+          </Box>
+        </ListItem>
+        <ListItem>
+          <Box width="100%">
+            <Box>
+              {renderSpecTitle(
+                intl.formatMessage({
+                  id: "app.project.attribute.deliveryAddress",
+                })
+              )}
+            </Box>
+            <Box>
+              <GoogleMapAutocomplete
+                parentSetDataHandler={handleAddressOnChange}
+                defaultAddress={projectData.deliveryAddress}
+                width="100%"
               />
             </Box>
           </Box>
@@ -314,61 +365,8 @@ const ProjectSpecInput = ({
             </Box>
           </Box>
         </ListItem>
-        {!isGuest && (
-          <ListItem>
-            <Box>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                {renderSpecTitle(
-                  intl.formatMessage({
-                    id: "app.project.attribute.visibility",
-                  })
-                )}
-                <Box ml={1}>
-                  {renderTooltip(
-                    intl.formatMessage({
-                      id: "app.customer.createProject.visibility.tooltip",
-                    })
-                  )}
-                </Box>
-              </Box>
-              <Box>
-                <TextField
-                  select
-                  onChange={(e) => {
-                    setProjectData((prev) => ({
-                      ...prev,
-                      visibility: e.target.value as ProjectVisibility,
-                    }));
-                  }}
-                  value={projectData.visibility}
-                >
-                  <MenuItem value={ProjectVisibility.Private}>
-                    {intl.formatMessage({
-                      id: "app.project.attribute.visibility.private",
-                    })}
-                  </MenuItem>
-                  <MenuItem value={ProjectVisibility.Public}>
-                    {intl.formatMessage({
-                      id: "app.project.attribute.visibility.public",
-                    })}
-                  </MenuItem>
-                </TextField>
-              </Box>
-            </Box>
-          </ListItem>
-        )}
       </List>
-
-      <Stack
-        spacing={2}
-        textAlign="left"
-        sx={{ "& .MuiListItem-root div": { flexGrow: 2 } }}
-      >
-        <ListItem>
-          <Box></Box>
-        </ListItem>
-      </Stack>
-    </>
+    </Box>
   );
 };
 

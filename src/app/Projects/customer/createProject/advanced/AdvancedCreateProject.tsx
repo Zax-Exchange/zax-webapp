@@ -360,7 +360,7 @@ const AdvancedCreateProject = () => {
             </Box>
           </Box>
         </Box>
-        <Container maxWidth="sm">
+        <Container maxWidth="lg">
           <ProjectSpecInput
             setProjectData={setProjectData}
             projectData={projectData}

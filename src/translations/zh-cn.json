@@ -381,6 +381,7 @@
   "app.customer.createProject.selectBoxStyle": "选择盒型",
   "app.customer.createProject.noDesignPlaceholder": "暂无上传档案",
   "app.customer.createProject.projectCreated": "项目创建成功！",
+  "app.customer.createProject.visibility.helperText": "此选项无法在项目创建后被修改。",
 
   "app.customer.editProject.restoreComponent": "恢复部件",
   "app.customer.editProject.removedComponents": "已移除部件",

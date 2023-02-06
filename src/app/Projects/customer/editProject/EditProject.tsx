@@ -822,6 +822,7 @@ const EditProject = () => {
                 label={intl.formatMessage({
                   id: "app.project.attribute.visibility",
                 })}
+                disabled
                 onChange={(e) => {
                   setUpdateProjectInput((prev) => ({
                     ...prev,

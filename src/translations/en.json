@@ -380,6 +380,7 @@
   "app.customer.createProject.noDesignPlaceholder": "No designs uploaded yet.",
   "app.customer.createProject.projectCreated": "Project created!",
   "app.customer.createProject.visibility.tooltip": "Visibility allows you to control whether vendors can find your project through searching or not.",
+  "app.customer.createProject.visibility.helperText": "You cannot change this attribute after project creation.",
 
   "app.customer.editProject.restoreComponent": "Restore Component",
   "app.customer.editProject.removedComponents": "Removed Components",
