@@ -402,7 +402,9 @@ const CustomerProjectDetail = () => {
               </Box>
             )}
             {!!bids && (
-              <List sx={{ maxHeight: "35rem", overflow: "scroll", p: 2 }}>
+              <List
+                sx={{ maxHeight: "35rem", overflow: "scroll", p: 2, pl: 0 }}
+              >
                 {renderVendorBidOverview(bids, projectData.components)}
               </List>
             )}

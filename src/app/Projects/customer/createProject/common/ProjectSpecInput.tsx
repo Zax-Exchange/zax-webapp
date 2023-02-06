@@ -95,7 +95,7 @@ const ProjectSpecInput = ({
     <Box sx={{ display: "flex", justifyContent: "space-around" }}>
       <List>
         <ListItem>
-          <Box>
+          <Box width="100%">
             <Box>
               {renderSpecTitle(
                 intl.formatMessage({
@@ -103,19 +103,20 @@ const ProjectSpecInput = ({
                 })
               )}
             </Box>
-            <Box>
+            <Box width="100%">
               <TextField
                 autoComplete="new-password"
                 onChange={projectInputOnChange}
                 name="name"
                 value={projectData.name}
+                fullWidth
               />
             </Box>
           </Box>
         </ListItem>
 
         <ListItem>
-          <Box>
+          <Box width="100%">
             <Box>
               {renderSpecTitle(
                 intl.formatMessage({
@@ -138,12 +139,13 @@ const ProjectSpecInput = ({
                     </InputAdornment>
                   ),
                 }}
+                fullWidth
               />
             </Box>
           </Box>
         </ListItem>
         <ListItem>
-          <Box>
+          <Box width="100%">
             <Box>
               {renderSpecTitle(
                 intl.formatMessage({
@@ -170,6 +172,7 @@ const ProjectSpecInput = ({
                       {...params}
                       name="deliveryDate"
                       value={projectData.deliveryDate}
+                      fullWidth
                     />
                   )}
                 />
@@ -179,7 +182,7 @@ const ProjectSpecInput = ({
         </ListItem>
 
         <ListItem>
-          <Box>
+          <Box width="100%">
             <Box>
               {renderSpecTitle(
                 intl.formatMessage({
@@ -203,7 +206,7 @@ const ProjectSpecInput = ({
                     </InputAdornment>
                   ),
                 }}
-                sx={{ width: "10rem" }}
+                fullWidth
               />
             </Box>
           </Box>

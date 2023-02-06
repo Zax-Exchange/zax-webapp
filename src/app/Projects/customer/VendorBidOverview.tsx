@@ -12,6 +12,7 @@ import {
   MenuList,
   MenuItem,
   Tooltip,
+  Stack,
 } from "@mui/material";
 import VendorBidModal from "./modals/VendorBidModal";
 import { useContext, useEffect, useState } from "react";
@@ -191,17 +192,19 @@ const VendorBidOverview = ({
         <>
           <CardActionArea onClick={() => setIsBidModalOpen(true)}>
             <CardContent>
-              <List>
+              <Stack>
                 <ListItem>{renderBidStatus(bid.status)}</ListItem>
-                <ListItem>
+                <ListItem sx={{ pt: 0 }}>
                   <Typography variant="subtitle2">{vendorData.name}</Typography>
                 </ListItem>
                 <ListItem>
                   <Typography variant="caption">
-                    {bid.createdAt.slice(0, 10)}
+                    {`${intl.formatMessage({
+                      id: "app.general.createdAt",
+                    })} ${bid.createdAt.slice(0, 10)}`}
                   </Typography>
                 </ListItem>
-              </List>
+              </Stack>
             </CardContent>
           </CardActionArea>
           <IconButton
