@@ -2,37 +2,20 @@ import { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../../context/AuthContext";
 import {
-  connect,
-  DefaultGenerics,
-  FeedAPIResponse,
-  NotificationActivity,
-  StreamFeed,
-} from "getstream";
-import {
   Badge,
   Box,
   Button,
-  CircularProgress,
-  Container,
   IconButton,
   List,
-  Paper,
   Popover,
-  Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import styled from "@emotion/styled";
 import MuiListItem from "@mui/material/ListItem";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import React from "react";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-  VENDOR_ROUTES,
-} from "../constants/loggedInRoutes";
+import { GENERAL_ROUTES, VENDOR_ROUTES } from "../constants/loggedInRoutes";
 import {
   EmitEventType,
   NotificationStatus,
@@ -42,6 +25,7 @@ import {
 } from "./types/common";
 import { io } from "socket.io-client";
 import { useIntl } from "react-intl";
+import { Notifications } from "@mui/icons-material";
 
 const socket = io("http://localhost:8080", {
   transports: ["websocket"],
@@ -105,11 +89,22 @@ const NotificationComponent = () => {
     socket.on(
       ReceiveEventType.NEW_NOTIFICATION,
       (notification: Notification) => {
-        if (notification.notificationType === NotificationType.PROJECT) {
+        if (
+          notification.notificationType === NotificationType.PROJECT ||
+          notification.notificationType === NotificationType.GUEST_PROJECT
+        ) {
+          const notificationProjectId = notification.data.projectId;
+
+          // using location.href here so we get real time url, useParams from react router cannot since notificationComponent doesn't rerender
+          if (window.location.href.includes(notificationProjectId || "")) {
+            document.dispatchEvent(new CustomEvent("reload"));
+          }
+        }
+        if (
+          notification.notificationType === NotificationType.PROJECT_INVITATION
+        ) {
           if (
-            window.location.href.includes(
-              GENERAL_ROUTES.PROJECT_DETAIL.split("/")[1]
-            )
+            window.location.href.includes(GENERAL_ROUTES.PROJECTS.split("/")[1])
           ) {
             document.dispatchEvent(new CustomEvent("reload"));
           }
@@ -194,6 +189,17 @@ const NotificationComponent = () => {
     if (noti.notificationType === NotificationType.COMPANY) {
       navigate(GENERAL_ROUTES.SETTINGS);
     }
+
+    if (noti.notificationType === NotificationType.PROJECT_INVITATION) {
+      if (user!.isVendor) {
+        const dest = VENDOR_ROUTES.SEARCH_PROJECT_DETAIL.split(":");
+
+        dest[1] = noti.data.projectId!;
+
+        navigate(`${dest.join("")}`);
+      }
+    }
+
     clearNotification(noti.notificationId);
   };
 
@@ -203,6 +209,15 @@ const NotificationComponent = () => {
         { id: noti.data.message },
         {
           projectName: noti.data.projectName,
+          customerName: noti.data.customerName,
+        }
+      );
+    } else if (noti.notificationType === NotificationType.PROJECT_INVITATION) {
+      return intl.formatMessage(
+        { id: noti.data.message },
+        {
+          projectName: noti.data.projectName,
+          customerName: noti.data.customerName,
         }
       );
     } else if (noti.notificationType === NotificationType.PO_INVOICE) {
@@ -330,7 +345,11 @@ const NotificationComponent = () => {
           }
           color="error"
         >
-          <NotificationsNoneIcon />
+          {!!notifications.length ? (
+            <Notifications />
+          ) : (
+            <NotificationsNoneIcon />
+          )}
         </Badge>
       </IconButton>
       {renderNotifications()}

@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   IconButton,
-  Link,
   ListItem,
   Stack,
   TextField,
@@ -24,12 +23,10 @@ import {
   DEFAULT_POST_PROCESS,
   GUIDED_PROJECT_ALL_POST_PROCESS,
   GUIDED_PROJECT_INSIDE_PRODUCTS,
-  GUIDED_PROJECT_PAPER_POST_PROCESS,
   MANUFACTURING_PROCESS_DRY_PRESS,
   MANUFACTURING_PROCESS_WET_PRESS,
   MATERIAL_C1S,
   MATERIAL_SOURCE_OCC,
-  MATERIAL_SOURCE_RECYCLED,
   MATERIAL_SOURCE_STANDARD,
   MOLDED_FIBER_MANUFACTURING_PROCESSES,
   productValueToLabelMap,
@@ -39,10 +36,8 @@ import {
 } from "../../../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../../../gql/delete/project/project.generated";
 import AttachmentButton from "../../../../Utils/AttachmentButton";
-import {
-  isValidAlphanumeric,
-  isValidFloat,
-} from "../../../../Utils/inputValidators";
+import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
+import { isValidAlphanumeric } from "../../../../Utils/inputValidators";
 import { openLink } from "../../../../Utils/openLink";
 import UploadDesign from "../../UploadDesign";
 import ColorDropdown from "../common/ColorDropdown";
@@ -86,6 +81,7 @@ const GuidedInsideSpec = ({
   activeStep: number;
 }) => {
   const intl = useIntl();
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [componentSpec, setComponentSpec] =
     useState<CreateProjectComponentSpecInput>({
       productName: "",
@@ -99,41 +95,23 @@ const GuidedInsideSpec = ({
       postProcess: [],
     });
 
-  const [
-    deleteProjectDesign,
-    { error: deleteProjectDesignError, data: deleteProjectDesignData },
-  ] = useDeleteProjectDesignMutation();
+  const [deleteProjectDesign, { error: deleteProjectDesignError }] =
+    useDeleteProjectDesignMutation();
 
-  const [
-    shouldDisplayPostProcessDropdown,
-    setShouldDisplayPostProcessDropdown,
-  ] = useState(false);
-
+  useEffect(() => {
+    if (deleteProjectDesignError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [deleteProjectDesignError]);
   useEffect(() => {
     if (componentData && componentData.componentSpec) {
       setComponentSpec(componentData.componentSpec);
     }
   }, [componentData]);
-
-  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name) {
-      case "dimension":
-        isAllowed = isValidAlphanumeric(val);
-        break;
-      default:
-        break;
-    }
-
-    if (isAllowed) {
-      setComponentSpec({
-        ...componentSpec,
-        [e.target.name]: e.target.value,
-      });
-    }
-  };
 
   const getAdditionalDefatulSpec = (productName: string) => {
     switch (productName) {
@@ -195,16 +173,6 @@ const GuidedInsideSpec = ({
         />
       </Box>
     );
-  };
-
-  const getPostProcessOptions = () => {
-    if (
-      componentSpec.productName === PRODUCT_NAME_CORRUGATE_TRAY.value ||
-      componentSpec.productName === PRODUCT_NAME_PAPER_TRAY.value
-    ) {
-      return GUIDED_PROJECT_ALL_POST_PROCESS;
-    }
-    return GUIDED_PROJECT_ALL_POST_PROCESS;
   };
 
   const renderPostProcessDropdown = () => {

@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Menu,
-  Toolbar,
-} from "@mui/material";
+import { Box, Button, IconButton, Toolbar } from "@mui/material";
 import React, { useContext, useState } from "react";
 import SearchBar from "../../Search/SearchBar";
 import CustomerSideNav from "./CustomerSideNav";
@@ -15,24 +6,12 @@ import logo from "../../../static/logo2.png";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
 import { ExpandMore, Menu as MenuIcon } from "@mui/icons-material";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import NewProjectMenu from "./NewProjectMenu";
 import NotificationComponent from "../../Notification/NotificationComponent";
 import { AuthContext } from "../../../context/AuthContext";
 
-import ReactGA from "react-ga4";
-import {
-  EVENT_ACTION,
-  EVENT_CATEGORY,
-  EVENT_LABEL,
-} from "../../../analytics/constants";
-
 export default function CustomerNav() {
-  const { user } = useContext(AuthContext);
-
   const intl = useIntl();
   const navigate = useNavigate();
   const [sideNavOpen, setSideNavOpen] = useState(false);

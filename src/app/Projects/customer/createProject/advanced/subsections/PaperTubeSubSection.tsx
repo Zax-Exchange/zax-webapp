@@ -1,52 +1,31 @@
 import {
   Autocomplete,
-  Button,
-  IconButton,
   ListItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import {
   CreateProjectComponentSpecInput,
-  PostProcessDetail,
   ProductDimensionInput,
 } from "../../../../../../generated/graphql";
 import {
-  FOLDING_CARTON_FINISHES,
-  FOLDING_CARTON_MATERIALS,
-  FOLDING_CARTON_MATERIAL_SOURCES,
-  FOLDING_CARTON_POST_PROCESSES,
-  PAPER_TUBE_BOX_STYLES,
   PAPER_TUBE_FINISHES,
   PAPER_TUBE_MATERIALS,
   PAPER_TUBE_MATERIAL_SOURCES,
   PAPER_TUBE_POST_PROCESSES,
-  POST_PROCESS_DEBOSS,
-  POST_PROCESS_EMBOSS,
-  POST_PROCESS_FOIL_STAMP,
-  POST_PROCESS_PRINTING,
   productValueToLabelMap,
 } from "../../../../../constants/products";
 import { isValidAlphanumeric } from "../../../../../Utils/inputValidators";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
-import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
 import BoxStyleDropdown from "./common/BoxStyleDropdown";
 import ThicknessInput from "../../common/ThicknessInput";
 
-type PaperTubePostProcessDetail = {
-  postProcessName: string;
-  numberOfColors?: string;
-  color?: string;
-  estimatedArea?: string;
-  fontSize?: string;
-};
 const PaperTubeSubSection = ({
   setComponentSpec,
   componentSpec,
@@ -57,28 +36,6 @@ const PaperTubeSubSection = ({
   componentSpec: CreateProjectComponentSpecInput;
 }) => {
   const intl = useIntl();
-
-  // Checks and sets input-able component spec
-  const componentSpecOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    let isAllowed = true;
-
-    switch (e.target.name) {
-      case "dimension":
-      case "thickness":
-        isAllowed = isValidAlphanumeric(val);
-        break;
-      default:
-        break;
-    }
-
-    if (isAllowed) {
-      setComponentSpec({
-        ...componentSpec,
-        [e.target.name]: e.target.value,
-      });
-    }
-  };
 
   // For dropdowns other than post process
   const renderAutocompleteDropdown = useCallback(

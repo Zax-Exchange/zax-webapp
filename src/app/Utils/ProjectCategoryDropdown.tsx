@@ -3,10 +3,7 @@ import React, { useEffect, useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import {
-  CreateProjectInput,
-  UpdateProjectInput,
-} from "../../generated/graphql";
+
 import { categories } from "../constants/categories";
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import { useIntl } from "react-intl";

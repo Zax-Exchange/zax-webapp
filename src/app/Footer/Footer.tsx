@@ -1,4 +1,4 @@
-import { Copyright, Language } from "@mui/icons-material";
+import { Language } from "@mui/icons-material";
 import {
   Box,
   IconButton,

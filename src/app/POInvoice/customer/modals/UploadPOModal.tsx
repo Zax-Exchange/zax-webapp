@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   DialogActions,
-  Link,
   TextField,
   Typography,
 } from "@mui/material";
@@ -13,11 +12,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { AuthContext } from "../../../../context/AuthContext";
 import {
-  CustomerProjectOverview,
   Exact,
   GetCustomerPosInput,
   ProjectBidForPo,
-  ProjectPermission,
   PurchaseOrder,
 } from "../../../../generated/graphql";
 import { useCreatePurchaseOrderMutation } from "../../../gql/create/customer/customer.generated";
@@ -141,7 +138,13 @@ const UploadPOModal = ({
   }, [getPOData]);
 
   useEffect(() => {
-    if (createPOError || getCustomerProjectsError || getProjectBidsForPoError) {
+    if (
+      createPOError ||
+      getCustomerProjectsError ||
+      getProjectBidsForPoError ||
+      deletePOError ||
+      getPOError
+    ) {
       setSnackbar({
         severity: "error",
         message: intl.formatMessage({
@@ -150,7 +153,13 @@ const UploadPOModal = ({
       });
       setSnackbarOpen(true);
     }
-  }, [createPOError, getCustomerProjectsError, getProjectBidsForPoError]);
+  }, [
+    createPOError,
+    getCustomerProjectsError,
+    getProjectBidsForPoError,
+    deletePOError,
+    getPOError,
+  ]);
 
   const createPurchaseOrder = async () => {
     if (!purchaseOrderId || !projectId || !projectBidId) return;

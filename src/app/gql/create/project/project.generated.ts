@@ -25,6 +25,13 @@ export type CreateGuestProjectMutationVariables = Types.Exact<{
 
 export type CreateGuestProjectMutation = { __typename?: 'Mutation', createGuestProject: boolean };
 
+export type CreateProjectInvitationMutationVariables = Types.Exact<{
+  data: Types.CreateProjectInvitationInput;
+}>;
+
+
+export type CreateProjectInvitationMutation = { __typename?: 'Mutation', createProjectInvitation: boolean };
+
 
 export const CreateProjectBidDocument = gql`
     mutation CreateProjectBid($data: CreateProjectBidInput!) {
@@ -119,3 +126,34 @@ export function useCreateGuestProjectMutation(baseOptions?: Apollo.MutationHookO
 export type CreateGuestProjectMutationHookResult = ReturnType<typeof useCreateGuestProjectMutation>;
 export type CreateGuestProjectMutationResult = Apollo.MutationResult<CreateGuestProjectMutation>;
 export type CreateGuestProjectMutationOptions = Apollo.BaseMutationOptions<CreateGuestProjectMutation, CreateGuestProjectMutationVariables>;
+export const CreateProjectInvitationDocument = gql`
+    mutation createProjectInvitation($data: CreateProjectInvitationInput!) {
+  createProjectInvitation(data: $data)
+}
+    `;
+export type CreateProjectInvitationMutationFn = Apollo.MutationFunction<CreateProjectInvitationMutation, CreateProjectInvitationMutationVariables>;
+
+/**
+ * __useCreateProjectInvitationMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectInvitationMutation, { data, loading, error }] = useCreateProjectInvitationMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateProjectInvitationMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectInvitationMutation, CreateProjectInvitationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProjectInvitationMutation, CreateProjectInvitationMutationVariables>(CreateProjectInvitationDocument, options);
+      }
+export type CreateProjectInvitationMutationHookResult = ReturnType<typeof useCreateProjectInvitationMutation>;
+export type CreateProjectInvitationMutationResult = Apollo.MutationResult<CreateProjectInvitationMutation>;
+export type CreateProjectInvitationMutationOptions = Apollo.BaseMutationOptions<CreateProjectInvitationMutation, CreateProjectInvitationMutationVariables>;

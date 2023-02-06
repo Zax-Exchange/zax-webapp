@@ -2,26 +2,17 @@ import {
   Autocomplete,
   Box,
   Button,
-  Chip,
   Container,
-  IconButton,
-  Input,
-  ListItem,
   Stack,
   TextField,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import AddIcon from "@mui/icons-material/Add";
 import React from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import {
-  CustomerDetail,
-  UpdateCustomerInfoInput,
-} from "../../../generated/graphql";
+import { UpdateCustomerInfoInput } from "../../../generated/graphql";
 import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
 import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
@@ -79,14 +70,14 @@ const EditCustomerProfile = () => {
   }, [getCustomerDetailData]);
 
   useEffect(() => {
-    if (getCustomerDetailError) {
+    if (getCustomerDetailError || updateCustomerDataError) {
       setSnackbar({
         severity: "error",
         message: intl.formatMessage({ id: "app.general.network.error" }),
       });
       setSnackbarOpen(true);
     }
-  }, [getCustomerDetailError]);
+  }, [getCustomerDetailError, updateCustomerDataError]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -216,15 +207,9 @@ const EditCustomerProfile = () => {
         severity: "success",
         message: intl.formatMessage({ id: "app.general.network.success" }),
       });
-      getCustomerDetailRefetch();
-    } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: intl.formatMessage({ id: "app.general.network.error" }),
-      });
-    } finally {
       setSnackbarOpen(true);
-    }
+      getCustomerDetailRefetch();
+    } catch (error) {}
   };
 
   const isLoading = getCustomerDetailLoading || updateCustomerDataLoading;

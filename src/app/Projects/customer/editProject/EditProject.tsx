@@ -28,7 +28,6 @@ import { AuthContext } from "../../../../context/AuthContext";
 import {
   CreateProjectComponentInput,
   CreateProjectInput,
-  ProjectCreationMode,
   ProjectDesign,
   ProjectPermission,
   ProjectVisibility,
@@ -36,15 +35,9 @@ import {
   UpdateProjectData,
   UpdateProjectInput,
 } from "../../../../generated/graphql";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../../constants/loggedInRoutes";
 import { useDeleteProjectDesignMutation } from "../../../gql/delete/project/project.generated";
-import {
-  useGetCustomerProjectLazyQuery,
-  useGetCustomerProjectQuery,
-} from "../../../gql/get/customer/customer.generated";
+import { useGetCustomerProjectQuery } from "../../../gql/get/customer/customer.generated";
 import { useUpdateProjectMutation } from "../../../gql/update/project/project.generated";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 import {
@@ -55,13 +48,16 @@ import {
 import FullScreenLoading from "../../../Utils/Loading";
 import ProjectCategoryDropdown from "../../../Utils/ProjectCategoryDropdown";
 import GoogleMapAutocomplete from "../../../Utils/GoogleMapAutocomplete";
-import { ArrowBack, Cancel, Edit, Restore } from "@mui/icons-material";
+import {
+  ArrowBack,
+  Cancel,
+  Edit,
+  InfoOutlined,
+  Restore,
+} from "@mui/icons-material";
 import ComponentSpecDetail from "../../common/ComponentSpecDetail";
-import CreateProjectComponentModal from "../createProject/advanced/modals/CreateProjectComponentModal";
-import { useGetProjectDetailQuery } from "../../../gql/get/project/project.generated";
 import CreateOrUpdateComponentModal from "./modals/CreateOrUpdateComponentModal";
 import PermissionDenied from "../../../Utils/PermissionDenied";
-import { PRODUCT_NAME_STICKER } from "../../../constants/products";
 
 type EditProjectErrors = Record<keyof UpdateProjectData, boolean>;
 
@@ -91,7 +87,6 @@ const EditProject = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
   const { projectId } = useParams();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
@@ -131,7 +126,7 @@ const EditProject = () => {
         orderQuantities: [],
         visibility: ProjectVisibility.Private,
       },
-      componentIdsToDelete: [],
+      componentsForDelete: [],
       componentsForCreate: [],
       componentsForUpdate: [],
     });
@@ -181,14 +176,14 @@ const EditProject = () => {
   const [permissionError, setPermissionError] = useState(false);
 
   useEffect(() => {
-    if (getCustomerProjectError) {
+    if (getCustomerProjectError || deleteDesignError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [getCustomerProjectError]);
+  }, [getCustomerProjectError, deleteDesignError]);
 
   // initialize all project data
   useEffect(() => {
@@ -339,16 +334,6 @@ const EditProject = () => {
     }
   };
 
-  const deleteDesignFiles = async (id: string) => {
-    deleteDesign({
-      variables: {
-        data: {
-          fileId: id,
-        },
-      },
-    });
-  };
-
   const restoreComponent = (i: number) => {
     const allRemovedComponents = [...removedComponents];
     const allRemovedComponentDesigns = [...removedComponentsDesigns];
@@ -393,11 +378,6 @@ const EditProject = () => {
     setComponentModalOpen(true);
   };
 
-  // fires when user closes drawer by clicking outside of it
-  const componentModalOnClose = () => {
-    setComponentModalOpen(false);
-  };
-
   const editComponent = (ind: number) => {
     setComponentIndexToEdit(ind);
     setComponentModalOpen(true);
@@ -408,9 +388,9 @@ const EditProject = () => {
     let isAllowed = true;
 
     switch (e.target.name as keyof CreateProjectInput) {
-      case "name":
-        isAllowed = isValidAlphanumeric(val);
-        break;
+      // case "name":
+      //   isAllowed = isValidAlphanumeric(val);
+      //   break;
       case "orderQuantities":
         isAllowed = isValidInt(val);
         val = parseInt(val, 10);
@@ -452,8 +432,6 @@ const EditProject = () => {
   ) => {
     // only pre-existing components have componentId
     if ((comp as UpdateProjectComponentData).componentId) {
-      const id = (comp as UpdateProjectComponentData).componentId;
-
       return true;
     }
     return false;
@@ -490,14 +468,15 @@ const EditProject = () => {
               ...updateProjectInput,
               componentsForUpdate: compsForUpdate,
               componentsForCreate: compsForCreate,
-              componentIdsToDelete: removedComponents
+              componentsForDelete: removedComponents
                 .filter((comp) => {
                   // only existing components are sent for deletion
                   return !!(comp as UpdateProjectComponentData).componentId;
                 })
-                .map(
-                  (comp) => (comp as UpdateProjectComponentData).componentId
-                ),
+                .map((comp) => ({
+                  componentId: (comp as UpdateProjectComponentData).componentId,
+                  componentName: comp.name,
+                })),
             },
           },
         }),
@@ -546,7 +525,7 @@ const EditProject = () => {
   const renderTextField = (
     projectAttribute: keyof UpdateProjectData,
     projectFieldData: string | number | number[],
-    label: string,
+    label?: string,
     InputProps?: Partial<InputProps>
   ) => {
     return (
@@ -560,7 +539,7 @@ const EditProject = () => {
         onChange={projectInputOnChange}
         value={projectFieldData}
         name={projectAttribute}
-        label={label}
+        label={label ? label : ""}
         FormHelperTextProps={{
           sx: {
             margin: 0,
@@ -568,7 +547,20 @@ const EditProject = () => {
           },
         }}
         InputProps={InputProps}
+        fullWidth
       />
+    );
+  };
+
+  const renderSpecTitle = (title: string) => {
+    return <Typography variant="subtitle2">{title}</Typography>;
+  };
+
+  const renderTooltip = (title: string) => {
+    return (
+      <Tooltip title={title} placement="right">
+        <InfoOutlined fontSize="small" color="info" />
+      </Tooltip>
     );
   };
 
@@ -629,253 +621,320 @@ const EditProject = () => {
             </Box>
           </Box>
         </Box>
-        <Container maxWidth="sm">
-          <Stack
-            spacing={2}
-            textAlign="left"
-            sx={{ "& .MuiListItem-root div": { flexGrow: 2 } }}
-          >
-            <ListItem>
-              {renderTextField(
-                "name",
-                projectData.name,
-                intl.formatMessage({ id: "app.project.attribute.name" })
-              )}
-            </ListItem>
-            <ListItem>
-              <ProjectCategoryDropdown
-                defaultCategory={projectData.category}
-                parentSetDataCallback={(category: string) => {
-                  setUpdateProjectInput((prev) => ({
-                    ...prev,
-                    projectData: { ...prev.projectData, category },
-                  }));
-                }}
-                label={intl.formatMessage({
-                  id: "app.project.attribute.category",
-                })}
-                error={!!projectEditError.category}
-                errorHelperText={
-                  !!projectEditError.category
-                    ? intl.formatMessage({ id: "app.general.input.emptyError" })
-                    : ""
-                }
-              />
-            </ListItem>
-            <ListItem>
-              {renderTextField(
-                "totalWeight",
-                projectData.totalWeight,
-                intl.formatMessage({ id: "app.project.attribute.totalWeight" }),
-                {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Typography variant="caption" color="GrayText">
-                        {intl.formatMessage({ id: "app.general.unit.g" })}
-                      </Typography>
-                    </InputAdornment>
-                  ),
-                }
-              )}
-            </ListItem>
-            <ListItem>
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <DesktopDatePicker
-                  disablePast
-                  label={intl.formatMessage({
-                    id: "app.project.attribute.deliveryDate",
-                  })}
-                  inputFormat="YYYY-MM-DD"
-                  value={projectData.deliveryDate}
-                  onChange={(v: any) => {
-                    if (!v || !v._isValid) {
-                      setProjectEditError((prev) => ({
-                        ...prev,
-                        deliveryDate: true,
-                      }));
-                      return;
-                    }
+        <Container maxWidth="lg">
+          <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+            <List>
+              <ListItem>
+                <Box width="100%">
+                  <Box>
+                    {renderSpecTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.name",
+                      })
+                    )}
+                  </Box>
+                  <Box>{renderTextField("name", projectData.name)}</Box>
+                </Box>
+              </ListItem>
 
-                    setProjectEditError((prev) => ({
-                      ...prev,
-                      deliveryDate: false,
-                    }));
-                    setUpdateProjectInput((prev) => ({
-                      ...prev,
-                      projectData: {
-                        ...projectData,
-                        deliveryDate: new Date(v._d)
-                          .toISOString()
-                          .split("T")[0],
-                      },
-                    }));
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      name="deliveryDate"
-                      value={projectData.deliveryDate}
-                      error={!!projectEditError.deliveryDate}
-                      helperText={
-                        !!projectEditError.deliveryDate &&
+              <ListItem>
+                <Box width="100%">
+                  <Box>
+                    {renderSpecTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.totalWeight",
+                      })
+                    )}
+                  </Box>
+                  <Box>
+                    {renderTextField(
+                      "totalWeight",
+                      projectData.totalWeight,
+                      undefined,
+                      {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Typography variant="caption" color="GrayText">
+                              {intl.formatMessage({ id: "app.general.unit.g" })}
+                            </Typography>
+                          </InputAdornment>
+                        ),
+                      }
+                    )}
+                  </Box>
+                </Box>
+              </ListItem>
+              <ListItem>
+                <Box width="100%">
+                  <Box>
+                    {renderSpecTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.deliveryDate",
+                      })
+                    )}
+                  </Box>
+                  <Box>
+                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                      <DesktopDatePicker
+                        disablePast
+                        inputFormat="YYYY-MM-DD"
+                        value={projectData.deliveryDate}
+                        onChange={(v: any) => {
+                          if (!v || !v._isValid) {
+                            setProjectEditError((prev) => ({
+                              ...prev,
+                              deliveryDate: true,
+                            }));
+                            return;
+                          }
+
+                          setProjectEditError((prev) => ({
+                            ...prev,
+                            deliveryDate: false,
+                          }));
+                          setUpdateProjectInput((prev) => ({
+                            ...prev,
+                            projectData: {
+                              ...projectData,
+                              deliveryDate: new Date(v._d)
+                                .toISOString()
+                                .split("T")[0],
+                            },
+                          }));
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            name="deliveryDate"
+                            value={projectData.deliveryDate}
+                            error={!!projectEditError.deliveryDate}
+                            helperText={
+                              !!projectEditError.deliveryDate &&
+                              intl.formatMessage({
+                                id: "app.general.input.dateError",
+                              })
+                            }
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                </Box>
+              </ListItem>
+
+              <ListItem>
+                <Box width="100%">
+                  <Box>
+                    {renderSpecTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.targetPrice",
+                      })
+                    )}
+                  </Box>
+                  <Box>
+                    {renderTextField(
+                      "targetPrice",
+                      projectData.targetPrice,
+                      undefined,
+                      {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Typography variant="caption" color="GrayText">
+                              {intl.formatMessage({
+                                id: "app.general.currency.usd",
+                              })}
+                            </Typography>
+                          </InputAdornment>
+                        ),
+                      }
+                    )}
+                  </Box>
+                </Box>
+              </ListItem>
+
+              <ListItem>
+                <Box width="100%">
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    {renderSpecTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.visibility",
+                      })
+                    )}
+                    <Box ml={1}>
+                      {renderTooltip(
                         intl.formatMessage({
-                          id: "app.general.input.dateError",
+                          id: "app.customer.createProject.visibility.tooltip",
                         })
+                      )}
+                    </Box>
+                  </Box>
+                  <Box>
+                    <TextField
+                      id="visibility-select"
+                      disabled
+                      value={
+                        projectData.visibility === ProjectVisibility.Private
+                          ? intl.formatMessage({
+                              id: "app.project.attribute.visibility.private",
+                            })
+                          : intl.formatMessage({
+                              id: "app.project.attribute.visibility.public",
+                            })
+                      }
+                      fullWidth
+                    />
+                  </Box>
+                </Box>
+              </ListItem>
+            </List>
+
+            <List sx={{ flexBasis: "50%" }}>
+              <ListItem>
+                <Box width="100%">
+                  <Box>
+                    {renderSpecTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.category",
+                      })
+                    )}
+                  </Box>
+                  <Box width="100%">
+                    <ProjectCategoryDropdown
+                      defaultCategory={projectData.category}
+                      parentSetDataCallback={(category: string) => {
+                        setUpdateProjectInput((prev) => ({
+                          ...prev,
+                          projectData: { ...prev.projectData, category },
+                        }));
+                      }}
+                      error={!!projectEditError.category}
+                      errorHelperText={
+                        !!projectEditError.category
+                          ? intl.formatMessage({
+                              id: "app.general.input.emptyError",
+                            })
+                          : ""
                       }
                     />
-                  )}
-                />
-              </LocalizationProvider>
-            </ListItem>
-
-            <ListItem>
-              <GoogleMapAutocomplete
-                parentSetDataHandler={handleAddressOnChange}
-                label={intl.formatMessage({
-                  id: "app.project.attribute.deliveryAddress",
-                })}
-                defaultAddress={projectData.deliveryAddress}
-                error={!!projectEditError.deliveryAddress}
-                errorHelperText={
-                  !!projectEditError.deliveryAddress
-                    ? intl.formatMessage({ id: "app.general.input.emptyError" })
-                    : ""
-                }
-              />
-            </ListItem>
-
-            <ListItem>
-              {renderTextField(
-                "targetPrice",
-                projectData.targetPrice,
-                intl.formatMessage({ id: "app.project.attribute.targetPrice" }),
-                {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Typography variant="caption" color="GrayText">
-                        {intl.formatMessage({ id: "app.general.currency.usd" })}
-                      </Typography>
-                    </InputAdornment>
-                  ),
-                }
-              )}
-            </ListItem>
-
-            <ListItem>
-              <Box>
-                <Autocomplete
-                  options={[]}
-                  freeSolo
-                  multiple
-                  value={[...projectData.orderQuantities]}
-                  inputValue={orderQuantity}
-                  onInputChange={(e, v) => orderQuantityOnChange(v)}
-                  onBlur={() => {
-                    if (orderQuantity) {
-                      setUpdateProjectInput((prev) => ({
-                        ...prev,
-                        projectData: {
-                          ...prev.projectData,
-                          orderQuantities: [
-                            ...prev.projectData.orderQuantities,
-                            +orderQuantity,
-                          ].sort((a, b) => a - b),
-                        },
-                      }));
-                    }
-                    setOrderQuantity("");
-                  }}
-                  onChange={(e, v) => {
-                    if (!v) {
-                      setUpdateProjectInput((prev) => ({
-                        ...prev,
-                        projectData: {
-                          ...prev.projectData,
-                          orderQuantities: [],
-                        },
-                      }));
-                    } else {
-                      setUpdateProjectInput((prev) => ({
-                        ...prev,
-                        projectData: {
-                          ...prev.projectData,
-                          orderQuantities: v
-                            .map((v) => +v)
-                            .sort((a, b) => a - b),
-                        },
-                      }));
-                    }
-                  }}
-                  renderInput={(params) => {
-                    return (
-                      <TextField
-                        {...params}
-                        autoComplete="new-password"
-                        type="tel"
-                        label={intl.formatMessage({
-                          id: "app.project.attribute.orderQuantities",
-                        })}
-                        inputProps={{
-                          ...params.inputProps,
-                          autoComplete: "new-password", // disable autocomplete and autofill
-                        }}
-                        InputLabelProps={{
-                          sx: {
-                            fontSize: 16,
-                            top: -7,
-                          },
-                        }}
-                        value={orderQuantity}
-                        onChange={(e) => orderQuantityOnChange(e.target.value)}
-                        error={!!projectEditError.orderQuantities}
-                        helperText={
-                          !!projectEditError.orderQuantities &&
-                          intl.formatMessage({
-                            id: "app.customer.projectDetail.error.orderQuantity.helperText",
-                          })
+                  </Box>
+                </Box>
+              </ListItem>
+              <ListItem>
+                <Box width="100%">
+                  <Box>
+                    {renderSpecTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.deliveryAddress",
+                      })
+                    )}
+                  </Box>
+                  <Box>
+                    <GoogleMapAutocomplete
+                      width="100%"
+                      parentSetDataHandler={handleAddressOnChange}
+                      defaultAddress={projectData.deliveryAddress}
+                      error={!!projectEditError.deliveryAddress}
+                      errorHelperText={
+                        !!projectEditError.deliveryAddress
+                          ? intl.formatMessage({
+                              id: "app.general.input.emptyError",
+                            })
+                          : ""
+                      }
+                    />
+                  </Box>
+                </Box>
+              </ListItem>
+              <ListItem>
+                <Box width="100%">
+                  <Box>
+                    {renderSpecTitle(
+                      intl.formatMessage({
+                        id: "app.project.attribute.orderQuantities",
+                      })
+                    )}
+                  </Box>
+                  <Box>
+                    <Autocomplete
+                      options={[]}
+                      freeSolo
+                      multiple
+                      value={[...projectData.orderQuantities]}
+                      inputValue={orderQuantity}
+                      onInputChange={(e, v) => orderQuantityOnChange(v)}
+                      onBlur={() => {
+                        if (orderQuantity) {
+                          setUpdateProjectInput((prev) => ({
+                            ...prev,
+                            projectData: {
+                              ...prev.projectData,
+                              orderQuantities: [
+                                ...prev.projectData.orderQuantities,
+                                +orderQuantity,
+                              ].sort((a, b) => a - b),
+                            },
+                          }));
                         }
-                      />
-                    );
-                  }}
-                  renderOption={() => null}
-                />
-              </Box>
-            </ListItem>
-
-            <ListItem>
-              <TextField
-                select
-                id="visibility-select"
-                label={intl.formatMessage({
-                  id: "app.project.attribute.visibility",
-                })}
-                onChange={(e) => {
-                  setUpdateProjectInput((prev) => ({
-                    ...prev,
-                    projectData: {
-                      ...prev.projectData,
-                      visibility: e.target.value as ProjectVisibility,
-                    },
-                  }));
-                }}
-                value={projectData.visibility}
-                helperText={intl.formatMessage({
-                  id: "app.customer.createProject.visibility.tooltip",
-                })}
-              >
-                <MenuItem value={ProjectVisibility.Private}>
-                  {intl.formatMessage({
-                    id: "app.project.attribute.visibility.private",
-                  })}
-                </MenuItem>
-                <MenuItem value={ProjectVisibility.Public}>
-                  {intl.formatMessage({
-                    id: "app.project.attribute.visibility.public",
-                  })}
-                </MenuItem>
-              </TextField>
-            </ListItem>
-          </Stack>
+                        setOrderQuantity("");
+                      }}
+                      onChange={(e, v) => {
+                        if (!v) {
+                          setUpdateProjectInput((prev) => ({
+                            ...prev,
+                            projectData: {
+                              ...prev.projectData,
+                              orderQuantities: [],
+                            },
+                          }));
+                        } else {
+                          setUpdateProjectInput((prev) => ({
+                            ...prev,
+                            projectData: {
+                              ...prev.projectData,
+                              orderQuantities: v
+                                .map((v) => +v)
+                                .sort((a, b) => a - b),
+                            },
+                          }));
+                        }
+                      }}
+                      renderInput={(params) => {
+                        return (
+                          <TextField
+                            {...params}
+                            autoComplete="new-password"
+                            type="tel"
+                            inputProps={{
+                              ...params.inputProps,
+                              autoComplete: "new-password", // disable autocomplete and autofill
+                            }}
+                            InputLabelProps={{
+                              sx: {
+                                fontSize: 16,
+                                top: -7,
+                              },
+                            }}
+                            value={orderQuantity}
+                            onChange={(e) =>
+                              orderQuantityOnChange(e.target.value)
+                            }
+                            error={!!projectEditError.orderQuantities}
+                            helperText={
+                              !!projectEditError.orderQuantities &&
+                              intl.formatMessage({
+                                id: "app.customer.projectDetail.error.orderQuantity.helperText",
+                              })
+                            }
+                          />
+                        );
+                      }}
+                      renderOption={() => null}
+                    />
+                  </Box>
+                </Box>
+              </ListItem>
+            </List>
+          </Box>
         </Container>
       </Paper>
 

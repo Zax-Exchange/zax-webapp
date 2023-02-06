@@ -8,10 +8,8 @@ import {
   DialogTitle,
   Stack,
   TextField,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
-import { validate } from "graphql";
 import React from "react";
 import { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";

@@ -1,12 +1,6 @@
 import { ReactElement, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import {
-  matchRoutes,
-  Navigate,
-  RouteMatch,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { matchRoutes, Navigate, useLocation } from "react-router-dom";
 import React from "react";
 import {
   CUSTOMER_ROUTES,

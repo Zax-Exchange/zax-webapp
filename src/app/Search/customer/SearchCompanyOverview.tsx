@@ -4,20 +4,15 @@ import {
   CardActionArea,
   CardContent,
   Container,
-  Dialog,
-  DialogContent,
   List,
   Tooltip,
 } from "@mui/material";
 import React from "react";
-import { useState } from "react";
 import FactoryIcon from "@mui/icons-material/Factory";
 import MuiListItem from "@mui/material/ListItem";
-import BusinessIcon from "@mui/icons-material/Business";
 import CategoryIcon from "@mui/icons-material/Category";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import styled from "@emotion/styled";
-import TimelineIcon from "@mui/icons-material/Timeline";
 import { CUSTOMER_ROUTES } from "../../constants/loggedInRoutes";
 import { useNavigate } from "react-router-dom";
 import { useIntl } from "react-intl";

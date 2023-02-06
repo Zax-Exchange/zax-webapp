@@ -1,9 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { GENERAL_ROUTES } from "../constants/loggedInRoutes";
 import CustomerProjects from "./customer/CustomerProjects";
 import VendorProjects from "./vendor/VendorProjects";
-import ReactGA from "react-ga4";
 
 const Projects = () => {
   const { user } = useContext(AuthContext);

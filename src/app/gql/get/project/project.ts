@@ -74,11 +74,22 @@ export const PROJECT_FRAGMENT = gql`
       targetPrice
       orderQuantities
       status
+      visibility
       createdAt
       updatedAt
   }
 `
 
+export const PROJECT_INVITATION_FRAGMENT = gql`
+  fragment ProjectInvitationFragment on ProjectInvitation {
+    projectId
+    customerCompanyId
+    vendorCompanyId
+    projectName
+    customerName
+    vendorName
+  }
+`
 const GET_PROJECT_USERS = gql`
   query getProjectUsers($data: GetProjectUsersInput!) {
     getProjectUsers(data: $data) {

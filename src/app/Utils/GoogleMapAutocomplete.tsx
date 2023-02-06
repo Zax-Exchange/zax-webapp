@@ -7,7 +7,6 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
-import { useIntl } from "react-intl";
 import { envConfig as config } from "../Config/EnvConfig";
 
 const GOOGLE_MAPS_API_KEY = config.googleMapsApiKey;
@@ -45,7 +44,6 @@ export default function GoogleMaps({
   error?: boolean;
   errorHelperText?: string;
 }) {
-  const intl = useIntl();
   const [value, setValue] =
     React.useState<google.maps.places.QueryAutocompletePrediction | null>(null);
   const [inputValue, setInputValue] = React.useState("");

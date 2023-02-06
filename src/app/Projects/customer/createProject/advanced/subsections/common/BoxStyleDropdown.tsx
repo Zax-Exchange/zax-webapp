@@ -1,17 +1,8 @@
 import { ChangeCircle } from "@mui/icons-material";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Dialog,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Dialog, IconButton, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
 import { CreateProjectComponentSpecInput } from "../../../../../../../generated/graphql";
-import { TranslatableAttribute } from "../../../../../../../type/common";
 import { productValueToLabelMap } from "../../../../../../constants/products";
 import GuidedCreateBoxStyleSelection from "../../../guided/modals/GuidedCreateBoxStyleSelection";
 

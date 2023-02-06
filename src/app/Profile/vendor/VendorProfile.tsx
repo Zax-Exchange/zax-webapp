@@ -1,12 +1,9 @@
 import {
   Box,
   Container,
-  Divider,
-  Grid,
   Link,
   List,
   Paper,
-  Stack,
   Tab,
   TableBody,
   TableCell,
@@ -80,11 +77,8 @@ const CompanyInfoListItem = styled(MuiListItem)(() => ({
 }));
 
 const VendorProfile = () => {
-  const theme = useTheme();
   const intl = useIntl();
   const { companyId } = useParams();
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [vendorData, setVendorData] = useState<VendorDetail | null>(null);
   const [currentTab, setCurrentTab] = useState(0);

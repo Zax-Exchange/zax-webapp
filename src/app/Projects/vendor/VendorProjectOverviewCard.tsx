@@ -1,9 +1,6 @@
 import { useState } from "react";
-import Button from "@mui/material/Button";
 import {
-  Chip,
   Container,
-  DialogTitle,
   IconButton,
   List,
   Menu,
@@ -13,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Dialog, DialogContent } from "@mui/material";
-import { Card, CardActionArea, CardContent, Grid, Paper } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MuiListItem from "@mui/material/ListItem";
 import styled from "@emotion/styled";
@@ -27,14 +24,12 @@ import {
   BidStatus,
   Exact,
   GetVendorProjectsInput,
-  InputMaybe,
   ProjectPermission,
-  VendorProject,
   VendorProjectOverview,
 } from "../../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
-import { GENERAL_ROUTES, VENDOR_ROUTES } from "../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import { GetVendorProjectsQuery } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
 import VendorPermissionModal from "./modals/VendorPermissionModal";
@@ -202,7 +197,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.companyName",
                 })}
-                arrow
                 placement="top"
               >
                 <BusinessIcon />
@@ -214,7 +208,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.deliveryDate",
                 })}
-                arrow
                 placement="top"
               >
                 <LocalShippingOutlinedIcon />
@@ -227,7 +220,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.deliveryAddress",
                 })}
-                arrow
                 placement="top"
               >
                 <PlaceIcon />
@@ -242,7 +234,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.targetPrice",
                 })}
-                arrow
                 placement="top"
               >
                 <AttachMoneyIcon />
@@ -257,7 +248,6 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.general.createdAt",
                 })}
-                arrow
                 placement="top"
               >
                 <CreateIcon />

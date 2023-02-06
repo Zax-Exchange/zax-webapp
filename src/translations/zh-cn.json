@@ -92,6 +92,7 @@
   "app.notification.company.newJoinRequest": "您的企业有一个新的用户加入请求，您可以到管理用户查看。",
   "app.notification.noNewNotifications": "您目前没有新提醒！",
   "app.notification.clearAll": "清除所有提醒",
+  "app.notification.project.newInvitation": "{customerName}邀请您对项目{projectName}进行竞标！",
 
   "app.feedback.action.bugReport": "Bug反馈",
    "app.feedback.action.bugReport.whatAreYouTryingToDo": "请描述当下您在尝试做什么",
@@ -268,11 +269,13 @@
   "app.project.attribute.visibility": "可见度",
   "app.project.attribute.visibility.private": "私人",
   "app.project.attribute.visibility.public": "公开",
+  "app.project.attribute.components": "部件",
   "app.project.status.open": "Open",
   "app.project.status.inProgress": "In progress",
   "app.project.status.completed": "Completed",
   "app.project.status.incomplete": "Incomplete",
   "app.project.status.closed": "Closed",
+  "app.project.projectInvitations": "竞标邀请",
 
   "app.bid.attribute.quantity": "数量",
   "app.bid.attribute.price": "价格",
@@ -350,8 +353,8 @@
   "app.versionHistory.revision": "变更版本",
   "app.versionHistory.latest": "最新",
   "app.versionHistory.none": "无",
-  "app.versionHistory.removed": "已被移除",
-  "app.versionHistory.uploaded": "新上传档案",
+  "app.versionHistory.removed": "移除",
+  "app.versionHistory.addded": "添加",
   "app.versionHistory.removedSomeFiles": "部分档案被移除",
 
   "app.customer.projects.title": "项目列表",
@@ -378,6 +381,7 @@
   "app.customer.createProject.selectBoxStyle": "选择盒型",
   "app.customer.createProject.noDesignPlaceholder": "暂无上传档案",
   "app.customer.createProject.projectCreated": "项目创建成功！",
+  "app.customer.createProject.visibility.helperText": "此选项无法在项目创建后被修改。",
 
   "app.customer.editProject.restoreComponent": "恢复部件",
   "app.customer.editProject.removedComponents": "已移除部件",
@@ -425,6 +429,8 @@
   "app.customer.projectDetail.bidWasCleared": "由于您的项目报价数量有变动，厂商原本的报价已被清除。待厂商重新提交竞标后便可查看新的报价细节。",
   "app.customer.projectDetail.noBids": "此项目尚无厂商竞标。",
   "app.customer.projectDetail.copyProject": "复制项目",
+  "app.customer.projectDetail.inviteVendors": "邀请厂商竞标",
+  "app.customer.projectDetail.inviteVendors.noInvitations": "项目尚未邀请厂商来竞标。",
 
   "app.customer.poInvoice.create": "新订单",
   "app.customer.poInvoice.createSuccess": "订单创建完成",
@@ -458,6 +464,7 @@
   "app.vendor.search.viewYourBid": "查看您的竞标",
   "app.vendor.search.AdditionRemarks": "其他竞标信息",
   "app.vendor.search.bidCreated": "竞标提交成功！",
+  "app.vendor.search.existingBid.helerText": "您的公司已对此项目进行竞标。",
   "app.vendor.uploadRemark.tooltip": "上传其他竞标信息档案",
   "app.vendor.uploadRemark.success": "上传成功",
   "app.vendor.project.attribute.customerName": "客户名称",
@@ -470,7 +477,11 @@
   "app.vendor.projectDetail.updateSuccess": "更新完成",
   "app.vendor.projectDetail.noBid": "您没有竞标此部件。",
   
-  "app.vendor.projects.yourBids": "您的竞标项目",
+  "app.vendor.projects.yourBids": "竞标项目",
+  "app.vendor.projects.noBids": "暂无竞标项目。您可以搜索项目来创建您的第一个竞标。",
+  "app.vendor.projects.yourInvitations": "竞标邀请",
+  "app.vendor.projects.noInvitations": "暂无竞标邀请。",
+
   "app.vendor.projectDetail.resubmitBid": "如果您的竞标无需更新，您可以重新提交。",
   "app.vendor.projectDetail.editBid": "编辑竞标",
   "app.vendor.projectDetail.editBid.createNewBidTooltip": "您之前未对此部件进行竞标。如欲竞标此部件，请完成以下表格。若无需竞标，留空即可。",

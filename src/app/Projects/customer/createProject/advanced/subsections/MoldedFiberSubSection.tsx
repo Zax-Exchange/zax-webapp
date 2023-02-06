@@ -1,38 +1,29 @@
 import {
   Autocomplete,
-  Button,
-  IconButton,
   ListItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import {
   CreateProjectComponentSpecInput,
-  PostProcessDetail,
   ProductDimensionInput,
 } from "../../../../../../generated/graphql";
 import {
   MOLDED_FIBER_MANUFACTURING_PROCESSES,
   MOLDED_FIBER_MATERIAL_SOURCES,
   MOLDED_FIBER_POST_PROCESSES,
-  POST_PROCESS_DEBOSS,
-  POST_PROCESS_EMBOSS,
-  POST_PROCESS_FOIL_STAMP,
-  POST_PROCESS_PRINTING,
   productValueToLabelMap,
 } from "../../../../../constants/products";
 import {
   isValidAlphanumeric,
   isValidFloat,
 } from "../../../../../Utils/inputValidators";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { useIntl } from "react-intl";
 import { TranslatableAttribute } from "../../../../../../type/common";
 import DimensionsInput from "../../common/DimensionsInput";
-import PostProcessInput from "../../common/PostProcessInput";
 import PostProcessSection from "./common/PostProcessSection";
 import ColorDropdown from "../../common/ColorDropdown";
 import ThicknessInput from "../../common/ThicknessInput";

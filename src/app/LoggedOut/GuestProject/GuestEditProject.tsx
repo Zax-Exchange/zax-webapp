@@ -4,10 +4,8 @@ import {
   Box,
   Button,
   Container,
-  Dialog,
   Drawer,
   IconButton,
-  InputAdornment,
   InputProps,
   List,
   ListItem,
@@ -21,9 +19,8 @@ import {
 } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   CreateProjectComponentInput,
   CreateProjectInput,
@@ -33,13 +30,9 @@ import {
   UpdateGuestProjectInput,
   ProjectVisibility,
 } from "../../../generated/graphql";
-import { PRODUCT_NAME_STICKER } from "../../constants/products";
 import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
-import {
-  useUpdateGuestProjectMutation,
-  useUpdateProjectMutation,
-} from "../../gql/update/project/project.generated";
+import { useUpdateGuestProjectMutation } from "../../gql/update/project/project.generated";
 import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
 import CreateOrUpdateComponentModal from "../../Projects/customer/editProject/modals/CreateOrUpdateComponentModal";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
@@ -84,7 +77,6 @@ const GuestEditProject = ({
   setProjectUpdated: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const intl = useIntl();
-  const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const [updateProjectMutation, { loading: updateProjectLoading }] =
@@ -122,7 +114,7 @@ const GuestEditProject = ({
         // initi visibility here to comply with UpdateProjectData type, but not used since guest project is always private
         visibility: ProjectVisibility.Private,
       },
-      componentIdsToDelete: [],
+      componentsForDelete: [],
       componentsForCreate: [],
       componentsForUpdate: [],
     });
@@ -169,17 +161,15 @@ const GuestEditProject = ({
     ProjectDesign[][]
   >([]);
 
-  const [permissionError, setPermissionError] = useState(false);
-
   useEffect(() => {
-    if (getProjectDetailError) {
+    if (getProjectDetailError || deleteDesignError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
       });
       setSnackbarOpen(true);
     }
-  }, [getProjectDetailError]);
+  }, [getProjectDetailError, deleteDesignError]);
 
   // initialize all project data
   useEffect(() => {
@@ -321,16 +311,6 @@ const GuestEditProject = ({
     }
   };
 
-  const deleteDesignFiles = async (id: string) => {
-    deleteDesign({
-      variables: {
-        data: {
-          fileId: id,
-        },
-      },
-    });
-  };
-
   const restoreComponent = (i: number) => {
     const allRemovedComponents = [...removedComponents];
     const allRemovedComponentDesigns = [...removedComponentsDesigns];
@@ -373,11 +353,6 @@ const GuestEditProject = ({
     // need this because we want to know the last opened component if there is one for reverting purpose.
     setComponentIndexToEdit(null);
     setComponentModalOpen(true);
-  };
-
-  // fires when user closes drawer by clicking outside of it
-  const componentModalOnClose = () => {
-    setComponentModalOpen(false);
   };
 
   const editComponent = (ind: number) => {
@@ -429,8 +404,6 @@ const GuestEditProject = ({
   ) => {
     // only pre-existing components have componentId
     if ((comp as UpdateProjectComponentData).componentId) {
-      const id = (comp as UpdateProjectComponentData).componentId;
-
       return true;
     }
     return false;
@@ -469,14 +442,15 @@ const GuestEditProject = ({
               ...updateProjectInput,
               componentsForUpdate: compsForUpdate,
               componentsForCreate: compsForCreate,
-              componentIdsToDelete: removedComponents
+              componentsForDelete: removedComponents
                 .filter((comp) => {
                   // only existing components are sent for deletion
                   return !!(comp as UpdateProjectComponentData).componentId;
                 })
-                .map(
-                  (comp) => (comp as UpdateProjectComponentData).componentId
-                ),
+                .map((comp) => ({
+                  componentId: (comp as UpdateProjectComponentData).componentId,
+                  componentName: comp.name,
+                })),
             },
           },
         }),

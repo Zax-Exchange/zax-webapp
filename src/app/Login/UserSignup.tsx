@@ -4,29 +4,25 @@ import {
   TextField,
   Typography,
   Container,
-  Button,
   Paper,
 } from "@mui/material";
 import { useContext, useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
-import { JwtPayload } from "jwt-decode";
 import FullScreenLoading from "../Utils/Loading";
 import React from "react";
-import { CreateUserInput, LoggedInUser } from "../../generated/graphql";
-import { GENERAL_ROUTES } from "../constants/loggedInRoutes";
+import { CreateUserInput } from "../../generated/graphql";
 import { useCreateUserMutation } from "../gql/create/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { useIntl } from "react-intl";
 import { validate } from "email-validator";
-import jwt from "jwt-decode";
 import InvalidToken from "./InvalidToken";
 import {
   useCheckSignupJwtTokenLazyQuery,
   useCheckSignupJwtTokenQuery,
 } from "../gql/utils/user/user.generated";
+import { LoadingButton } from "@mui/lab";
 
 // TODO: refactor url/route
 // TODO: intl
@@ -34,10 +30,8 @@ const UserSignup = () => {
   const intl = useIntl();
   const { token } = useParams();
   const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
-  const [noTokenError, setNoTokenError] = useState(false);
   const [emailTakenError, setEmailTakenError] = useState(false);
 
   const [createUser, { error: createUserError, loading: createUserLoading }] =
@@ -154,7 +148,6 @@ const UserSignup = () => {
 
   return (
     <Container maxWidth="sm">
-      {!!createUserLoading && <FullScreenLoading />}
       <Paper elevation={2} sx={{ padding: 3 }}>
         <Box>
           <Typography variant="h6" sx={{ mb: 5 }}>
@@ -193,13 +186,14 @@ const UserSignup = () => {
             onKeyDown={onEnter}
           ></TextField>
 
-          <Button
+          <LoadingButton
             variant="contained"
             onClick={createUserHandler}
             disabled={shouldDisableCreateButton()}
+            loading={checkTokenLoading || createUserLoading}
           >
             {intl.formatMessage({ id: "app.general.create" })}
-          </Button>
+          </LoadingButton>
         </Stack>
       </Paper>
     </Container>

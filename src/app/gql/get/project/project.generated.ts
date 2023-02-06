@@ -7,17 +7,19 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ProjectComponentFragmentFragment = { __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } };
 
-export type ProjectFragment_CustomerProject_Fragment = { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any };
+export type ProjectFragment_CustomerProject_Fragment = { __typename?: 'CustomerProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any };
 
-export type ProjectFragment_PermissionedProject_Fragment = { __typename?: 'PermissionedProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any };
+export type ProjectFragment_PermissionedProject_Fragment = { __typename?: 'PermissionedProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any };
 
-export type ProjectFragment_Project_Fragment = { __typename?: 'Project', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any };
+export type ProjectFragment_Project_Fragment = { __typename?: 'Project', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any };
 
-export type ProjectFragment_VendorGuestProject_Fragment = { __typename?: 'VendorGuestProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any };
+export type ProjectFragment_VendorGuestProject_Fragment = { __typename?: 'VendorGuestProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any };
 
-export type ProjectFragment_VendorProject_Fragment = { __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any };
+export type ProjectFragment_VendorProject_Fragment = { __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any };
 
 export type ProjectFragmentFragment = ProjectFragment_CustomerProject_Fragment | ProjectFragment_PermissionedProject_Fragment | ProjectFragment_Project_Fragment | ProjectFragment_VendorGuestProject_Fragment | ProjectFragment_VendorProject_Fragment;
+
+export type ProjectInvitationFragmentFragment = { __typename?: 'ProjectInvitation', projectId: string, customerCompanyId: string, vendorCompanyId: string, projectName: string, customerName: string, vendorName: string };
 
 export type GetProjectUsersQueryVariables = Types.Exact<{
   data: Types.GetProjectUsersInput;
@@ -45,7 +47,7 @@ export type GetProjectDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', country: string, guestEmail?: string | null, id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
+export type GetProjectDetailQuery = { __typename?: 'Query', getProjectDetail?: { __typename?: 'Project', country: string, guestEmail?: string | null, id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
 
 export type SearchCustomerProjectsQueryVariables = Types.Exact<{
   data: Types.SearchCustomerProjectInput;
@@ -123,8 +125,19 @@ export const ProjectFragmentFragmentDoc = gql`
   targetPrice
   orderQuantities
   status
+  visibility
   createdAt
   updatedAt
+}
+    `;
+export const ProjectInvitationFragmentFragmentDoc = gql`
+    fragment ProjectInvitationFragment on ProjectInvitation {
+  projectId
+  customerCompanyId
+  vendorCompanyId
+  projectName
+  customerName
+  vendorName
 }
     `;
 export const GetProjectUsersDocument = gql`

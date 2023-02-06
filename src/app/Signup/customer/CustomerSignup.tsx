@@ -9,15 +9,13 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import CustomSnackbar from "../../Utils/CustomSnackbar";
 import CustomerPlanSelection from "./CustomerPlanSelection";
 import EmailPage from "../EmailPage";
 import CompanyInfo from "../CompanyInfo";
@@ -31,13 +29,11 @@ import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import CustomerCheckout from "./CustomerCheckout";
 import { useCreateStripeCustomerInStripeForCustomerMutation } from "../../gql/create/company/company.generated";
-import { useCreateCustomerSubscriptionMutation } from "../../gql/create/customer/customer.generated";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
 import JoinOrCreateCompany from "../JoinOrCreateCompany";
 import JoinCompany from "../JoinCompany";
 import { StripePaymentIntent } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
-import { Email } from "@mui/icons-material";
 import { envConfig as config } from "../../Config/EnvConfig";
 
 const stripePromise = loadStripe(config.stripePublishableKey);
@@ -104,11 +100,7 @@ const CustomerSignup = () => {
 
   const [
     createStripeCustomerInStripe,
-    {
-      data: createStripeCustomerInStripeData,
-      loading: createStripeCustomerInStripeLoading,
-      error: createStripeCustomerError,
-    },
+    { loading: createStripeCustomerInStripeLoading },
   ] = useCreateStripeCustomerInStripeForCustomerMutation();
   const [activeStep, setActiveStep] = useState(0);
 
@@ -182,9 +174,6 @@ const CustomerSignup = () => {
       return false;
     return true;
   };
-  const paymentIntentCreated = () => {
-    return Object.values(stripePaymentIntent).every((v) => !!v);
-  };
 
   const selectPlan = (planId: string) => {
     setValues({
@@ -202,9 +191,9 @@ const CustomerSignup = () => {
       case "fax":
         isAllowed = isValidInt(val);
         break;
-      case "name":
-        isAllowed = isValidAlphanumeric(val);
-        break;
+      // case "name":
+      //   isAllowed = isValidAlphanumeric(val);
+      //   break;
       default:
         break;
     }

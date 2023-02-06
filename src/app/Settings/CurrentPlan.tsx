@@ -1,10 +1,4 @@
-import {
-  Container,
-  List,
-  Typography,
-  TypographyProps,
-  useTheme,
-} from "@mui/material";
+import { Container, List, Typography, TypographyProps } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import FullScreenLoading from "../Utils/Loading";
@@ -35,6 +29,7 @@ const DetailTypography = styled((props: TypographyProps) => (
   <Typography {...props} variant="caption" />
 ))();
 
+// not used for now
 /** ADMIN VIEW */
 const CurrentPlan = () => {
   const { user } = useContext(AuthContext);

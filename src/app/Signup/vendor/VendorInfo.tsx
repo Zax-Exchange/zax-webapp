@@ -3,24 +3,20 @@ import {
   Autocomplete,
   Box,
   Button,
-  Divider,
   IconButton,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useState } from "react";
 import { useIntl } from "react-intl";
-import { TranslatableAttribute } from "../../../type/common";
 import { countries } from "../../constants/countries";
 import {
   ALL_PRODUCT_NAMES,
   productValueToLabelMap,
 } from "../../constants/products";
-import { isValidAlphanumeric, isValidInt } from "../../Utils/inputValidators";
-import { Country } from "../customer/CustomerSignup";
-import { MoqDetail, VendorSignupData } from "./VendorSignup";
+import { isValidInt } from "../../Utils/inputValidators";
+import { VendorSignupData } from "./VendorSignup";
 
 const VendorInfo = ({
   values,

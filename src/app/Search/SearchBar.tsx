@@ -1,13 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { useLazyQuery, gql } from "@apollo/client";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
-  Container,
-  Input,
-  IconButton,
-  Grid,
   TextField,
-  InputAdornment,
   InputBase,
   Box,
   Autocomplete,
@@ -16,13 +10,10 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, useTheme } from "@mui/material/styles";
 import { AuthContext } from "../../context/AuthContext";
-import FullScreenLoading from "../Utils/Loading";
 
 import React from "react";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { CUSTOMER_ROUTES, VENDOR_ROUTES } from "../constants/loggedInRoutes";
-import { useSearchCustomerProjectsLazyQuery } from "../gql/get/project/project.generated";
-import { useSearchVendorCompaniesLazyQuery } from "../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
 import { useSearchProductsLazyQuery } from "../gql/get/search/searchProducts.generated";
 import { throttle } from "lodash";
@@ -128,6 +119,16 @@ const SearchBar = () => {
       { leading: true }
     );
   }, []);
+
+  useEffect(() => {
+    if (searchProductsError || searchCategoriesError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [searchProductsError, searchCategoriesError]);
 
   useEffect(() => {
     fetch(() => {

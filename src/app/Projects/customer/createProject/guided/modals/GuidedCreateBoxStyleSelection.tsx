@@ -4,12 +4,11 @@ import {
   CardActionArea,
   CardMedia,
   DialogContent,
-  List,
   ListItem,
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useIntl } from "react-intl";
 import { CreateProjectComponentSpecInput } from "../../../../../../generated/graphql";
 import {

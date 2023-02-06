@@ -17,3 +17,9 @@ const DELETE_PROJECT_DESIGN = gql`
     deleteProjectDesign(data: $data)
   }
 `
+
+const DELETE_PROJECT_INVITATION = gql`
+  mutation deleteProjectInvitation($data: DeleteProjectInvitationInput!) {
+    deleteProjectInvitation(data: $data)
+  }
+`

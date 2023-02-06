@@ -1,6 +1,5 @@
-import { Button, Container, Typography } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import {
-  Elements,
   useStripe,
   useElements,
   PaymentElement,
@@ -11,13 +10,8 @@ import { useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
 import { StripePaymentIntent } from "../../../generated/graphql";
 import { useCreateVendorMutation } from "../../gql/create/vendor/vendor.generated";
-import {
-  useUpdateCompanyPlanSubscriptionInfoMutation,
-  useUpdateCompanyStatusMutation,
-} from "../../gql/update/company/company.generated";
 
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import FullScreenLoading from "../../Utils/Loading";
 import { VendorSignupData, VendorSignupPage } from "./VendorSignup";
 
 const VendorCheckout = ({
@@ -39,14 +33,7 @@ const VendorCheckout = ({
 
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  const [
-    createVendorMutation,
-    {
-      data: createVendorData,
-      loading: createVendorLoading,
-      error: createVendorError,
-    },
-  ] = useCreateVendorMutation();
+  const [createVendorMutation] = useCreateVendorMutation();
 
   useEffect(() => {
     setIsLoading(true);

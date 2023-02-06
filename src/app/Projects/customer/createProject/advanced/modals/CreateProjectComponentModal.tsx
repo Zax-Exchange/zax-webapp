@@ -5,11 +5,8 @@ import {
   Button,
   CircularProgress,
   Container,
-  DialogActions,
-  DialogContent,
   Divider,
   IconButton,
-  Link,
   List,
   ListItem,
   Stack,
@@ -17,11 +14,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useCallback } from "react";
+import React from "react";
 import { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import {
-  CreateGuestProjectInput,
   CreateProjectComponentInput,
   CreateProjectComponentSpecInput,
   CreateProjectInput,
@@ -32,14 +28,6 @@ import {
   PRODUCT_NAME_CORRUGATE_BOX,
   ALL_PRODUCT_NAMES,
   PRODUCT_NAME_RIGID_BOX,
-  RIGID_BOX_MATERIALS,
-  RIGID_BOX_POST_PROCESSES,
-  RIGID_BOX_MATERIAL_SOURCES,
-  RIGID_BOX_FINISHES,
-  POST_PROCESS_PRINTING,
-  POST_PROCESS_DEBOSS,
-  POST_PROCESS_EMBOSS,
-  POST_PROCESS_FOIL_STAMP,
   PRODUCT_NAME_FOLDING_CARTON,
   PRODUCT_NAME_SLEEVE,
   PRODUCT_NAME_MOLDED_FIBER_TRAY,
@@ -235,9 +223,9 @@ const CreateProjectComponentModal = ({
     let isAllowed = true;
 
     switch (e.target.name) {
-      case "name":
-        isAllowed = isValidAlphanumeric(val);
-        break;
+      // case "name":
+      //   isAllowed = isValidAlphanumeric(val);
+      //   break;
       default:
         break;
     }

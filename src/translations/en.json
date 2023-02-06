@@ -91,6 +91,7 @@
   "app.notification.company.newJoinRequest": "There is a new join request to your company. Manage requests in settings.",
   "app.notification.noNewNotifications": "No new notifications at this time!",
   "app.notification.clearAll": "Clear All",
+  "app.notification.project.newInvitation": "You have been invited to bid on {projectName} from {customerName}!",
 
   "app.feedback.action.bugReport": "Bug Report",
   "app.feedback.action.bugReport.whatAreYouTryingToDo": "What were you trying to do",
@@ -266,12 +267,14 @@
   "app.project.attribute.visibility": "Visibility",
   "app.project.attribute.visibility.private": "Private",
   "app.project.attribute.visibility.public": "Public",
+  "app.project.attribute.components": "Components",
   "app.project.status.open": "Open",
   "app.project.status.inProgress": "In progress",
   "app.project.status.completed": "Completed",
   "app.project.status.incomplete": "Incomplete",
   "app.project.status.closed": "Closed",
-
+  "app.project.projectInvitations": "Project Invitations",
+  
   "app.bid.attribute.quantity": "Quantity",
   "app.bid.attribute.price": "Price",
   "app.bid.attribute.samplingFee": "Sampling Fee",  
@@ -279,7 +282,7 @@
   "app.bid.attribute.bidRemark": "Additional Remarks",
   "app.bid.attribute.bidRemark.tooltip": "You can upload additional remarks/notes regarding this project for customer to see.",  
   "app.bid.attribute.bidRemark.noRemark": "You did not upload a remark file.",
-  "app.bid.status.open.tooltip": "Bid is up-to-date.",
+  "app.bid.status.open.tooltip": "Bid is up-to-date",
   "app.bid.status.outdated.tooltip": "Bid might be outdated since project spec has changed.",
   "app.bid.status.accepted": "Accepted",
   "app.bid.status.rejected": "Rejected",
@@ -349,7 +352,7 @@
   "app.versionHistory.latest": "latest",
   "app.versionHistory.none": "None",
   "app.versionHistory.removed": "Removed",
-  "app.versionHistory.uploaded": "Uploaded",
+  "app.versionHistory.added": "Added",
   "app.versionHistory.removedSomeFiles": "Some files were removed",
 
   "app.customer.projects.title": "Your Projects",
@@ -377,6 +380,7 @@
   "app.customer.createProject.noDesignPlaceholder": "No designs uploaded yet.",
   "app.customer.createProject.projectCreated": "Project created!",
   "app.customer.createProject.visibility.tooltip": "Visibility allows you to control whether vendors can find your project through searching or not.",
+  "app.customer.createProject.visibility.helperText": "You cannot change this attribute after project creation.",
 
   "app.customer.editProject.restoreComponent": "Restore Component",
   "app.customer.editProject.removedComponents": "Removed Components",
@@ -421,10 +425,12 @@
   "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
   "app.customer.projectDetail.bidModal.vendorInformation": "Vendor Information",
   "app.customer.projectDetail.bidWasCleared": "Due to order quantities changed, bids on previous quantities were cleared. Please wait until the vendor updates their bid.",
-
   "app.customer.projectDetail.noBids": "Project does not have any bids yet.",
   "app.customer.projectDetail.copyProject": "Copy Project",
-
+  "app.customer.projectDetail.inviteVendors": "Invite Vendors To Bid",
+  "app.customer.projectDetail.inviteVendors.modal.title": "Invite vendors to bid on your project",
+  "app.customer.projectDetail.inviteVendors.noInvitations": "You have not invited any vendors yet.",
+  
   "app.customer.poInvoice.create": "New Invoice",
   "app.customer.poInvoice.createSuccess": "PO Created!",
   "app.customer.poInvoice.uploadPO": "Upload Purchase Order",
@@ -457,6 +463,7 @@
   "app.vendor.search.viewYourBid": "View Your Bid",
   "app.vendor.search.AdditionRemarks": "Additional Remark",
   "app.vendor.search.bidCreated": "Bid created!",
+  "app.vendor.search.existingBid.helerText": "Your company has already bidded on this project.",
   "app.vendor.uploadRemark.tooltip": "Upload Additional Remarks",
   "app.vendor.uploadRemark.success": "File Uploaded Successfully!",
   "app.vendor.project.attribute.customerName": "Customer Name",
@@ -471,6 +478,10 @@
   
 
   "app.vendor.projects.yourBids": "Your Bids",
+   "app.vendor.projects.noBids": "No active bids at this moment. Search for a project to get started!",
+  "app.vendor.projects.yourInvitations": "Your Invitations",
+  "app.vendor.projects.noInvitations": "No active invitations at this moment.",
+
   "app.vendor.projectDetail.resubmitBid": "Resubmit bid if your bid still holds.",
   "app.vendor.projectDetail.editBid": "Edit Bid",
   "app.vendor.projectDetail.editBid.createNewBidTooltip": "You did not bid on this component previously. If you wish to bid, simply fill out all below fields.",

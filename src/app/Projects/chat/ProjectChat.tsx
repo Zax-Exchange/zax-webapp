@@ -1,27 +1,6 @@
-import {
-  Box,
-  Container,
-  DialogTitle,
-  DialogContent,
-  Dialog,
-  Paper,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Box, DialogTitle, DialogContent, Dialog } from "@mui/material";
 import { StreamChat } from "stream-chat";
-import {
-  Chat,
-  Channel,
-  ChannelHeader,
-  ChannelList,
-  LoadingIndicator,
-  MessageList,
-  Thread,
-  useMessageContext,
-  Window,
-  useChannelStateContext,
-  VirtualizedMessageList,
-  MessageInput,
-} from "stream-chat-react";
+import { Chat, Channel, Thread, Window, MessageInput } from "stream-chat-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import Messages from "./Messages";

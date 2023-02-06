@@ -6,21 +6,16 @@ import {
   AccordionSummary,
   AccordionSummaryProps,
   Box,
-  Button,
   Container,
-  Divider,
   Fade,
   Grid,
   ListItem,
   ListItemButton,
-  ListItemIcon,
-  ListItemProps,
   ListItemText,
   ListItemTextProps,
   Paper,
   Stack,
   styled,
-  TextField,
   Typography,
   TypographyProps,
 } from "@mui/material";
@@ -30,10 +25,8 @@ import { useIntl } from "react-intl";
 import { AuthContext } from "../../../context/AuthContext";
 import { UserPower } from "../../../generated/graphql";
 import ChangePassword from "../ChangePassword";
-import ChangePlan from "../ChangePlan";
 import CustomerDeactivateUsers from "./CustomerDeactivateUsers";
 import CustomerManageInvitations from "../ManageInvitations";
-import InviteUsers from "../ManageInvitations";
 import EditCustomerProfile from "./EditCustomerProfile";
 import UpdateUserPower from "../UpdateUserPower";
 import { openLink } from "../../Utils/openLink";

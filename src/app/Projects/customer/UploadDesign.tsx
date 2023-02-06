@@ -1,26 +1,14 @@
-import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  IconButton,
-  Link,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { gql, useMutation } from "@apollo/client";
+import React, { useEffect } from "react";
+import { CircularProgress, IconButton, Tooltip } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 
 import {
   CreateProjectComponentInput,
-  CreateProjectInput,
   ProjectDesign,
 } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
-import { useDeleteProjectDesignMutation } from "../../gql/delete/project/project.generated";
 import { GuidedCreateSetComponentData } from "./createProject/guided/GuidedCreateProject";
-import FullScreenLoading from "../../Utils/Loading";
 import { Target } from "../../../type/common";
 import { useUploadProjectDesignMutation } from "../../gql/upload/project/uploadProjectDesign.generated";
 
@@ -36,11 +24,6 @@ export default function UploadDesign({
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [mutate, { error, loading, data }] = useUploadProjectDesignMutation();
-
-  const [
-    deleteProjectDesign,
-    { error: deleteProjectDesignError, data: deleteProjectDesignData },
-  ] = useDeleteProjectDesignMutation();
 
   useEffect(() => {
     // server error

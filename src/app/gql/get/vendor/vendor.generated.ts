@@ -5,6 +5,7 @@ import { gql } from '@apollo/client';
 import { ProjectFragmentFragmentDoc, ProjectComponentFragmentFragmentDoc } from '../project/project.generated';
 import { PermissionedProjectBidFragmentFragmentDoc } from '../bid/bid.generated';
 import { FileFragmentFragmentDoc } from '../../utils/common/file.generated';
+import { ProjectInvitationFragmentFragmentDoc } from '../project/project.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetVendorDetailQueryVariables = Types.Exact<{
@@ -19,7 +20,7 @@ export type GetVendorProjectQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: string, toolingFee?: string | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null } } | null };
+export type GetVendorProjectQuery = { __typename?: 'Query', getVendorProject?: { __typename?: 'VendorProject', id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }>, bidInfo: { __typename?: 'PermissionedProjectBid', id: string, userId: string, companyId: string, projectId: string, status: Types.BidStatus, permission: Types.ProjectPermission, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectBidComponent', id: string, projectBidId: string, projectComponentId: string, samplingFee: string, toolingFee?: string | null, quantityPrices: Array<{ __typename?: 'QuantityPrice', quantity: number, price: string }> }>, remarkFile?: { __typename?: 'BidRemark', fileId: string, filename: string, url: string } | null } } | null };
 
 export type GetVendorProjectsQueryVariables = Types.Exact<{
   data: Types.GetVendorProjectsInput;
@@ -40,7 +41,7 @@ export type GetVendorGuestProjectQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorGuestProjectQuery = { __typename?: 'Query', getVendorGuestProject?: { __typename?: 'VendorGuestProject', permission: Types.ProjectPermission, guestEmail: string, id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
+export type GetVendorGuestProjectQuery = { __typename?: 'Query', getVendorGuestProject?: { __typename?: 'VendorGuestProject', permission: Types.ProjectPermission, guestEmail: string, id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
 
 export type SearchVendorCompaniesQueryVariables = Types.Exact<{
   data: Types.SearchVendorCompanyInput;
@@ -62,6 +63,20 @@ export type GetInvoiceQueryVariables = Types.Exact<{
 
 
 export type GetInvoiceQuery = { __typename?: 'Query', getInvoice?: { __typename?: 'Invoice', status: Types.InvoiceStatus, fileId: string, filename: string, url: string } | null };
+
+export type GetSearchProjectDetailQueryVariables = Types.Exact<{
+  data: Types.GetSearchProjectDetailInput;
+}>;
+
+
+export type GetSearchProjectDetailQuery = { __typename?: 'Query', getSearchProjectDetail?: { __typename?: 'Project', country: string, id: string, userId: string, companyId: string, companyName: string, name: string, category: string, totalWeight: string, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, status: Types.ProjectStatus, visibility: Types.ProjectVisibility, createdAt: any, updatedAt: any, components: Array<{ __typename?: 'ProjectComponent', id: string, projectId: string, name: string, designs?: Array<{ __typename?: 'ProjectDesign', fileId: string, filename: string, url: string }> | null, componentSpec: { __typename?: 'ProjectComponentSpec', id: string, productName: string, boxStyle?: string | null, style?: string | null, includeArtworkInQuote?: boolean | null, purpose?: string | null, shape?: string | null, thickness?: string | null, flute?: string | null, color?: string | null, manufacturingProcess?: string | null, material?: string | null, materialSource?: string | null, numberOfPages?: string | null, finish?: string | null, outsideMaterial?: string | null, outsideMaterialSource?: string | null, outsideFinish?: string | null, outsideColor?: string | null, insideMaterial?: string | null, insideMaterialSource?: string | null, insideFinish?: string | null, insideColor?: string | null, dimension: { __typename?: 'ProductDimension', x: string, y: string, z?: string | null }, postProcess?: Array<{ __typename?: 'PostProcessDetail', postProcessName: string, isInside?: boolean | null, printingMethod?: string | null, color?: string | null, fontSize?: string | null, numberOfColors?: { __typename?: 'PostProcessPrintingNumberOfColors', c: string, t: string } | null, estimatedArea?: { __typename?: 'ProductDimension', x: string, y: string } | null }> | null } }> } | null };
+
+export type GetVendorProjectInvitationsQueryVariables = Types.Exact<{
+  data: Types.GetVendorProjectInvitationsInput;
+}>;
+
+
+export type GetVendorProjectInvitationsQuery = { __typename?: 'Query', getVendorProjectInvitations: Array<{ __typename?: 'ProjectInvitation', projectId: string, customerCompanyId: string, vendorCompanyId: string, projectName: string, customerName: string, vendorName: string }> };
 
 
 export const GetVendorDetailDocument = gql`
@@ -433,3 +448,78 @@ export function useGetInvoiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetInvoiceQueryHookResult = ReturnType<typeof useGetInvoiceQuery>;
 export type GetInvoiceLazyQueryHookResult = ReturnType<typeof useGetInvoiceLazyQuery>;
 export type GetInvoiceQueryResult = Apollo.QueryResult<GetInvoiceQuery, GetInvoiceQueryVariables>;
+export const GetSearchProjectDetailDocument = gql`
+    query getSearchProjectDetail($data: GetSearchProjectDetailInput!) {
+  getSearchProjectDetail(data: $data) {
+    ...ProjectFragment
+    country
+    components {
+      ...ProjectComponentFragment
+    }
+  }
+}
+    ${ProjectFragmentFragmentDoc}
+${ProjectComponentFragmentFragmentDoc}`;
+
+/**
+ * __useGetSearchProjectDetailQuery__
+ *
+ * To run a query within a React component, call `useGetSearchProjectDetailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSearchProjectDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSearchProjectDetailQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetSearchProjectDetailQuery(baseOptions: Apollo.QueryHookOptions<GetSearchProjectDetailQuery, GetSearchProjectDetailQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSearchProjectDetailQuery, GetSearchProjectDetailQueryVariables>(GetSearchProjectDetailDocument, options);
+      }
+export function useGetSearchProjectDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSearchProjectDetailQuery, GetSearchProjectDetailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSearchProjectDetailQuery, GetSearchProjectDetailQueryVariables>(GetSearchProjectDetailDocument, options);
+        }
+export type GetSearchProjectDetailQueryHookResult = ReturnType<typeof useGetSearchProjectDetailQuery>;
+export type GetSearchProjectDetailLazyQueryHookResult = ReturnType<typeof useGetSearchProjectDetailLazyQuery>;
+export type GetSearchProjectDetailQueryResult = Apollo.QueryResult<GetSearchProjectDetailQuery, GetSearchProjectDetailQueryVariables>;
+export const GetVendorProjectInvitationsDocument = gql`
+    query getVendorProjectInvitations($data: GetVendorProjectInvitationsInput!) {
+  getVendorProjectInvitations(data: $data) {
+    ...ProjectInvitationFragment
+  }
+}
+    ${ProjectInvitationFragmentFragmentDoc}`;
+
+/**
+ * __useGetVendorProjectInvitationsQuery__
+ *
+ * To run a query within a React component, call `useGetVendorProjectInvitationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVendorProjectInvitationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVendorProjectInvitationsQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetVendorProjectInvitationsQuery(baseOptions: Apollo.QueryHookOptions<GetVendorProjectInvitationsQuery, GetVendorProjectInvitationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVendorProjectInvitationsQuery, GetVendorProjectInvitationsQueryVariables>(GetVendorProjectInvitationsDocument, options);
+      }
+export function useGetVendorProjectInvitationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVendorProjectInvitationsQuery, GetVendorProjectInvitationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVendorProjectInvitationsQuery, GetVendorProjectInvitationsQueryVariables>(GetVendorProjectInvitationsDocument, options);
+        }
+export type GetVendorProjectInvitationsQueryHookResult = ReturnType<typeof useGetVendorProjectInvitationsQuery>;
+export type GetVendorProjectInvitationsLazyQueryHookResult = ReturnType<typeof useGetVendorProjectInvitationsLazyQuery>;
+export type GetVendorProjectInvitationsQueryResult = Apollo.QueryResult<GetVendorProjectInvitationsQuery, GetVendorProjectInvitationsQueryVariables>;

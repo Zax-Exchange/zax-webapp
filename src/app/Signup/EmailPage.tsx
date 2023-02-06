@@ -1,15 +1,6 @@
-import {
-  CircularProgress,
-  Fade,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Fade, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
-import { useEffect } from "react";
 import { useIntl } from "react-intl";
-import { useCheckUserEmailLazyQuery } from "../gql/utils/user/user.generated";
-import useCustomSnackbar from "../Utils/CustomSnackbar";
 
 const EmailPage = ({
   onChange,
@@ -21,55 +12,49 @@ const EmailPage = ({
   setShouldDisableNext: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const intl = useIntl();
-  const [checkUserEmailQuery, { data, loading, error }] =
-    useCheckUserEmailLazyQuery();
+  setShouldDisableNext(false);
+  // const [checkUserEmailQuery, { data, loading, error }] =
+  //   useCheckUserEmailLazyQuery();
 
-  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  // const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
-  const renderEmailHelperText = () => {
-    if ((data && !data.checkUserEmail) || !data) {
-      return "This should be an email that we can send billing & sign-up information to.";
-    }
-    return "Email taken.";
-  };
-
-  useEffect(() => {
-    if (data && data.checkUserEmail) {
-      // is duplicate
-      setShouldDisableNext(true);
-    } else {
-      setShouldDisableNext(false);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.checkUserEmail) {
+  //     // is duplicate
+  //     setShouldDisableNext(true);
+  //   } else {
+  //     setShouldDisableNext(false);
+  //   }
+  // }, [data]);
 
   // not used right now, as billing email are allowed to be same
   // if we want to use this in the future, should implement throttle function
-  const emailOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e);
-    try {
-      await checkUserEmailQuery({
-        variables: {
-          data: {
-            email: e.target.value,
-          },
-        },
-        fetchPolicy: "no-cache",
-      });
-    } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: intl.formatMessage({ id: "app.general.network.error" }),
-      });
-      setSnackbarOpen(true);
-    }
-  };
+  // const emailOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   onChange(e);
+  //   try {
+  //     await checkUserEmailQuery({
+  //       variables: {
+  //         data: {
+  //           email: e.target.value,
+  //         },
+  //       },
+  //       fetchPolicy: "no-cache",
+  //     });
+  //   } catch (error) {
+  //     setSnackbar({
+  //       severity: "error",
+  //       message: intl.formatMessage({ id: "app.general.network.error" }),
+  //     });
+  //     setSnackbarOpen(true);
+  //   }
+  // };
 
-  const shouldError = () => {
-    if (data) {
-      return data.checkUserEmail!;
-    }
-    return false;
-  };
+  // const shouldError = () => {
+  //   if (data) {
+  //     return data.checkUserEmail!;
+  //   }
+  //   return false;
+  // };
   return (
     <>
       <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
@@ -86,10 +71,10 @@ const EmailPage = ({
             helperText={intl.formatMessage({
               id: "app.signup.billingEmail.helperText",
             })}
-            error={shouldError()}
-            InputProps={{
-              endAdornment: loading && <CircularProgress size={20} />,
-            }}
+            // error={shouldError()}
+            // InputProps={{
+            //   endAdornment: loading && <CircularProgress size={20} />,
+            // }}
           ></TextField>
         </Fade>
       </Stack>

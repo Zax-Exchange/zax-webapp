@@ -1,15 +1,9 @@
-import {
-  NavigateOptions,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 import {
   Typography,
   Stack,
   Grid,
-  Container,
   Box,
   FormGroup,
   FormControlLabel,
@@ -21,14 +15,9 @@ import {
   Paper,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import {
-  ProjectOverview,
-  SearchCustomerProjectInput,
-  VendorOverview,
-} from "../../../generated/graphql";
+
 import { useSearchVendorCompaniesLazyQuery } from "../../gql/get/vendor/vendor.generated";
 import qs from "qs";
-import { useSearchCustomerProjectsLazyQuery } from "../../gql/get/project/project.generated";
 import FullScreenLoading from "../../Utils/Loading";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import SearchCompanyOverview from "./SearchCompanyOverview";

@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { FILE_FRAGMENT } from "../../utils/common/file";
 import { PERMISSIONED_PROJECT_BID_FRAGMENT, PROJECT_BID_COMPONENT_FRAGMENT, PROJECT_BID_FRAGMENT } from "../bid/bid";
-import {PROJECT_COMPONENT_FRAGMENT} from "../project/project"
+import {PROJECT_COMPONENT_FRAGMENT, PROJECT_INVITATION_FRAGMENT} from "../project/project"
 import {PROJECT_FRAGMENT} from "../project/project"
 
 const GET_VENDOR_DETAIL = gql`
@@ -160,3 +160,26 @@ ${FILE_FRAGMENT}
   }
 `
 
+const GET_SEARCH_RPOJECT_DETAIL = gql`
+  ${PROJECT_FRAGMENT}
+  ${PROJECT_COMPONENT_FRAGMENT}
+  query getSearchProjectDetail($data: GetSearchProjectDetailInput!) {
+    getSearchProjectDetail(data: $data) {
+      ...ProjectFragment
+      country
+      components {
+        ...ProjectComponentFragment
+      }
+      
+    }
+  }
+`
+
+const GET_VENDOR_PROJECT_INVITATIONS = gql`
+  ${PROJECT_INVITATION_FRAGMENT}
+  query getVendorProjectInvitations($data: GetVendorProjectInvitationsInput!) {
+    getVendorProjectInvitations(data: $data) {
+      ...ProjectInvitationFragment
+    }
+  }
+`

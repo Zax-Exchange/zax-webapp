@@ -3,12 +3,11 @@ import {
   Grid,
   Container,
   Fade,
-  IconButton,
   Menu,
   MenuList,
   MenuItem,
   Box,
-  CircularProgress,
+  Stack,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -18,23 +17,23 @@ import { AuthContext } from "../../../context/AuthContext";
 import FullScreenLoading from "../../Utils/Loading";
 import {
   ProjectStatus,
-  VendorProject,
   VendorProjectOverview,
 } from "../../../generated/graphql";
 import VendorProjectOverviewCard from "./VendorProjectOverviewCard";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import {
   useGetVendorGuestProjectsQuery,
+  useGetVendorProjectInvitationsQuery,
   useGetVendorProjectsQuery,
 } from "../../gql/get/vendor/vendor.generated";
 import { useIntl } from "react-intl";
 import GuestProjectOverviewCard from "./VendorGuestProjectOverviewCard";
+import ProjectInvitationCard from "./ProjectInvitationCard";
 
 const VendorProjects = () => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const isVendor = user!.isVendor;
 
   const userId = user!.id;
 
@@ -65,6 +64,18 @@ const VendorProjects = () => {
     fetchPolicy: "no-cache",
   });
 
+  const {
+    loading: getInvitationsLoading,
+    data: getInvitationsData,
+    error: getInvitationsError,
+  } = useGetVendorProjectInvitationsQuery({
+    variables: {
+      data: {
+        companyId: user!.companyId,
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
 
   const [sortMenuAnchor, setSortMenuAnchor] =
@@ -149,47 +160,85 @@ const VendorProjects = () => {
 
   if (getVendorProjectsData && getVendorGuestProjectsData) {
     return (
-      <Container
-        className="user-projects-container"
-        sx={{ position: "relative" }}
-      >
-        <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
-          <Typography variant="subtitle2">
-            {intl.formatMessage({ id: "app.vendor.projects.yourBids" })}
-          </Typography>
-          {/* <IconButton onClick={sortOnClick}>
-            <SortIcon />
-          </IconButton> */}
+      <Container sx={{ position: "relative" }}>
+        <Box sx={{ mb: 2 }}>
+          <Box display="flex" mb={2}>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({
+                id: "app.vendor.projects.yourInvitations",
+              })}
+            </Typography>
+          </Box>
+          {!!getInvitationsData &&
+            !!getInvitationsData.getVendorProjectInvitations.length && (
+              <Stack direction="row" spacing={0.5} pb={2} overflow="scroll">
+                {getInvitationsData.getVendorProjectInvitations.map(
+                  (invitation) => {
+                    return (
+                      <>
+                        <ProjectInvitationCard invitation={invitation} />
+                      </>
+                    );
+                  }
+                )}
+              </Stack>
+            )}
+          {getInvitationsData &&
+            !getInvitationsData.getVendorProjectInvitations.length && (
+              <Box>
+                <Typography variant="caption" color="GrayText">
+                  {intl.formatMessage({
+                    id: "app.vendor.projects.noInvitations",
+                  })}
+                </Typography>
+              </Box>
+            )}
         </Box>
+        <Box>
+          <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
+            <Typography variant="subtitle2">
+              {intl.formatMessage({ id: "app.vendor.projects.yourBids" })}
+            </Typography>
+            {/* <IconButton onClick={sortOnClick}>
+              <SortIcon />
+            </IconButton> */}
+          </Box>
+          {!projects.length &&
+            !getVendorGuestProjectsData.getVendorGuestProjects.length && (
+              <Box>
+                <Typography variant="caption" color="GrayText">
+                  {intl.formatMessage({ id: "app.vendor.projects.noBids" })}
+                </Typography>
+              </Box>
+            )}
 
-        <Menu
-          id="long-menu"
-          anchorEl={sortMenuAnchor}
-          open={sortMenuOpen}
-          onClose={sortOnClose}
-          PaperProps={{
-            style: {
-              maxHeight: "120px",
-            },
-          }}
-        >
-          <MenuList dense sx={{ padding: "4px 0 4px" }}>
-            <MenuItem data-type="name" onClick={sortMenuOnClick}>
-              Sort by name
-            </MenuItem>
+          <Menu
+            id="long-menu"
+            anchorEl={sortMenuAnchor}
+            open={sortMenuOpen}
+            onClose={sortOnClose}
+            PaperProps={{
+              style: {
+                maxHeight: "120px",
+              },
+            }}
+          >
+            <MenuList dense sx={{ padding: "4px 0 4px" }}>
+              <MenuItem data-type="name" onClick={sortMenuOnClick}>
+                Sort by name
+              </MenuItem>
 
-            <MenuItem data-type="targetPrice" onClick={sortMenuOnClick}>
-              Sort by targetPrice
-            </MenuItem>
+              <MenuItem data-type="targetPrice" onClick={sortMenuOnClick}>
+                Sort by targetPrice
+              </MenuItem>
 
-            <MenuItem data-type="date" onClick={sortMenuOnClick}>
-              Sort by delivery date
-            </MenuItem>
-          </MenuList>
-        </Menu>
+              <MenuItem data-type="date" onClick={sortMenuOnClick}>
+                Sort by delivery date
+              </MenuItem>
+            </MenuList>
+          </Menu>
 
-        <Fade in={true}>
-          <Grid container spacing={3} className="user-projects-inner-container">
+          <Grid container spacing={3}>
             {projects.map((project, i) => {
               return (
                 <>
@@ -208,7 +257,7 @@ const VendorProjects = () => {
                 return <GuestProjectOverviewCard project={project} />;
               })}
           </Grid>
-        </Fade>
+        </Box>
       </Container>
     );
   }

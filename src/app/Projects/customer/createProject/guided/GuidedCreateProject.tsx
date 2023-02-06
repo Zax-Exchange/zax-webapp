@@ -1,18 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  IconButton,
-  InputAdornment,
-  ListItem,
-  Paper,
-  Stack,
-  Step,
-  StepLabel,
-  Stepper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Container, Paper, Step, StepLabel, Stepper } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { AuthContext } from "../../../../../context/AuthContext";
@@ -23,16 +9,8 @@ import {
   ProjectDesign,
   ProjectVisibility,
 } from "../../../../../generated/graphql";
-import { useCreateProjectMutation } from "../../../../gql/create/project/project.generated";
 import useCustomSnackbar from "../../../../Utils/CustomSnackbar";
-import {
-  isValidAlphanumeric,
-  isValidInt,
-} from "../../../../Utils/inputValidators";
-import {
-  CUSTOMER_ROUTES,
-  GENERAL_ROUTES,
-} from "../../../../constants/loggedInRoutes";
+
 import { useNavigate } from "react-router-dom";
 import GuidedGeneralSpec from "./GuidedGeneralSpec";
 import GuidedOutsideSpec from "./GuidedOutsideSpec";
@@ -87,8 +65,6 @@ export default function GuidedCreateProject() {
   ];
 
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [activeStep, setActiveStep] = useState(0);
   const [currentView, setCurrentView] = useState(GuidedView.GENERAL_SPEC);
   const [projectCreated, setProjectCreated] = useState(false);

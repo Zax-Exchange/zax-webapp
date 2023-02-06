@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from "@apollo/client";
+import { ApolloClient, ApolloLink, InMemoryCache } from "@apollo/client";
 import createUploadLink from "apollo-upload-client/public/createUploadLink";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
@@ -13,10 +13,6 @@ const authLink = setContext((_, { headers }) => {
       authorization: token ? `Bearer ${token}` : "",
     }
   }
-});
-
-const httpLink = new HttpLink({
-  uri: config.webserviceUrl
 });
  
 const uploadLink = createUploadLink({

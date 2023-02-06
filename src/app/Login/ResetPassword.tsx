@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useParams } from "react-router-dom";
-import JwtDecode, { JwtPayload } from "jwt-decode";
+import { JwtPayload } from "jwt-decode";
 import { Container, Paper, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import jwt from "jwt-decode";

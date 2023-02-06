@@ -4,7 +4,6 @@ import {
   Typography,
   Button,
   Paper,
-  Stack,
   Box,
   TableRow,
   TableCell,
@@ -19,12 +18,10 @@ import {
   InputAdornment,
   Tooltip,
   IconButton,
-  Link,
-  List,
+  Dialog,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import FullScreenLoading from "../../Utils/Loading";
-import CustomSnackbar from "../../Utils/CustomSnackbar";
 import React from "react";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import {
@@ -34,13 +31,8 @@ import {
   Project,
   ProjectBid,
   ProjectComponent,
-  ProjectComponentSpec,
 } from "../../../generated/graphql";
-import { useGetProjectDetailQuery } from "../../gql/get/project/project.generated";
-import { SearchProjectDetailLocationState } from "./SearchProjectOverview";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MuiListItem from "@mui/material/ListItem";
-import { GENERAL_ROUTES, VENDOR_ROUTES } from "../../constants/loggedInRoutes";
+import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import { useCreateProjectBidMutation } from "../../gql/create/project/project.generated";
 import { isValidFloat, isValidInt } from "../../Utils/inputValidators";
 import { AuthContext } from "../../../context/AuthContext";
@@ -54,9 +46,10 @@ import UploadRemark from "../../Projects/vendor/UploadRemark";
 import { useDeleteBidRemarkMutation } from "../../gql/delete/bid/bid.generated";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
-import { ProjectOverviewListItem } from "../../Projects/customer/CustomerProjectOverviewCard";
 import ProjectSpecDetail from "../../Projects/common/ProjectSpecDetail";
 import { InfoOutlined } from "@mui/icons-material";
+import { useGetSearchProjectDetailQuery } from "../../gql/get/vendor/vendor.generated";
+import PermissionDenied from "../../Utils/PermissionDenied";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -79,11 +72,6 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
-const ProjectDetailListItem = styled(ProjectOverviewListItem)(() => ({
-  flexDirection: "column",
-  alignItems: "flex-start",
-}));
 
 export const BidInputPriceTextField = styled((props: TextFieldProps) => {
   return (
@@ -121,16 +109,19 @@ const SearchProjectDetail = () => {
   const [currentComponentTab, setCurrentComponentTab] = useState(0);
   const [currentBidTab, setCurrentBidTab] = useState(0);
   const [existingBid, setExistingBid] = useState<ProjectBid | null>(null);
-  const [currentExistingBidTab, setCurrentExistingBidTab] = useState(0);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+
+  const [permissionedDenied, setPermissionDenied] = useState(false);
+
   const {
     data: getProjectDetailData,
     error: getProjectDetailError,
     loading: getProjectDetailLoading,
-  } = useGetProjectDetailQuery({
+  } = useGetSearchProjectDetailQuery({
     variables: {
       data: {
         projectId: projectId || "",
+        companyId: user!.companyId,
       },
     },
     fetchPolicy: "no-cache",
@@ -168,9 +159,9 @@ const SearchProjectDetail = () => {
 
   // initialize componentsQpData with componentIds
   useEffect(() => {
-    if (getProjectDetailData && getProjectDetailData.getProjectDetail) {
+    if (getProjectDetailData && getProjectDetailData.getSearchProjectDetail) {
       const { components, orderQuantities } =
-        getProjectDetailData.getProjectDetail;
+        getProjectDetailData.getSearchProjectDetail;
 
       setBidInput((prev) => ({
         ...prev,
@@ -195,7 +186,7 @@ const SearchProjectDetail = () => {
         variables: {
           data: {
             companyId: user!.companyId,
-            projectId: getProjectDetailData.getProjectDetail.id,
+            projectId: getProjectDetailData.getSearchProjectDetail.id,
           },
         },
         fetchPolicy: "no-cache",
@@ -212,14 +203,28 @@ const SearchProjectDetail = () => {
   }, [getProjectBidData]);
 
   useEffect(() => {
-    if (getProjectDetailError || getProjectBidError || deleteRemarkError) {
-      setSnackbar({
-        message: intl.formatMessage({ id: "app.general.network.error" }),
-        severity: "error",
-      });
-      setSnackbarOpen(true);
+    if (
+      getProjectDetailError ||
+      getProjectBidError ||
+      deleteRemarkError ||
+      createProjectBidError
+    ) {
+      if (getProjectDetailError?.message.includes("permission denied")) {
+        setPermissionDenied(true);
+      } else {
+        setSnackbar({
+          message: intl.formatMessage({ id: "app.general.network.error" }),
+          severity: "error",
+        });
+        setSnackbarOpen(true);
+      }
     }
-  }, [getProjectDetailError, getProjectBidError, deleteRemarkError]);
+  }, [
+    getProjectDetailError,
+    getProjectBidError,
+    deleteRemarkError,
+    createProjectBidError,
+  ]);
 
   const navigateToExistingBid = (projectId: string) => {
     const dest = GENERAL_ROUTES.PROJECT_DETAIL.split(":");
@@ -344,32 +349,6 @@ const SearchProjectDetail = () => {
     } finally {
       setSnackbarOpen(true);
     }
-  };
-
-  const renderAttributeTitle = (attr: string) => {
-    return <Typography variant="subtitle2">{attr}</Typography>;
-  };
-
-  const renderProjectField = (
-    projectAttribute: keyof Project,
-    projectFieldData: string | number | number[]
-  ) => {
-    if (Array.isArray(projectFieldData)) {
-      return (
-        <Typography variant="caption">{projectFieldData.join(", ")}</Typography>
-      );
-    }
-
-    let fieldString = projectFieldData;
-    if (projectAttribute === "totalWeight") {
-      fieldString += intl.formatMessage({ id: "app.general.unit.g" });
-    }
-    if (projectAttribute === "targetPrice") {
-      fieldString =
-        parseFloat(fieldString as string) +
-        intl.formatMessage({ id: "app.general.currency.usd" });
-    }
-    return <Typography variant="caption">{fieldString}</Typography>;
   };
 
   const renderBidInputSection = (components: ProjectComponent[]) => {
@@ -517,107 +496,26 @@ const SearchProjectDetail = () => {
     );
   };
 
-  const renderExistingBidDetail = (components: ProjectComponent[]) => {
-    const compIdToNameMap: Record<string, string> = {};
-    components.forEach((comp) => {
-      compIdToNameMap[comp.id] = comp.name;
-    });
-
-    return (
-      <>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={currentBidTab}
-            onChange={bidsTabOnChange}
-            variant="scrollable"
-            scrollButtons="auto"
-          >
-            {existingBid!.components.map((comp, i) => {
-              return (
-                <Tab label={compIdToNameMap[comp.projectComponentId]} key={i} />
-              );
-            })}
-          </Tabs>
-        </Box>
-
-        {existingBid!.components.map((comp, componentIndex) => {
-          return (
-            <TabPanel value={currentBidTab} index={componentIndex}>
-              <TableContainer>
-                <Table size="small">
-                  {/* <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.quantity",
-                        })}
-                      </TableCell>
-                      <TableCell>
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.price",
-                        })}
-                      </TableCell>
-                      <TableCell>
-                        {intl.formatMessage({
-                          id: "app.component.attribute.samplingFee",
-                        })}
-                      </TableCell>
-                    </TableRow>
-                  </TableHead> */}
-                  <TableBody>
-                    {comp.quantityPrices.map((qp, componentQpIndex) => {
-                      return (
-                        <TableRow>
-                          <TableCell>
-                            {intl.formatMessage({
-                              id: "app.bid.attribute.quantity",
-                            })}
-                          </TableCell>
-                          <TableCell>{qp.quantity}</TableCell>
-                          <TableCell>$ {qp.price}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                    <TableRow>
-                      <TableCell colSpan={2} sx={{ textAlign: "center" }}>
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.samplingFee",
-                        })}
-                      </TableCell>
-                      <TableCell>$ {comp.samplingFee}</TableCell>
-                    </TableRow>
-
-                    {!!comp.toolingFee && (
-                      <TableRow>
-                        <TableCell colSpan={2} sx={{ textAlign: "center" }}>
-                          {intl.formatMessage({
-                            id: "app.bid.attribute.toolingFee",
-                          })}
-                        </TableCell>
-                        <TableCell>$ {comp.toolingFee}</TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </TabPanel>
-          );
-        })}
-      </>
-    );
-  };
-
   if (getProjectDetailLoading) {
     return <FullScreenLoading />;
   }
 
+  if (permissionedDenied) {
+    return (
+      <Dialog open={true}>
+        <PermissionDenied />
+      </Dialog>
+    );
+  }
+
   if (
     getProjectDetailData &&
-    getProjectDetailData.getProjectDetail &&
+    getProjectDetailData.getSearchProjectDetail &&
     Object.keys(bidInput.components).length
   ) {
-    const { components } = getProjectDetailData.getProjectDetail as Project;
-    const projectData = getProjectDetailData.getProjectDetail;
+    const { components } =
+      getProjectDetailData.getSearchProjectDetail as Project;
+    const projectData = getProjectDetailData.getSearchProjectDetail;
     return (
       <Container>
         {createProjectBidLoading && <FullScreenLoading />}
@@ -641,7 +539,9 @@ const SearchProjectDetail = () => {
                   </Typography>
                 </Box>
               </Box>
-              <ProjectSpecDetail projectData={projectData} />
+              <Box sx={{ p: 2 }}>
+                <ProjectSpecDetail projectData={projectData} />
+              </Box>
             </Paper>
 
             <Paper sx={{ mt: 1 }}>
@@ -721,6 +621,7 @@ const SearchProjectDetail = () => {
                             onClick={() =>
                               navigateToExistingBid(existingBid.projectId)
                             }
+                            color="primary"
                           >
                             <AssistantDirectionRoundedIcon />
                           </IconButton>
@@ -732,7 +633,11 @@ const SearchProjectDetail = () => {
                         <Button
                           onClick={submitBid}
                           variant="contained"
-                          disabled={shouldDisableSubmitBidButton()}
+                          disabled={
+                            shouldDisableSubmitBidButton() ||
+                            deleteRemarkLoading
+                          }
+                          color="primary"
                         >
                           {intl.formatMessage({
                             id: "app.vendor.search.submitBids",
@@ -742,45 +647,56 @@ const SearchProjectDetail = () => {
                     )}
                   </Box>
                 </Box>
-                <Paper sx={{ mt: 1 }}>
-                  {!!existingBid
-                    ? renderExistingBidDetail(components)
-                    : renderBidInputSection(components)}
-                </Paper>
-                <Box>
-                  <Box display="flex" alignItems="center" mt={2}>
-                    <Tooltip
-                      title={intl.formatMessage({
-                        id: "app.bid.attribute.bidRemark.tooltip",
-                      })}
-                      placement="top"
-                      sx={{ mr: 1 }}
-                    >
-                      <InfoOutlined color="info" fontSize="small" />
-                    </Tooltip>
-                    <Typography variant="subtitle2">
+                {!existingBid && (
+                  <Paper sx={{ mt: 1 }}>
+                    {renderBidInputSection(components)}
+                  </Paper>
+                )}
+                {existingBid && (
+                  <Box>
+                    <Typography variant="caption" color="GrayText">
                       {intl.formatMessage({
-                        id: "app.vendor.search.AdditionRemarks",
+                        id: "app.vendor.search.existingBid.helerText",
                       })}
                     </Typography>
-                    {!existingBid && (
-                      <UploadRemark
-                        setRemarkFile={setRemarkFile}
-                        setRemarkId={setRemarkId}
-                        deleteExistingRemark={deleteExistingRemark}
-                      />
+                  </Box>
+                )}
+                {!existingBid && (
+                  <Box>
+                    <Box display="flex" alignItems="center" mt={2}>
+                      <Tooltip
+                        title={intl.formatMessage({
+                          id: "app.bid.attribute.bidRemark.tooltip",
+                        })}
+                        placement="top"
+                        sx={{ mr: 1 }}
+                      >
+                        <InfoOutlined color="info" fontSize="small" />
+                      </Tooltip>
+                      <Typography variant="subtitle2">
+                        {intl.formatMessage({
+                          id: "app.vendor.search.AdditionRemarks",
+                        })}
+                      </Typography>
+                      {!existingBid && (
+                        <UploadRemark
+                          setRemarkFile={setRemarkFile}
+                          setRemarkId={setRemarkId}
+                          deleteExistingRemark={deleteExistingRemark}
+                        />
+                      )}
+                    </Box>
+
+                    {remarkFile && (
+                      <Box display="flex" mt={1}>
+                        <AttachmentButton
+                          label={remarkFile.filename}
+                          onClick={() => openLink(remarkFile.url)}
+                        />
+                      </Box>
                     )}
                   </Box>
-
-                  {remarkFile && (
-                    <Box display="flex" mt={1}>
-                      <AttachmentButton
-                        label={remarkFile.filename}
-                        onClick={() => openLink(remarkFile.url)}
-                      />
-                    </Box>
-                  )}
-                </Box>
+                )}
               </Container>
             </Grid>
           )}

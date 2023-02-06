@@ -1,11 +1,8 @@
 import {
-  Box,
   Stack,
-  TextField,
   Typography,
   Container,
   Button,
-  MenuItem,
   Paper,
   Card,
   CardActionArea,
@@ -15,9 +12,8 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-import { MouseEventHandler, useContext, useEffect } from "react";
+import { MouseEventHandler, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
 import "./VendorSignup.scss";
 import FullScreenLoading from "../../Utils/Loading";
@@ -38,7 +34,6 @@ import VendorCheckout from "./VendorCheckout";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
 import {
-  ProductAndMoq,
   ProductAndMoqInput,
   StripePaymentIntent,
 } from "../../../generated/graphql";
@@ -116,11 +111,7 @@ const VendorSignup = () => {
   ];
   const [
     createStripeCustomerMutation,
-    {
-      data: createStripeCustomerData,
-      loading: createStripeCustomerLoading,
-      error: createStripeCustomerError,
-    },
+    { data: createStripeCustomerData, loading: createStripeCustomerLoading },
   ] = useCreateStripeCustomerInStripeForVendorMutation();
 
   const { data: getAllPlansData } = useGetAllPlansQuery({
@@ -215,9 +206,6 @@ const VendorSignup = () => {
     }
   }, [createStripeCustomerData]);
 
-  const isValidStripeData = () => {
-    return true;
-  };
   // goes to review page once user selects a plan
   // we need this because it's possible for nextPage to render before subscriptionInfo settles
   useEffect(() => {

@@ -4,8 +4,7 @@ import { useIntl } from "react-intl";
 import { Target } from "../../../type/common";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Invoice, PurchaseOrder } from "../../../generated/graphql";
-import { useUploadPurchaseOrderMutation } from "../../gql/upload/customer/uploadPurchaseOrder.generated";
+import { Invoice } from "../../../generated/graphql";
 import { useUploadInvoiceMutation } from "../../gql/upload/vendor/uploadInvoice.generated";
 
 const UploadInvoice = ({

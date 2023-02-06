@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { FILE_FRAGMENT } from "../../utils/common/file";
 import { PROJECT_BID_COMPONENT_FRAGMENT, PROJECT_BID_FRAGMENT } from "../bid/bid";
-import {PROJECT_COMPONENT_FRAGMENT} from "../project/project"
+import {PROJECT_COMPONENT_FRAGMENT, PROJECT_INVITATION_FRAGMENT} from "../project/project"
 import {PROJECT_FRAGMENT} from "../project/project"
 
 const GET_CUSTOMER_PROJECT = gql`
@@ -14,7 +14,6 @@ const GET_CUSTOMER_PROJECT = gql`
       country
       creationMode
       permission
-      visibility
       components {
         ...ProjectComponentFragment
       }
@@ -97,6 +96,15 @@ const GET_PURCHASE_ORDER = gql`
     getPurchaseOrder(data: $data) {
       ...FileFragment
       status
+    }
+  }
+`
+
+const GET_CUSTOMER_PROJECT_INVITATIONS = gql`
+  ${PROJECT_INVITATION_FRAGMENT}
+  query getCustomerProjectInvitations($data: GetCustomerProjectInvitationsInput!) {
+    getCustomerProjectInvitations(data: $data) {
+      ...ProjectInvitationFragment
     }
   }
 `

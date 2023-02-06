@@ -7,12 +7,12 @@ import {
   Typography,
   Dialog,
   DialogContent,
-  Container,
   IconButton,
   Menu,
   MenuList,
   MenuItem,
   Tooltip,
+  Stack,
 } from "@mui/material";
 import VendorBidModal from "./modals/VendorBidModal";
 import { useContext, useEffect, useState } from "react";
@@ -192,21 +192,19 @@ const VendorBidOverview = ({
         <>
           <CardActionArea onClick={() => setIsBidModalOpen(true)}>
             <CardContent>
-              <List>
+              <Stack>
                 <ListItem>{renderBidStatus(bid.status)}</ListItem>
-                <ListItem>
-                  <Typography variant="subtitle2">
-                    {intl.formatMessage({ id: "app.general.vendor" })}:{" "}
-                    {vendorData.name}
-                  </Typography>
+                <ListItem sx={{ pt: 0 }}>
+                  <Typography variant="subtitle2">{vendorData.name}</Typography>
                 </ListItem>
                 <ListItem>
                   <Typography variant="caption">
-                    {intl.formatMessage({ id: "app.general.createdAt" })}:{" "}
-                    {bid.createdAt.slice(0, 10)}
+                    {`${intl.formatMessage({
+                      id: "app.general.createdAt",
+                    })} ${bid.createdAt.slice(0, 10)}`}
                   </Typography>
                 </ListItem>
-              </List>
+              </Stack>
             </CardContent>
           </CardActionArea>
           <IconButton

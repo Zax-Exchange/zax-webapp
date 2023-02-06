@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { useIntl } from "react-intl";
 import { isValidFloat } from "../../../../Utils/inputValidators";
 

@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import {
   Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   CardMedia,
@@ -11,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import singlePlan from "../../../static/singlePlan.svg";
 import groupPlan from "../../../static/groupPlan.svg";
 import businessPlan from "../../../static/businessPlan.svg";
 import { Plan } from "../../../generated/graphql";
@@ -42,7 +40,7 @@ const VendorPlanSelection = ({
 }) => {
   const { id, tier, pricings } = planData!;
 
-  const { monthly, annual, perUser } = pricings;
+  const { monthly, perUser } = pricings;
 
   const planOnClick = (data: VendorSubscriptionInfo) => {
     setSubscriptionInfo({
