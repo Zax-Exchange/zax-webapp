@@ -417,6 +417,9 @@
   "app.customer.createProject.advancedCreate.tooltip": "若您已熟悉项目创建流程，您可以使用进阶流程来微调每个项目细节。",
   "app.customer.createProject.import.tooltip": "从现有的项目选择您想要载入的项目。",
   "app.customer.createProject.visibility.tooltip": "您可以选择可见度来决定厂商是否能通过搜索来找到您的项目。",
+  "app.customer.createProject.orderQuantities.tooltip": "报价数量可以使厂商对不同的订单数量进行报价，这可以帮助您对比不同订单数量的价格。",
+  "app.customer.createProject.totalWeight.tooltip": "您的产品的预告重量。",
+
 
   "app.customer.projectDetail.bid.menu.viewVendorProfile": "查看厂商信息",
   "app.customer.projectDetail.bid.menu.openConversation": "打开对话栏",

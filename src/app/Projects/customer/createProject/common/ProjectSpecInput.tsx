@@ -86,9 +86,11 @@ const ProjectSpecInput = ({
 
   const renderTooltip = (title: string) => {
     return (
-      <Tooltip title={title} placement="right">
-        <InfoOutlined fontSize="small" color="info" />
-      </Tooltip>
+      <Box sx={{ ml: 1, display: "flex", alignItems: "center" }}>
+        <Tooltip title={title} placement="right">
+          <InfoOutlined fontSize="small" color="info" />
+        </Tooltip>
+      </Box>
     );
   };
   return (
@@ -96,7 +98,7 @@ const ProjectSpecInput = ({
       <List>
         <ListItem>
           <Box width="100%">
-            <Box>
+            <Box mb={0.5}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.name",
@@ -117,10 +119,15 @@ const ProjectSpecInput = ({
 
         <ListItem>
           <Box width="100%">
-            <Box>
+            <Box mb={0.5} sx={{ display: "flex", alignItems: "center" }}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.totalWeight",
+                })
+              )}
+              {renderTooltip(
+                intl.formatMessage({
+                  id: "app.customer.createProject.totalWeight.tooltip",
                 })
               )}
             </Box>
@@ -146,7 +153,7 @@ const ProjectSpecInput = ({
         </ListItem>
         <ListItem>
           <Box width="100%">
-            <Box>
+            <Box mb={0.5}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.deliveryDate",
@@ -183,7 +190,7 @@ const ProjectSpecInput = ({
 
         <ListItem>
           <Box width="100%">
-            <Box>
+            <Box mb={0.5}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.targetPrice",
@@ -215,19 +222,21 @@ const ProjectSpecInput = ({
         {!isGuest && (
           <ListItem>
             <Box>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box mb={0.5} sx={{ display: "flex", alignItems: "center" }}>
                 {renderSpecTitle(
                   intl.formatMessage({
                     id: "app.project.attribute.visibility",
                   })
                 )}
-                <Box ml={1}>
-                  {renderTooltip(
+                {renderTooltip(
+                  intl.formatMessage({
+                    id: "app.customer.createProject.visibility.tooltip",
+                  }) +
+                    " " +
                     intl.formatMessage({
-                      id: "app.customer.createProject.visibility.tooltip",
+                      id: "app.customer.createProject.visibility.helperText",
                     })
-                  )}
-                </Box>
+                )}
               </Box>
               <Box>
                 <TextField
@@ -239,9 +248,9 @@ const ProjectSpecInput = ({
                     }));
                   }}
                   value={projectData.visibility}
-                  helperText={intl.formatMessage({
-                    id: "app.customer.createProject.visibility.helperText",
-                  })}
+                  // helperText={intl.formatMessage({
+                  //   id: "app.customer.createProject.visibility.helperText",
+                  // })}
                 >
                   <MenuItem value={ProjectVisibility.Private}>
                     {intl.formatMessage({
@@ -263,7 +272,7 @@ const ProjectSpecInput = ({
       <List sx={{ flexBasis: "50%" }}>
         <ListItem>
           <Box width="100%">
-            <Box>
+            <Box mb={0.5}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.category",
@@ -283,7 +292,7 @@ const ProjectSpecInput = ({
         </ListItem>
         <ListItem>
           <Box width="100%">
-            <Box>
+            <Box mb={0.5}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.deliveryAddress",
@@ -301,10 +310,15 @@ const ProjectSpecInput = ({
         </ListItem>
         <ListItem>
           <Box width="100%">
-            <Box>
+            <Box mb={0.5} sx={{ display: "flex", alignItems: "center" }}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.orderQuantities",
+                })
+              )}
+              {renderTooltip(
+                intl.formatMessage({
+                  id: "app.customer.createProject.orderQuantities.tooltip",
                 })
               )}
             </Box>
