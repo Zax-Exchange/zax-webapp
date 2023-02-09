@@ -10,7 +10,6 @@ export class EnvConfig implements ZaxConfig {
   googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAP_API_KEY!;
 }
 const envConfig = new EnvConfig() as ZaxConfig;
-console.log(JSON.stringify(envConfig));
 export {
   envConfig
 }
