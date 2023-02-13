@@ -114,7 +114,6 @@ const ProjectInvitationModal = ({
       { leading: true }
     );
   }, []);
-  console.log(getProjectData);
   useEffect(() => {
     if (
       getProjectData &&
