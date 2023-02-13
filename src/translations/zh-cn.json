@@ -432,6 +432,7 @@
   "app.customer.projectDetail.noBids": "此项目尚无厂商竞标。",
   "app.customer.projectDetail.copyProject": "复制项目",
   "app.customer.projectDetail.inviteVendors": "邀请厂商竞标",
+  "app.customer.projectDetail.inviteVendors.modal.title": "邀请厂商来竞标您的项目",
   "app.customer.projectDetail.inviteVendors.noInvitations": "项目尚未邀请厂商来竞标。",
 
   "app.customer.poInvoice.create": "新订单",
