@@ -22,7 +22,7 @@ import {
   RIGID_BOX_BOX_STYLES,
 } from "../../../../../constants/products";
 
-const cdn = process.env.REACT_APP_CLOUDFRONT_URL;
+const cdn = process.env.REACT_APP_STATIC_CLOUDFRONT_URL;
 
 const GuidedCreateBoxStyleSelection = ({
   productName,

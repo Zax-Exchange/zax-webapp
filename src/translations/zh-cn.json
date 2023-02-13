@@ -354,7 +354,7 @@
   "app.versionHistory.latest": "最新",
   "app.versionHistory.none": "无",
   "app.versionHistory.removed": "移除",
-  "app.versionHistory.addded": "添加",
+  "app.versionHistory.added": "添加",
   "app.versionHistory.removedSomeFiles": "部分档案被移除",
 
   "app.customer.projects.title": "项目列表",

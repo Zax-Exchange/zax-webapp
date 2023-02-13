@@ -158,7 +158,7 @@ export default function ComponentSpecDetail({
 
   if (boxStyle) {
     const rawBoxStyle = productValueToLabelMap[boxStyle];
-    const cdn = process.env.REACT_APP_CLOUDFRONT_URL;
+    const cdn = process.env.REACT_APP_STATIC_CLOUDFRONT_URL;
 
     res.push(
       <TableRow>
