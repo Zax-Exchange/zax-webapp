@@ -68,10 +68,22 @@ const ProjectComponentChangelogDetail = ({
     isOld: boolean
   ) => {
     if (isOld && !postProcess.length) {
-      return intl.formatMessage({ id: "app.versionHistory.none" });
+      return (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Typography variant="caption" color={theme.palette.error.main}>
+            {intl.formatMessage({ id: "app.versionHistory.none" })}
+          </Typography>
+        </Box>
+      );
     }
     if (!isOld && !postProcess.length) {
-      return intl.formatMessage({ id: "app.versionHistory.removed" });
+      return (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Typography variant="caption" color={theme.palette.error.main}>
+            {intl.formatMessage({ id: "app.versionHistory.removed" })}
+          </Typography>
+        </Box>
+      );
     } else {
       return (
         <TableContainer>
@@ -355,10 +367,22 @@ const ProjectComponentChangelogDetail = ({
       );
     }
     if (propertyName === "postProcess") {
+      // const postProcessAdded = !JSON.parse(oldValue).length;
+      // const postProcessRemoved = !newValue.length;
+
+      // if (postProcessAdded || postProcessRemoved) {
+      //   return (
+      //     <Box>
+      //       {renderPostProcess(JSON.parse(oldValue), true)}
+      //       <ArrowRightAlt fontSize="small" sx={{ ml: 3, mr: 3 }} />
+      //       {renderPostProcess(newValue, false)}
+      //     </Box>
+      //   );
+      // }
       return (
         <Box>
           {renderPostProcess(JSON.parse(oldValue), true)}
-          <South fontSize="small" sx={{ mt: 1, mb: 1 }} />
+          <South fontSize="small" sx={{ mt: 2, mb: 2 }} />
           {renderPostProcess(newValue, false)}
         </Box>
       );

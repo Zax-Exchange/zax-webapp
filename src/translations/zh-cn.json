@@ -355,7 +355,6 @@
   "app.versionHistory.none": "无",
   "app.versionHistory.removed": "移除",
   "app.versionHistory.added": "添加",
-  "app.versionHistory.removedSomeFiles": "部分档案被移除",
 
   "app.customer.projects.title": "项目列表",
   "app.customer.projects.sortBy": "Sort By",
