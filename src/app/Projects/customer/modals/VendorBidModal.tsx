@@ -43,7 +43,7 @@ type ProjectComponentRow = {
 
 const StyledTableBody = styled(TableBody)(({ theme }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#fafafa",
   },
 }));
 

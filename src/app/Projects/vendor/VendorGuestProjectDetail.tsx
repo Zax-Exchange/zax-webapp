@@ -233,7 +233,7 @@ const VendorGuestProjectDetail = () => {
                       open={projectChangelogModalOpen}
                       onClose={() => setProjectChangelogModalOpen(false)}
                       maxWidth="lg"
-                      fullWidth
+                      // fullWidth
                     >
                       <ProjectChangelogModal
                         changelog={getProjectChangelogData.getProjectChangelog}
@@ -301,7 +301,7 @@ const VendorGuestProjectDetail = () => {
                         open={componentChangelogModalOpen}
                         onClose={() => setComponentChangelogModalOpen(false)}
                         maxWidth="lg"
-                        fullWidth
+                        // fullWidth
                       >
                         <ProjectComponentChangelogModal
                           changelog={componentsChangelog[comp.id]}

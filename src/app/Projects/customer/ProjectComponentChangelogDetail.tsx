@@ -406,7 +406,7 @@ const ProjectComponentChangelogDetail = ({
         <TableBody>
           {reorderChanges(changelog.changes).map((change) => {
             return (
-              <TableRow>
+              <TableRow sx={{ ":hover": { backgroundColor: "#f8f8f8" } }}>
                 <TableCell>
                   <Typography variant="subtitle2">
                     {intl.formatMessage({
