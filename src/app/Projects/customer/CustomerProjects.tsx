@@ -130,10 +130,7 @@ const CustomerProjects = () => {
 
   if (getCustomerProjectsData) {
     return (
-      <Container
-        className="user-projects-container"
-        sx={{ position: "relative" }}
-      >
+      <Container sx={{ position: "relative" }}>
         {isProjectPageLoading && <FullScreenLoading />}
         <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
           <Typography variant="subtitle2">

@@ -169,7 +169,7 @@ const Nav = () => {
               fontWeight: "700",
             }}
           >
-            ALPHA TEST
+            {intl.formatMessage({ id: "app.alphaTest" })}
           </Typography>
         </Box>
       </Box>
