@@ -1,0 +1,47 @@
+name: Build and Push Docker Image for One Environment
+run-name: ${{ github.actor }} is Building and Pushing Docker image to ECR
+on: 
+  workflow_call:
+    inputs:
+      deploymentEnvironment:
+        description: 'dev|stg|prod'
+        required: true
+        type: string
+jobs:
+  Generate-Build-Tag:
+    uses: ./.github/workflows/generate-build-tag.yml
+  Build-and-Push-Docker-Images-to-ECR:
+    runs-on: ubuntu-latest
+    needs: Generate-Build-Tag
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Download Config for ${{ inputs.deploymentEnvironment }} Image
+        uses: keithweaver/aws-s3-github-action@v1.0.0
+        with:
+          command: cp
+          source: s3://zax-apps-configs/${{ inputs.deploymentEnvironment }}/zax-webapp-env.env
+          destination: ./.env
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+      - name: Build and Push STG Image
+        env: 
+          buildtag: ${{ needs.Generate-Build-Tag.outputs.build-tag }}_${{ inputs.deploymentEnvironment }}
+        run: |
+          docker build -t ${buildtag} .
+          docker tag ${buildtag} 878684683110.dkr.ecr.us-east-1.amazonaws.com/zax-exchange-webapp-repository:${buildtag}
+          docker push 878684683110.dkr.ecr.us-east-1.amazonaws.com/zax-exchange-webapp-repository:${buildtag}
