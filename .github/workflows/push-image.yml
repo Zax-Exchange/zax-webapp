@@ -11,3 +11,4 @@ jobs:
     uses: ./.github/workflows/build-image-single-env.yml
     with: 
       deploymentEnvironment: ${{ matrix.deploymentEnvironment }}
+    secrets: inherit
