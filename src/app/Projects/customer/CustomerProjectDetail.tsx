@@ -366,7 +366,7 @@ const CustomerProjectDetail = () => {
                           open={projectChangelogModalOpen}
                           onClose={() => setProjectChangelogModalOpen(false)}
                           maxWidth="lg"
-                          fullWidth
+                          // fullWidth
                         >
                           <ProjectChangelogModal
                             changelog={
@@ -469,7 +469,7 @@ const CustomerProjectDetail = () => {
                         open={componentChangelogModalOpen}
                         onClose={() => setComponentChangelogModalOpen(false)}
                         maxWidth="lg"
-                        fullWidth
+                        // fullWidth
                       >
                         <ProjectComponentChangelogModal
                           changelog={componentsChangelog[comp.id]}

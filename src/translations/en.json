@@ -353,7 +353,6 @@
   "app.versionHistory.none": "None",
   "app.versionHistory.removed": "Removed",
   "app.versionHistory.added": "Added",
-  "app.versionHistory.removedSomeFiles": "Some files were removed",
 
   "app.customer.projects.title": "Your Projects",
   "app.customer.projects.sortBy": "Sort By",
@@ -381,6 +380,8 @@
   "app.customer.createProject.projectCreated": "Project created!",
   "app.customer.createProject.visibility.tooltip": "Visibility allows you to control whether vendors can find your project through searching or not.",
   "app.customer.createProject.visibility.helperText": "You cannot change this attribute after project creation.",
+  "app.customer.createProject.orderQuantities.tooltip": "Order quantities allow vendors to provide bids at different price points so you can compare the price difference between varying quantities.",
+ "app.customer.createProject.totalWeight.tooltip": "The total weight of your product.",
 
   "app.customer.editProject.restoreComponent": "Restore Component",
   "app.customer.editProject.removedComponents": "Removed Components",

@@ -326,8 +326,7 @@ const CustomerProjectOverviewCard = ({
       <Dialog
         open={permissionModalOpen}
         onClose={() => setPermissionModalOpen(false)}
-        maxWidth="sm"
-        fullWidth={true}
+        maxWidth="md"
       >
         <DialogContent>
           <CustomerPermissionModal

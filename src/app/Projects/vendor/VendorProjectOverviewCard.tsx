@@ -263,8 +263,7 @@ const VendorProjectOverviewCard = ({
       <Dialog
         open={permissionModalOpen}
         onClose={() => setPermissionModalOpen(false)}
-        maxWidth="sm"
-        fullWidth={true}
+        maxWidth="md"
       >
         <DialogContent>
           <VendorPermissionModal
