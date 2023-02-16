@@ -277,7 +277,7 @@ const GuestAdvamcedCreate = ({
             </Box>
           </Box>
         </Box>
-        <Container maxWidth="sm">
+        <Container maxWidth="lg">
           <ProjectSpecInput
             projectData={projectData}
             setProjectData={setProjectData}
