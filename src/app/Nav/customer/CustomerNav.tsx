@@ -60,7 +60,7 @@ export default function CustomerNav() {
         {renderHamburger()}
         {renderLogo()}
         <SearchBar />
-        <Box display="flex" flexGrow={1} justifyContent="flex-end">
+        <Box display="flex" flexGrow={1} justifyContent="flex-end" mr={1.5}>
           <Button
             onClick={newProjectOnClick}
             variant="outlined"
