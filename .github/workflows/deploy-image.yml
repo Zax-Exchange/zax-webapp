@@ -1,0 +1,26 @@
+name: Deploy Docker Image
+run-name: ${{ github.actor }} is Setting Version and Deploying Image to EKS
+on:
+  workflow_dispatch:
+    inputs:
+      deploymentEnvironment:
+        description: 'dev|stg|prod'
+        required: true
+        type: string
+jobs:
+  Generate-Build-Tag:
+    uses: ./.github/workflows/generate-build-tag.yml
+  Set-Version-in-CDK-Configuration:
+    uses: Zax-Exchange/zax-cdks/.github/workflows/set-version.yml@master
+    needs: Generate-Build-Tag
+    with: 
+      deploymentEnvironment: ${{ inputs.deploymentEnvironment }}
+      varName: ZAX_WEBAPP_DEPLOY_IMAGE_TAG
+      varValue: ${{ needs.Generate-Build-Tag.outputs.build-tag }}_${{ inputs.deploymentEnvironment }}
+    secrets: inherit
+  Run-CDK-and-Deploy:
+    uses: Zax-Exchange/zax-cdks/.github/workflows/cdk-deploy.yml@master
+    needs: Set-Version-in-CDK-Configuration
+    with: 
+      deploymentEnvironment: ${{ inputs.deploymentEnvironment }}
+    secrets: inherit
