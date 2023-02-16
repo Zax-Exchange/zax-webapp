@@ -429,7 +429,7 @@
 
 
   "app.customer.projectDetail.bid.menu.viewVendorProfile": "查看厂商信息",
-  "app.customer.projectDetail.bid.menu.openConversation": "打开对话栏",
+  "app.customer.projectDetail.bid.menu.openConversation": "与厂商对话",
   "app.customer.projectDetail.bid.menu.exportToPdf": "输出PDF",
   "app.customer.projectDetail.bid.menu.createPO": "创建订单",
   "app.customer.projectDetail.bid.menu.acceptBid": "接受",
@@ -487,7 +487,8 @@
   "app.vendor.projectDetail.updateBid": "更新竞标",
   "app.vendor.projectDetail.updateSuccess": "更新完成",
   "app.vendor.projectDetail.noBid": "您没有竞标此部件。",
-  
+  "app.vendor.projectDetail.chatWithCustomer": "与客户对话",
+
   "app.vendor.projects.yourBids": "竞标项目",
   "app.vendor.projects.noBids": "暂无竞标项目。您可以搜索项目来创建您的第一个竞标。",
   "app.vendor.projects.yourInvitations": "竞标邀请",

@@ -980,7 +980,7 @@ const VendorProjectDetail = () => {
               >
                 <Tooltip
                   title={intl.formatMessage({
-                    id: "app.customer.projectDetail.bid.menu.openConversation",
+                    id: "app.vendor.projectDetail.chatWithCustomer",
                   })}
                   placement="top"
                 >
