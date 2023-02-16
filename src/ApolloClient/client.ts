@@ -2,6 +2,7 @@ import { ApolloClient, ApolloLink, InMemoryCache } from "@apollo/client";
 import createUploadLink from "apollo-upload-client/public/createUploadLink";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
+import { envConfig as config } from "../app/Config/EnvConfig";
 
 const authLink = setContext((_, { headers }) => {
   const token = sessionStorage.getItem('token');
@@ -15,7 +16,7 @@ const authLink = setContext((_, { headers }) => {
 });
  
 const uploadLink = createUploadLink({
-  uri: "http://localhost:4000/graphql"
+  uri: config.webserviceUrl
 })
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {

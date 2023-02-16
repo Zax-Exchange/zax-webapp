@@ -21,8 +21,9 @@ import {
   PRODUCT_NAME_RIGID_BOX,
   RIGID_BOX_BOX_STYLES,
 } from "../../../../../constants/products";
+import { envConfig as config } from "../../../../../Config/EnvConfig";
 
-const cdn = process.env.REACT_APP_STATIC_CLOUDFRONT_URL;
+const cdn = config.cloudfrontUrl;
 
 const GuidedCreateBoxStyleSelection = ({
   productName,

@@ -26,8 +26,9 @@ import {
 import { io } from "socket.io-client";
 import { useIntl } from "react-intl";
 import { Notifications } from "@mui/icons-material";
+import { envConfig as config } from "../Config/EnvConfig";
 
-const socket = io("http://localhost:8080", {
+const socket = io(config.notificationServiceUrl, {
   transports: ["websocket"],
   autoConnect: false,
 });
