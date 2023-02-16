@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import React, { useContext } from "react";
 import { useIntl } from "react-intl";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 
@@ -27,6 +27,7 @@ export default function VendorSideNav({
   sideNavOpen: boolean;
   setSideNavOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const location = useLocation();
   const { user, logout } = useContext(AuthContext);
   const intl = useIntl();
   const navigate = useNavigate();
@@ -38,6 +39,31 @@ export default function VendorSideNav({
       navigate(`${page}`);
     }
   };
+
+  const renderSideNavListItem = (
+    onClick: () => void,
+    icon: JSX.Element,
+    text: string,
+    shouldHighlight: boolean = false
+  ) => {
+    return (
+      <ListItem onClick={onClick}>
+        <ListItemButton
+          sx={{
+            backgroundColor: shouldHighlight ? "#ededed" : "transparent",
+            borderRadius: "4px",
+          }}
+        >
+          <ListItemIcon>{icon}</ListItemIcon>
+          <ListItemText
+            primary={text}
+            primaryTypographyProps={{ variant: "subtitle1" }}
+          ></ListItemText>
+        </ListItemButton>
+      </ListItem>
+    );
+  };
+
   return (
     <Drawer
       anchor="left"
@@ -51,79 +77,47 @@ export default function VendorSideNav({
         onKeyDown={() => setSideNavOpen(false)}
       >
         <List>
-          <ListItem onClick={() => handleSideNavOnClick(GENERAL_ROUTES.HOME)}>
-            <ListItemButton>
-              <ListItemIcon>
-                <Home />
-              </ListItemIcon>
-              <ListItemText
-                primary={intl.formatMessage({
-                  id: "app.routes.loggedIn.home",
-                })}
-                primaryTypographyProps={{ variant: "subtitle1" }}
-              ></ListItemText>
-            </ListItemButton>
-          </ListItem>
+          {renderSideNavListItem(
+            () => handleSideNavOnClick(GENERAL_ROUTES.HOME),
+            <Home />,
+            intl.formatMessage({
+              id: "app.routes.loggedIn.home",
+            }),
+            location.pathname === GENERAL_ROUTES.HOME
+          )}
+          {renderSideNavListItem(
+            () => handleSideNavOnClick(GENERAL_ROUTES.PROJECTS),
+            <TextSnippet />,
+            intl.formatMessage({
+              id: "app.routes.loggedIn.projects",
+            }),
+            location.pathname === GENERAL_ROUTES.PROJECTS
+          )}
+          {renderSideNavListItem(
+            () => handleSideNavOnClick(GENERAL_ROUTES.PO_INVOICE),
+            <ReceiptLong />,
+            intl.formatMessage({
+              id: "app.routes.loggedIn.poInvoice",
+            }),
+            location.pathname === GENERAL_ROUTES.PO_INVOICE
+          )}
 
-          <ListItem onClick={() => handleSideNavOnClick("projects")}>
-            <ListItemButton>
-              <ListItemIcon>
-                <TextSnippet />
-              </ListItemIcon>
-              <ListItemText
-                primary={intl.formatMessage({
-                  id: "app.routes.loggedIn.projects",
-                })}
-                primaryTypographyProps={{ variant: "subtitle1" }}
-              ></ListItemText>
-            </ListItemButton>
-          </ListItem>
+          {renderSideNavListItem(
+            () => handleSideNavOnClick(GENERAL_ROUTES.SETTINGS),
+            <Settings />,
+            intl.formatMessage({
+              id: "app.routes.loggedIn.settings",
+            }),
+            location.pathname === GENERAL_ROUTES.SETTINGS
+          )}
 
-          <ListItem
-            onClick={() => handleSideNavOnClick(GENERAL_ROUTES.PO_INVOICE)}
-          >
-            <ListItemButton>
-              <ListItemIcon>
-                <ReceiptLong />
-              </ListItemIcon>
-              <ListItemText
-                primary={intl.formatMessage({
-                  id: "app.routes.loggedIn.poInvoice",
-                })}
-                primaryTypographyProps={{ variant: "subtitle1" }}
-              ></ListItemText>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem
-            onClick={() => handleSideNavOnClick(GENERAL_ROUTES.SETTINGS)}
-          >
-            <ListItemButton>
-              <ListItemIcon>
-                <Settings />
-              </ListItemIcon>
-              <ListItemText
-                primary={intl.formatMessage({
-                  id: "app.routes.loggedIn.settings",
-                })}
-                primaryTypographyProps={{ variant: "subtitle1" }}
-              ></ListItemText>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem onClick={logout}>
-            <ListItemButton>
-              <ListItemIcon>
-                <Logout />
-              </ListItemIcon>
-              <ListItemText
-                primary={intl.formatMessage({
-                  id: "app.general.logout",
-                })}
-                primaryTypographyProps={{ variant: "subtitle1" }}
-              ></ListItemText>
-            </ListItemButton>
-          </ListItem>
+          {renderSideNavListItem(
+            logout,
+            <Logout />,
+            intl.formatMessage({
+              id: "app.general.logout",
+            })
+          )}
         </List>
       </Box>
     </Drawer>
