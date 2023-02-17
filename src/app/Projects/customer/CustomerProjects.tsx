@@ -37,7 +37,7 @@ const CustomerProjects = () => {
         userId,
       },
     },
-    fetchPolicy: "no-cache",
+    fetchPolicy: "network-only",
   });
 
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
