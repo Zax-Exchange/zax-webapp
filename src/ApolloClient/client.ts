@@ -5,7 +5,7 @@ import { onError } from "@apollo/client/link/error";
 import { envConfig as config } from "../app/Config/EnvConfig";
 
 const authLink = setContext((_, { headers }) => {
-  const token = sessionStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
   return {
     headers: {
