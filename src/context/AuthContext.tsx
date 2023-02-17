@@ -53,10 +53,25 @@ const authReducer = (
       return state;
   }
 };
+const logoutChannel = new BroadcastChannel("logout");
 
 const AuthProvider = (props: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
-  const logoutChannel = new BroadcastChannel("logout");
+
+  useEffect(() => {
+    // check for valid token every hour, if token expires then logout
+    const timer = setInterval(() => {
+      if (localStorage.getItem("token")) {
+        const decoded = jwtDecode(localStorage.getItem("token")!) as any;
+
+        if (decoded.exp * 1000 < Date.now()) {
+          localStorage.removeItem("token");
+          logout();
+        }
+      }
+    }, 3600000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     logoutChannel.onmessage = () => {
