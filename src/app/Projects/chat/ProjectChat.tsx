@@ -8,7 +8,6 @@ import CustomMessageInput from "./MessageInput";
 import React from "react";
 import "./Chat.scss";
 import { envConfig as config } from "../../Config/EnvConfig";
-import { client } from "../../../ApolloClient/client";
 
 const streamApiKey = config.streamApiKey;
 const streamAppId = config.streamAppId;
