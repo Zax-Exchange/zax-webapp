@@ -1,10 +1,11 @@
 // @ts-nocheck
 import jwtDecode from "jwt-decode";
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useEffect, useMemo, useReducer } from "react";
 import { EVENT_ACTION, EVENT_CATEGORY } from "../analytics/constants";
 import { LoggedInUser } from "../generated/graphql";
 import ReactGA from "react-ga4";
 import { BroadcastChannel } from "broadcast-channel";
+import { client } from "../ApolloClient/client";
 
 type SessionState = {
   user: LoggedInUser | null;
@@ -55,6 +56,14 @@ const authReducer = (
 
 const AuthProvider = (props: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const logoutChannel = new BroadcastChannel("logout");
+
+  useEffect(() => {
+    logoutChannel.onmessage = () => {
+      logout();
+      logoutChannel.close();
+    };
+  }, []);
 
   const login = (userData: LoggedInUser) => {
     localStorage.setItem("token", userData.token);
@@ -71,6 +80,9 @@ const AuthProvider = (props: any) => {
       action: EVENT_ACTION.LOGOUT,
       category: EVENT_CATEGORY.USER_SESSION,
     });
+    if (!logoutChannel.isClosed) {
+      logoutChannel.postMessage("");
+    }
   };
 
   return (

@@ -45,7 +45,7 @@ const Nav = () => {
   const intl = useIntl();
   const [reset, { loading: resetLoading }] = useMutation(query);
   const navigate = useNavigate();
-  const { user, login, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const isVendor = user?.isVendor;
 
   const [sideNavOpen, setSideNavOpen] = useState(false);
