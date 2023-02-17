@@ -1,8 +1,18 @@
-name: Build and Push STG Docker Image
+name: Build and Push Docker Image for One Environment
 run-name: ${{ github.actor }} is Building and Pushing Docker image to ECR
-on: workflow_dispatch
+on: 
+  workflow_call:
+    inputs:
+      deploymentEnvironment:
+        description: 'dev|stg|prod'
+        required: true
+        type: string
+      buildtag:
+        description: 'docker image tag'
+        required: true
+        type: string
 jobs:
-  Build-Docker-Image:
+  Build-and-Push-Docker-Image-to-ECR:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -11,17 +21,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: Generate build tag
-        id: tag_step
-        run: |
-          echo "Generating build tag pipeline on branch ${{ github.ref }}"
-          gittag=${{github.sha}}
-          echo "  Found hash ${gittag}"
-          version=$(npm pkg get version | tr -d '"')
-          echo "  Found package version ${version}"
-          buildtag="zax-webapp-${version}-${gittag}_stg"
-          echo "Final buildtag ${buildtag}"
-          echo "buildtag=$buildtag" >> $GITHUB_OUTPUT
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -31,18 +30,18 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      - name: Download Config for STG Image
+      - name: Download Config for ${{ inputs.deploymentEnvironment }} Image
         uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
           command: cp
-          source: s3://zax-apps-configs/stg/zax-webapp-env.env
+          source: s3://zax-apps-configs/${{ inputs.deploymentEnvironment }}/zax-webapp-env.env
           destination: ./.env
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
       - name: Build and Push STG Image
         env: 
-          buildtag: ${{ steps.tag_step.outputs.buildtag }}
+          buildtag: ${{ inputs.buildtag }}
         run: |
           docker build -t ${buildtag} .
           docker tag ${buildtag} 878684683110.dkr.ecr.us-east-1.amazonaws.com/zax-exchange-webapp-repository:${buildtag}

@@ -1,0 +1,16 @@
+name: Build Docker Images
+run-name: ${{ github.actor }} is Building and Pushing Docker images to ECR
+on: workflow_dispatch
+jobs:
+  Generate-Build-Tag:
+    uses: ./.github/workflows/generate-build-tag.yml
+  Build-and-Push-Docker-Images-to-ECR:
+    strategy:
+      matrix:
+        deploymentEnvironment: [stg]
+    needs: Generate-Build-Tag
+    uses: ./.github/workflows/build-image-single-env.yml
+    with: 
+      deploymentEnvironment: ${{ matrix.deploymentEnvironment }}
+      buildTag: ${{ needs.Generate-Build-Tag.outputs.build-tag }}_${{ matrix.deploymentEnvironment }}
+    secrets: inherit

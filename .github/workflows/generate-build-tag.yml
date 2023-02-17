@@ -1,0 +1,27 @@
+name: Generate Docker Image Tag
+on:
+  workflow_call:
+    outputs:
+      build-tag:
+        description: "Tag of the Docker Image"
+        value: ${{ jobs.Generate-Build-Tag.outputs.build-tag }}
+jobs:
+  Generate-Build-Tag:
+    name: Generate output
+    runs-on: ubuntu-latest
+    outputs:
+      build-tag: ${{ steps.tag_step.outputs.buildtag }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Generate build tag
+        id: tag_step
+        run: |
+          echo "Generating build tag pipeline on branch ${{ github.ref }}"
+          gittag=${{github.sha}}
+          echo "  Found hash ${gittag}"
+          version=$(npm pkg get version | tr -d '"')
+          echo "  Found package version ${version}"
+          buildtag="zax-webapp-${version}-${gittag}"
+          echo "Final buildtag ${buildtag}"
+          echo "buildtag=$buildtag" >> $GITHUB_OUTPUT
