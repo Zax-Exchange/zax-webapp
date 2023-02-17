@@ -19,6 +19,7 @@
     "all-countries-and-cities-json": "^1.0.0",
     "apollo-upload-client": "^17.0.0",
     "autosuggest-highlight": "^3.3.4",
+    "broadcast-channel": "^4.20.2",
     "email-validator": "^2.0.4",
     "firebase": "^9.15.0",
     "getstream": "^8.0.2",
@@ -54,7 +55,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.yml",
-    "prestart": "npm run codegen", 
+    "prestart": "npm run codegen",
     "build-static": "react-scripts build",
     "serve": "serve -s build -l 80"
   },
