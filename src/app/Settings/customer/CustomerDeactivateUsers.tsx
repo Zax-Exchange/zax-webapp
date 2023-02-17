@@ -1,11 +1,13 @@
 import {
   Autocomplete,
+  Box,
   Button,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  ListItem,
   Stack,
   TextField,
   Typography,
@@ -118,7 +120,19 @@ const CustomerDeactivateUsers = () => {
           multiple
           value={selectedUsers}
           options={usersList}
-          getOptionLabel={(option) => `${option.name} (${option.email})`}
+          getOptionLabel={(option) => option.name}
+          renderOption={(props, option) => {
+            return (
+              <ListItem {...props}>
+                <Box sx={{ display: "flex" }}>
+                  <Typography variant="subtitle2" sx={{ mr: 2 }}>
+                    {option.name}
+                  </Typography>
+                  <Typography variant="caption">({option.email})</Typography>
+                </Box>
+              </ListItem>
+            );
+          }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           onChange={(e, v) => {
             setSelectedUsers(v);
