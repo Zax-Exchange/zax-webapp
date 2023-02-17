@@ -8,7 +8,9 @@ jobs:
     strategy:
       matrix:
         deploymentEnvironment: [stg]
+    needs: Generate-Build-Tag
     uses: ./.github/workflows/build-image-single-env.yml
     with: 
       deploymentEnvironment: ${{ matrix.deploymentEnvironment }}
+      buildTag: ${{ needs.Generate-Build-Tag.outputs.build-tag }}_${{ matrix.deploymentEnvironment }}
     secrets: inherit
