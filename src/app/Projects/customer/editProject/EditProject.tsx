@@ -760,13 +760,13 @@ const EditProject = () => {
                         id: "app.project.attribute.visibility",
                       })
                     )}
-                    <Box ml={1}>
+                    {/* <Box ml={1}>
                       {renderTooltip(
                         intl.formatMessage({
                           id: "app.customer.createProject.visibility.tooltip",
                         })
                       )}
-                    </Box>
+                    </Box> */}
                   </Box>
                   <Box>
                     <TextField

@@ -53,11 +53,11 @@ function Message({
         borderRadius: "4px",
       }}
     >
-      <Box pl={3} pr={3}>
+      <Box pl={3} pr={3} display="flex">
         {message && (
-          <Box display="flex" sx={{ alignItems: "center" }}>
+          <Box display="flex" sx={{ alignItems: "flex-start" }}>
             <Box display="flex">
-              <Box>
+              <Box pt="5px">
                 <img
                   src={message.user?.image}
                   height={35}
@@ -65,40 +65,41 @@ function Message({
                   alt="logo"
                 />
               </Box>
-              <Box display="flex" alignItems="center">
-                <Typography
-                  variant="subtitle2"
-                  sx={{ marginRight: "8px", marginLeft: "8px" }}
-                >
-                  {message.user!.name}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  fontSize="0.7em"
-                >
-                  {(message.created_at! as Date).toLocaleTimeString()}
-                </Typography>
-              </Box>
             </Box>
           </Box>
         )}
-        {message &&
-          message.text &&
-          message.text.split("\n").map((m, index) => {
-            const pKey = `${message.id}-${index}`;
-            if (!m) {
-              return <br key={pKey} />;
-            }
+        <Box>
+          {message && message.text && !!message.text.split("\n").length && (
+            <Box display="flex" alignItems="center">
+              <Typography variant="subtitle2" sx={{ mr: 1, ml: 1 }}>
+                {message.user!.name}
+              </Typography>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                fontSize="0.7em"
+              >
+                {(message.created_at! as Date).toLocaleTimeString()}
+              </Typography>
+            </Box>
+          )}
+          {message &&
+            message.text &&
+            message.text.split("\n").map((m, index) => {
+              const pKey = `${message.id}-${index}`;
+              if (!m) {
+                return <br key={pKey} />;
+              }
 
-            return (
-              <Box ml="43px">
-                <Typography key={pKey} variant="body2">
-                  {m}
-                </Typography>
-              </Box>
-            );
-          })}
+              return (
+                <Box pl={1}>
+                  <Typography key={pKey} variant="body2">
+                    {m}
+                  </Typography>
+                </Box>
+              );
+            })}
+        </Box>
       </Box>
     </ListItem>
   );
