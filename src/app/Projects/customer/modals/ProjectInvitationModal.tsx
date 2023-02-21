@@ -306,7 +306,11 @@ const ProjectInvitationModal = ({
           },
         }),
       ]);
-
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.success" }),
+        severity: "success",
+      });
+      setSnackbarOpen(true);
       setProjectInvitationModalOpen(false);
     } catch (error) {}
   };

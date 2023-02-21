@@ -1,7 +1,9 @@
 import {
   Autocomplete,
+  Box,
   Button,
   Container,
+  ListItem,
   Stack,
   TextField,
   Typography,
@@ -126,6 +128,21 @@ const UpdateUserPower = () => {
               option.power
             )}`
           }
+          renderOption={(props, option) => {
+            return (
+              <ListItem {...props}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography variant="subtitle2" sx={{ mr: 1 }}>
+                    {option.name}
+                  </Typography>
+                  <Typography variant="caption">({option.email})</Typography>
+                  <Typography variant="caption" sx={{ ml: 1 }}>
+                    {` - ${getUserPowerString(option.power)}`}
+                  </Typography>
+                </Box>
+              </ListItem>
+            );
+          }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           value={selectedUsers}
           disableCloseOnSelect
