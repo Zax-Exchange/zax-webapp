@@ -310,6 +310,10 @@ const VendorSignup = () => {
     } else if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
     } else if (currentPage === VendorSignupPage.COMPANY_INFO_PAGE) {
+      setValues({
+        ...values,
+        name: values.name.trim(),
+      });
       setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
     } else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
       setValues({
