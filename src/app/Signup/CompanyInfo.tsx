@@ -51,14 +51,16 @@ const CompanyInfo = ({
 
   useEffect(() => {
     checkCompanyName(() => {
-      checkCompanyNameQuery({
-        variables: {
-          data: {
-            companyName: values.name,
+      if (!!values.name) {
+        checkCompanyNameQuery({
+          variables: {
+            data: {
+              companyName: values.name.replace(/\s+/g, " ").trim(),
+            },
           },
-        },
-        fetchPolicy: "no-cache",
-      });
+          fetchPolicy: "no-cache",
+        });
+      }
     });
   }, [values.name]);
 
