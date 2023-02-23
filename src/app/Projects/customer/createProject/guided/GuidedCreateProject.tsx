@@ -103,7 +103,7 @@ export default function GuidedCreateProject() {
   //     setSnackbarOpen(true);
   //   }
   //   return () => {
-  //     console.log(projectCreated);
+
   //   };
   // }, [projectCreated]);
 
