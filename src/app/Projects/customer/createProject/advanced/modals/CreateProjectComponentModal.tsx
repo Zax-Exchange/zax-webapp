@@ -170,6 +170,7 @@ const CreateProjectComponentModal = ({
     // construct CreateProjectComponentInput
     const comp: CreateProjectComponentInput = {
       ...componentData,
+      name: componentData.name.replace(/\s+/g, " ").trim(),
       designIds: componentDesigns?.map((d) => d.fileId),
       componentSpec: {
         ...componentSpec,
@@ -188,9 +189,10 @@ const CreateProjectComponentModal = ({
   };
 
   const saveComponent = () => {
-    // construct CreateProjectComponentInput
+    // construct CreateProjectComponentInput or UpdateProjectComponentInput
     const comp: CreateProjectComponentInput = {
       ...componentData,
+      name: componentData.name.replace(/\s+/g, " ").trim(),
       designIds: componentDesigns?.map((d) => d.fileId),
       componentSpec: {
         ...componentSpec,
@@ -223,9 +225,9 @@ const CreateProjectComponentModal = ({
     let isAllowed = true;
 
     switch (e.target.name) {
-      // case "name":
-      //   isAllowed = isValidAlphanumeric(val);
-      //   break;
+      case "name":
+        isAllowed = val !== " ";
+        break;
       default:
         break;
     }

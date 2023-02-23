@@ -366,7 +366,7 @@ const GuestEditProject = ({
 
     switch (e.target.name as keyof CreateProjectInput) {
       case "name":
-        isAllowed = isValidAlphanumeric(val);
+        isAllowed = val !== " ";
         break;
       case "orderQuantities":
         isAllowed = isValidInt(val);
@@ -395,7 +395,18 @@ const GuestEditProject = ({
     for (let val of Object.values(projectEditError)) {
       if (val) return true;
     }
-
+    if (
+      isNaN(parseFloat(projectData.totalWeight)) ||
+      parseFloat(projectData.totalWeight) === 0
+    ) {
+      return true;
+    }
+    if (
+      isNaN(parseFloat(projectData.targetPrice)) ||
+      parseFloat(projectData.targetPrice) === 0
+    ) {
+      return true;
+    }
     return components.length === 0;
   };
 
@@ -440,6 +451,12 @@ const GuestEditProject = ({
           variables: {
             data: {
               ...updateProjectInput,
+              projectData: {
+                ...updateProjectInput.projectData,
+                name: updateProjectInput.projectData.name
+                  .replace(/\s+/g, " ")
+                  .trim(),
+              },
               componentsForUpdate: compsForUpdate,
               componentsForCreate: compsForCreate,
               componentsForDelete: removedComponents

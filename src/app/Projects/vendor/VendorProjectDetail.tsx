@@ -1060,6 +1060,7 @@ const VendorProjectDetail = () => {
         }),
       ]);
       await getVendorProjectRefetch();
+      // TODO: fix bug where after update clicks, it shows previous data
       setUpdateBidClicked(false);
       setIsEditMode(false);
       setSnackbar({
@@ -1095,6 +1096,10 @@ const VendorProjectDetail = () => {
     // a bid's qp gets cleared when customer deletes order quantities that originally had bids on them
     // samplingFee/toolingFee remains, this flag is used to determine whether to display resubmit button or not
     let bidClearedByCustomer = false;
+
+    if (!bidInfo.components.length) {
+      bidClearedByCustomer = true;
+    }
 
     bidInfo.components.forEach((comp) => {
       bids[comp.projectComponentId] = {

@@ -36,6 +36,13 @@ export default function GuidedGeneralSpec({
     ) {
       return true;
     }
+
+    if (
+      isNaN(parseFloat(projectData.targetPrice!)) ||
+      parseFloat(projectData.targetPrice!) === 0
+    ) {
+      return true;
+    }
     return false;
   };
 

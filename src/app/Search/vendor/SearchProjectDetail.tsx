@@ -372,10 +372,6 @@ const SearchProjectDetail = () => {
     if (submitBidClicked) {
       // don't disable if every bid comp is either filled or empty
       return !bidInput.components.every((comp) => {
-        const projectComp = components.find(
-          (projectComp) => projectComp.id === comp.projectComponentId
-        );
-
         return isFilledBidComponent(comp) || isEmptyBidComponent(comp);
       });
     } else {

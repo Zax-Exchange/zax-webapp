@@ -177,79 +177,92 @@ const VendorBidModal = ({
         )}
       </Box>
 
-      <TableContainer component={Box}>
-        <Table sx={{ minWidth: 650 }} size="small">
-          {bid.components.map((comp, bidCompIndex) => {
-            const rows: ProjectComponentRow[] = [];
-            const projectComponent = getComponent(comp.projectComponentId)!;
+      {!!bid.components.length && (
+        <TableContainer component={Box}>
+          <Table sx={{ minWidth: 650 }} size="small">
+            {bid.components.map((comp, bidCompIndex) => {
+              const rows: ProjectComponentRow[] = [];
+              const projectComponent = getComponent(comp.projectComponentId)!;
 
-            if (projectComponent) {
-              comp.quantityPrices.forEach((qp, i) => {
-                rows.push({
-                  quantity: qp.quantity,
-                  price: qp.price,
-                  bidComponent: comp,
-                  projectComponent,
-                  isLast: i === comp.quantityPrices.length - 1,
+              if (projectComponent) {
+                comp.quantityPrices.forEach((qp, i) => {
+                  rows.push({
+                    quantity: qp.quantity,
+                    price: qp.price,
+                    bidComponent: comp,
+                    projectComponent,
+                    isLast: i === comp.quantityPrices.length - 1,
+                  });
                 });
-              });
-            }
+              }
 
-            return (
-              <>
-                {bidCompIndex === 0 && !rows.length && (
-                  <Box display="flex" justifyContent="center">
-                    <Typography variant="caption" color="GrayText">
-                      {intl.formatMessage({
-                        id: "app.customer.projectDetail.bidWasCleared",
-                      })}
-                    </Typography>
-                  </Box>
-                )}
-                {bidCompIndex === 0 && !!rows.length && (
-                  <TableHead>
-                    <TableRow>
-                      <TableCell width="10%" />
-                      <TableCell align="right" width="20%">
+              return (
+                <>
+                  {bidCompIndex === 0 && !rows.length && (
+                    <Box display="flex" justifyContent="center">
+                      <Typography variant="caption" color="GrayText">
                         {intl.formatMessage({
-                          id: "app.component.attribute.name",
+                          id: "app.customer.projectDetail.bidWasCleared",
                         })}
-                      </TableCell>
-                      <TableCell align="right" width="15%">
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.quantity",
-                        })}
-                      </TableCell>
-                      <TableCell align="right" width="15%">
-                        {intl.formatMessage({ id: "app.bid.attribute.price" })}
-                      </TableCell>
-                      <TableCell align="right" width="20%">
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.samplingFee",
-                        })}
-                      </TableCell>
+                      </Typography>
+                    </Box>
+                  )}
+                  {bidCompIndex === 0 && !!rows.length && (
+                    <TableHead>
+                      <TableRow>
+                        <TableCell width="10%" />
+                        <TableCell align="right" width="20%">
+                          {intl.formatMessage({
+                            id: "app.component.attribute.name",
+                          })}
+                        </TableCell>
+                        <TableCell align="right" width="15%">
+                          {intl.formatMessage({
+                            id: "app.bid.attribute.quantity",
+                          })}
+                        </TableCell>
+                        <TableCell align="right" width="15%">
+                          {intl.formatMessage({
+                            id: "app.bid.attribute.price",
+                          })}
+                        </TableCell>
+                        <TableCell align="right" width="20%">
+                          {intl.formatMessage({
+                            id: "app.bid.attribute.samplingFee",
+                          })}
+                        </TableCell>
 
-                      <TableCell align="right" width="20%">
-                        {intl.formatMessage({
-                          id: "app.bid.attribute.toolingFee",
-                        })}
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                )}
-                <StyledTableBody>
-                  {rows.map((row) => (
-                    <>
-                      <BidComponentRow row={row} />
-                    </>
-                  ))}
-                </StyledTableBody>
-                <Box height={20}></Box>
-              </>
-            );
-          })}
-        </Table>
-      </TableContainer>
+                        <TableCell align="right" width="20%">
+                          {intl.formatMessage({
+                            id: "app.bid.attribute.toolingFee",
+                          })}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                  )}
+                  <StyledTableBody>
+                    {rows.map((row) => (
+                      <>
+                        <BidComponentRow row={row} />
+                      </>
+                    ))}
+                  </StyledTableBody>
+                  <Box height={20}></Box>
+                </>
+              );
+            })}
+          </Table>
+        </TableContainer>
+      )}
+      {!bid.components.length && (
+        <Box display="flex" justifyContent="center">
+          <Typography variant="caption" color="GrayText">
+            {intl.formatMessage({
+              id: "app.customer.projectDetail.bidModal.noBids",
+            })}
+          </Typography>
+        </Box>
+      )}
     </>
   );
 };
