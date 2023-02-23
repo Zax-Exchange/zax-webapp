@@ -208,6 +208,13 @@ const GuestAdvamcedCreate = ({
       return true;
     }
 
+    if (
+      isNaN(parseFloat(projectData.targetPrice!)) ||
+      parseFloat(projectData.targetPrice!) === 0
+    ) {
+      return true;
+    }
+
     return false;
   };
 
@@ -234,6 +241,7 @@ const GuestAdvamcedCreate = ({
         variables: {
           data: {
             ...convertProjectInputToGuestProjectInput(projectData),
+            name: projectData.name.replace(/\s+/g, " ").trim(),
             projectId,
           } as CreateGuestProjectInput,
         },

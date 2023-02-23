@@ -293,6 +293,12 @@ const AdvancedCreateProject = () => {
       return true;
     }
 
+    if (
+      isNaN(parseFloat(projectData.targetPrice!)) ||
+      parseFloat(projectData.targetPrice!) === 0
+    ) {
+      return true;
+    }
     return false;
   };
 
@@ -308,6 +314,7 @@ const AdvancedCreateProject = () => {
         variables: {
           data: {
             ...(projectData as CreateProjectInput),
+            name: projectData.name.replace(/\s+/g, " ").trim(),
             userId: user!.id,
             creationMode: ProjectCreationMode.Advanced,
           },

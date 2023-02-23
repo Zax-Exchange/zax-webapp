@@ -437,6 +437,7 @@
   "app.customer.projectDetail.bid.menu.rejectBid": "拒绝",
   "app.customer.projectDetail.error.orderQuantity.helperText": "必须有至少一个报价数量",
   "app.customer.projectDetail.bidModal.vendorInformation": "厂商信息",
+  "app.customer.projectDetail.bidModal.noBids": "由于您移除了某些部件，厂商原本的部件竞标已被清除。待厂商重新提交竞标后便可查看新的报价细节。",
   "app.customer.projectDetail.bidWasCleared": "由于您的项目报价数量有变动，厂商原本的报价已被清除。待厂商重新提交竞标后便可查看新的报价细节。",
   "app.customer.projectDetail.noBids": "此项目尚无厂商竞标。",
   "app.customer.projectDetail.copyProject": "复制项目",

@@ -142,6 +142,7 @@ const GuidedReview = ({
         variables: {
           data: {
             ...projectData,
+            name: projectData.name.replace(/\s+/g, " ").trim(),
             components: extractComponentsData(),
           },
         },
