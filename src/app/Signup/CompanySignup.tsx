@@ -46,7 +46,7 @@ const CompanySignup = () => {
               />
               <CardContent>
                 <Typography
-                  variant="overline"
+                  variant="subtitle2"
                   fontSize="1.3em"
                   fontWeight={500}
                 >
@@ -69,7 +69,7 @@ const CompanySignup = () => {
               <CardMedia component="img" height="250" src={customer} />
               <CardContent>
                 <Typography
-                  variant="overline"
+                  variant="subtitle2"
                   fontSize="1.3em"
                   fontWeight={500}
                 >

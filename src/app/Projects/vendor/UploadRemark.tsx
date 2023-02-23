@@ -74,7 +74,7 @@ const UploadRemark = ({
 
   return (
     <Tooltip
-      placement="top"
+      placement="right"
       title={intl.formatMessage({
         id: "app.vendor.uploadRemark.tooltip",
       })}
