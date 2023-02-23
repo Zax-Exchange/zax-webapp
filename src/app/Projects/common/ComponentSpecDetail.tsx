@@ -21,6 +21,7 @@ import {
 import { productValueToLabelMap } from "../../constants/products";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import { openLink } from "../../Utils/openLink";
+import { envConfig } from "../../Config/EnvConfig";
 
 export default function ComponentSpecDetail({
   spec,
@@ -158,7 +159,7 @@ export default function ComponentSpecDetail({
 
   if (boxStyle) {
     const rawBoxStyle = productValueToLabelMap[boxStyle];
-    const cdn = process.env.REACT_APP_STATIC_CLOUDFRONT_URL;
+    const cdn = envConfig.cloudfrontUrl;
 
     res.push(
       <TableRow>
