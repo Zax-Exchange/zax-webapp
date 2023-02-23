@@ -587,6 +587,7 @@ const VendorProjectDetail = () => {
         allFields.push(false);
       }
     });
+
     if (bidComponent.samplingFee) {
       allFields.push(true);
     } else {
@@ -652,12 +653,10 @@ const VendorProjectDetail = () => {
                   <TableCell>
                     <BidInputPriceTextField
                       error={
-                        (updateBidClicked && isIncomplete && !qp.price) ||
-                        (updateBidClicked &&
-                          !!qp.price &&
-                          parseFloat(qp.price) === 0) ||
-                        (updateBidClicked &&
-                          !!qp.price &&
+                        updateBidClicked &&
+                        isIncomplete &&
+                        (!qp.price ||
+                          parseFloat(qp.price) === 0 ||
                           isNaN(parseFloat(qp.price)))
                       }
                       value={qp.price}
@@ -814,9 +813,11 @@ const VendorProjectDetail = () => {
                   <TableCell>
                     <BidInputPriceTextField
                       error={
-                        (updateBidClicked && isIncomplete && !qp.price) ||
-                        (updateBidClicked && parseFloat(qp.price) === 0) ||
-                        (updateBidClicked && isNaN(parseFloat(qp.price)))
+                        updateBidClicked &&
+                        isIncomplete &&
+                        (!qp.price ||
+                          parseFloat(qp.price) === 0 ||
+                          isNaN(parseFloat(qp.price)))
                       }
                       value={qp.price}
                       onChange={(e) => qpDataOnChange(e.target.value, i)}

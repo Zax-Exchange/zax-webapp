@@ -376,20 +376,22 @@ const SearchProjectDetail = () => {
       });
     } else {
       // don't disable if any bid comp is filled, for exact reason please see VendorProjectDetail.tsx comments
+      // it's a little different than the condition we check in VendorProjectDetail
+      // because it doesn't make sense to enable the button when a bid is only partially filled
+      // since that'll confuse the user as to why it's showing enabled when a bid is not finished
+      // or give them the impression that they can submit partial bid for a particular component
       if (bidInput.components.length > 1) {
-        return !bidInput.components.some((comp) => {
-          const projectComp = components.find(
-            (projectComp) => projectComp.id === comp.projectComponentId
-          );
-          return (
-            hasOnlyPartialFieldsFilledOut(comp, projectComp!) ||
-            isFilledBidComponent(comp)
-          );
-        });
+        for (let comp of bidInput.components) {
+          if (isFilledBidComponent(comp)) return false;
+        }
       }
       // there's only one component, disable if it's not completely filled
-      return isFilledBidComponent(bidInput.components[0]);
+      if (isFilledBidComponent(bidInput.components[0])) {
+        return false;
+      }
     }
+
+    return true;
   };
 
   const getAllFilledBidComponents = () => {
