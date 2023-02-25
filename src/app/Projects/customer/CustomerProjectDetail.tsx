@@ -61,6 +61,7 @@ import ProjectComponentChangelogModal from "./modals/ProjectComponentChangelogMo
 import ProjectChangelogModal from "./modals/ProjectChangelogModal";
 import ProjectInvitationModal from "./modals/ProjectInvitationModal";
 import ProjectInvitationCard from "../vendor/ProjectInvitationCard";
+import NotFound from "../../Utils/NotFound";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -83,13 +84,18 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const CustomerProjectDetail = () => {
+const CustomerProjectDetail = ({
+  setNotFound,
+  setPermissionDenied,
+}: {
+  setNotFound: React.Dispatch<React.SetStateAction<boolean>>;
+  setPermissionDenied: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const intl = useIntl();
   const { projectId } = useParams();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [permissionedDenied, setPermissionDenied] = useState(false);
 
   const [componentChangelogModalOpen, setComponentChangelogModalOpen] =
     useState(false);
@@ -189,6 +195,8 @@ const CustomerProjectDetail = () => {
     ) {
       if (getProjectError?.message.includes("permission denied")) {
         setPermissionDenied(true);
+      } else if (getProjectError?.message.includes("not found")) {
+        setNotFound(true);
       } else {
         setSnackbar({
           message: intl.formatMessage({ id: "app.general.network.error" }),
@@ -266,14 +274,6 @@ const CustomerProjectDetail = () => {
   const isLoading = getProjectLoading || getProjectChangelogLoading;
 
   if (isLoading) return <FullScreenLoading />;
-
-  if (permissionedDenied) {
-    return (
-      <Dialog open={true}>
-        <PermissionDenied />
-      </Dialog>
-    );
-  }
 
   const projectData = getProjectData?.getCustomerProject;
   const bids = projectData?.bids;

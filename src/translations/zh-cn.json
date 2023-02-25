@@ -3,6 +3,10 @@
   "app.error.signup.duplicateJoinRequest": "您已申请加入此企业了",
   "app.error.signup.existingUser": "邮箱已被注册",
 
+  "app.error.project.notFound": "此项目不存在。",
+  "app.error.company.notFound": "此企业不存在。",
+  "app.error": "错误",
+
   "app.general.vendor": "厂商",
   "app.general.customer": "客户",
   "app.general.network.error": "网络异常，请稍后再试",
@@ -494,6 +498,7 @@
   "app.vendor.projects.yourBids": "竞标项目",
   "app.vendor.projects.noBids": "暂无竞标项目。您可以搜索项目来创建您的第一个竞标。",
   "app.vendor.projects.yourInvitations": "竞标邀请",
+  "app.vendor.projects.yourInvitations.tooltip": "客户可以邀请厂商来竞标他们的非公开项目。任何竞标邀请将在以下显示。",
   "app.vendor.projects.noInvitations": "暂无竞标邀请。",
 
   "app.vendor.projectDetail.resubmitBid": "如果您的竞标无需更新，您可以重新提交。",

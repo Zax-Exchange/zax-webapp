@@ -120,7 +120,13 @@ const BidInputPriceTextField = styled((props: TextFieldProps) => {
 })(() => ({}));
 
 // TODO: handle null projectDetail
-const VendorProjectDetail = () => {
+const VendorProjectDetail = ({
+  setNotFound,
+  setPermissionDenied,
+}: {
+  setNotFound: React.Dispatch<React.SetStateAction<boolean>>;
+  setPermissionDenied: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const theme = useTheme();
@@ -304,6 +310,8 @@ const VendorProjectDetail = () => {
     ) {
       if (getVendorProjectError?.message === "permission denied") {
         setPermissionError(true);
+      } else if (getVendorDetailError?.message === "not found") {
+        setNotFound(true);
       } else {
         setSnackbar({
           message: intl.formatMessage({ id: "app.general.network.error" }),

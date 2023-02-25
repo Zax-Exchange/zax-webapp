@@ -66,8 +66,7 @@ const SearchProjectOverview = ({
                     title={intl.formatMessage({
                       id: "app.vendor.project.attribute.products",
                     })}
-                    arrow
-                    placement="top"
+                    placement="left"
                   >
                     <Inventory />
                   </Tooltip>
@@ -87,8 +86,7 @@ const SearchProjectOverview = ({
                     title={intl.formatMessage({
                       id: "app.project.attribute.category",
                     })}
-                    arrow
-                    placement="top"
+                    placement="left"
                   >
                     <CategoryIcon />
                   </Tooltip>
@@ -102,8 +100,7 @@ const SearchProjectOverview = ({
                     title={intl.formatMessage({
                       id: "app.project.attribute.deliveryAddress",
                     })}
-                    arrow
-                    placement="top"
+                    placement="left"
                   >
                     <PlaceIcon />
                   </Tooltip>
@@ -117,8 +114,7 @@ const SearchProjectOverview = ({
                     title={intl.formatMessage({
                       id: "app.project.attribute.targetPrice",
                     })}
-                    arrow
-                    placement="top"
+                    placement="left"
                   >
                     <AttachMoneyIcon />
                   </Tooltip>
@@ -132,8 +128,7 @@ const SearchProjectOverview = ({
                     title={intl.formatMessage({
                       id: "app.project.attribute.deliveryDate",
                     })}
-                    arrow
-                    placement="top"
+                    placement="left"
                   >
                     <LocalShippingOutlinedIcon />
                   </Tooltip>
@@ -142,9 +137,9 @@ const SearchProjectOverview = ({
                   </Typography>
                 </ProjectOverviewListItem>
                 {/* <ProjectOverviewListItem>
-                  <Tooltip title="Posted on" arrow placement="top">
+                  <Tooltip title="Posted on"  placement="top">
                     <CalendarMonthIcon />
-                  </Tooltip>
+        left     </Tooltip>
                   <Typography variant="caption">{date}</Typography>
                 </ProjectOverviewListItem> */}
               </List>

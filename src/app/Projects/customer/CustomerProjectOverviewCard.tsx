@@ -55,9 +55,11 @@ export const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 const CustomerProjectOverviewCard = ({
   project,
   setIsProjectPageLoading,
+  refetchProjects,
 }: {
   project: CustomerProjectOverview;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  refetchProjects: () => void;
 }) => {
   const intl = useIntl();
   const navigate = useNavigate();
@@ -321,6 +323,7 @@ const CustomerProjectOverviewCard = ({
         setDeleteProjectModalOpen={setDeleteProjectModalOpen}
         setIsProjectPageLoading={setIsProjectPageLoading}
         projectId={project.id}
+        refetchProjects={refetchProjects}
       />
 
       <Dialog

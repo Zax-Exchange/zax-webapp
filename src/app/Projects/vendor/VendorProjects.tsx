@@ -8,6 +8,7 @@ import {
   MenuItem,
   Box,
   Stack,
+  Tooltip,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -29,6 +30,7 @@ import {
 import { useIntl } from "react-intl";
 import GuestProjectOverviewCard from "./VendorGuestProjectOverviewCard";
 import ProjectInvitationCard from "./ProjectInvitationCard";
+import { InfoOutlined } from "@mui/icons-material";
 
 const VendorProjects = () => {
   const intl = useIntl();
@@ -162,12 +164,24 @@ const VendorProjects = () => {
     return (
       <Container sx={{ position: "relative" }}>
         <Box sx={{ mb: 2 }}>
-          <Box display="flex" mb={2}>
+          <Box display="flex" alignItems="center" mb={2}>
             <Typography variant="subtitle2">
               {intl.formatMessage({
                 id: "app.vendor.projects.yourInvitations",
               })}
             </Typography>
+            {!!getInvitationsData &&
+              !getInvitationsData.getVendorProjectInvitations.length && (
+                <Tooltip
+                  title={intl.formatMessage({
+                    id: "app.vendor.projects.yourInvitations.tooltip",
+                  })}
+                  placement="right"
+                  sx={{ ml: 1 }}
+                >
+                  <InfoOutlined fontSize="small" color="info" />
+                </Tooltip>
+              )}
           </Box>
           {!!getInvitationsData &&
             !!getInvitationsData.getVendorProjectInvitations.length && (

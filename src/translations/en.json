@@ -4,6 +4,10 @@
   "app.error.signup.duplicateJoinRequest": "You have requested to join this company already.",
   "app.error.signup.existingUser": "This email has already been used.",
 
+  "app.error.project.notFound": "Project does not exist.",
+  "app.error.company.notFound": "Company does not exist.",
+  "app.error": "Error",
+
   "app.general.vendor": "Vendor",
   "app.general.customer": "Customer",
   "app.general.network.error": "Something went wrong. Please try again later.",
@@ -492,8 +496,9 @@
   
 
   "app.vendor.projects.yourBids": "Your Bids",
-   "app.vendor.projects.noBids": "No active bids at this moment. Search for a project to get started!",
+  "app.vendor.projects.noBids": "No active bids at this moment. Search for a project to get started!",
   "app.vendor.projects.yourInvitations": "Your Invitations",
+  "app.vendor.projects.yourInvitations.tooltip": "Customers can invite vendors to bid on their private projects. If you have any invitations, they will show up below.",
   "app.vendor.projects.noInvitations": "No active invitations at this moment.",
 
   "app.vendor.projectDetail.resubmitBid": "Resubmit bid if your bid still holds.",
