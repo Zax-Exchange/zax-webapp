@@ -31,6 +31,7 @@ const CustomerProjects = () => {
     data: getCustomerProjectsData,
     error: getCustomerProjectsError,
     loading: getCustomerProjectsLoading,
+    refetch: getCustomerProjectsRefetch,
   } = useGetCustomerProjectsQuery({
     variables: {
       data: {
@@ -38,6 +39,7 @@ const CustomerProjects = () => {
       },
     },
     fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
   });
 
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
@@ -67,6 +69,11 @@ const CustomerProjects = () => {
       setSnackbarOpen(true);
     }
   }, [getCustomerProjectsError]);
+
+  const refetchProjects = () => {
+    getCustomerProjectsRefetch();
+  };
+
   const sortByDeliveryDate = () => {
     let proj = [...projects];
     proj = proj.sort(
@@ -178,6 +185,7 @@ const CustomerProjects = () => {
                     key={i}
                     project={project}
                     setIsProjectPageLoading={setIsProjectPageLoading}
+                    refetchProjects={refetchProjects}
                   />
                 </>
               );

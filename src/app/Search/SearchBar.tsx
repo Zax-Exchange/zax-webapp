@@ -193,11 +193,9 @@ const SearchBar = () => {
     try {
       const encodedInput = encodeURIComponent(input);
       if (isVendor) {
-        navigate(`${VENDOR_ROUTES.SEARCH_RESULTS}/?userInput=${encodedInput}`);
+        navigate(`${VENDOR_ROUTES.SEARCH_RESULTS}?userInput=${encodedInput}`);
       } else {
-        navigate(
-          `${CUSTOMER_ROUTES.SEARCH_RESULTS}/?userInput=${encodedInput}`
-        );
+        navigate(`${CUSTOMER_ROUTES.SEARCH_RESULTS}?userInput=${encodedInput}`);
       }
     } catch (error) {
       setSnackbar({

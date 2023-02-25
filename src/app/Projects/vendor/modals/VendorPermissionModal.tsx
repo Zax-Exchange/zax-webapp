@@ -453,7 +453,13 @@ const VendorPermissionModal = ({
 
         {renderPermissionedUsers()}
 
-        <DialogActions>
+        <DialogActions sx={{ mt: 2 }}>
+          <Button
+            onClick={() => setPermissionModalOpen(false)}
+            variant="outlined"
+          >
+            {intl.formatMessage({ id: "app.general.cancel" })}
+          </Button>
           <LoadingButton
             onClick={savePermissionHandler}
             variant="contained"
@@ -461,12 +467,6 @@ const VendorPermissionModal = ({
           >
             {intl.formatMessage({ id: "app.general.save" })}
           </LoadingButton>
-          <Button
-            onClick={() => setPermissionModalOpen(false)}
-            variant="outlined"
-          >
-            {intl.formatMessage({ id: "app.general.cancel" })}
-          </Button>
         </DialogActions>
       </>
     </Container>
