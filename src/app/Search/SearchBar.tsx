@@ -21,6 +21,7 @@ import { Clear } from "@mui/icons-material";
 import { useSearchCategoriesLazyQuery } from "../gql/get/search/searchCategories.generated";
 import ReactGA from "react-ga4";
 import { EVENT_ACTION, EVENT_CATEGORY } from "../../analytics/constants";
+import mixpanel from "mixpanel-browser";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -184,6 +185,10 @@ const SearchBar = () => {
   };
 
   const handleSearchOnClick = async (input: string) => {
+    mixpanel.track(EVENT_ACTION.INPUT, {
+      category: EVENT_CATEGORY.SEARCH,
+      value: input,
+    });
     ReactGA.event({
       action: EVENT_ACTION.INPUT,
       category: EVENT_CATEGORY.SEARCH,

@@ -21,6 +21,7 @@ import {
 } from "../../../analytics/constants";
 import ImportProjectModal from "./modals/ImportProjectModal";
 import { InfoSharp } from "@mui/icons-material";
+import mixpanel from "mixpanel-browser";
 
 const NewProjectMenu = ({
   newProjectMenuAnchor,
@@ -132,6 +133,10 @@ const NewProjectMenu = ({
 
           <MenuItem
             onClick={() => {
+              mixpanel.track(EVENT_ACTION.CLICK, {
+                category: EVENT_CATEGORY.PROJECT,
+                label: EVENT_LABEL.IMPORT_PROJECT,
+              });
               ReactGA.event({
                 action: EVENT_ACTION.CLICK,
                 category: EVENT_CATEGORY.PROJECT,

@@ -6,6 +6,7 @@ import { LoggedInUser } from "../generated/graphql";
 import ReactGA from "react-ga4";
 import { BroadcastChannel } from "broadcast-channel";
 import { client } from "../ApolloClient/client";
+import mixpanel from "mixpanel-browser";
 
 type SessionState = {
   user: LoggedInUser | null;
@@ -91,6 +92,10 @@ const AuthProvider = (props: any) => {
   const logout = () => {
     localStorage.removeItem("token");
     dispatch({ type: "LOGOUT" });
+    mixpanel.track(EVENT_ACTION.LOGOUT, {
+      action: EVENT_ACTION.LOGOUT,
+      category: EVENT_CATEGORY.USER_SESSION,
+    });
     ReactGA.event({
       action: EVENT_ACTION.LOGOUT,
       category: EVENT_CATEGORY.USER_SESSION,

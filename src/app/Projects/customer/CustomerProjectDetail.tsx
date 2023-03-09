@@ -62,6 +62,7 @@ import ProjectChangelogModal from "./modals/ProjectChangelogModal";
 import ProjectInvitationModal from "./modals/ProjectInvitationModal";
 import ProjectInvitationCard from "../vendor/ProjectInvitationCard";
 import NotFound from "../../Utils/NotFound";
+import mixpanel from "mixpanel-browser";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -236,6 +237,10 @@ const CustomerProjectDetail = ({
   };
 
   const copyProject = () => {
+    mixpanel.track(EVENT_ACTION.CLICK, {
+      category: EVENT_CATEGORY.PROJECT,
+      label: EVENT_LABEL.COPY_PROJECT,
+    });
     ReactGA.event({
       action: EVENT_ACTION.CLICK,
       category: EVENT_CATEGORY.PROJECT,

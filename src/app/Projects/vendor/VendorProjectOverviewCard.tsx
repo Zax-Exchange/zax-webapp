@@ -40,6 +40,7 @@ import {
   EVENT_LABEL,
 } from "../../../analytics/constants";
 import ReactGA from "react-ga4";
+import mixpanel from "mixpanel-browser";
 
 type ProjectMenuOption = "view-detail" | "share";
 
@@ -100,6 +101,10 @@ const VendorProjectOverviewCard = ({
       viewDetailHandler();
     }
     if (action === "share" && canShare()) {
+      mixpanel.track(EVENT_ACTION.CLICK, {
+        category: EVENT_CATEGORY.PROJECT,
+        label: EVENT_LABEL.SHARE_BID,
+      });
       ReactGA.event({
         action: EVENT_ACTION.CLICK,
         category: EVENT_CATEGORY.PROJECT,

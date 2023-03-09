@@ -40,6 +40,7 @@ import {
   EVENT_CATEGORY,
   EVENT_LABEL,
 } from "../../../analytics/constants";
+import mixpanel from "mixpanel-browser";
 
 type ProjectOverviewMenuOption = "view-detail" | "share" | "delete";
 
@@ -94,6 +95,10 @@ const CustomerProjectOverviewCard = ({
         break;
       case "share":
         if (canShare()) {
+          mixpanel.track(EVENT_ACTION.CLICK, {
+            category: EVENT_CATEGORY.PROJECT,
+            label: EVENT_LABEL.SHARE_PROJECT,
+          });
           ReactGA.event({
             action: EVENT_ACTION.CLICK,
             category: EVENT_CATEGORY.PROJECT,
@@ -256,8 +261,7 @@ const CustomerProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.deliveryDate",
                 })}
-                arrow
-                placement="top"
+                placement="left"
               >
                 <LocalShippingOutlinedIcon />
               </Tooltip>
@@ -269,8 +273,7 @@ const CustomerProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.deliveryAddress",
                 })}
-                arrow
-                placement="top"
+                placement="left"
               >
                 <PlaceIcon />
               </Tooltip>
@@ -284,8 +287,7 @@ const CustomerProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.targetPrice",
                 })}
-                arrow
-                placement="top"
+                placement="left"
               >
                 <AttachMoneyIcon />
               </Tooltip>
@@ -299,8 +301,7 @@ const CustomerProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.general.createdAt",
                 })}
-                arrow
-                placement="top"
+                placement="left"
               >
                 <Create />
               </Tooltip>
