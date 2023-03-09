@@ -448,7 +448,7 @@
   "app.customer.projectDetail.inviteVendors.modal.title": "Invite vendors to bid on your project",
   "app.customer.projectDetail.inviteVendors.noInvitations": "You have not invited any vendors yet.",
   
-  "app.customer.poInvoice.create": "New Invoice",
+  "app.customer.poInvoice.create": "New PO",
   "app.customer.poInvoice.createSuccess": "PO Created!",
   "app.customer.poInvoice.uploadPO": "Upload Purchase Order",
   "app.customer.poInvoice.uploadPO.tooltip": "Select Purchase Order File",

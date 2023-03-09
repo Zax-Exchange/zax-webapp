@@ -12,6 +12,7 @@ import { useCreateCustomerMutation } from "../../gql/create/customer/customer.ge
 
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CustomerSignupData, CustomerSignupPage } from "./CustomerSignup";
+import mixpanel from "mixpanel-browser";
 
 const CustomerCheckout = ({
   setCurrentPage,
@@ -63,6 +64,9 @@ const CustomerCheckout = ({
             },
           },
           fetchPolicy: "no-cache",
+        });
+        mixpanel.track("sign up", {
+          isVendor: false,
         });
         setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
       } catch (error) {

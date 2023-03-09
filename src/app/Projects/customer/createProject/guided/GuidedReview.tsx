@@ -26,6 +26,7 @@ import {
   GuidedCreateComponentsDataContainer,
 } from "./GuidedCreateProject";
 import ReactGA from "react-ga4";
+import mixpanel from "mixpanel-browser";
 
 type TypographyVariant =
   | "button"
@@ -132,6 +133,11 @@ const GuidedReview = ({
 
   const createProject = async () => {
     try {
+      mixpanel.track(EVENT_ACTION.CLICK, {
+        category: EVENT_CATEGORY.PROJECT,
+        label: EVENT_LABEL.GUIDED_PROJECT_CREATION_TIME_ELAPSED,
+        value: Math.round((performance.now() - startingTime) / 1000),
+      });
       ReactGA.event({
         action: EVENT_ACTION.CLICK,
         category: EVENT_CATEGORY.PROJECT,

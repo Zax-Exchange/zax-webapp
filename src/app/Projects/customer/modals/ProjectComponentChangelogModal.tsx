@@ -16,6 +16,7 @@ import {
   EVENT_CATEGORY,
   EVENT_LABEL,
 } from "../../../../analytics/constants";
+import mixpanel from "mixpanel-browser";
 
 const ProjectComponentChangelogModal = ({
   changelog,
@@ -31,6 +32,10 @@ const ProjectComponentChangelogModal = ({
   };
 
   useEffect(() => {
+    mixpanel.track(EVENT_ACTION.MODAL_VIEW, {
+      category: EVENT_CATEGORY.PROJECT,
+      label: EVENT_LABEL.PROJECT_COMPONENT_CHANGELOG,
+    });
     ReactGA.event({
       action: EVENT_ACTION.MODAL_VIEW,
       category: EVENT_CATEGORY.PROJECT,
