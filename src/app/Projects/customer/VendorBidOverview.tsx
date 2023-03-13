@@ -229,7 +229,7 @@ const VendorBidOverview = ({
                   })}
                 </Typography>
               </MenuItem>
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => vendorBidMenuOnClick("open-conversation")}
               >
                 <Typography variant="caption">
@@ -237,7 +237,7 @@ const VendorBidOverview = ({
                     id: "app.customer.projectDetail.bid.menu.openConversation",
                   })}
                 </Typography>
-              </MenuItem>
+              </MenuItem> */}
 
               {/* <MenuItem onClick={() => vendorBidMenuOnClick("export-to-pdf")}>
                 {intl.formatMessage({
@@ -294,13 +294,13 @@ const VendorBidOverview = ({
             </DialogContent>
           </Dialog>
 
-          <ProjectChat
+          {/* <ProjectChat
             chatOpen={chatOpen}
             setChatOpen={setChatOpen}
             projectBidId={bid.id}
             customerName={getCustomerDetailData!.getCustomerDetail.name}
             vendorName={vendorData.name}
-          />
+          /> */}
         </>
       )}
     </Card>

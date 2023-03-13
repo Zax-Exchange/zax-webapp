@@ -142,6 +142,7 @@ const VendorBidModal = ({
         </Box>
         <Box display="flex" flexDirection="column">
           <Typography variant="caption">{`${vendorData.name}`}</Typography>
+          <Typography variant="caption">{vendorData.contactEmail}</Typography>
 
           <Typography variant="caption">
             {`${intl.formatMessage({
@@ -156,9 +157,6 @@ const VendorBidModal = ({
               })}: +(${getCountryPhoneCode()}) ${vendorData.fax}`}
             </Typography>
           )}
-          <Typography variant="caption">{`${intl.formatMessage({
-            id: "app.company.attribute.contactEmail",
-          })}: ${vendorData.contactEmail}`}</Typography>
         </Box>
         {!!bid.remarkFile && (
           <Box mt={2}>

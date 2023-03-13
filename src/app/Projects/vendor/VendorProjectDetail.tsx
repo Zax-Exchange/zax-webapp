@@ -18,6 +18,8 @@ import {
   Tooltip,
   InputAdornment,
   styled,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import MuiTextField, { TextFieldProps } from "@mui/material/TextField";
 import { useNavigate, useParams } from "react-router-dom";
@@ -1127,13 +1129,30 @@ const VendorProjectDetail = ({
             <KeyboardBackspaceIcon style={{ color: "rgb(43, 52, 89)" }} />
           </IconButton>
         </Box>
-        <ProjectChat
-          setChatOpen={setChatOpen}
-          projectBidId={bidInfo.id}
-          customerName={customerName}
-          vendorName={getVendorDetailData!.getVendorDetail!.name}
-          chatOpen={chatOpen}
-        />
+        <Dialog
+          open={chatOpen}
+          onClose={() => setChatOpen(false)}
+          maxWidth="xl"
+          fullWidth={true}
+        >
+          <Box sx={{ boxShadow: "0px 1px 4px 0px rgb(168 168 168 / 75%)" }}>
+            <DialogTitle>{`Chat with ${customerName}`}</DialogTitle>
+          </Box>
+          <DialogContent
+            sx={{
+              padding: 0,
+              overflow: "hidden",
+            }}
+          >
+            <Box>
+              <ProjectChat
+                projectBidId={bidInfo.id}
+                customerName={customerName}
+                vendorName={getVendorDetailData!.getVendorDetail!.name}
+              />
+            </Box>
+          </DialogContent>
+        </Dialog>
 
         <Paper
           style={{
