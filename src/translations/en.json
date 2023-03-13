@@ -440,14 +440,15 @@
   "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
   "app.customer.projectDetail.bidModal.vendorInformation": "Vendor Information",
   "app.customer.projectDetail.bidModal.noBids": "Vendor bid was cleared due to original components being removed. Once vendor resubmits the bid, it will re-appear here.",
-  
   "app.customer.projectDetail.bidWasCleared": "Due to order quantities changed, bids on previous quantities were cleared. Please wait until the vendor updates their bid.",
   "app.customer.projectDetail.noBids": "Project does not have any bids yet.",
   "app.customer.projectDetail.copyProject": "Copy Project",
   "app.customer.projectDetail.inviteVendors": "Invite Vendors To Bid",
   "app.customer.projectDetail.inviteVendors.modal.title": "Invite vendors to bid on your project",
   "app.customer.projectDetail.inviteVendors.noInvitations": "You have not invited any vendors yet.",
-  
+  "app.customer.projectDetail.subnav.project": "Project",
+  "app.customer.projectDetail.subnav.messages": "Messages",
+
   "app.customer.poInvoice.create": "New PO",
   "app.customer.poInvoice.createSuccess": "PO Created!",
   "app.customer.poInvoice.uploadPO": "Upload Purchase Order",

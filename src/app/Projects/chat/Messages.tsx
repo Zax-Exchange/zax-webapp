@@ -24,7 +24,10 @@ const Messages = ({
     }
   };
   return (
-    <List sx={{ maxHeight: "400px", overflowY: "scroll" }} ref={messagesRef}>
+    <List
+      sx={{ maxHeight: "470px", overflowY: "scroll", pt: 0 }}
+      ref={messagesRef}
+    >
       {messages &&
         messages.map((m) => {
           return (
