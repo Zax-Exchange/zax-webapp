@@ -2,10 +2,10 @@ import { ApolloClient, ApolloLink, InMemoryCache } from "@apollo/client";
 import createUploadLink from "apollo-upload-client/public/createUploadLink";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
-import { envConfig as config } from "../app/Config/EnvConfig";
+import { envConfig as config, envConfig } from "../app/Config/EnvConfig";
 
 const authLink = setContext((_, { headers }) => {
-  const token = sessionStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
   return {
     headers: {
@@ -28,7 +28,12 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     }
     );
 
-  if (networkError) console.log(`[Network error]: ${networkError}`);
+  if (networkError) {
+    if (window.location.href.includes("localhost")) {
+      // only log when it's local
+      console.log(`[Network error]: ${networkError}`);
+    }
+  }
 });
 
 export const client = new ApolloClient({

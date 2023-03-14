@@ -1,4 +1,4 @@
-import { Cancel } from "@mui/icons-material";
+import { Cancel, OpenInNew } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
   Autocomplete,
@@ -12,6 +12,7 @@ import {
   List,
   ListItem,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { throttle } from "lodash";
@@ -32,6 +33,8 @@ import {
 import { useSearchVendorCompaniesLazyQuery } from "../../../gql/get/vendor/vendor.generated";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 import Projects from "../../Projects";
+import { openLink } from "../../../Utils/openLink";
+import { CUSTOMER_ROUTES } from "../../../constants/loggedInRoutes";
 
 type InvitationItem = {
   vendorName: string;
@@ -239,6 +242,12 @@ const ProjectInvitationModal = ({
     setVendorsList(copyVendorsList);
   };
 
+  const openVendorProfile = (id: string) => {
+    const dest = CUSTOMER_ROUTES.VENDOR_PROFILE.split(":");
+    dest[1] = id;
+
+    openLink(dest.join(""));
+  };
   const renderInvitationListItem = (vendorName: string, vendorId: string) => {
     return (
       <ListItem sx={{ p: 0 }}>
@@ -254,7 +263,17 @@ const ProjectInvitationModal = ({
             p: 1.5,
           }}
         >
-          <Typography>{vendorName}</Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography variant="subtitle2">{vendorName}</Typography>
+
+            <IconButton
+              onClick={() => openVendorProfile(vendorId)}
+              sx={{ ml: 1 }}
+              disableRipple
+            >
+              <OpenInNew />
+            </IconButton>
+          </Box>
           <IconButton
             onClick={() => removeVendorFromToAddList(vendorId)}
             sx={{ mr: 1 }}
@@ -287,7 +306,11 @@ const ProjectInvitationModal = ({
           },
         }),
       ]);
-
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.success" }),
+        severity: "success",
+      });
+      setSnackbarOpen(true);
       setProjectInvitationModalOpen(false);
     } catch (error) {}
   };
@@ -295,6 +318,8 @@ const ProjectInvitationModal = ({
   if (!projectId) {
     return <Projects />;
   }
+
+  // TODO: delete project invitation should also trigger a reload on vendor screen
   return (
     <>
       <DialogTitle>
@@ -379,14 +404,26 @@ const ProjectInvitationModal = ({
           </Box>
         </Box>
         <Box sx={{ overflow: "hidden" }}>
-          <List sx={{ maxHeight: "240px", overflow: "scroll" }}>
-            {getProjectInvitationsLoading && <CircularProgress />}
-            {vendorsList.map((vendor) => {
-              return (
-                <>{renderInvitationListItem(vendor.vendorName, vendor.id)}</>
-              );
-            })}
-          </List>
+          {getProjectInvitationsLoading && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
+          {!!vendorsList.length && (
+            <List sx={{ maxHeight: "240px", overflow: "scroll" }}>
+              {vendorsList.map((vendor) => {
+                return (
+                  <>{renderInvitationListItem(vendor.vendorName, vendor.id)}</>
+                );
+              })}
+            </List>
+          )}
         </Box>
       </DialogContent>
       <DialogActions sx={{ m: 2 }}>

@@ -1,21 +1,13 @@
 // @ts-nocheck
 import jwtDecode from "jwt-decode";
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useEffect, useMemo, useReducer } from "react";
 import { EVENT_ACTION, EVENT_CATEGORY } from "../analytics/constants";
 import { LoggedInUser } from "../generated/graphql";
 import ReactGA from "react-ga4";
+import { BroadcastChannel } from "broadcast-channel";
+import { client } from "../ApolloClient/client";
+import mixpanel from "mixpanel-browser";
 
-/**
- * user {
- *  id
- *  companyId
- *  isVendor
- *  power
- *  status
- *  name
- *  email
- * }
- */
 type SessionState = {
   user: LoggedInUser | null;
 };
@@ -23,11 +15,11 @@ const initialState = {
   user: null,
 };
 
-if (sessionStorage.getItem("token")) {
-  const decoded = jwtDecode(sessionStorage.getItem("token")!) as any;
+if (localStorage.getItem("token")) {
+  const decoded = jwtDecode(localStorage.getItem("token")!) as any;
 
   if (decoded.exp * 1000 < Date.now()) {
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("token");
   } else {
     initialState.user = decoded;
   }
@@ -62,12 +54,35 @@ const authReducer = (
       return state;
   }
 };
+const logoutChannel = new BroadcastChannel("logout");
 
 const AuthProvider = (props: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+  useEffect(() => {
+    // check for valid token every hour, if token expires then logout
+    const timer = setInterval(() => {
+      if (localStorage.getItem("token")) {
+        const decoded = jwtDecode(localStorage.getItem("token")!) as any;
+
+        if (decoded.exp * 1000 < Date.now()) {
+          localStorage.removeItem("token");
+          logout();
+        }
+      }
+    }, 3600000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    logoutChannel.onmessage = () => {
+      logout();
+      logoutChannel.close();
+    };
+  }, []);
+
   const login = (userData: LoggedInUser) => {
-    sessionStorage.setItem("token", userData.token);
+    localStorage.setItem("token", userData.token);
     dispatch({
       type: "LOGIN",
       payload: userData,
@@ -75,12 +90,19 @@ const AuthProvider = (props: any) => {
   };
 
   const logout = () => {
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("token");
     dispatch({ type: "LOGOUT" });
+    mixpanel.track(EVENT_ACTION.LOGOUT, {
+      action: EVENT_ACTION.LOGOUT,
+      category: EVENT_CATEGORY.USER_SESSION,
+    });
     ReactGA.event({
       action: EVENT_ACTION.LOGOUT,
       category: EVENT_CATEGORY.USER_SESSION,
     });
+    if (!logoutChannel.isClosed) {
+      logoutChannel.postMessage("");
+    }
   };
 
   return (

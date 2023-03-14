@@ -59,7 +59,7 @@ const ProjectSpecInput = ({
 
     switch (e.target.name as keyof CreateProjectInput) {
       case "name":
-        isAllowed = isValidAlphanumeric(val);
+        isAllowed = val !== " ";
         break;
       case "orderQuantities":
         isAllowed = isValidInt(val);

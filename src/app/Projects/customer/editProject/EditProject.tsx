@@ -286,7 +286,16 @@ const EditProject = () => {
         const key: keyof UpdateProjectData = attr as keyof UpdateProjectData;
 
         if (typeof projectData[key] === "string") {
-          if (projectData[key] === "") {
+          if (key === "targetPrice" || key === "totalWeight") {
+            if (
+              isNaN(parseFloat(projectData[key])) ||
+              parseFloat(projectData[key]) === 0
+            ) {
+              setProjectEditError((prev) => ({ ...prev, [key]: true }));
+            } else {
+              setProjectEditError((prev) => ({ ...prev, [key]: false }));
+            }
+          } else if (projectData[key] === "") {
             setProjectEditError((prev) => ({ ...prev, [key]: true }));
           } else {
             setProjectEditError((prev) => ({ ...prev, [key]: false }));
@@ -388,9 +397,9 @@ const EditProject = () => {
     let isAllowed = true;
 
     switch (e.target.name as keyof CreateProjectInput) {
-      // case "name":
-      //   isAllowed = isValidAlphanumeric(val);
-      //   break;
+      case "name":
+        isAllowed = val !== " ";
+        break;
       case "orderQuantities":
         isAllowed = isValidInt(val);
         val = parseInt(val, 10);
@@ -421,6 +430,12 @@ const EditProject = () => {
     if (
       isNaN(parseFloat(projectData.totalWeight)) ||
       parseFloat(projectData.totalWeight) === 0
+    ) {
+      return true;
+    }
+    if (
+      isNaN(parseFloat(projectData.targetPrice)) ||
+      parseFloat(projectData.targetPrice) === 0
     ) {
       return true;
     }
@@ -466,6 +481,12 @@ const EditProject = () => {
           variables: {
             data: {
               ...updateProjectInput,
+              projectData: {
+                ...updateProjectInput.projectData,
+                name: updateProjectInput.projectData.name
+                  .replace(/\s+/g, " ")
+                  .trim(),
+              },
               componentsForUpdate: compsForUpdate,
               componentsForCreate: compsForCreate,
               componentsForDelete: removedComponents
@@ -760,13 +781,13 @@ const EditProject = () => {
                         id: "app.project.attribute.visibility",
                       })
                     )}
-                    <Box ml={1}>
+                    {/* <Box ml={1}>
                       {renderTooltip(
                         intl.formatMessage({
                           id: "app.customer.createProject.visibility.tooltip",
                         })
                       )}
-                    </Box>
+                    </Box> */}
                   </Box>
                   <Box>
                     <TextField

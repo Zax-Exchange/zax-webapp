@@ -1,6 +1,7 @@
 import {
   Box,
   Container,
+  Dialog,
   Link,
   List,
   Paper,
@@ -32,6 +33,7 @@ import MuiListItem from "@mui/material/ListItem";
 import { productValueToLabelMap } from "../../constants/products";
 import { Store } from "@mui/icons-material";
 import { openLink } from "../../Utils/openLink";
+import NotFound from "../../Utils/NotFound";
 
 type TypographyVariant =
   | "button"
@@ -82,6 +84,7 @@ const VendorProfile = () => {
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [vendorData, setVendorData] = useState<VendorDetail | null>(null);
   const [currentTab, setCurrentTab] = useState(0);
+  const [notFound, setNotFound] = useState(false);
 
   const VENDOR_PROFILE_TABS = [
     {
@@ -113,7 +116,9 @@ const VendorProfile = () => {
   });
 
   useEffect(() => {
-    if (getVendorDetailError) {
+    if (getVendorDetailError?.message === "not found") {
+      setNotFound(true);
+    } else if (getVendorDetailError) {
       setSnackbar({
         message: intl.formatMessage({ id: "app.general.network.error" }),
         severity: "error",
@@ -141,6 +146,16 @@ const VendorProfile = () => {
     }
     return <Typography {...props}>{value}</Typography>;
   };
+
+  if (notFound) {
+    return (
+      <Dialog open>
+        <NotFound
+          description={intl.formatMessage({ id: "app.error.company.notFound" })}
+        />
+      </Dialog>
+    );
+  }
 
   if (getVendorDetailLoading) {
     return <FullScreenLoading />;

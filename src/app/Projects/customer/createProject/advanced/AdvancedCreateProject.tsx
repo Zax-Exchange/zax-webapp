@@ -41,6 +41,7 @@ import {
   EVENT_LABEL,
 } from "../../../../../analytics/constants";
 import ProjectSpecInput from "../common/ProjectSpecInput";
+import mixpanel from "mixpanel-browser";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -293,11 +294,23 @@ const AdvancedCreateProject = () => {
       return true;
     }
 
+    if (
+      isNaN(parseFloat(projectData.targetPrice!)) ||
+      parseFloat(projectData.targetPrice!) === 0
+    ) {
+      return true;
+    }
     return false;
   };
 
   const createProject = async () => {
     try {
+      mixpanel.track(EVENT_ACTION.CLICK, {
+        category: EVENT_CATEGORY.PROJECT,
+        label: EVENT_LABEL.ADVANCED_PROJECT_CREATION_TIME_ELAPSED,
+        value: Math.round((performance.now() - startingTime) / 1000),
+      });
+
       ReactGA.event({
         action: EVENT_ACTION.CLICK,
         category: EVENT_CATEGORY.PROJECT,
@@ -308,6 +321,7 @@ const AdvancedCreateProject = () => {
         variables: {
           data: {
             ...(projectData as CreateProjectInput),
+            name: projectData.name.replace(/\s+/g, " ").trim(),
             userId: user!.id,
             creationMode: ProjectCreationMode.Advanced,
           },

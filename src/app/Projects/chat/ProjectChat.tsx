@@ -8,7 +8,6 @@ import CustomMessageInput from "./MessageInput";
 import React from "react";
 import "./Chat.scss";
 import { envConfig as config } from "../../Config/EnvConfig";
-import { client } from "../../../ApolloClient/client";
 
 const streamApiKey = config.streamApiKey;
 const streamAppId = config.streamAppId;
@@ -31,16 +30,12 @@ const CustomChannelPreview = (props: any) => {
 
 const ProjectChat = ({
   projectBidId,
-  setChatOpen,
   customerName,
   vendorName,
-  chatOpen,
 }: {
   projectBidId: string;
-  setChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
   customerName: string;
   vendorName: string;
-  chatOpen: boolean;
 }) => {
   const { user } = useContext(AuthContext);
   const [chatClient, setChatClient] = useState(null as any);
@@ -54,27 +49,29 @@ const ProjectChat = ({
     const initChat = async () => {
       const client = StreamChat.getInstance(streamApiKey);
 
-      await client.connectUser(
-        {
-          id: user!.companyId,
-          name: user!.isVendor ? vendorName : customerName,
-          image: logo,
-        },
-        user!.chatToken
-      );
+      if (!chatClient) {
+        await client.connectUser(
+          {
+            id: user!.companyId,
+            name: user!.isVendor ? vendorName : customerName,
+            image: logo,
+          },
+          user!.chatToken
+        );
+        setChatClient(client);
+      }
+
       const channel = client.channel("messaging", projectBidId, {
         name: `Channel for ${customerName} & ${vendorName}`,
       });
 
       channel.addMembers([user!.companyId]);
-      const data = await channel.watch();
-
-      setChatClient(client);
+      await channel.watch();
       setChannel(channel);
     };
 
     initChat();
-  }, []);
+  }, [projectBidId]);
 
   useEffect(() => {
     return () => {
@@ -92,39 +89,19 @@ const ProjectChat = ({
   if (!chatClient) {
     return null;
   }
-  if (!chatOpen) return null;
 
   return (
-    <Dialog
-      open={chatOpen}
-      onClose={() => setChatOpen(false)}
-      maxWidth="xl"
-      fullWidth={true}
-    >
-      <Box sx={{ boxShadow: "0px 1px 4px 0px rgb(168 168 168 / 75%)" }}>
-        <DialogTitle>
-          {`Chat with ${user!.isVendor ? customerName : vendorName}`}
-        </DialogTitle>
-      </Box>
-      <DialogContent
-        sx={{
-          padding: 0,
-          overflow: "hidden",
-        }}
-      >
-        <Box sx={{ height: "500px", maxHeight: "500px" }}>
-          <Chat client={chatClient} theme="messaging light">
-            <Channel channel={channel} Input={getCustomeMessageInput}>
-              <Window>
-                <Messages messagesRef={messagesRef} />
-              </Window>
-              <Thread />
-              <MessageInput />
-            </Channel>
-          </Chat>
-        </Box>
-      </DialogContent>
-    </Dialog>
+    <Box>
+      <Chat client={chatClient} theme="messaging light">
+        <Channel channel={channel} Input={getCustomeMessageInput}>
+          <Window>
+            <Messages messagesRef={messagesRef} />
+          </Window>
+          <Thread />
+          <MessageInput />
+        </Channel>
+      </Chat>
+    </Box>
   );
 };
 

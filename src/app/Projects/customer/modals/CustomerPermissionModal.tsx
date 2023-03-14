@@ -31,6 +31,11 @@ import { useGetProjectUsersLazyQuery } from "../../../gql/get/project/project.ge
 import { useUpdateProjectPermissionsMutation } from "../../../gql/update/project/project.generated";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
 
+type User = {
+  name: string;
+  email: string;
+};
+
 const CustomerPermissionModal = ({
   projectId,
   setPermissionModalOpen,
@@ -41,13 +46,13 @@ const CustomerPermissionModal = ({
   const intl = useIntl();
   const { user: loggedInUser } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+  const [selectedEmails, setSelectedEmails] = useState<User[]>([]);
 
   const [allProjectUsers, setAllProjectUsers] = useState<
     UserProjectPermission[]
   >([]);
 
-  const [emailsList, setEmailsList] = useState<string[]>([]);
+  const [emailsList, setEmailsList] = useState<User[]>([]);
 
   const [toUpdate, setToUpdate] = useState<{
     viewers: string[];
@@ -131,18 +136,21 @@ const CustomerPermissionModal = ({
 
   // this sets the email list for input dropdown
   useEffect(() => {
-    const userEmails: string[] = [];
+    const userEmails: User[] = [];
     if (allProjectUsers && getAllCompanyUsersData) {
       getAllCompanyUsersData!.getAllUsersWithinCompany!.forEach((data) => {
         if (!allProjectUsers.find((user) => user.email === data!.email)) {
-          userEmails.push(data!.email);
+          userEmails.push({
+            email: data!.email,
+            name: data!.name,
+          });
         }
       });
       setEmailsList(userEmails);
     }
   }, [allProjectUsers, getAllCompanyUsersData]);
 
-  const selectHandler = (emails: string[]) => {
+  const selectHandler = (emails: User[]) => {
     setSelectedEmails(emails);
   };
   const getUser = (email: string) => {
@@ -153,8 +161,8 @@ const CustomerPermissionModal = ({
 
   const addPermissionHandler = () => {
     const selectedUsers: GenericUser[] = [];
-    for (let email of selectedEmails) {
-      selectedUsers.push(getUser(email));
+    for (let user of selectedEmails) {
+      selectedUsers.push(getUser(user.email));
     }
     // update data that'll be sent to server
     updateViewersEditorsList(
@@ -388,10 +396,25 @@ const CustomerPermissionModal = ({
               options={emailsList}
               disableCloseOnSelect
               getOptionDisabled={(option) =>
-                !!allProjectUsers.find((u) => u.email === option)
+                !!allProjectUsers.find((u) => u.email === option.email)
               }
+              getOptionLabel={(option) => option.name}
               onChange={(e, v) => {
                 selectHandler(v);
+              }}
+              renderOption={(props, option) => {
+                return (
+                  <ListItem {...props}>
+                    <Box sx={{ display: "flex" }}>
+                      <Typography variant="subtitle2" sx={{ mr: 2 }}>
+                        {option.name}
+                      </Typography>
+                      <Typography variant="caption">
+                        ({option.email})
+                      </Typography>
+                    </Box>
+                  </ListItem>
+                );
               }}
               value={selectedEmails}
               renderInput={(params) => (
@@ -428,7 +451,13 @@ const CustomerPermissionModal = ({
 
         {renderPermissionedUsers()}
 
-        <DialogActions>
+        <DialogActions sx={{ mt: 2 }}>
+          <Button
+            onClick={() => setPermissionModalOpen(false)}
+            variant="outlined"
+          >
+            {intl.formatMessage({ id: "app.general.cancel" })}
+          </Button>
           <LoadingButton
             onClick={savePermissionHandler}
             variant="contained"
@@ -436,12 +465,6 @@ const CustomerPermissionModal = ({
           >
             {intl.formatMessage({ id: "app.general.save" })}
           </LoadingButton>
-          <Button
-            onClick={() => setPermissionModalOpen(false)}
-            variant="outlined"
-          >
-            {intl.formatMessage({ id: "app.general.cancel" })}
-          </Button>
         </DialogActions>
       </>
     </Container>

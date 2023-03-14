@@ -173,7 +173,7 @@ const UserSignup = () => {
             helperText={
               emailTakenError
                 ? intl.formatMessage({ id: "app.signup.duplicateEmail" })
-                : ""
+                : intl.formatMessage({ id: "app.signup.user.email.helperText" })
             }
             onKeyDown={onEnter}
           ></TextField>

@@ -158,6 +158,10 @@ const SEARCH_CUSTOMER_PROJECTS = gql`
       targetPrice
       orderQuantities
       createdAt
+      bidInfo {
+        hasBids
+        biddedByUserCompany
+      }
     }
   }
 `;

@@ -198,6 +198,7 @@ const CreateOrUpdateComponentModal = ({
     // construct CreateProjectComponentInput
     const comp: CreateProjectComponentInput = {
       ...componentData,
+      name: componentData.name.replace(/\s+/g, " ").trim(),
       designIds: componentDesigns.map((d) => d.fileId),
       componentSpec: {
         ...componentSpec,
@@ -223,9 +224,10 @@ const CreateOrUpdateComponentModal = ({
     // comp here could be of both types Create/Update Input type
     const comp = {
       ...componentData,
+      name: componentData.name.replace(/\s+/g, " ").trim(),
       designIds: componentDesigns.map((d) => d.fileId),
       componentSpec,
-    };
+    } as CreateProjectComponentInput | UpdateProjectComponentData;
 
     setComponents((prev) => {
       const allComps = [...prev];
@@ -252,12 +254,13 @@ const CreateOrUpdateComponentModal = ({
     let isAllowed = true;
 
     switch (e.target.name) {
-      // case "name":
-      //   isAllowed = isValidAlphanumeric(val);
-      //   break;
+      case "name":
+        isAllowed = val !== " ";
+        break;
       default:
         break;
     }
+
     if (isAllowed) {
       setComponentData({
         ...componentData,

@@ -1,6 +1,12 @@
 { 
+  "app.alphaTest": "ALPHA TEST",
+
   "app.error.signup.duplicateJoinRequest": "You have requested to join this company already.",
   "app.error.signup.existingUser": "This email has already been used.",
+
+  "app.error.project.notFound": "Project does not exist.",
+  "app.error.company.notFound": "Company does not exist.",
+  "app.error": "Error",
 
   "app.general.vendor": "Vendor",
   "app.general.customer": "Customer",
@@ -102,10 +108,10 @@
   "app.signup.companySignup.pageTitle": "Select Your Company Type",
   "app.signup.companySignup.asCustomer": "Sign-up as Customer",
   "app.signup.companySignup.asVendor": "Sign-up as Vendor",
-  "app.signup.billingEmail.helperText": "We will use this email to send billing & sign up information.",
-  "app.signup.billingEmail.pageTitle": "Let's start with your email",
+  "app.signup.billingEmail.helperText": "We will use this email to send billing & initial user sign up information.",
+  "app.signup.billingEmail.pageTitle": "Enter Your Email",
   "app.signup.companyInfo.pageTitle": "Enter Your Company Information",
-  "app.signup.companyInfo.contactEmail.helperText": "This will be visible to others for contacting.",
+  "app.signup.companyInfo.contactEmail.helperText": "This will be a public email for your company and visible to other users within the platform. (You can use the same email as previous step.)",
   "app.signup.companyInfo.companyNameTaken": "Company name must be unique.",
   "app.signup.vendorInfo.pageTitle": "Since your a vendor, we're going to need a little more information.",
   "app.signup.vendorInfo.products.helperText": "This helps customers to find your company easier.",
@@ -125,6 +131,7 @@
   "app.signup.pricingDetail": "Pricing Detail",
   "app.signup.invalidToken": "Your token is either invalid or has expired. Please contact your company admins to re-send invitation link.",
   "app.signup.checkoutSuccess": "Company created successfully! Please check your email and create your account!",
+  "app.signup.user.email.helperText": "This email will your username for login.",
 
   "app.signup.step.email": "Email",
   "app.signup.step.companyInfo": "Company Info",
@@ -142,6 +149,13 @@
   "app.login.credentialsError": "Incorrect Emai or Password.",
   "app.login.inactiveAccountError": "Inactive account, please contact comapny admin.",
   "app.login.inactiveCompanyError": "Inactive company.",
+
+  "app.home.welcomeBanner": "Welcome to Zax Exchange, {name}",
+  "app.home.thankYou": "Thank you for signing up for our alpha testing, we really appreciate you joining us on this journey together to shape the future of sustainable packaging.",
+  "app.home.announcement.underConstruction": "Many parts of our site is still under construction so there might be unexpected issue or bugs when you're performing actions.",
+  "app.home.announcement.reportBugs": "To report bugs, please use the bottom right menu to report any bugs you encounter through our bug report form.",
+  "app.home.announcement.provideFeedback": "To provide feedbacks or suggestions, please also use the bottom right menu to do so.",
+  "app.home.announcement.changeLocale": "To change display language, use the bottom left icon to select your desired language.",
 
   "app.product.purpose.labeling": "Artwork / Labeling",
   "app.product.purpose.sealing": "Sealing / Closure",
@@ -282,6 +296,8 @@
   "app.bid.attribute.bidRemark": "Additional Remarks",
   "app.bid.attribute.bidRemark.tooltip": "You can upload additional remarks/notes regarding this project for customer to see.",  
   "app.bid.attribute.bidRemark.noRemark": "You did not upload a remark file.",
+  "app.bid.attribute.bidded": "bidded",
+  "app.bid.attribute.bidded.by.own.company": "bidded by your company",
   "app.bid.status.open.tooltip": "Bid is up-to-date",
   "app.bid.status.outdated.tooltip": "Bid might be outdated since project spec has changed.",
   "app.bid.status.accepted": "Accepted",
@@ -380,7 +396,7 @@
   "app.customer.createProject.projectCreated": "Project created!",
   "app.customer.createProject.visibility.tooltip": "Visibility allows you to control whether vendors can find your project through searching or not.",
   "app.customer.createProject.visibility.helperText": "You cannot change this attribute after project creation.",
-  "app.customer.createProject.orderQuantities.tooltip": "Order quantities allow vendors to provide bids at different price points so you can compare the price difference between varying quantities.",
+  "app.customer.createProject.orderQuantities.tooltip": "Order quantities allow vendors to provide bids at different price points so you can compare the per unit price difference between varying quantities.",
  "app.customer.createProject.totalWeight.tooltip": "The total weight of your product.",
 
   "app.customer.editProject.restoreComponent": "Restore Component",
@@ -418,21 +434,24 @@
   "app.customer.createProject.import.tooltip": "Import from existing project.",
 
   "app.customer.projectDetail.bid.menu.viewVendorProfile": "View vendor profile",
-  "app.customer.projectDetail.bid.menu.openConversation": "Open Conversation",
+  "app.customer.projectDetail.bid.menu.openConversation": "Chat with vendor",
   "app.customer.projectDetail.bid.menu.exportToPdf": "Export to pdf",
   "app.customer.projectDetail.bid.menu.createPO": "Create PO",
   "app.customer.projectDetail.bid.menu.acceptBid": "Accept",
   "app.customer.projectDetail.bid.menu.rejectBid": "Reject",
   "app.customer.projectDetail.error.orderQuantity.helperText": "Must have at least 1 quantity.",
   "app.customer.projectDetail.bidModal.vendorInformation": "Vendor Information",
+  "app.customer.projectDetail.bidModal.noBids": "Vendor bid was cleared due to original components being removed. Once vendor resubmits the bid, it will re-appear here.",
   "app.customer.projectDetail.bidWasCleared": "Due to order quantities changed, bids on previous quantities were cleared. Please wait until the vendor updates their bid.",
   "app.customer.projectDetail.noBids": "Project does not have any bids yet.",
   "app.customer.projectDetail.copyProject": "Copy Project",
   "app.customer.projectDetail.inviteVendors": "Invite Vendors To Bid",
   "app.customer.projectDetail.inviteVendors.modal.title": "Invite vendors to bid on your project",
   "app.customer.projectDetail.inviteVendors.noInvitations": "You have not invited any vendors yet.",
-  
-  "app.customer.poInvoice.create": "New Invoice",
+  "app.customer.projectDetail.subnav.project": "Project",
+  "app.customer.projectDetail.subnav.messages": "Messages",
+
+  "app.customer.poInvoice.create": "New PO",
   "app.customer.poInvoice.createSuccess": "PO Created!",
   "app.customer.poInvoice.uploadPO": "Upload Purchase Order",
   "app.customer.poInvoice.uploadPO.tooltip": "Select Purchase Order File",
@@ -476,11 +495,13 @@
   "app.vendor.projectDetail.updateBid": "Update Bid",
   "app.vendor.projectDetail.updateSuccess": "Update Success!",
   "app.vendor.projectDetail.noBid": "You did not bid for this component.",
+  "app.vendor.projectDetail.chatWithCustomer": "Chat with customer",
   
 
   "app.vendor.projects.yourBids": "Your Bids",
-   "app.vendor.projects.noBids": "No active bids at this moment. Search for a project to get started!",
+  "app.vendor.projects.noBids": "No active bids at this moment. Search for a project to get started!",
   "app.vendor.projects.yourInvitations": "Your Invitations",
+  "app.vendor.projects.yourInvitations.tooltip": "Customers can invite vendors to bid on their private projects. If you have any invitations, they will show up below.",
   "app.vendor.projects.noInvitations": "No active invitations at this moment.",
 
   "app.vendor.projectDetail.resubmitBid": "Resubmit bid if your bid still holds.",

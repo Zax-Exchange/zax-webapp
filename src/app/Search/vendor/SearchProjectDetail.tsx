@@ -73,30 +73,13 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-export const BidInputPriceTextField = styled((props: TextFieldProps) => {
+const BidInputPriceTextField = styled((props: TextFieldProps) => {
   return (
     <MuiTextField
       {...props}
       size="small"
-      InputProps={{
-        startAdornment: (
-          <InputAdornment
-            position="start"
-            sx={{
-              "& .MuiTypography-root": {
-                fontSize: "16px",
-              },
-            }}
-          >
-            $
-          </InputAdornment>
-        ),
-      }}
       sx={{
-        "& .MuiInputBase-root": {
-          pl: 1,
-        },
-        width: "7rem",
+        width: "10rem",
       }}
     />
   );
@@ -110,6 +93,8 @@ const SearchProjectDetail = () => {
   const [currentBidTab, setCurrentBidTab] = useState(0);
   const [existingBid, setExistingBid] = useState<ProjectBid | null>(null);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+
+  const [submitBidClicked, setSubmitBidClicked] = useState(false);
 
   const [permissionedDenied, setPermissionDenied] = useState(false);
 
@@ -248,6 +233,51 @@ const SearchProjectDetail = () => {
     }
   };
 
+  // checks whether a bid component's fields has been only partially filled
+  const hasOnlyPartialFieldsFilledOut = (
+    bidComponent: CreateProjectBidComponentInput,
+    component: ProjectComponent
+  ) => {
+    const isMoldedFiber =
+      component.componentSpec.productName ===
+      PRODUCT_NAME_MOLDED_FIBER_TRAY.value;
+
+    const allFields: boolean[] = [];
+    bidComponent.quantityPrices.forEach((qp) => {
+      if (!!qp.price) {
+        if (parseFloat(qp.price) === 0 || isNaN(parseFloat(qp.price))) {
+          if (
+            !bidComponent.samplingFee ||
+            (isMoldedFiber && !bidComponent.toolingFee)
+          ) {
+            allFields.push(true);
+          } else {
+            allFields.push(false);
+          }
+        } else {
+          allFields.push(true);
+        }
+      } else {
+        allFields.push(false);
+      }
+    });
+    if (bidComponent.samplingFee) {
+      allFields.push(true);
+    } else {
+      allFields.push(false);
+    }
+
+    if (isMoldedFiber) {
+      if (bidComponent.toolingFee) {
+        allFields.push(true);
+      } else {
+        allFields.push(false);
+      }
+    }
+
+    return allFields.some((b) => !!b) && allFields.some((b) => !b);
+  };
+
   const qpDataOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     componentInd: number,
@@ -299,40 +329,122 @@ const SearchProjectDetail = () => {
     setCurrentBidTab(newTab);
   };
 
-  const isValidComponentBid = (comp: CreateProjectBidComponentInput) => {
-    // If any of the qp price is invalid, the component bid is invalid
+  // user filled out every field
+  const isFilledBidComponent = (comp: CreateProjectBidComponentInput) => {
     for (let qp of comp.quantityPrices) {
-      if (!qp.price) return false;
+      if (
+        !qp.price ||
+        parseFloat(qp.price) === 0 ||
+        isNaN(parseFloat(qp.price))
+      )
+        return false;
     }
-    // If qp prices are all valid and there is a samplingFee present, the component bid is valid
-    if (comp.samplingFee) return true;
 
-    return false;
-  };
-  const shouldDisableSubmitBidButton = () => {
-    for (let comp of bidInput.components) {
-      if (isValidComponentBid(comp)) return false;
+    if (comp.toolingFee !== null && !comp.toolingFee) {
+      return false;
     }
+
+    if (!comp.samplingFee) return false;
+
     return true;
   };
 
-  const filterBids = () => {
+  // user did not fill a single field
+  const isEmptyBidComponent = (comp: CreateProjectBidComponentInput) => {
+    for (let qp of comp.quantityPrices) {
+      if (qp.price) return false;
+    }
+
+    if (comp.toolingFee !== null && comp.toolingFee) {
+      return false;
+    }
+
+    if (comp.samplingFee) return false;
+
+    return true;
+  };
+
+  const shouldDisableSubmitBidButton = () => {
+    if (isAllEmpty()) return true;
+
+    const { components } = getProjectDetailData!
+      .getSearchProjectDetail as Project;
+    if (submitBidClicked) {
+      // don't disable if every bid comp is either filled or empty
+      return !bidInput.components.every((comp) => {
+        return isFilledBidComponent(comp) || isEmptyBidComponent(comp);
+      });
+    } else {
+      // don't disable if any bid comp is filled, for exact reason please see VendorProjectDetail.tsx comments
+      // it's a little different than the condition we check in VendorProjectDetail
+      // because it doesn't make sense to enable the button when a bid is only partially filled
+      // since that'll confuse the user as to why it's showing enabled when a bid is not finished
+      // or give them the impression that they can submit partial bid for a particular component
+      if (bidInput.components.length > 1) {
+        for (let comp of bidInput.components) {
+          if (isFilledBidComponent(comp)) return false;
+        }
+      }
+      // there's only one component, disable if it's not completely filled
+      if (isFilledBidComponent(bidInput.components[0])) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const getAllFilledBidComponents = () => {
     const { components } = bidInput;
     const res: CreateProjectBidComponentInput[] = [];
     components.forEach((comp) => {
-      if (isValidComponentBid(comp)) res.push(comp);
+      if (isFilledBidComponent(comp)) res.push(comp);
     });
 
     return res;
   };
 
+  const isAllEmpty = () => {
+    return getProjectDetailData!.getSearchProjectDetail!.components.every(
+      (projectComp) => {
+        const bidComponent = bidInput.components.find(
+          (bidComp) => bidComp.projectComponentId === projectComp.id
+        )!;
+        return isEmptyBidComponent(bidComponent);
+      }
+    );
+  };
+
   const submitBid = async () => {
+    setSubmitBidClicked(true);
+
+    const componentsValidated = () => {
+      for (let comp of getProjectDetailData!.getSearchProjectDetail!
+        .components) {
+        const bidComponent = bidInput.components.find(
+          (bidComp) => bidComp.projectComponentId === comp.id
+        )!;
+
+        for (let qp of bidComponent.quantityPrices) {
+          if (parseFloat(qp.price) === 0) {
+            return false;
+          }
+        }
+        if (hasOnlyPartialFieldsFilledOut(bidComponent, comp)) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+    if (!componentsValidated() || isAllEmpty()) return;
+
     try {
       await createProjectBid({
         variables: {
           data: {
             ...bidInput,
-            components: filterBids(),
+            components: getAllFilledBidComponents(),
           },
         },
       });
@@ -362,12 +474,52 @@ const SearchProjectDetail = () => {
             scrollButtons="auto"
           >
             {components.map((comp, i) => {
-              return <Tab label={comp.name} key={i} />;
+              const bidComponent = bidInput.components.find(
+                (bidComp) => bidComp.projectComponentId === comp.id
+              );
+
+              const isIncomplete = !!bidComponent
+                ? hasOnlyPartialFieldsFilledOut(bidComponent, comp)
+                : false;
+
+              return (
+                <Tab
+                  label={comp.name}
+                  key={i}
+                  iconPosition="end"
+                  icon={
+                    isIncomplete && submitBidClicked ? (
+                      <Tooltip
+                        title={intl.formatMessage({
+                          id: "app.general.incomplete",
+                        })}
+                        placement="top"
+                      >
+                        <InfoOutlined
+                          color="warning"
+                          sx={{ fontSize: "16px", lineHeight: 0 }}
+                        />
+                      </Tooltip>
+                    ) : undefined
+                  }
+                  sx={{
+                    minHeight: "48px",
+                  }}
+                />
+              );
             })}
           </Tabs>
         </Box>
 
         {bidInput.components.map((comp, componentIndex) => {
+          const projectComp = components.find(
+            (projectComp) => projectComp.id === comp.projectComponentId
+          );
+
+          const isIncomplete = !!projectComp
+            ? hasOnlyPartialFieldsFilledOut(comp, projectComp)
+            : false;
+
           return (
             <TabPanel value={currentBidTab} index={componentIndex}>
               <TableContainer>
@@ -393,6 +545,17 @@ const SearchProjectDetail = () => {
                           <TableCell>{qp.quantity}</TableCell>
                           <TableCell>
                             <BidInputPriceTextField
+                              error={
+                                (submitBidClicked &&
+                                  isIncomplete &&
+                                  !qp.price) ||
+                                (submitBidClicked &&
+                                  !!qp.price &&
+                                  parseFloat(qp.price) === 0) ||
+                                (submitBidClicked &&
+                                  !!qp.price &&
+                                  isNaN(parseFloat(qp.price)))
+                              }
                               onChange={(e) =>
                                 qpDataOnChange(
                                   e,
@@ -402,28 +565,21 @@ const SearchProjectDetail = () => {
                               }
                               value={
                                 comp.quantityPrices[componentQpIndex].price
-                                  ? comp.quantityPrices[componentQpIndex].price
-                                  : ""
                               }
                               size="small"
                               InputProps={{
-                                startAdornment: (
-                                  <InputAdornment
-                                    position="start"
-                                    sx={{
-                                      "& .MuiTypography-root": {
-                                        fontSize: "16px",
-                                      },
-                                    }}
-                                  >
-                                    $
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <Typography
+                                      variant="caption"
+                                      color="GrayText"
+                                    >
+                                      {intl.formatMessage({
+                                        id: "app.general.currency.usd",
+                                      })}
+                                    </Typography>
                                   </InputAdornment>
                                 ),
-                              }}
-                              sx={{
-                                "& .MuiInputBase-root": {
-                                  pl: 1,
-                                },
                               }}
                             />
                           </TableCell>
@@ -438,6 +594,11 @@ const SearchProjectDetail = () => {
                       </TableCell>
                       <TableCell>
                         <BidInputPriceTextField
+                          error={
+                            submitBidClicked &&
+                            isIncomplete &&
+                            !comp.samplingFee
+                          }
                           onChange={(e) =>
                             componentFeeOnChange(
                               e,
@@ -445,12 +606,16 @@ const SearchProjectDetail = () => {
                               "samplingFee"
                             )
                           }
-                          value={comp.samplingFee ? comp.samplingFee : ""}
+                          value={comp.samplingFee}
                           size="small"
                           InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                $
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <Typography variant="caption" color="GrayText">
+                                  {intl.formatMessage({
+                                    id: "app.general.currency.usd",
+                                  })}
+                                </Typography>
                               </InputAdornment>
                             ),
                           }}
@@ -466,6 +631,11 @@ const SearchProjectDetail = () => {
                         </TableCell>
                         <TableCell>
                           <BidInputPriceTextField
+                            error={
+                              submitBidClicked &&
+                              isIncomplete &&
+                              !comp.toolingFee
+                            }
                             onChange={(e) =>
                               componentFeeOnChange(
                                 e,
@@ -473,12 +643,19 @@ const SearchProjectDetail = () => {
                                 "toolingFee"
                               )
                             }
-                            value={comp.toolingFee ? comp.toolingFee : ""}
+                            value={comp.toolingFee}
                             size="small"
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  $
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <Typography
+                                    variant="caption"
+                                    color="GrayText"
+                                  >
+                                    {intl.formatMessage({
+                                      id: "app.general.currency.usd",
+                                    })}
+                                  </Typography>
                                 </InputAdornment>
                               ),
                             }}

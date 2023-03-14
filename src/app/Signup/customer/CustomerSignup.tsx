@@ -191,9 +191,9 @@ const CustomerSignup = () => {
       case "fax":
         isAllowed = isValidInt(val);
         break;
-      // case "name":
-      //   isAllowed = isValidAlphanumeric(val);
-      //   break;
+      case "name":
+        isAllowed = val !== " ";
+        break;
       default:
         break;
     }
@@ -218,6 +218,10 @@ const CustomerSignup = () => {
     } else if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
+      setValues({
+        ...values,
+        name: values.name.replace(/\s+/g, " ").trim(),
+      });
       setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(CustomerSignupPage.REVIEW_PAGE);

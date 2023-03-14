@@ -33,6 +33,10 @@ import { useGetAllUsersWithinCompanyQuery } from "../../../gql/get/company/compa
 import { useIntl } from "react-intl";
 import { LoadingButton } from "@mui/lab";
 
+type User = {
+  name: string;
+  email: string;
+};
 // TODO: rework whole thing, should not pass in whole project object. Should just use projectId and userId to fetch for necessary info.
 const VendorPermissionModal = ({
   project,
@@ -45,13 +49,13 @@ const VendorPermissionModal = ({
   const { user: loggedInUser } = useContext(AuthContext);
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const isVendor = loggedInUser!.isVendor;
-  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+  const [selectedEmails, setSelectedEmails] = useState<User[]>([]);
 
   const [allProjectUsers, setAllProjectUsers] = useState<
     UserProjectPermission[]
   >([]);
 
-  const [emailsList, setEmailsList] = useState<string[]>([]);
+  const [emailsList, setEmailsList] = useState<User[]>([]);
 
   const [toUpdate, setToUpdate] = useState<{
     viewers: string[];
@@ -133,18 +137,21 @@ const VendorPermissionModal = ({
 
   // this sets the email list for input dropdown
   useEffect(() => {
-    const userEmails: string[] = [];
+    const userEmails: User[] = [];
     if (allProjectUsers && getAllCompanyUsersData) {
       getAllCompanyUsersData!.getAllUsersWithinCompany!.forEach((data) => {
         if (!allProjectUsers.find((user) => user.email === data!.email)) {
-          userEmails.push(data!.email);
+          userEmails.push({
+            email: data!.email,
+            name: data!.name,
+          });
         }
       });
       setEmailsList(userEmails);
     }
   }, [allProjectUsers, getAllCompanyUsersData]);
 
-  const selectHandler = (emails: string[]) => {
+  const selectHandler = (emails: User[]) => {
     setSelectedEmails(emails);
   };
   const getUser = (email: string) => {
@@ -155,8 +162,8 @@ const VendorPermissionModal = ({
 
   const addPermissionHandler = () => {
     const selectedUsers: GenericUser[] = [];
-    for (let email of selectedEmails) {
-      selectedUsers.push(getUser(email));
+    for (let user of selectedEmails) {
+      selectedUsers.push(getUser(user.email));
     }
     // update data that'll be sent to server
     updateViewersEditorsList(
@@ -391,10 +398,25 @@ const VendorPermissionModal = ({
               options={emailsList}
               disableCloseOnSelect
               getOptionDisabled={(option) =>
-                !!allProjectUsers.find((u) => u.email === option)
+                !!allProjectUsers.find((u) => u.email === option.email)
               }
+              getOptionLabel={(option) => option.name}
               onChange={(e, v) => {
                 selectHandler(v);
+              }}
+              renderOption={(props, option) => {
+                return (
+                  <ListItem {...props}>
+                    <Box sx={{ display: "flex" }}>
+                      <Typography variant="subtitle2" sx={{ mr: 2 }}>
+                        {option.name}
+                      </Typography>
+                      <Typography variant="caption">
+                        ({option.email})
+                      </Typography>
+                    </Box>
+                  </ListItem>
+                );
               }}
               value={selectedEmails}
               renderInput={(params) => (
@@ -431,7 +453,13 @@ const VendorPermissionModal = ({
 
         {renderPermissionedUsers()}
 
-        <DialogActions>
+        <DialogActions sx={{ mt: 2 }}>
+          <Button
+            onClick={() => setPermissionModalOpen(false)}
+            variant="outlined"
+          >
+            {intl.formatMessage({ id: "app.general.cancel" })}
+          </Button>
           <LoadingButton
             onClick={savePermissionHandler}
             variant="contained"
@@ -439,12 +467,6 @@ const VendorPermissionModal = ({
           >
             {intl.formatMessage({ id: "app.general.save" })}
           </LoadingButton>
-          <Button
-            onClick={() => setPermissionModalOpen(false)}
-            variant="outlined"
-          >
-            {intl.formatMessage({ id: "app.general.cancel" })}
-          </Button>
         </DialogActions>
       </>
     </Container>

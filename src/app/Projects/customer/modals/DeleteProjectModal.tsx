@@ -10,17 +10,20 @@ import React from "react";
 import { useIntl } from "react-intl";
 import { useDeleteProjectMutation } from "../../../gql/delete/project/project.generated";
 import useCustomSnackbar from "../../../Utils/CustomSnackbar";
+import { LoadingButton } from "@mui/lab";
 
 const DeleteProjectModal = ({
   deleteProjectModalOpen,
   setDeleteProjectModalOpen,
   projectId,
   setIsProjectPageLoading,
+  refetchProjects,
 }: {
   deleteProjectModalOpen: boolean;
   setDeleteProjectModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   projectId: string;
   setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  refetchProjects: () => void;
 }) => {
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
@@ -30,8 +33,8 @@ const DeleteProjectModal = ({
   ] = useDeleteProjectMutation();
 
   const deleteProjectOnClick = async () => {
-    setDeleteProjectModalOpen(false);
-    setIsProjectPageLoading(true);
+    // setDeleteProjectModalOpen(false);
+    // setIsProjectPageLoading(true);
     try {
       await deleteProjectMutation({
         variables: {
@@ -40,7 +43,7 @@ const DeleteProjectModal = ({
           },
         },
         onCompleted: () => {
-          document.dispatchEvent(new CustomEvent("reload"));
+          refetchProjects();
         },
       });
       setSnackbar({
@@ -54,6 +57,7 @@ const DeleteProjectModal = ({
       });
     } finally {
       setSnackbarOpen(true);
+      setDeleteProjectModalOpen(false);
       setIsProjectPageLoading(false);
     }
   };
@@ -70,15 +74,6 @@ const DeleteProjectModal = ({
         </DialogTitle>
         <DialogActions sx={{ mt: 1 }}>
           <Button
-            onClick={deleteProjectOnClick}
-            color="error"
-            variant="contained"
-          >
-            {intl.formatMessage({
-              id: "app.general.confirm",
-            })}
-          </Button>
-          <Button
             onClick={() => setDeleteProjectModalOpen(false)}
             variant="outlined"
           >
@@ -86,6 +81,16 @@ const DeleteProjectModal = ({
               id: "app.general.cancel",
             })}
           </Button>
+          <LoadingButton
+            loading={deleteProjectLoading}
+            onClick={deleteProjectOnClick}
+            color="primary"
+            variant="contained"
+          >
+            {intl.formatMessage({
+              id: "app.general.confirm",
+            })}
+          </LoadingButton>
         </DialogActions>
       </>
     );
@@ -97,11 +102,7 @@ const DeleteProjectModal = ({
       onClose={() => setDeleteProjectModalOpen(false)}
       maxWidth="xs"
     >
-      <DialogContent>
-        {!deleteProjectLoading &&
-          !deleteProjectError &&
-          renderDeleteProjectConfirmation()}
-      </DialogContent>
+      <DialogContent>{renderDeleteProjectConfirmation()}</DialogContent>
     </Dialog>
   );
 };

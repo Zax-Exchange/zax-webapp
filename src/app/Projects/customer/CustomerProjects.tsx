@@ -31,13 +31,15 @@ const CustomerProjects = () => {
     data: getCustomerProjectsData,
     error: getCustomerProjectsError,
     loading: getCustomerProjectsLoading,
+    refetch: getCustomerProjectsRefetch,
   } = useGetCustomerProjectsQuery({
     variables: {
       data: {
         userId,
       },
     },
-    fetchPolicy: "no-cache",
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
   });
 
   const [isProjectPageLoading, setIsProjectPageLoading] = useState(false);
@@ -67,6 +69,11 @@ const CustomerProjects = () => {
       setSnackbarOpen(true);
     }
   }, [getCustomerProjectsError]);
+
+  const refetchProjects = () => {
+    getCustomerProjectsRefetch();
+  };
+
   const sortByDeliveryDate = () => {
     let proj = [...projects];
     proj = proj.sort(
@@ -130,10 +137,7 @@ const CustomerProjects = () => {
 
   if (getCustomerProjectsData) {
     return (
-      <Container
-        className="user-projects-container"
-        sx={{ position: "relative" }}
-      >
+      <Container sx={{ position: "relative" }}>
         {isProjectPageLoading && <FullScreenLoading />}
         <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
           <Typography variant="subtitle2">
@@ -181,6 +185,7 @@ const CustomerProjects = () => {
                     key={i}
                     project={project}
                     setIsProjectPageLoading={setIsProjectPageLoading}
+                    refetchProjects={refetchProjects}
                   />
                 </>
               );

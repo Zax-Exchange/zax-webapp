@@ -34,6 +34,7 @@ export default function MessageInput() {
         paddingBottom: 3,
         pl: 1,
         pr: 1,
+        borderRadius: "4px",
       }}
     >
       <TextField

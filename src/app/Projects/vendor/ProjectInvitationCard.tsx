@@ -48,10 +48,9 @@ const ProjectInvitationCard = ({
             <ListItem>
               <Tooltip
                 title={intl.formatMessage({
-                  id: "app.project.attribute.companyName",
+                  id: "app.general.company.customerName",
                 })}
-                arrow
-                placement="top"
+                placement="left"
               >
                 <Business />
               </Tooltip>

@@ -54,7 +54,7 @@ export type SearchCustomerProjectsQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'ProjectOverview', id: string, name: string, category: string, products: Array<string>, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any }> };
+export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'SearchResultProjectOverview', id: string, name: string, category: string, products: Array<string>, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any, bidInfo: { __typename?: 'ProjectBidInfo', hasBids: boolean, biddedByUserCompany: boolean } }> };
 
 export const ProjectComponentFragmentFragmentDoc = gql`
     fragment ProjectComponentFragment on ProjectComponent {
@@ -314,6 +314,10 @@ export const SearchCustomerProjectsDocument = gql`
     targetPrice
     orderQuantities
     createdAt
+    bidInfo {
+      hasBids
+      biddedByUserCompany
+    }
   }
 }
     `;

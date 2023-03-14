@@ -28,6 +28,7 @@ import { countries } from "../../constants/countries";
 // Allowed search params, if user tempers the url we will not allow search request to fire
 const allowedParams = {
   userInput: true,
+  userId: true,
   targetPriceRange: true,
   deliveryDate: true,
   countries: true,
@@ -150,6 +151,7 @@ const VendorSearchResults = () => {
         variables: {
           data: {
             userInput: queryMap.userInput as string,
+            userId: queryMap.userId as string,
             targetPriceRange: queryMap.targetPriceRange
               ? (queryMap.targetPriceRange as string[])
               : undefined,

@@ -13,7 +13,7 @@ import { useCreateVendorMutation } from "../../gql/create/vendor/vendor.generate
 
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { VendorSignupData, VendorSignupPage } from "./VendorSignup";
-
+import mixpanel from "mixpanel-browser";
 const VendorCheckout = ({
   setCurrentPage,
   companyData,
@@ -67,6 +67,9 @@ const VendorCheckout = ({
             },
           },
           fetchPolicy: "no-cache",
+        });
+        mixpanel.track("sign up", {
+          isVendor: true,
         });
         setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
       } catch (error) {

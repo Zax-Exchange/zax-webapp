@@ -16,9 +16,13 @@ import {
   TableHead,
   useTheme,
   Tooltip,
-  TextField,
+  InputAdornment,
+  styled,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import MuiTextField, { TextFieldProps } from "@mui/material/TextField";
+import { useNavigate, useParams } from "react-router-dom";
 import FullScreenLoading from "../../Utils/Loading";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { AuthContext } from "../../../context/AuthContext";
@@ -46,7 +50,13 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { useIntl } from "react-intl";
 import ComponentSpecDetail from "../common/ComponentSpecDetail";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
-import { Edit, ErrorOutline, InfoOutlined, Sync } from "@mui/icons-material";
+import {
+  Edit,
+  ErrorOutline,
+  Info,
+  InfoOutlined,
+  Sync,
+} from "@mui/icons-material";
 import {
   useResubmitProjectBidMutation,
   useUpdateProjectBidComponentsMutation,
@@ -99,8 +109,26 @@ function TabPanel(props: TabPanelProps) {
 type BidComponentsForUpdate = Record<string, UpdateProjectBidComponentInput>;
 type BidComponentsForCreate = Record<string, CreateProjectBidComponentInput>;
 
+const BidInputPriceTextField = styled((props: TextFieldProps) => {
+  return (
+    <MuiTextField
+      {...props}
+      size="small"
+      sx={{
+        width: "10rem",
+      }}
+    />
+  );
+})(() => ({}));
+
 // TODO: handle null projectDetail
-const VendorProjectDetail = () => {
+const VendorProjectDetail = ({
+  setNotFound,
+  setPermissionDenied,
+}: {
+  setNotFound: React.Dispatch<React.SetStateAction<boolean>>;
+  setPermissionDenied: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
   const theme = useTheme();
@@ -284,6 +312,8 @@ const VendorProjectDetail = () => {
     ) {
       if (getVendorProjectError?.message === "permission denied") {
         setPermissionError(true);
+      } else if (getVendorDetailError?.message === "not found") {
+        setNotFound(true);
       } else {
         setSnackbar({
           message: intl.formatMessage({ id: "app.general.network.error" }),
@@ -542,24 +572,39 @@ const VendorProjectDetail = () => {
       | UpdateProjectBidComponentInput,
     component: ProjectComponent
   ) => {
+    const isMoldedFiber =
+      component.componentSpec.productName ===
+      PRODUCT_NAME_MOLDED_FIBER_TRAY.value;
     const allFields: boolean[] = [];
     bidComponent.quantityPrices.forEach((qp) => {
       if (!!qp.price) {
-        allFields.push(true);
+        // though intermediate values are considered invalid, we need them to be valid if sampling/tooling fee are empty
+        // so that this method can return correct value because it requires some fields to be filled and some fields to be empty to return true
+        // and in the case where sampling/tooling fee are not filled but qp.price has intermediate value we want to treat it as partially filled
+        if (parseFloat(qp.price) === 0 || isNaN(parseFloat(qp.price))) {
+          if (
+            !bidComponent.samplingFee ||
+            (isMoldedFiber && !bidComponent.toolingFee)
+          ) {
+            allFields.push(true);
+          } else {
+            allFields.push(false);
+          }
+        } else {
+          allFields.push(true);
+        }
       } else {
         allFields.push(false);
       }
     });
+
     if (bidComponent.samplingFee) {
       allFields.push(true);
     } else {
       allFields.push(false);
     }
 
-    if (
-      component.componentSpec.productName ===
-      PRODUCT_NAME_MOLDED_FIBER_TRAY.value
-    ) {
+    if (isMoldedFiber) {
       if (bidComponent.toolingFee) {
         allFields.push(true);
       } else {
@@ -616,10 +661,27 @@ const VendorProjectDetail = () => {
                 <TableRow>
                   <TableCell>{qp.quantity}</TableCell>
                   <TableCell>
-                    <TextField
-                      error={updateBidClicked && isIncomplete && !qp.price}
+                    <BidInputPriceTextField
+                      error={
+                        updateBidClicked &&
+                        isIncomplete &&
+                        (!qp.price ||
+                          parseFloat(qp.price) === 0 ||
+                          isNaN(parseFloat(qp.price)))
+                      }
                       value={qp.price}
                       onChange={(e) => qpDataOnChange(e.target.value, i)}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Typography variant="caption" color="GrayText">
+                              {intl.formatMessage({
+                                id: "app.general.currency.usd",
+                              })}
+                            </Typography>
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </TableCell>
                 </TableRow>
@@ -633,12 +695,23 @@ const VendorProjectDetail = () => {
               })}
             </TableCell>
             <TableCell>
-              <TextField
+              <BidInputPriceTextField
                 error={
                   updateBidClicked && isIncomplete && !bidComponent.samplingFee
                 }
-                value={bidComponent.samplingFee ? bidComponent.samplingFee : ""}
+                value={bidComponent.samplingFee}
                 onChange={(e) => feeOnChange(e.target.value, "samplingFee")}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({
+                          id: "app.general.currency.usd",
+                        })}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </TableCell>
           </TableRow>
@@ -650,12 +723,23 @@ const VendorProjectDetail = () => {
                 })}
               </TableCell>
               <TableCell>
-                <TextField
+                <BidInputPriceTextField
                   error={
                     updateBidClicked && isIncomplete && !bidComponent.toolingFee
                   }
-                  value={bidComponent.toolingFee ? bidComponent.toolingFee : ""}
+                  value={bidComponent.toolingFee}
                   onChange={(e) => feeOnChange(e.target.value, "toolingFee")}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Typography variant="caption" color="GrayText">
+                          {intl.formatMessage({
+                            id: "app.general.currency.usd",
+                          })}
+                        </Typography>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </TableCell>
             </TableRow>
@@ -737,10 +821,27 @@ const VendorProjectDetail = () => {
                 <TableRow>
                   <TableCell>{qp.quantity}</TableCell>
                   <TableCell>
-                    <TextField
-                      error={updateBidClicked && isIncomplete && !qp.price}
+                    <BidInputPriceTextField
+                      error={
+                        updateBidClicked &&
+                        isIncomplete &&
+                        (!qp.price ||
+                          parseFloat(qp.price) === 0 ||
+                          isNaN(parseFloat(qp.price)))
+                      }
                       value={qp.price}
                       onChange={(e) => qpDataOnChange(e.target.value, i)}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Typography variant="caption" color="GrayText">
+                              {intl.formatMessage({
+                                id: "app.general.currency.usd",
+                              })}
+                            </Typography>
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </TableCell>
                 </TableRow>
@@ -754,12 +855,23 @@ const VendorProjectDetail = () => {
               })}
             </TableCell>
             <TableCell>
-              <TextField
+              <BidInputPriceTextField
                 error={
                   updateBidClicked && isIncomplete && !bidComponent.samplingFee
                 }
-                value={bidComponent.samplingFee ? bidComponent.samplingFee : ""}
+                value={bidComponent.samplingFee}
                 onChange={(e) => feeOnChange(e.target.value, "samplingFee")}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({
+                          id: "app.general.currency.usd",
+                        })}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </TableCell>
           </TableRow>
@@ -771,12 +883,23 @@ const VendorProjectDetail = () => {
                 })}
               </TableCell>
               <TableCell>
-                <TextField
+                <BidInputPriceTextField
                   error={
                     updateBidClicked && isIncomplete && !bidComponent.toolingFee
                   }
-                  value={bidComponent.toolingFee ? bidComponent.toolingFee : ""}
+                  value={bidComponent.toolingFee}
                   onChange={(e) => feeOnChange(e.target.value, "toolingFee")}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Typography variant="caption" color="GrayText">
+                          {intl.formatMessage({
+                            id: "app.general.currency.usd",
+                          })}
+                        </Typography>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </TableCell>
             </TableRow>
@@ -811,17 +934,12 @@ const VendorProjectDetail = () => {
 
   // nothing is filled out
   const isAllEmpty = () => {
-    if (
-      getVendorProjectData!.getVendorProject!.components.every((comp) => {
-        const bidComponent = !!bidComponentsForUpdate[comp.id]
-          ? bidComponentsForUpdate[comp.id]
-          : bidComponentsForCreate[comp.id];
-        return isEmptyBidComponent(bidComponent);
-      })
-    ) {
-      return true;
-    }
-    return false;
+    return getVendorProjectData!.getVendorProject!.components.every((comp) => {
+      const bidComponent = !!bidComponentsForUpdate[comp.id]
+        ? bidComponentsForUpdate[comp.id]
+        : bidComponentsForCreate[comp.id];
+      return isEmptyBidComponent(bidComponent);
+    });
   };
 
   const isEmptyBidComponent = (
@@ -836,6 +954,75 @@ const VendorProjectDetail = () => {
     return true;
   };
 
+  const isFilledBidComponent = (
+    comp: UpdateProjectBidComponentInput | CreateProjectBidComponentInput
+  ) => {
+    for (let qp of comp.quantityPrices) {
+      if (
+        !qp.price ||
+        parseFloat(qp.price) === 0 ||
+        isNaN(parseFloat(qp.price))
+      )
+        return false;
+    }
+    if (!comp.samplingFee) return false;
+    if (comp.toolingFee !== null && !comp.toolingFee) return false;
+
+    return true;
+  };
+
+  const shouldDisableUpdateButton = () => {
+    if (isAllEmpty()) {
+      return true;
+    }
+    if (updateBidClicked) {
+      // if user clicked update bid, it implies user has intent to update then we should check if everything is valid
+      return !getVendorProjectData!.getVendorProject!.components.every(
+        (comp) => {
+          const bidComponent = !!bidComponentsForUpdate[comp.id]
+            ? bidComponentsForUpdate[comp.id]
+            : bidComponentsForCreate[comp.id];
+          // adding additional check for hasOnlyPartialFieldsFilledOut because isFilledBidComponent only check if every field has any value, but since qp prices can have decimals
+          // and we allow intermediate values like "." or ".0" or "0." for user input purposes, and those should not be considered valid input
+          return (
+            isEmptyBidComponent(bidComponent) ||
+            isFilledBidComponent(bidComponent)
+          );
+        }
+      );
+    }
+    // if user hasn't clicked update bid, we allow user to click update bid even if it's only partially filled out
+    // this allows us to warn user for unfilled fields because disabling the button before they show update intent might make user confused on why they cannot submit
+    // since they might be on different component tabs and not noticing unfilled fields in other tabs
+    if (getVendorProjectData!.getVendorProject!.components.length > 1) {
+      for (let comp of getVendorProjectData!.getVendorProject!.components) {
+        const bidComponent = !!bidComponentsForUpdate[comp.id]
+          ? bidComponentsForUpdate[comp.id]
+          : bidComponentsForCreate[comp.id];
+
+        if (
+          hasOnlyPartialFieldsFilledOut(bidComponent, comp) ||
+          isFilledBidComponent(bidComponent)
+        ) {
+          return false;
+        }
+      }
+    } else {
+      // only one component, disable button if it's not completely filled
+      for (let comp of getVendorProjectData!.getVendorProject!.components) {
+        // bidComponent here can still be create or update type since customer could delete an original component and create a new one
+        const bidComponent = !!bidComponentsForUpdate[comp.id]
+          ? bidComponentsForUpdate[comp.id]
+          : bidComponentsForCreate[comp.id];
+
+        if (isFilledBidComponent(bidComponent)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
   const updateBids = async () => {
     setUpdateBidClicked(true);
 
@@ -844,6 +1031,12 @@ const VendorProjectDetail = () => {
         const bidComponent = !!bidComponentsForUpdate[comp.id]
           ? bidComponentsForUpdate[comp.id]
           : bidComponentsForCreate[comp.id];
+
+        for (let qp of bidComponent.quantityPrices) {
+          if (parseFloat(qp.price) === 0) {
+            return false;
+          }
+        }
         if (hasOnlyPartialFieldsFilledOut(bidComponent, comp)) {
           return false;
         }
@@ -878,6 +1071,7 @@ const VendorProjectDetail = () => {
         }),
       ]);
       await getVendorProjectRefetch();
+      // TODO: fix bug where after update clicks, it shows previous data
       setUpdateBidClicked(false);
       setIsEditMode(false);
       setSnackbar({
@@ -914,6 +1108,10 @@ const VendorProjectDetail = () => {
     // samplingFee/toolingFee remains, this flag is used to determine whether to display resubmit button or not
     let bidClearedByCustomer = false;
 
+    if (!bidInfo.components.length) {
+      bidClearedByCustomer = true;
+    }
+
     bidInfo.components.forEach((comp) => {
       bids[comp.projectComponentId] = {
         ...comp,
@@ -931,13 +1129,30 @@ const VendorProjectDetail = () => {
             <KeyboardBackspaceIcon style={{ color: "rgb(43, 52, 89)" }} />
           </IconButton>
         </Box>
-        <ProjectChat
-          setChatOpen={setChatOpen}
-          projectBidId={bidInfo.id}
-          customerName={customerName}
-          vendorName={getVendorDetailData!.getVendorDetail!.name}
-          chatOpen={chatOpen}
-        />
+        <Dialog
+          open={chatOpen}
+          onClose={() => setChatOpen(false)}
+          maxWidth="xl"
+          fullWidth={true}
+        >
+          <Box sx={{ boxShadow: "0px 1px 4px 0px rgb(168 168 168 / 75%)" }}>
+            <DialogTitle>{`Chat with ${customerName}`}</DialogTitle>
+          </Box>
+          <DialogContent
+            sx={{
+              padding: 0,
+              overflow: "hidden",
+            }}
+          >
+            <Box>
+              <ProjectChat
+                projectBidId={bidInfo.id}
+                customerName={customerName}
+                vendorName={getVendorDetailData!.getVendorDetail!.name}
+              />
+            </Box>
+          </DialogContent>
+        </Dialog>
 
         <Paper
           style={{
@@ -980,7 +1195,7 @@ const VendorProjectDetail = () => {
               >
                 <Tooltip
                   title={intl.formatMessage({
-                    id: "app.customer.projectDetail.bid.menu.openConversation",
+                    id: "app.vendor.projectDetail.chatWithCustomer",
                   })}
                   placement="top"
                 >
@@ -1058,7 +1273,7 @@ const VendorProjectDetail = () => {
                     </Button>
                     <Button
                       onClick={updateBids}
-                      disabled={isAllEmpty()}
+                      disabled={shouldDisableUpdateButton()}
                       variant="contained"
                       sx={{ mr: 2 }}
                     >
@@ -1132,7 +1347,7 @@ const VendorProjectDetail = () => {
                           })}
                           placement="top"
                         >
-                          <InfoOutlined
+                          <Info
                             color="warning"
                             sx={{ fontSize: "16px", lineHeight: 0 }}
                           />

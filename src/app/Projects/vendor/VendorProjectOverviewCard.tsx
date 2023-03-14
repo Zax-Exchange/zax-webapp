@@ -40,6 +40,7 @@ import {
   EVENT_LABEL,
 } from "../../../analytics/constants";
 import ReactGA from "react-ga4";
+import mixpanel from "mixpanel-browser";
 
 type ProjectMenuOption = "view-detail" | "share";
 
@@ -100,6 +101,10 @@ const VendorProjectOverviewCard = ({
       viewDetailHandler();
     }
     if (action === "share" && canShare()) {
+      mixpanel.track(EVENT_ACTION.CLICK, {
+        category: EVENT_CATEGORY.PROJECT,
+        label: EVENT_LABEL.SHARE_BID,
+      });
       ReactGA.event({
         action: EVENT_ACTION.CLICK,
         category: EVENT_CATEGORY.PROJECT,
@@ -195,9 +200,9 @@ const VendorProjectOverviewCard = ({
             <ProjectOverviewListItem>
               <Tooltip
                 title={intl.formatMessage({
-                  id: "app.project.attribute.companyName",
+                  id: "app.general.company.customerName",
                 })}
-                placement="top"
+                placement="left"
               >
                 <BusinessIcon />
               </Tooltip>
@@ -208,7 +213,7 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.deliveryDate",
                 })}
-                placement="top"
+                placement="left"
               >
                 <LocalShippingOutlinedIcon />
               </Tooltip>
@@ -220,7 +225,7 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.deliveryAddress",
                 })}
-                placement="top"
+                placement="left"
               >
                 <PlaceIcon />
               </Tooltip>
@@ -234,7 +239,7 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.project.attribute.targetPrice",
                 })}
-                placement="top"
+                placement="left"
               >
                 <AttachMoneyIcon />
               </Tooltip>
@@ -248,7 +253,7 @@ const VendorProjectOverviewCard = ({
                 title={intl.formatMessage({
                   id: "app.general.createdAt",
                 })}
-                placement="top"
+                placement="left"
               >
                 <CreateIcon />
               </Tooltip>

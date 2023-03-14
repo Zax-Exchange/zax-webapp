@@ -493,7 +493,7 @@ const EditVendorProfile = () => {
 
       {vendorData && (
         <>
-          <Stack spacing={2} sx={{ marginTop: 2 }}>
+          <Stack spacing={3} sx={{ marginTop: 2 }}>
             <TextField
               required
               InputLabelProps={{ shrink: true }}

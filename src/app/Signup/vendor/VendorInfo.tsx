@@ -163,10 +163,11 @@ const VendorInfo = ({
 
   return (
     <>
-      <Typography variant="h6" sx={{ marginBottom: 4 }}>
+      <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
         {intl.formatMessage({ id: "app.signup.vendorInfo.pageTitle" })}
       </Typography>
       <Stack spacing={3} textAlign="right">
+        {renderFactoryLocationDropdown()}
         <TextField
           label={intl.formatMessage({ id: "app.vendor.attribute.leadTime" })}
           type="text"
@@ -177,8 +178,6 @@ const VendorInfo = ({
           value={values.leadTime}
           onChange={onChange}
         ></TextField>
-        {renderFactoryLocationDropdown()}
-
         <Box display="flex" flexDirection="column">
           {values.productsAndMoq.map((productAndMoq, i) => {
             return (

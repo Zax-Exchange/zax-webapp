@@ -43,6 +43,7 @@ import Footer from "./app/Footer/Footer";
 
 import Feedback from "./app/Feedback/Feedback";
 import ReactGA from "react-ga4";
+import mixpanel from "mixpanel-browser";
 
 const theme = createTheme({
   palette: {
@@ -167,6 +168,11 @@ function App() {
     });
 
     ReactGA.initialize(process.env.REACT_APP_GA4_ID!);
+
+    mixpanel.init(process.env.REACT_APP_MIX_PANEL_TOKEN!, {
+      debug: process.env.NODE_ENV !== "production",
+      ignore_dnt: true,
+    });
 
     return () => {
       document.removeEventListener("logout", () => {});
