@@ -171,10 +171,11 @@ const VendorSettings = () => {
       <Container maxWidth="lg">
         <Grid container spacing={2.5}>
           <Grid item xs={3.5}>
-            <Paper sx={{ borderRadius: 1 }}>
+            <Paper>
               <SettingsAccordion
                 expanded={expanded === "panel1"}
                 onChange={handleChange("panel1")}
+                sx={{ borderRadius: 1 }}
               >
                 <SettingsAccordionSummary>
                   <SettingsTitleTypography>
@@ -196,6 +197,7 @@ const VendorSettings = () => {
                           VENDOR_SETTINGS_ROUTE.CHANGE_PASSWORD
                         )
                       }
+                      sx={{ borderRadius: 1 }}
                     >
                       <ListItemButton>
                         <NoWrapListItemText
@@ -335,6 +337,7 @@ const VendorSettings = () => {
                 <SettingsAccordion
                   expanded={expanded === "panel4"}
                   onChange={handleChange("panel4")}
+                  sx={{ borderRadius: 1 }}
                 >
                   <SettingsAccordionSummary>
                     <SettingsTitleTypography>

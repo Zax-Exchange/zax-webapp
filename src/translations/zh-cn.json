@@ -21,6 +21,7 @@
   "app.general.currency.usd": "美元",
   "app.general.currency.rmb": "人民币",
   "app.general.login": "登入",
+  "app.general.signup": "注册",
   "app.general.logout": "登出",
   "app.general.edit": "编辑",
   "app.general.createdAt": "创建于",

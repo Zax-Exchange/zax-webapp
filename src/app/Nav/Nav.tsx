@@ -104,7 +104,7 @@ const Nav = () => {
               onClick={() => handleLoggedOutOnClick("company-signup")}
             >
               {intl.formatMessage({
-                id: "app.routes.loggedOut.getStarted",
+                id: "app.general.signup",
               })}
             </Button>
           </Box>

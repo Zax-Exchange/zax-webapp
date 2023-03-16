@@ -169,6 +169,7 @@ const CustomerSettings = () => {
               <SettingsAccordion
                 expanded={expanded === "panel1"}
                 onChange={handleChange("panel1")}
+                sx={{ borderRadius: 1 }}
               >
                 <SettingsAccordionSummary>
                   <SettingsTitleTypography>
@@ -317,6 +318,7 @@ const CustomerSettings = () => {
                 <SettingsAccordion
                   expanded={expanded === "panel4"}
                   onChange={handleChange("panel4")}
+                  sx={{ borderRadius: 1 }}
                 >
                   <SettingsAccordionSummary>
                     <SettingsTitleTypography>
