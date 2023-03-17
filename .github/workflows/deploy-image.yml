@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       deploymentEnvironment:
-        description: 'dev|stg|prod'
+        description: 'dev|stg|prd'
         required: true
         type: string
 jobs:
