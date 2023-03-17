@@ -7,7 +7,7 @@ jobs:
   Build-and-Push-Docker-Images-to-ECR:
     strategy:
       matrix:
-        deploymentEnvironment: [stg]
+        deploymentEnvironment: [stg, prd]
     needs: Generate-Build-Tag
     uses: ./.github/workflows/build-image-single-env.yml
     with: 
