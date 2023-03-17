@@ -165,9 +165,9 @@ const ProjectInvitationModal = ({
   }, [fetch, input]);
 
   useEffect(() => {
-    if (searchVendorsData && searchVendorsData.searchVendorCompanies.length) {
+    if (searchVendorsData && searchVendorsData.searchVendorCompanies.hits.length) {
       setOptions(
-        searchVendorsData.searchVendorCompanies.map((data) => data.vendor)
+        searchVendorsData.searchVendorCompanies.hits.map((data) => data.vendor)
       );
     }
   }, [searchVendorsData]);

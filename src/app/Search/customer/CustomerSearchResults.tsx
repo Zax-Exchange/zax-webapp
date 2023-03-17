@@ -13,6 +13,7 @@ import {
   TextField,
   Autocomplete,
   Paper,
+  Pagination,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
@@ -24,6 +25,7 @@ import SearchCompanyOverview from "./SearchCompanyOverview";
 import { useIntl } from "react-intl";
 import { countries } from "../../constants/countries";
 import { Country } from "../../Signup/customer/CustomerSignup";
+import { STARTING_PAGE, PAGE_SIZE } from "../SearchConstants";
 
 // Allowed search params, if user tempers the url we will not allow search request to fire
 const allowedParams = {
@@ -71,6 +73,9 @@ const CustomerSearchResults = () => {
     ...initialFilters,
   });
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+
+  // state to keep track of page number
+  const [page, setPage] = React.useState(STARTING_PAGE);
 
   // Query params after ? e.g. "targetPrice=5000&deliveryDate=2022-12-31"
   const queries = location.search.substring(1);
@@ -152,24 +157,31 @@ const CustomerSearchResults = () => {
   // Runs on every query change based on userInput or filters, only runs if queries are valid.
   useEffect(() => {
     if (validQueryString) {
-      searchVendors({
-        variables: {
-          data: {
-            userInput: queryMap.userInput as string,
-            leadTime: queryMap.leadTime
-              ? (queryMap.leadTime as string)
-              : undefined,
-            factoryLocations: queryMap.factoryLocations
-              ? Array.isArray(queryMap.factoryLocations)
-                ? (queryMap.factoryLocations as string[])
-                : [queryMap.factoryLocations as string]
-              : undefined,
-          },
-        },
-        fetchPolicy: "no-cache",
-      });
+      setPage(STARTING_PAGE);
+      searchVendorsForPage(page);
     }
   }, [validQueryString, queries]);
+
+  const searchVendorsForPage = (page: number) => {
+    searchVendors({
+      variables: {
+        data: {
+          userInput: queryMap.userInput as string,
+          leadTime: queryMap.leadTime
+            ? (queryMap.leadTime as string)
+            : undefined,
+          factoryLocations: queryMap.factoryLocations
+            ? Array.isArray(queryMap.factoryLocations)
+              ? (queryMap.factoryLocations as string[])
+              : [queryMap.factoryLocations as string]
+            : undefined,
+          from: (page - 1) * PAGE_SIZE,
+          size: PAGE_SIZE,
+        },
+      },
+      fetchPolicy: "no-cache",
+    });
+  }
 
   // Clears all filters and sets searchParam to only contain userInput. This changes the url and thus trigger a search request
   const clearFilters = () => {
@@ -472,6 +484,14 @@ const CustomerSearchResults = () => {
       </>
     );
   };
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+    if (validQueryString) {
+      searchVendorsForPage(value);
+    }
+  };
+
   if (searchVendorsLoading) {
     return <FullScreenLoading />;
   }
@@ -499,7 +519,7 @@ const CustomerSearchResults = () => {
         </Grid>
 
         <Grid item xs={7} className="search-results-inner-container">
-          {!searchVendorsData.searchVendorCompanies.length && (
+          {!searchVendorsData.searchVendorCompanies.hits.length && (
             <Typography variant="caption">
               {intl.formatMessage({
                 id: "app.search.noResults",
@@ -507,11 +527,12 @@ const CustomerSearchResults = () => {
             </Typography>
           )}
 
-          {!!searchVendorsData.searchVendorCompanies.length && (
+          {!!searchVendorsData.searchVendorCompanies.hits.length && (
             <Stack direction="column">
-              {searchVendorsData.searchVendorCompanies.map((result, i) => {
+              {searchVendorsData.searchVendorCompanies.hits.map((result, i) => {
                 return <SearchCompanyOverview searchResult={result} key={i} />;
               })}
+              <Pagination count={Math.ceil(searchVendorsData.searchVendorCompanies.totalHits/PAGE_SIZE)} page={page} onChange={handlePageChange} />
             </Stack>
           )}
         </Grid>

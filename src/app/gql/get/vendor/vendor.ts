@@ -112,20 +112,23 @@ const GET_VENDOR_GUEST_PROJECT = gql`
 const SEARCH_VENDOR_COMPANIES = gql`
   query searchVendorCompanies($data: SearchVendorCompanyInput!) {
     searchVendorCompanies(data: $data) {
-      vendor {
+      hits {
+        vendor {
         id
-      name
-      contactEmail
-      logo
-      country
-      isVerified
-      locations
-      products
-      }
-      highlight {
-        products
         name
+        contactEmail
+        logo
+        country
+        isVerified
+        locations
+        products
+        }
+        highlight {
+          products
+          name
+        }
       }
+      totalHits
     }
   }
 `;
