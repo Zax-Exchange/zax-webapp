@@ -1,5 +1,5 @@
 { 
-  "app.alphaTest": "ALPHA 测试",
+  "app.alphaTest": "BETA",
   "app.error.signup.duplicateJoinRequest": "您已申请加入此企业了",
   "app.error.signup.existingUser": "邮箱已被注册",
 
@@ -152,8 +152,8 @@
   "app.login.inactiveCompanyError": "公司已被冻结。",
 
   "app.home.welcomeBanner": "欢迎来到Zax Exchange平台, {name}",
-  "app.home.thankYou": "感谢您加入我们的Alpha测试，我们非常感激您能够和我们一起为再生包装产业的未来尽一分力。",
-  "app.home.announcement.underConstruction": "由于平台还在初期开发阶段，使用期间您有可能会遇到bug或错误，敬请谅解。",
+  "app.home.thankYou": "感谢您加入我们的BETA，我们非常感激您能够和我们一起为再生包装产业的未来尽一分力。",
+  "app.home.announcement.underConstruction": "由于平台还在初期阶段，使用期间您有可能会遇到bug或错误，敬请谅解。",
   "app.home.announcement.reportBugs": "若需进行bug反馈，请利用平台右下角的选单完成反馈。",
   "app.home.announcement.provideFeedback": "若您有任何关于平台的想法或反馈，请同样使用右下角的选单填写反馈表。",
   "app.home.announcement.changeLocale": "若需变更显示语言，请点击左下角的图标选择语言。",

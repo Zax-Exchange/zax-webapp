@@ -1,5 +1,5 @@
 { 
-  "app.alphaTest": "ALPHA TEST",
+  "app.alphaTest": "BETA",
 
   "app.error.signup.duplicateJoinRequest": "You have requested to join this company already.",
   "app.error.signup.existingUser": "This email has already been used.",
@@ -152,8 +152,8 @@
   "app.login.inactiveCompanyError": "Inactive company.",
 
   "app.home.welcomeBanner": "Welcome to Zax Exchange, {name}",
-  "app.home.thankYou": "Thank you for signing up for our alpha testing, we really appreciate you joining us on this journey together to shape the future of sustainable packaging.",
-  "app.home.announcement.underConstruction": "Many parts of our site is still under construction so there might be unexpected issue or bugs when you're performing actions.",
+  "app.home.thankYou": "Thank you for signing up for our beta, we really appreciate you joining us on this journey together to shape the future of packaging supply chain.",
+  "app.home.announcement.underConstruction": "Many parts of our site are still in their early stage so there might be unexpected issue or bugs when you're performing actions.",
   "app.home.announcement.reportBugs": "To report bugs, please use the bottom right menu to report any bugs you encounter through our bug report form.",
   "app.home.announcement.provideFeedback": "To provide feedbacks or suggestions, please also use the bottom right menu to do so.",
   "app.home.announcement.changeLocale": "To change display language, use the bottom left icon to select your desired language.",
