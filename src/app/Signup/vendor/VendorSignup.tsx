@@ -42,6 +42,9 @@ import { useCreateStripeCustomerInStripeForVendorMutation } from "../../gql/crea
 import JoinOrCreateCompany from "../JoinOrCreateCompany";
 import JoinCompany from "../JoinCompany";
 import { envConfig as config } from "../../Config/EnvConfig";
+import mixpanel from "mixpanel-browser";
+import { useCreateVendorMutation } from "../../gql/create/vendor/vendor.generated";
+import { LOGGED_OUT_ROUTES } from "../../constants/loggedOutRoutes";
 
 export type VendorSignupData = {
   name: string;
@@ -73,15 +76,15 @@ export type MoqDetail = {
 };
 
 export const VendorSignupPage = {
-  JOIN: "JOIN",
-  JOIN_OR_CREATE: "JOIN_OR_CREATE",
+  // JOIN: "JOIN",
+  // JOIN_OR_CREATE: "JOIN_OR_CREATE",
   EMAIL_PAGE: "EMAIL_PAGE",
   COMPANY_INFO_PAGE: "COMPANY_INFO_PAGE",
   VENDOR_INFO_PAGE: "VENDOR_INFO_PAGE",
   COMPANY_SIZE_PAGE: "COMPANY_SIZE_PAGE",
-  PLAN_SELECTION_PAGE: "PLAN_SELECTION_PAGE",
+  // PLAN_SELECTION_PAGE: "PLAN_SELECTION_PAGE",
   REVIEW_PAGE: "REVIEW_PAGE",
-  PAYMENT_PAGE: "PAYMENT_PAGE",
+  // PAYMENT_PAGE: "PAYMENT_PAGE",
   SUCCESS_PAGE: "SUCCESS_PAGE",
 };
 
@@ -99,15 +102,15 @@ const VendorSignup = () => {
     intl.formatMessage({
       id: "app.signup.vendor.step.vendorInfo",
     }),
-    intl.formatMessage({
-      id: "app.signup.step.selectPlan",
-    }),
+    // intl.formatMessage({
+    //   id: "app.signup.step.selectPlan",
+    // }),
     intl.formatMessage({
       id: "app.signup.step.review",
     }),
-    intl.formatMessage({
-      id: "app.signup.step.payment",
-    }),
+    // intl.formatMessage({
+    //   id: "app.signup.step.payment",
+    // }),
   ];
   const [
     createStripeCustomerMutation,
@@ -122,9 +125,7 @@ const VendorSignup = () => {
     },
   });
 
-  const [currentPage, setCurrentPage] = useState(
-    VendorSignupPage.JOIN_OR_CREATE
-  );
+  const [currentPage, setCurrentPage] = useState(VendorSignupPage.EMAIL_PAGE);
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
 
@@ -149,6 +150,14 @@ const VendorSignup = () => {
     planId: "",
     userEmail: "",
   } as VendorSignupData);
+  const [
+    createVendorMutation,
+    {
+      loading: createVendorLoading,
+      data: createVendorData,
+      error: createVendorError,
+    },
+  ] = useCreateVendorMutation();
 
   const [stripePaymentIntent, setStripePaymentIntent] = useState({
     customerId: "",
@@ -166,6 +175,15 @@ const VendorSignup = () => {
   } as VendorSubscriptionInfo);
 
   useEffect(() => {
+    if (createVendorError) {
+      setSnackbar({
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+        severity: "error",
+      });
+      setSnackbarOpen(true);
+    }
+  }, [createVendorError]);
+  useEffect(() => {
     switch (currentPage) {
       case VendorSignupPage.EMAIL_PAGE:
         setActiveStep(0);
@@ -176,21 +194,21 @@ const VendorSignup = () => {
       case VendorSignupPage.VENDOR_INFO_PAGE:
         setActiveStep(2);
         break;
-      case VendorSignupPage.PLAN_SELECTION_PAGE:
+      // case VendorSignupPage.PLAN_SELECTION_PAGE:
+      //   setActiveStep(3);
+      //   break;
+      case VendorSignupPage.REVIEW_PAGE:
         setActiveStep(3);
         break;
-      case VendorSignupPage.REVIEW_PAGE:
-        setActiveStep(4);
-        break;
-      case VendorSignupPage.PAYMENT_PAGE:
-        setActiveStep(5);
-        break;
+      // case VendorSignupPage.PAYMENT_PAGE:
+      //   setActiveStep(5);
+      //   break;
     }
   }, [currentPage]);
   const shouldShowStepper = () => {
     if (
-      currentPage === VendorSignupPage.JOIN_OR_CREATE ||
-      currentPage === VendorSignupPage.JOIN ||
+      // currentPage === VendorSignupPage.JOIN_OR_CREATE ||
+      // currentPage === VendorSignupPage.JOIN ||
       currentPage === VendorSignupPage.SUCCESS_PAGE
     )
       return false;
@@ -308,9 +326,10 @@ const VendorSignup = () => {
   };
 
   const nextPage = async () => {
-    if (currentPage === VendorSignupPage.JOIN_OR_CREATE) {
-      setCurrentPage(VendorSignupPage.EMAIL_PAGE);
-    } else if (currentPage === VendorSignupPage.EMAIL_PAGE) {
+    // if (currentPage === VendorSignupPage.JOIN_OR_CREATE) {
+    //   setCurrentPage(VendorSignupPage.EMAIL_PAGE);
+    // } else
+    if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
     } else if (currentPage === VendorSignupPage.COMPANY_INFO_PAGE) {
       setValues({
@@ -322,48 +341,66 @@ const VendorSignup = () => {
       setValues({
         ...values,
       });
-      setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
+      setCurrentPage(VendorSignupPage.REVIEW_PAGE);
     }
     // else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
     //   setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
     // }
-    else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
-      setCurrentPage(VendorSignupPage.REVIEW_PAGE);
-    } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
-      try {
-        const { data } = await createStripeCustomerMutation({
-          variables: {
-            data: {
-              email: values.userEmail,
-              subscriptionPriceId: subscriptionInfo.subscriptionPriceId,
-              perUserPriceId: subscriptionInfo.perUserPriceId,
+    // else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+    //   setCurrentPage(VendorSignupPage.REVIEW_PAGE);
+    // }
+    else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
+      await createVendorMutation({
+        variables: {
+          data: {
+            ...values,
+            leadTime: parseInt(values.leadTime),
+            stripeCustomerInfo: {
+              subscriptionId: "",
+              customerId: "",
             },
           },
-        });
-        setStripePaymentIntent({
-          ...data!.createStripeCustomerInStripeForVendor,
-        });
-        setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
-      } catch (error: any) {
-        setSnackbar({
-          severity: "error",
-          message: error.message,
-        });
-        setSnackbarOpen(true);
-      }
+        },
+        fetchPolicy: "no-cache",
+      });
+      mixpanel.track("sign up", {
+        isVendor: true,
+      });
+      setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
+      // try {
+      //   const { data } = await createStripeCustomerMutation({
+      //     variables: {
+      //       data: {
+      //         email: values.userEmail,
+      //         subscriptionPriceId: subscriptionInfo.subscriptionPriceId,
+      //         perUserPriceId: subscriptionInfo.perUserPriceId,
+      //       },
+      //     },
+      //   });
+      //   setStripePaymentIntent({
+      //     ...data!.createStripeCustomerInStripeForVendor,
+      //   });
+      //   setCurrentPage(VendorSignupPage.PAYMENT_PAGE);
+      // } catch (error: any) {
+      //   setSnackbar({
+      //     severity: "error",
+      //     message: error.message,
+      //   });
+      //   setSnackbarOpen(true);
+      // }
     }
   };
 
   const previousPage = () => {
     switch (currentPage) {
-      case VendorSignupPage.JOIN_OR_CREATE:
-        navigate(-1);
-        break;
-      case VendorSignupPage.JOIN:
-        setCurrentPage(VendorSignupPage.JOIN_OR_CREATE);
-        break;
+      // case VendorSignupPage.JOIN_OR_CREATE:
+      //   navigate(-1);
+      //   break;
+      // case VendorSignupPage.JOIN:
+      //   setCurrentPage(VendorSignupPage.JOIN_OR_CREATE);
+      //   break;
       case VendorSignupPage.EMAIL_PAGE:
-        setCurrentPage(VendorSignupPage.JOIN_OR_CREATE);
+        navigate(LOGGED_OUT_ROUTES.LOGIN);
         break;
       case VendorSignupPage.COMPANY_INFO_PAGE:
         setCurrentPage(VendorSignupPage.EMAIL_PAGE);
@@ -374,15 +411,15 @@ const VendorSignup = () => {
       // case VendorSignupPage.COMPANY_SIZE_PAGE:
       //   setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
       //   break;
-      case VendorSignupPage.PLAN_SELECTION_PAGE:
+      // case VendorSignupPage.PLAN_SELECTION_PAGE:
+      //   setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
+      //   break;
+      case VendorSignupPage.REVIEW_PAGE:
         setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
         break;
-      case VendorSignupPage.REVIEW_PAGE:
-        setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
-        break;
-      case VendorSignupPage.PAYMENT_PAGE:
-        setCurrentPage(VendorSignupPage.REVIEW_PAGE);
-        break;
+      // case VendorSignupPage.PAYMENT_PAGE:
+      //   setCurrentPage(VendorSignupPage.REVIEW_PAGE);
+      //   break;
       default:
         return;
     }
@@ -405,19 +442,22 @@ const VendorSignup = () => {
     );
 
     let buttons = [];
-    if (
-      currentPage === VendorSignupPage.JOIN_OR_CREATE ||
-      currentPage === VendorSignupPage.JOIN
-    ) {
-      buttons = [backButton];
-    } else if (currentPage === VendorSignupPage.EMAIL_PAGE) {
+    // if (
+    //   currentPage === VendorSignupPage.JOIN_OR_CREATE ||
+    //   currentPage === VendorSignupPage.JOIN
+    // ) {
+    //   buttons = [backButton];
+    // } else
+    if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       buttons = [backButton, nextButton];
-    } else if (
-      currentPage === VendorSignupPage.PLAN_SELECTION_PAGE ||
-      currentPage === VendorSignupPage.COMPANY_SIZE_PAGE
-    ) {
-      buttons = [backButton];
-    } else {
+    }
+    // else if (
+    //   currentPage === VendorSignupPage.PLAN_SELECTION_PAGE ||
+    //   currentPage === VendorSignupPage.COMPANY_SIZE_PAGE
+    // ) {
+    //   buttons = [backButton];
+    // }
+    else {
       buttons = [backButton, nextButton];
     }
     return (
@@ -438,25 +478,25 @@ const VendorSignup = () => {
   };
 
   const renderCompanySignupFlow = () => {
-    if (currentPage === VendorSignupPage.JOIN_OR_CREATE) {
-      return (
-        <Fade in={true} mountOnEnter unmountOnExit>
-          <div>
-            <JoinOrCreateCompany setCurrentPage={setCurrentPage} />
-            {renderNavigationButtons(true)}
-          </div>
-        </Fade>
-      );
-    } else if (currentPage === VendorSignupPage.JOIN) {
-      return (
-        <Fade in={true} mountOnEnter unmountOnExit>
-          <div>
-            <JoinCompany />
-            {renderNavigationButtons(true)}
-          </div>
-        </Fade>
-      );
-    }
+    // if (currentPage === VendorSignupPage.JOIN_OR_CREATE) {
+    //   return (
+    //     <Fade in={true} mountOnEnter unmountOnExit>
+    //       <div>
+    //         <JoinOrCreateCompany setCurrentPage={setCurrentPage} />
+    //         {renderNavigationButtons(true)}
+    //       </div>
+    //     </Fade>
+    //   );
+    // } else if (currentPage === VendorSignupPage.JOIN) {
+    //   return (
+    //     <Fade in={true} mountOnEnter unmountOnExit>
+    //       <div>
+    //         <JoinCompany />
+    //         {renderNavigationButtons(true)}
+    //       </div>
+    //     </Fade>
+    //   );
+    // }
     if (currentPage === VendorSignupPage.EMAIL_PAGE) {
       return (
         <>
@@ -560,31 +600,33 @@ const VendorSignup = () => {
           {renderNavigationButtons(true)}
         </>
       );
-    } else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
-      if (getAllPlansData && getAllPlansData.getAllPlans) {
-        const plans = getAllPlansData.getAllPlans;
+    }
+    // else if (currentPage === VendorSignupPage.PLAN_SELECTION_PAGE) {
+    //   if (getAllPlansData && getAllPlansData.getAllPlans) {
+    //     const plans = getAllPlansData.getAllPlans;
 
-        return (
-          <>
-            <Typography variant="h6" sx={{ marginBottom: 4 }}>
-              {intl.formatMessage({ id: "app.signup.pickAPlan" })}
-            </Typography>
-            <Stack direction="row" justifyContent="space-around">
-              {plans.map((plan) => (
-                <VendorPlanSelection
-                  planData={plan}
-                  selectPlan={selectPlan}
-                  setSubscriptionInfo={setSubscriptionInfo}
-                />
-              ))}
-            </Stack>
-            {renderNavigationButtons(true)}
-          </>
-        );
-      }
-      return renderNavigationButtons(true);
-      // TODO: add  && meta.error === undefined to renderNavigationButtons
-    } else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
+    //     return (
+    //       <>
+    //         <Typography variant="h6" sx={{ marginBottom: 4 }}>
+    //           {intl.formatMessage({ id: "app.signup.pickAPlan" })}
+    //         </Typography>
+    //         <Stack direction="row" justifyContent="space-around">
+    //           {plans.map((plan) => (
+    //             <VendorPlanSelection
+    //               planData={plan}
+    //               selectPlan={selectPlan}
+    //               setSubscriptionInfo={setSubscriptionInfo}
+    //             />
+    //           ))}
+    //         </Stack>
+    //         {renderNavigationButtons(true)}
+    //       </>
+    //     );
+    //   }
+    //   return renderNavigationButtons(true);
+    //   // TODO: add  && meta.error === undefined to renderNavigationButtons
+    // }
+    else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
       return (
         <>
           {getAllPlansData && (
@@ -597,35 +639,38 @@ const VendorSignup = () => {
           {renderNavigationButtons(true)}
         </>
       );
-    } else if (currentPage === VendorSignupPage.PAYMENT_PAGE) {
-      return (
-        <Elements
-          stripe={stripePromise}
-          options={{ clientSecret: stripePaymentIntent.clientSecret }}
-        >
-          <Typography
-            variant="subtitle2"
-            sx={{ marginBottom: 4 }}
-            textAlign="left"
-            fontSize="1.2em"
-          >
-            {intl.formatMessage({ id: "app.signup.completePayment" })}
-          </Typography>
-          <VendorCheckout
-            setCurrentPage={setCurrentPage}
-            companyData={values}
-            stripePaymentIntent={stripePaymentIntent}
-            setIsLoading={setIsLoading}
-          />
-        </Elements>
-      );
-    } else if (currentPage === VendorSignupPage.SUCCESS_PAGE) {
+    }
+    // else if (currentPage === VendorSignupPage.PAYMENT_PAGE) {
+    //   return (
+    //     <Elements
+    //       stripe={stripePromise}
+    //       options={{ clientSecret: stripePaymentIntent.clientSecret }}
+    //     >
+    //       <Typography
+    //         variant="subtitle2"
+    //         sx={{ marginBottom: 4 }}
+    //         textAlign="left"
+    //         fontSize="1.2em"
+    //       >
+    //         {intl.formatMessage({ id: "app.signup.completePayment" })}
+    //       </Typography>
+    //       <VendorCheckout
+    //         setCurrentPage={setCurrentPage}
+    //         companyData={values}
+    //         stripePaymentIntent={stripePaymentIntent}
+    //         setIsLoading={setIsLoading}
+    //       />
+    //     </Elements>
+    //   );
+    // }
+    else if (currentPage === VendorSignupPage.SUCCESS_PAGE) {
       return <CheckoutSuccess />;
     }
   };
 
   return (
     <Container maxWidth="lg">
+      {createVendorLoading && <FullScreenLoading />}
       {shouldShowStepper() && (
         <Stepper activeStep={activeStep} sx={{ mb: 2 }}>
           {VENDOR_SIGNUP_STEPS.map((label, index) => {

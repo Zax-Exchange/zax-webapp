@@ -333,7 +333,7 @@ const VendorSettings = () => {
                 </SettingsAccordion>
               )}
 
-              {isAdmin && (
+              {/* {isAdmin && (
                 <SettingsAccordion
                   expanded={expanded === "panel4"}
                   onChange={handleChange("panel4")}
@@ -364,7 +364,7 @@ const VendorSettings = () => {
                     </Stack>
                   </AccordionDetails>
                 </SettingsAccordion>
-              )}
+              )} */}
             </Paper>
           </Grid>
           <Grid item xs={8}>

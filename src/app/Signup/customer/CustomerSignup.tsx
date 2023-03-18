@@ -35,6 +35,8 @@ import JoinCompany from "../JoinCompany";
 import { StripePaymentIntent } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
 import { envConfig as config } from "../../Config/EnvConfig";
+import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
+import { LOGGED_OUT_ROUTES } from "../../constants/loggedOutRoutes";
 
 const stripePromise = loadStripe(config.stripePublishableKey);
 
@@ -55,7 +57,7 @@ export interface CustomerSignupData {
 
 export const CustomerSignupPage = {
   JOIN: "JOIN",
-  JOIN_OR_CREATE: "JOIN_OR_CREATE",
+  // JOIN_OR_CREATE: "JOIN_OR_CREATE",
   EMAIL_PAGE: "EMAIL_PAGE",
   COMPANY_INFO_PAGE: "COMPANY_INFO_PAGE",
   PLAN_SELECTION_PAGE: "PLAN_SELECTION_PAGE",
@@ -122,9 +124,7 @@ const CustomerSignup = () => {
     billingFrequency: "",
   } as SubscriptionInfo);
 
-  const [currentPage, setCurrentPage] = useState(
-    CustomerSignupPage.JOIN_OR_CREATE
-  );
+  const [currentPage, setCurrentPage] = useState(CustomerSignupPage.EMAIL_PAGE);
   const [stripePaymentIntent, setStripePaymentIntent] = useState({
     customerId: "",
     subscriptionId: "",
@@ -167,7 +167,7 @@ const CustomerSignup = () => {
   }, [currentPage]);
   const shouldShowStepper = () => {
     if (
-      currentPage === CustomerSignupPage.JOIN_OR_CREATE ||
+      // currentPage === CustomerSignupPage.JOIN_OR_CREATE ||
       currentPage === CustomerSignupPage.JOIN ||
       currentPage === CustomerSignupPage.SUCCESS_PAGE
     )
@@ -213,9 +213,11 @@ const CustomerSignup = () => {
   };
 
   const nextPage = async () => {
-    if (currentPage === CustomerSignupPage.JOIN_OR_CREATE) {
-      setCurrentPage(CustomerSignupPage.EMAIL_PAGE);
-    } else if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
+    // if (currentPage === CustomerSignupPage.JOIN_OR_CREATE) {
+    //   setCurrentPage(CustomerSignupPage.EMAIL_PAGE);
+    // } else
+
+    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
     } else if (currentPage === CustomerSignupPage.COMPANY_INFO_PAGE) {
       setValues({
@@ -252,14 +254,14 @@ const CustomerSignup = () => {
 
   const previousPage = () => {
     switch (currentPage) {
-      case CustomerSignupPage.JOIN_OR_CREATE:
-        navigate(-1);
-        break;
-      case CustomerSignupPage.JOIN:
-        setCurrentPage(CustomerSignupPage.JOIN_OR_CREATE);
-        break;
+      // case CustomerSignupPage.JOIN_OR_CREATE:
+      //   navigate(-1);
+      //   break;
+      // case CustomerSignupPage.JOIN:
+      //   setCurrentPage(CustomerSignupPage.JOIN_OR_CREATE);
+      //   break;
       case CustomerSignupPage.EMAIL_PAGE:
-        setCurrentPage(CustomerSignupPage.JOIN_OR_CREATE);
+        navigate(LOGGED_OUT_ROUTES.LOGIN);
         break;
       case CustomerSignupPage.COMPANY_INFO_PAGE:
         setCurrentPage(CustomerSignupPage.EMAIL_PAGE);
@@ -301,12 +303,13 @@ const CustomerSignup = () => {
     );
 
     let buttons: JSX.Element[] = [];
-    if (
-      currentPage === CustomerSignupPage.JOIN_OR_CREATE ||
-      currentPage === CustomerSignupPage.JOIN
-    ) {
-      buttons = [backButton];
-    } else if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
+    // if (
+    //   currentPage === CustomerSignupPage.JOIN_OR_CREATE ||
+    //   currentPage === CustomerSignupPage.JOIN
+    // ) {
+    //   buttons = [backButton];
+    // } else
+    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       buttons = [backButton, nextButton];
     } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       buttons = [backButton];
@@ -341,25 +344,26 @@ const CustomerSignup = () => {
   };
 
   const renderCompanySignupFlow = () => {
-    if (currentPage === CustomerSignupPage.JOIN_OR_CREATE) {
-      return (
-        <Fade in={true} mountOnEnter unmountOnExit>
-          <div>
-            <JoinOrCreateCompany setCurrentPage={setCurrentPage} />
-            {renderNavigationButtons(true)}
-          </div>
-        </Fade>
-      );
-    } else if (currentPage === CustomerSignupPage.JOIN) {
-      return (
-        <Fade in={true} mountOnEnter unmountOnExit>
-          <div>
-            <JoinCompany />
-            {renderNavigationButtons(true)}
-          </div>
-        </Fade>
-      );
-    } else if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
+    // if (currentPage === CustomerSignupPage.JOIN_OR_CREATE) {
+    //   return (
+    //     <Fade in={true} mountOnEnter unmountOnExit>
+    //       <div>
+    //         <JoinOrCreateCompany setCurrentPage={setCurrentPage} />
+    //         {renderNavigationButtons(true)}
+    //       </div>
+    //     </Fade>
+    //   );
+    // } else if (currentPage === CustomerSignupPage.JOIN) {
+    //   return (
+    //     <Fade in={true} mountOnEnter unmountOnExit>
+    //       <div>
+    //         <JoinCompany />
+    //         {renderNavigationButtons(true)}
+    //       </div>
+    //     </Fade>
+    //   );
+    // } else
+    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
       return (
         <Fade in={true} mountOnEnter unmountOnExit>
           <div>

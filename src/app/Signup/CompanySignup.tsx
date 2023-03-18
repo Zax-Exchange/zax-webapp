@@ -11,13 +11,18 @@ import {
 import { useNavigate } from "react-router-dom";
 import vendor from "../../static/vendor.svg";
 import customer from "../../static/customer.svg";
-import React from "react";
+import React, { useEffect } from "react";
 import { LOGGED_OUT_ROUTES } from "../constants/loggedOutRoutes";
 import { useIntl } from "react-intl";
 
 const CompanySignup = () => {
   const navigate = useNavigate();
   const intl = useIntl();
+
+  useEffect(() => {
+    navigate(LOGGED_OUT_ROUTES.CUSTOMER_SIGNUP);
+  }, []);
+
   const companyTypeOnClick = (
     path: LOGGED_OUT_ROUTES.VENDOR_SIGNUP | LOGGED_OUT_ROUTES.CUSTOMER_SIGNUP
   ) => {

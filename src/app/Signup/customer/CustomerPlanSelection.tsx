@@ -1,18 +1,25 @@
 import styled from "@emotion/styled";
 import {
+  Box,
   Card,
   CardActionArea,
+  CardActions,
   CardContent,
   CardMedia,
+  Grid,
   List,
   ListItem,
+  ListItemAvatar,
+  ListItemText,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import { Plan } from "../../../generated/graphql";
 import { SubscriptionInfo } from "./CustomerSignup";
 import groupPlan from "../../../static/groupPlan.svg";
 import businessPlan from "../../../static/businessPlan.svg";
+import { Avatar } from "stream-chat-react";
 
 const PlanListItem = styled(ListItem)(() => ({
   flexDirection: "column",
@@ -26,6 +33,14 @@ const PlanListItem = styled(ListItem)(() => ({
   },
 }));
 
+const mock = [
+  {
+    title: "Premium",
+    price: "$20",
+    features: ["Money back guarantee", "All features", "24/7 customer support"],
+    isHighlighted: true,
+  },
+];
 const CustomerPlanSelection = ({
   planData,
   selectPlan,
@@ -37,6 +52,7 @@ const CustomerPlanSelection = ({
   setSubscriptionInfo: React.Dispatch<React.SetStateAction<SubscriptionInfo>>;
   nextPage: () => Promise<void>;
 }) => {
+  const theme = useTheme();
   const { id, tier, pricings } = planData!;
 
   const { perUser } = pricings;
@@ -83,14 +99,13 @@ const CustomerPlanSelection = ({
           <List sx={{ padding: 0 }}>
             <ListItem>
               <Typography textAlign="left" variant="h6">
-                {tier} Plan
+                Premium Plan
               </Typography>
             </ListItem>
 
             <PlanListItem>
-              <Typography variant="subtitle2">Price</Typography>
-              <Typography variant="overline">
-                ${perUser.price}/user each month
+              <Typography variant="caption" color="text.primary">
+                ${perUser.price}/mo per user
               </Typography>
             </PlanListItem>
           </List>

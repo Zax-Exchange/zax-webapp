@@ -2,6 +2,7 @@ import { Language } from "@mui/icons-material";
 import {
   Box,
   IconButton,
+  Link,
   Menu,
   MenuItem,
   MenuList,
@@ -14,6 +15,7 @@ import {
   LocaleContext,
   SUPPORTED_LOCALES,
 } from "../../context/LocaleContext";
+import { openLink } from "../Utils/openLink";
 
 const Footer = () => {
   const intl = useIntl();
@@ -66,6 +68,50 @@ const Footer = () => {
           </MenuList>
         </Menu>
 
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            ml: 1,
+            ":hover": {
+              cursor: "pointer",
+            },
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{ fontSize: "0.8rem" }}
+            onClick={() =>
+              openLink(
+                "https://app.termly.io/document/terms-and-conditions/9168f760-6b6c-4c5f-916d-867462a8c2db"
+              )
+            }
+          >
+            Terms of Service
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            ml: 1,
+            ":hover": {
+              cursor: "pointer",
+            },
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{ fontSize: "0.8rem" }}
+            onClick={() =>
+              openLink(
+                "https://app.termly.io/document/privacy-policy/261339a9-d1a3-4426-baf1-ce0c45836c8d"
+              )
+            }
+          >
+            Privacy Policy
+          </Typography>
+        </Box>
         <Box
           sx={{
             display: "flex",
