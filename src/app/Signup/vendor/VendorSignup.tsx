@@ -249,6 +249,13 @@ const VendorSignup = () => {
       case "leadTime":
         isAllowed = isValidInt(val);
         break;
+      case "companyUrl":
+        if (val.substring(0, 8) !== "https://") {
+          isAllowed = false;
+        } else {
+          isAllowed = true;
+        }
+        break;
       default:
         break;
     }

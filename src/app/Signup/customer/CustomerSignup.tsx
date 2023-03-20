@@ -145,7 +145,7 @@ const CustomerSignup = () => {
     isActive: false,
     isVendor: false,
     isVerified: false,
-    companyUrl: "",
+    companyUrl: "https://",
     planId: "",
     userEmail: "",
   } as CustomerSignupData);
@@ -197,6 +197,13 @@ const CustomerSignup = () => {
         break;
       case "name":
         isAllowed = val !== " ";
+        break;
+      case "companyUrl":
+        if (val.substring(0, 8) !== "https://") {
+          isAllowed = false;
+        } else {
+          isAllowed = true;
+        }
         break;
       default:
         break;
