@@ -21,6 +21,7 @@ import useCustomSnackbar from "../Utils/CustomSnackbar";
 import FullScreenLoading from "../Utils/Loading";
 import { useGetCompanyPlanQuery } from "../gql/get/company/company.generated";
 import { Check, CheckCircle, Info } from "@mui/icons-material";
+import { getEnv } from "../Utils/methods/getEnv";
 
 const stripePromise = loadStripe(envConfig.stripePublishableKey);
 
@@ -95,7 +96,7 @@ const CustomerUpgradeBanner = () => {
           data: {
             companyId: user!.companyId,
             priceId:
-              process.env.NODE_ENV! === "production"
+              getEnv() === "production"
                 ? "price_1MnY2yEZqkVG9UR3fNKtMR6n"
                 : "price_1MmnCoEZqkVG9UR39D7Fu8kF",
           },
