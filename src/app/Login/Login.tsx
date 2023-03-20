@@ -7,6 +7,7 @@ import {
   Fade,
   Paper,
   useTheme,
+  Link,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useContext, useEffect } from "react";
@@ -21,6 +22,7 @@ import { useIntl } from "react-intl";
 import { LOGGED_OUT_ROUTES } from "../constants/loggedOutRoutes";
 import ReactGA from "react-ga4";
 import { EVENT_ACTION, EVENT_CATEGORY } from "../../analytics/constants";
+import { openLink } from "../Utils/openLink";
 
 const Login = () => {
   const intl = useIntl();
@@ -166,6 +168,42 @@ const Login = () => {
               </LoadingButton>
             </Stack>
           </Container>
+          <Box mt={2}>
+            <Typography
+              color="text.secondary"
+              fontSize="0.8rem"
+              sx={{ whiteSpace: "pre-line" }}
+            >
+              By clicking the Login button, you acknowledge that you have
+              reviewed and agreed to the Zax{" "}
+              <Link
+                onClick={() =>
+                  openLink(
+                    "https://app.termly.io/document/terms-and-conditions/9168f760-6b6c-4c5f-916d-867462a8c2db"
+                  )
+                }
+                sx={{
+                  cursor: "pointer",
+                }}
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                onClick={() =>
+                  openLink(
+                    "https://app.termly.io/document/privacy-policy/261339a9-d1a3-4426-baf1-ce0c45836c8d"
+                  )
+                }
+                sx={{
+                  cursor: "pointer",
+                }}
+              >
+                Privacy Policy
+              </Link>
+              .
+            </Typography>
+          </Box>
         </Paper>
       </Container>
     </Fade>
