@@ -4,6 +4,7 @@ import {
   useElements,
   PaymentElement,
   AddressElement,
+  CardElement,
 } from "@stripe/react-stripe-js";
 import React, { useContext } from "react";
 import { useEffect, useState } from "react";
@@ -41,6 +42,8 @@ const CustomerCheckout = ({
   const stripe = useStripe();
   const elements = useElements();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+
+  const [paymentProcessed, setPaymentProcessed] = useState(false);
 
   const [createCustomerMutation] = useCreateCustomerMutation();
 
@@ -103,11 +106,12 @@ const CustomerCheckout = ({
     try {
       // TODO: review this to make it more robust (should guarantee company and payment are both successful)
       setIsLoading(true);
-      if (stripe && elements) {
+      if (stripe && elements && !paymentProcessed) {
         const { error } = await stripe.confirmPayment({
           elements,
           redirect: "if_required",
         });
+        setPaymentProcessed(true);
 
         if (error) {
           throw error;
@@ -122,6 +126,18 @@ const CustomerCheckout = ({
           companyPlanRefetch();
           setPaymentSuccess(true);
         }
+      }
+      if (paymentProcessed) {
+        // if our own gql call failed when payment was processed, reclicking the payment button should only fire update method
+        await updateCustomerPlan({
+          variables: {
+            data: {
+              companyId: user!.companyId,
+            },
+          },
+        });
+        companyPlanRefetch();
+        setPaymentSuccess(true);
       }
       //  else if (paymentSuccess) {
       //   await createCustomer();
