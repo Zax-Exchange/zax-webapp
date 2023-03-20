@@ -146,7 +146,7 @@ const VendorSignup = () => {
     leadTime: "",
     locations: [],
     productsAndMoq: [{ product: "", moq: "" }],
-    companyUrl: "",
+    companyUrl: "https://",
     planId: "",
     userEmail: "",
   } as VendorSignupData);
