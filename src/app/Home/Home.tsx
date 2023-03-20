@@ -11,6 +11,7 @@ import announcementSvg from "../../static/homePageAnnoncement.svg";
 import { AuthContext } from "../../context/AuthContext";
 import { Campaign, CampaignOutlined } from "@mui/icons-material";
 import { useIntl } from "react-intl";
+import CustomerUpgradeBanner from "../Banner/CustomerUpgradeBanner";
 
 const Home = () => {
   const intl = useIntl();
@@ -25,6 +26,7 @@ const Home = () => {
   };
   return (
     <Container>
+      {!user!.isVendor && <CustomerUpgradeBanner />}
       <Box mb={2}>
         <Box sx={{ display: "flex", mb: 3 }}>
           <Typography variant="h4" fontWeight={500}>

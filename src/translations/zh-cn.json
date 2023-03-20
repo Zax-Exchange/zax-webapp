@@ -54,7 +54,7 @@
   "app.general.minimum": "最少",
   "app.general.maximum": "最多",
   "app.general.months": "{month} 个月",
-
+  "app.general.resend": "重新发送",
   "app.general.company.vendorName": "厂商名",
   "app.general.company.customerName": "客户名",
   "app.general.purchaseOrder": "购买订单",
@@ -131,9 +131,11 @@
   "app.signup.createNewCompany": "创建新企业账号",
   "app.signup.finishAndPay": "确认升级",
   "app.signup.pricingDetail": "详细费用",
-  "app.signup.invalidToken": "您的令牌不合法或已失效，请联系您的企业管理员并重新发送账号创建链接。",
+  "app.signup.invalidToken.signup": "您的令牌不合法或已失效，请点击下面的按钮来重新发送链接。",
+  "app.signup.invalidToken.signup.linkSent": "链接已发送！",
   "app.signup.checkoutSuccess": "企业创建成功！请查看您的邮箱并点击您的账号创建链接。",
   "app.signup.user.email.helperText": "此邮箱将做为您的登陆用户名。",
+  "app.signup.error.moreThanOneUser": "您的账号已被创建，请至登入页面登入您的账号。",
 
   "app.signup.step.email": "邮箱",
   "app.signup.step.companyInfo": "企业信息",

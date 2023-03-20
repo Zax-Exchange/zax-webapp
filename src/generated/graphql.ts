@@ -638,8 +638,9 @@ export type Mutation = {
   deletePurchaseOrder: Scalars['Boolean'];
   inviteUsers: Scalars['Boolean'];
   requestToJoin: Scalars['Boolean'];
+  resendAccountSetupLink: Scalars['Boolean'];
   reset: Scalars['Boolean'];
-  resetPassword?: Maybe<Scalars['Boolean']>;
+  resetPassword: Scalars['Boolean'];
   resubmitProjectBid: Scalars['Boolean'];
   sendPasswordResetLink: Scalars['Boolean'];
   updateCompanyPlan: Scalars['Boolean'];
@@ -803,6 +804,11 @@ export type MutationInviteUsersArgs = {
 
 export type MutationRequestToJoinArgs = {
   data: RequestToJoinInput;
+};
+
+
+export type MutationResendAccountSetupLinkArgs = {
+  data: ResendAccountSetupLinkInput;
 };
 
 
@@ -1578,6 +1584,10 @@ export type QuerySearchVendorCompaniesArgs = {
 export type RequestToJoinInput = {
   companyName: Scalars['String'];
   email: Scalars['String'];
+};
+
+export type ResendAccountSetupLinkInput = {
+  token: Scalars['String'];
 };
 
 export type ResetPasswordInput = {

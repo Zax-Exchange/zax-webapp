@@ -208,9 +208,6 @@ function App() {
             <CustomSnackbar />
             <Nav />
             <Container maxWidth="xl" sx={{ mb: 12, pt: 12 }}>
-              <Container>
-                {!!user && !user.isVendor && <CustomerUpgradeBanner />}
-              </Container>
               <Routes>
                 {/* START COMMON PATH */}
                 <Route

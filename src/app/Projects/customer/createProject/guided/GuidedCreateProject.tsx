@@ -17,6 +17,7 @@ import GuidedOutsideSpec from "./GuidedOutsideSpec";
 import GuidedInsideSpec from "./GuidedInsideSpec";
 import GuidedReview from "./GuidedReview";
 import GuidedOther from "./GuidedOther";
+import CustomerUpgradeBanner from "../../../../Banner/CustomerUpgradeBanner";
 
 export enum GuidedView {
   GENERAL_SPEC = "GENERAL_SPEC",
@@ -68,6 +69,9 @@ export default function GuidedCreateProject() {
   const [activeStep, setActiveStep] = useState(0);
   const [currentView, setCurrentView] = useState(GuidedView.GENERAL_SPEC);
   const [projectCreated, setProjectCreated] = useState(false);
+  const [projectLimitReachedError, setProjectLimitReachedError] =
+    useState(false);
+
   const [startingTime, setStartingTime] = useState(performance.now());
 
   const [projectData, setProjectData] = useState<CreateProjectInput>({
@@ -279,12 +283,14 @@ export default function GuidedCreateProject() {
           additionalComponents={additionalComponents}
           additionalComponentsDesigns={additionalComponentsDesigns}
           startingTime={startingTime}
+          setProjectLimitReachedError={setProjectLimitReachedError}
         />
       );
     }
   };
   return (
     <Container maxWidth="md">
+      {projectLimitReachedError && <CustomerUpgradeBanner />}
       <Stepper activeStep={activeStep}>
         {GUIDED_CREATE_PROJECT_STEPS.map((label, index) => {
           return (

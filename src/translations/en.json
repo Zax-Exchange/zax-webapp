@@ -55,7 +55,7 @@
   "app.general.minimum": "min",
   "app.general.maximum": "max",
   "app.general.months": "{month} month(s)",
-  
+  "app.general.resend": "Resend",
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",
   "app.general.purchaseOrder": "Purchase Order",
@@ -131,10 +131,11 @@
   "app.signup.createNewCompany": "Create a new company",
   "app.signup.finishAndPay": "Confirm Upgrade",
   "app.signup.pricingDetail": "Pricing Detail",
-  "app.signup.invalidToken": "Your token is either invalid or has expired. Please contact your company admins to re-send invitation link.",
+  "app.signup.invalidToken.signup": "Your token is either invalid or has expired. Click the button below to resend your account setup link.",
+  "app.signup.invalidToken.signup.linkSent": "Account setup link sent!",
   "app.signup.checkoutSuccess": "Company created successfully! Please check your email and create your account!",
-  "app.signup.user.email.helperText": "This email will your username for login.",
-
+  "app.signup.user.email.helperText": "This email will used as username and for password recovery.",
+  "app.signup.error.moreThanOneUser": "You have registered already. Please use the login form to login your account.",
   "app.signup.step.email": "Email",
   "app.signup.step.companyInfo": "Company Info",
   "app.signup.step.selectPlan": "Select Plan",

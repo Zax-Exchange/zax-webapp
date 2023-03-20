@@ -17,7 +17,7 @@ import { useCreateUserMutation } from "../gql/create/user/user.generated";
 import useCustomSnackbar from "../Utils/CustomSnackbar";
 import { useIntl } from "react-intl";
 import { validate } from "email-validator";
-import InvalidToken from "./InvalidToken";
+import InvalidToken from "./SignupInvalidToken";
 import {
   useCheckSignupJwtTokenLazyQuery,
   useCheckSignupJwtTokenQuery,
@@ -75,6 +75,14 @@ const UserSignup = () => {
     if (createUserError) {
       if (createUserError.message.includes("duplicate email")) {
         setEmailTakenError(true);
+      } else if (createUserError.message === "restricted for free plan") {
+        setSnackbar({
+          message: intl.formatMessage({
+            id: "app.signup.error.moreThanOneUser",
+          }),
+          severity: "error",
+        });
+        setSnackbarOpen(true);
       } else {
         setSnackbar({
           message: intl.formatMessage({ id: "app.general.network.error" }),

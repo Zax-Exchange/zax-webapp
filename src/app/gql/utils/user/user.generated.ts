@@ -11,6 +11,13 @@ export type CheckUserEmailQueryVariables = Types.Exact<{
 
 export type CheckUserEmailQuery = { __typename?: 'Query', checkUserEmail: boolean };
 
+export type ResendAccountSetupLinkMutationVariables = Types.Exact<{
+  data: Types.ResendAccountSetupLinkInput;
+}>;
+
+
+export type ResendAccountSetupLinkMutation = { __typename?: 'Mutation', resendAccountSetupLink: boolean };
+
 export type LoginQueryVariables = Types.Exact<{
   data: Types.UserLoginInput;
 }>;
@@ -44,7 +51,7 @@ export type ResetPasswordMutationVariables = Types.Exact<{
 }>;
 
 
-export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword?: boolean | null };
+export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
 
 export type CheckSignupJwtTokenQueryVariables = Types.Exact<{
   data: Types.CheckSignupJwtTokenInput;
@@ -87,6 +94,37 @@ export function useCheckUserEmailLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type CheckUserEmailQueryHookResult = ReturnType<typeof useCheckUserEmailQuery>;
 export type CheckUserEmailLazyQueryHookResult = ReturnType<typeof useCheckUserEmailLazyQuery>;
 export type CheckUserEmailQueryResult = Apollo.QueryResult<CheckUserEmailQuery, CheckUserEmailQueryVariables>;
+export const ResendAccountSetupLinkDocument = gql`
+    mutation resendAccountSetupLink($data: ResendAccountSetupLinkInput!) {
+  resendAccountSetupLink(data: $data)
+}
+    `;
+export type ResendAccountSetupLinkMutationFn = Apollo.MutationFunction<ResendAccountSetupLinkMutation, ResendAccountSetupLinkMutationVariables>;
+
+/**
+ * __useResendAccountSetupLinkMutation__
+ *
+ * To run a mutation, you first call `useResendAccountSetupLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendAccountSetupLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendAccountSetupLinkMutation, { data, loading, error }] = useResendAccountSetupLinkMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useResendAccountSetupLinkMutation(baseOptions?: Apollo.MutationHookOptions<ResendAccountSetupLinkMutation, ResendAccountSetupLinkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResendAccountSetupLinkMutation, ResendAccountSetupLinkMutationVariables>(ResendAccountSetupLinkDocument, options);
+      }
+export type ResendAccountSetupLinkMutationHookResult = ReturnType<typeof useResendAccountSetupLinkMutation>;
+export type ResendAccountSetupLinkMutationResult = Apollo.MutationResult<ResendAccountSetupLinkMutation>;
+export type ResendAccountSetupLinkMutationOptions = Apollo.BaseMutationOptions<ResendAccountSetupLinkMutation, ResendAccountSetupLinkMutationVariables>;
 export const LoginDocument = gql`
     query login($data: UserLoginInput!) {
   login(data: $data) {

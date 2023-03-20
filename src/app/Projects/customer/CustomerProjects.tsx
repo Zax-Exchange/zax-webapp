@@ -19,6 +19,7 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetCustomerProjectsQuery } from "../../gql/get/customer/customer.generated";
 import { useIntl } from "react-intl";
 import { CustomerProjectOverview } from "../../../generated/graphql";
+import CustomerUpgradeBanner from "../../Banner/CustomerUpgradeBanner";
 
 const CustomerProjects = () => {
   const intl = useIntl();
@@ -138,6 +139,7 @@ const CustomerProjects = () => {
   if (getCustomerProjectsData) {
     return (
       <Container sx={{ position: "relative" }}>
+        <CustomerUpgradeBanner />
         {isProjectPageLoading && <FullScreenLoading />}
         <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
           <Typography variant="subtitle2">

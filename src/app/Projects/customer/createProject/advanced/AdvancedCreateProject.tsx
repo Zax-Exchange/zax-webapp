@@ -42,6 +42,7 @@ import {
 } from "../../../../../analytics/constants";
 import ProjectSpecInput from "../common/ProjectSpecInput";
 import mixpanel from "mixpanel-browser";
+import CustomerUpgradeBanner from "../../../../Banner/CustomerUpgradeBanner";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -356,6 +357,10 @@ const AdvancedCreateProject = () => {
 
   return (
     <>
+      {createProjectError &&
+        createProjectError.message === "restricted for free plan" && (
+          <CustomerUpgradeBanner />
+        )}
       {isLoading && <FullScreenLoading />}
       <Paper sx={{ padding: 5 }}>
         <Box display="flex" mb={4}>

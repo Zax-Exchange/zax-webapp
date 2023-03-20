@@ -73,6 +73,7 @@ const GuidedReview = ({
   setProjectData,
   setActiveStep,
   setProjectCreated,
+  setProjectLimitReachedError,
   additionalComponents,
   additionalComponentsDesigns,
   componentsData,
@@ -84,6 +85,7 @@ const GuidedReview = ({
   setActiveStep: Dispatch<SetStateAction<number>>;
   setProjectData: Dispatch<SetStateAction<CreateProjectInput>>;
   setProjectCreated: Dispatch<SetStateAction<boolean>>;
+  setProjectLimitReachedError: Dispatch<SetStateAction<boolean>>;
   additionalComponents: CreateProjectComponentInput[];
   additionalComponentsDesigns: ProjectDesign[][];
   componentsData: GuidedCreateComponentsDataContainer;
@@ -108,6 +110,7 @@ const GuidedReview = ({
         createProjectError &&
         createProjectError.message === "restricted for free plan"
       ) {
+        setProjectLimitReachedError(true);
         setSnackbar({
           message: intl.formatMessage({
             id: "app.customer.projects.error.reachedFreePlanLimit",

@@ -6,6 +6,11 @@ const CHECK_USER_EMAIL = gql`
   }
 `;
 
+const RESEND_ACCOUNT_SETUP_LINK = gql`
+  mutation resendAccountSetupLink($data: ResendAccountSetupLinkInput!) {
+    resendAccountSetupLink(data: $data)
+  }
+`
 const USER_LOGIN = gql`
   query login($data: UserLoginInput!) {
     login(data: $data) {
