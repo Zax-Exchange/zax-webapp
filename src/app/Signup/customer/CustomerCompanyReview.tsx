@@ -90,7 +90,7 @@ const CustomerCompanyReview = ({
             </ListItem>
           )}
 
-          <ListItem>
+          {/* <ListItem>
             <Typography variant="subtitle2">
               {intl.formatMessage({ id: "app.signup.pricingDetail" })}
             </Typography>
@@ -98,7 +98,7 @@ const CustomerCompanyReview = ({
               ${subscriptionInfo.price} /{" "}
               {intl.formatMessage({ id: "app.general.month" })}
             </Typography>
-          </ListItem>
+          </ListItem> */}
 
           {/* <ListItem>
             <Typography variant="subtitle2">Selected Plan</Typography>

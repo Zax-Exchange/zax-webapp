@@ -37,6 +37,8 @@ import { useIntl } from "react-intl";
 import { envConfig as config } from "../../Config/EnvConfig";
 import { GENERAL_ROUTES } from "../../constants/loggedInRoutes";
 import { LOGGED_OUT_ROUTES } from "../../constants/loggedOutRoutes";
+import { useCreateCustomerMutation } from "../../gql/create/customer/customer.generated";
+import mixpanel from "mixpanel-browser";
 
 const stripePromise = loadStripe(config.stripePublishableKey);
 
@@ -89,15 +91,15 @@ const CustomerSignup = () => {
     intl.formatMessage({
       id: "app.signup.step.companyInfo",
     }),
-    intl.formatMessage({
-      id: "app.signup.step.selectPlan",
-    }),
+    // intl.formatMessage({
+    //   id: "app.signup.step.selectPlan",
+    // }),
     intl.formatMessage({
       id: "app.signup.step.review",
     }),
-    intl.formatMessage({
-      id: "app.signup.step.payment",
-    }),
+    // intl.formatMessage({
+    //   id: "app.signup.step.payment",
+    // }),
   ];
 
   const [
@@ -116,6 +118,8 @@ const CustomerSignup = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [shouldDisableNext, setShouldDisableNext] = useState(true);
+  const [createCustomerMutation, { loading: createCustomerLoading }] =
+    useCreateCustomerMutation();
 
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [subscriptionInfo, setSubscriptionInfo] = useState({
@@ -154,15 +158,15 @@ const CustomerSignup = () => {
       case CustomerSignupPage.COMPANY_INFO_PAGE:
         setActiveStep(1);
         break;
-      case CustomerSignupPage.PLAN_SELECTION_PAGE:
+      // case CustomerSignupPage.PLAN_SELECTION_PAGE:
+      //   setActiveStep(2);
+      //   break;
+      case CustomerSignupPage.REVIEW_PAGE:
         setActiveStep(2);
         break;
-      case CustomerSignupPage.REVIEW_PAGE:
-        setActiveStep(3);
-        break;
-      case CustomerSignupPage.PAYMENT_PAGE:
-        setActiveStep(4);
-        break;
+      // case CustomerSignupPage.PAYMENT_PAGE:
+      //   setActiveStep(4);
+      //   break;
     }
   }, [currentPage]);
   const shouldShowStepper = () => {
@@ -224,31 +228,56 @@ const CustomerSignup = () => {
         ...values,
         name: values.name.replace(/\s+/g, " ").trim(),
       });
-      setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
-    } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
       setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
-    } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
-      // TODO: since customer plan contains only one plan, refactor this so that we don't create so many new customer payment intents in stripe
+    }
+    // else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
+    //   setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
+    // }
+    else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
       try {
-        const { data } = await createStripeCustomerInStripe({
+        await createCustomerMutation({
           variables: {
             data: {
-              email: values.userEmail,
-              priceId: subscriptionInfo.priceId,
+              ...values,
+              stripeCustomerInfo: {
+                subscriptionId: "",
+                customerId: "",
+              },
             },
           },
+          fetchPolicy: "no-cache",
         });
-        setStripePaymentIntent({
-          ...data!.createStripeCustomerInStripeForCustomer,
+        mixpanel.track("sign up", {
+          isVendor: false,
         });
-        setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
-      } catch (error: any) {
+        setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
+      } catch (error) {
         setSnackbar({
           severity: "error",
-          message: error.message,
+          message: intl.formatMessage({ id: "app.general.network.error" }),
         });
         setSnackbarOpen(true);
       }
+      // try {
+      //   const { data } = await createStripeCustomerInStripe({
+      //     variables: {
+      //       data: {
+      //         email: values.userEmail,
+      //         priceId: subscriptionInfo.priceId,
+      //       },
+      //     },
+      //   });
+      //   setStripePaymentIntent({
+      //     ...data!.createStripeCustomerInStripeForCustomer,
+      //   });
+      //   setCurrentPage(CustomerSignupPage.PAYMENT_PAGE);
+      // } catch (error: any) {
+      // setSnackbar({
+      //   severity: "error",
+      //   message: error.message,
+      // });
+      // setSnackbarOpen(true);
+      // }
     }
   };
 
@@ -266,20 +295,20 @@ const CustomerSignup = () => {
       case CustomerSignupPage.COMPANY_INFO_PAGE:
         setCurrentPage(CustomerSignupPage.EMAIL_PAGE);
         break;
-      case CustomerSignupPage.PLAN_SELECTION_PAGE:
+      // case CustomerSignupPage.PLAN_SELECTION_PAGE:
+      //   setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
+      //   break;
+      case CustomerSignupPage.REVIEW_PAGE:
+        // setSubscriptionInfo({
+        //   price: "",
+        //   priceId: "",
+        //   billingFrequency: "",
+        // });
         setCurrentPage(CustomerSignupPage.COMPANY_INFO_PAGE);
         break;
-      case CustomerSignupPage.REVIEW_PAGE:
-        setSubscriptionInfo({
-          price: "",
-          priceId: "",
-          billingFrequency: "",
-        });
-        setCurrentPage(CustomerSignupPage.PLAN_SELECTION_PAGE);
-        break;
-      case CustomerSignupPage.PAYMENT_PAGE:
-        setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
-        break;
+      // case CustomerSignupPage.PAYMENT_PAGE:
+      //   setCurrentPage(CustomerSignupPage.REVIEW_PAGE);
+      //   break;
       default:
         return;
     }
@@ -309,13 +338,13 @@ const CustomerSignup = () => {
     // ) {
     //   buttons = [backButton];
     // } else
-    if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
-      buttons = [backButton, nextButton];
-    } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
-      buttons = [backButton];
-    } else if (currentPage !== CustomerSignupPage.PAYMENT_PAGE) {
-      buttons = [backButton, nextButton];
-    }
+    // if (currentPage === CustomerSignupPage.EMAIL_PAGE) {
+    //   buttons = [backButton, nextButton];
+    // } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
+    //   buttons = [backButton];
+    // } else if (currentPage !== CustomerSignupPage.PAYMENT_PAGE) {
+    // }
+    buttons = [backButton, nextButton];
 
     return (
       <Container
@@ -393,33 +422,35 @@ const CustomerSignup = () => {
           </div>
         </Fade>
       );
-    } else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
-      return (
-        <Fade in={true} mountOnEnter unmountOnExit appear>
-          <div>
-            <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
-              {intl.formatMessage({ id: "app.signup.pickAPlan" })}
-            </Typography>
-            <Stack direction="row" justifyContent="space-around">
-              {getAllPlansData &&
-                getAllPlansData.getAllPlans &&
-                getAllPlansData!.getAllPlans!.map((planData) => {
-                  return (
-                    <CustomerPlanSelection
-                      planData={planData}
-                      selectPlan={selectPlan}
-                      setSubscriptionInfo={setSubscriptionInfo}
-                      nextPage={nextPage}
-                    />
-                  );
-                })}
-            </Stack>
-            {renderNavigationButtons(true)}
-          </div>
-        </Fade>
-      );
-      // TODO: add  && meta.error === undefined to renderNavigationButtons
-    } else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
+    }
+    // else if (currentPage === CustomerSignupPage.PLAN_SELECTION_PAGE) {
+    //   return (
+    //     <Fade in={true} mountOnEnter unmountOnExit appear>
+    //       <div>
+    //         <Typography variant="h6" sx={{ marginBottom: 4 }} textAlign="left">
+    //           {intl.formatMessage({ id: "app.signup.pickAPlan" })}
+    //         </Typography>
+    //         <Stack direction="row" justifyContent="space-around">
+    //           {getAllPlansData &&
+    //             getAllPlansData.getAllPlans &&
+    //             getAllPlansData!.getAllPlans!.map((planData) => {
+    //               return (
+    //                 <CustomerPlanSelection
+    //                   planData={planData}
+    //                   selectPlan={selectPlan}
+    //                   setSubscriptionInfo={setSubscriptionInfo}
+    //                   nextPage={nextPage}
+    //                 />
+    //               );
+    //             })}
+    //         </Stack>
+    //         {renderNavigationButtons(true)}
+    //       </div>
+    //     </Fade>
+    //   );
+    //   // TODO: add  && meta.error === undefined to renderNavigationButtons
+    // }
+    else if (currentPage === CustomerSignupPage.REVIEW_PAGE) {
       return (
         <>
           {getAllPlansData && (
@@ -432,29 +463,31 @@ const CustomerSignup = () => {
           {renderNavigationButtons(true)}
         </>
       );
-    } else if (currentPage === CustomerSignupPage.PAYMENT_PAGE) {
-      return (
-        <Elements
-          stripe={stripePromise}
-          options={{ clientSecret: stripePaymentIntent.clientSecret }}
-        >
-          <Typography
-            variant="subtitle2"
-            sx={{ marginBottom: 4 }}
-            textAlign="left"
-            fontSize="1.2em"
-          >
-            {intl.formatMessage({ id: "app.signup.completePayment" })}
-          </Typography>
-          <CustomerCheckout
-            setCurrentPage={setCurrentPage}
-            companyData={values}
-            stripePaymentIntent={stripePaymentIntent}
-            setIsLoading={setIsLoading}
-          />
-        </Elements>
-      );
-    } else if (currentPage === CustomerSignupPage.SUCCESS_PAGE) {
+    }
+    //  else if (currentPage === CustomerSignupPage.PAYMENT_PAGE) {
+    //   return (
+    // <Elements
+    //   stripe={stripePromise}
+    //   options={{ clientSecret: stripePaymentIntent.clientSecret }}
+    // >
+    //   <Typography
+    //     variant="subtitle2"
+    //     sx={{ marginBottom: 4 }}
+    //     textAlign="left"
+    //     fontSize="1.2em"
+    //   >
+    //     {intl.formatMessage({ id: "app.signup.completePayment" })}
+    //   </Typography>
+    //   <CustomerCheckout
+    //     setCurrentPage={setCurrentPage}
+    //     companyData={values}
+    //     stripePaymentIntent={stripePaymentIntent}
+    //     setIsLoading={setIsLoading}
+    //   />
+    // </Elements>
+    //   );
+    // }
+    else if (currentPage === CustomerSignupPage.SUCCESS_PAGE) {
       return <CheckoutSuccess />;
     }
   };
@@ -472,9 +505,9 @@ const CustomerSignup = () => {
           })}
         </Stepper>
       )}
-      {(createStripeCustomerInStripeLoading || isLoading) && (
-        <FullScreenLoading />
-      )}
+      {(createStripeCustomerInStripeLoading ||
+        isLoading ||
+        createCustomerLoading) && <FullScreenLoading />}
       <Paper sx={{ padding: 8, position: "relative" }}>
         {renderCompanySignupFlow()}
       </Paper>

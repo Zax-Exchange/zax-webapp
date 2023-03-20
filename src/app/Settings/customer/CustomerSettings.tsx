@@ -23,7 +23,7 @@ import React, { useEffect } from "react";
 import { useContext, useState } from "react";
 import { useIntl } from "react-intl";
 import { AuthContext } from "../../../context/AuthContext";
-import { UserPower } from "../../../generated/graphql";
+import { CompanyPlanType, UserPower } from "../../../generated/graphql";
 import ChangePassword from "../ChangePassword";
 import CustomerDeactivateUsers from "./CustomerDeactivateUsers";
 import CustomerManageInvitations from "../ManageInvitations";
@@ -33,6 +33,7 @@ import { openLink } from "../../Utils/openLink";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetStatementsLinkLazyQuery } from "../../gql/get/subscription/subscription.generated";
 import FullScreenLoading from "../../Utils/Loading";
+import { useGetCompanyPlanQuery } from "../../gql/get/company/company.generated";
 
 enum CUSTOMER_SETTINGS_ROUTE {
   CHANGE_PASSWORD = "CHANGE_PASSWORD",
@@ -95,6 +96,21 @@ const CustomerSettings = () => {
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
   const [expanded, setExpanded] = useState<string | boolean>("");
   const [settingView, setSettingView] = useState<null | JSX.Element>(null);
+
+  const { data: companyPlanData } = useGetCompanyPlanQuery({
+    variables: {
+      data: {
+        companyId: user!.companyId,
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
+
+  const isFreePlan =
+    companyPlanData &&
+    (!companyPlanData.getCompanyPlan ||
+      (companyPlanData.getCompanyPlan &&
+        companyPlanData.getCompanyPlan.planType === CompanyPlanType.Free));
 
   const [
     getStatements,
@@ -245,7 +261,7 @@ const CustomerSettings = () => {
                 </SettingsAccordion>
               )}
 
-              {isAdmin && (
+              {/* {isAdmin && (
                 <SettingsAccordion
                   expanded={expanded === "panel3"}
                   onChange={handleChange("panel3")}
@@ -312,9 +328,9 @@ const CustomerSettings = () => {
                     </Stack>
                   </AccordionDetails>
                 </SettingsAccordion>
-              )}
+              )} */}
 
-              {isAdmin && (
+              {isAdmin && companyPlanData && !isFreePlan && (
                 <SettingsAccordion
                   expanded={expanded === "panel4"}
                   onChange={handleChange("panel4")}

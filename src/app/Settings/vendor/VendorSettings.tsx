@@ -264,7 +264,7 @@ const VendorSettings = () => {
                 </SettingsAccordion>
               )}
 
-              {isAdmin && (
+              {/* {isAdmin && (
                 <SettingsAccordion
                   expanded={expanded === "panel3"}
                   onChange={handleChange("panel3")}
@@ -331,7 +331,7 @@ const VendorSettings = () => {
                     </Stack>
                   </AccordionDetails>
                 </SettingsAccordion>
-              )}
+              )} */}
 
               {/* {isAdmin && (
                 <SettingsAccordion

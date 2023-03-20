@@ -55,7 +55,7 @@
   "app.general.minimum": "min",
   "app.general.maximum": "max",
   "app.general.months": "{month} month(s)",
-
+  
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",
   "app.general.purchaseOrder": "Purchase Order",
@@ -72,6 +72,7 @@
   "app.general.button.login": "Login",
 
   "app.general.search": "Search",
+  "app.general.upgrade": "Upgrade Now",
 
   "app.routes.loggedOut.getStarted": "Get Started",
   "app.routes.loggedIn.home": "Home",
@@ -109,7 +110,7 @@
   "app.signup.companySignup.pageTitle": "Select Your Company Type",
   "app.signup.companySignup.asCustomer": "Sign-up as Customer",
   "app.signup.companySignup.asVendor": "Sign-up as Vendor",
-  "app.signup.billingEmail.helperText": "We will use this email to send billing & initial user sign up information.",
+  "app.signup.billingEmail.helperText": "We will use this email to send initial user sign up information.",
   "app.signup.billingEmail.pageTitle": "Enter Your Email",
   "app.signup.companyInfo.pageTitle": "Enter Your Company Information",
   "app.signup.companyInfo.contactEmail.helperText": "This will be a public email for your company and visible to other users within the platform. (You can use the same email as previous step.)",
@@ -128,7 +129,7 @@
   "app.signup.createAccount": "Create User Account",
   "app.signup.joinACompany": "Join a company",
   "app.signup.createNewCompany": "Create a new company",
-  "app.signup.finishAndPay": "Finish & Pay",
+  "app.signup.finishAndPay": "Confirm Upgrade",
   "app.signup.pricingDetail": "Pricing Detail",
   "app.signup.invalidToken": "Your token is either invalid or has expired. Please contact your company admins to re-send invitation link.",
   "app.signup.checkoutSuccess": "Company created successfully! Please check your email and create your account!",
@@ -249,8 +250,8 @@
 
 
   "app.company.attribute.companyName": "Company Name",
-  "app.company.attribute.contactEmail": "Contact Email",
-  "app.company.attribute.billingEmail": "Billing Email",
+  "app.company.attribute.contactEmail": "Company Contact Email",
+  "app.company.attribute.billingEmail": "Initial User Signup Info Email",
   "app.company.attribute.logo": "Logo",
   "app.company.attribute.phone": "Phone",
   "app.company.attribute.fax": "Fax",
@@ -371,7 +372,11 @@
   "app.versionHistory.removed": "Removed",
   "app.versionHistory.added": "Added",
 
+  "app.customer.upgradeToPremium": "Upgrade to Premium Plan with $20/month",
+  "app.customer.upgradeToPremium.complete": "Thank you for upgrading to our Premium Plan. You can manage your subscription and billing information in our Settings dashboard.",
+  "app.customer.upgradeBanner.text": "You're currently on a Free Plan. Upgrade to our Premium Plan now and enjoy unlimited storage and project creation for all your business needs.",
   "app.customer.projects.title": "Your Projects",
+  "app.customer.projects.noProjects": "You haven't created any project yet. Click new project to get started.",
   "app.customer.projects.sortBy": "Sort By",
   "app.customer.projects.sortBy.name": "Name",
   "app.customer.projects.sortBy.targetPrice": "Target Price",
@@ -381,6 +386,7 @@
   "app.customer.projects.componentsDetail": "Components Detail",
   "app.customer.projects.versionHistory": "Version History",
   "app.customer.projects.modal.delete.title": "Do you want to delete this project?",
+  "app.customer.projects.error.reachedFreePlanLimit": "You have reached the project limit for Free Plan. Please upgrade to Premium Plan before continuing.",
   "app.customer.createProject.configureProjectDetail": "Configure Project Detail",
   "app.customer.createProject.addComponent": "Add Component",
   "app.customer.createProject.removeComponent": "Remove Component",

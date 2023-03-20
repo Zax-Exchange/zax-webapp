@@ -104,10 +104,22 @@ const GuidedReview = ({
 
   useEffect(() => {
     if (createProjectError) {
-      setSnackbar({
-        message: intl.formatMessage({ id: "app.general.network.error" }),
-        severity: "error",
-      });
+      if (
+        createProjectError &&
+        createProjectError.message === "restricted for free plan"
+      ) {
+        setSnackbar({
+          message: intl.formatMessage({
+            id: "app.customer.projects.error.reachedFreePlanLimit",
+          }),
+          severity: "error",
+        });
+      } else {
+        setSnackbar({
+          message: intl.formatMessage({ id: "app.general.network.error" }),
+          severity: "error",
+        });
+      }
       setSnackbarOpen(true);
     }
   }, [createProjectError]);

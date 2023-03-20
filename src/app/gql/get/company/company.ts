@@ -12,20 +12,29 @@ ${USER_FRAGMENT}
 `;
 
 
-const GET_COMPANY_PLAN_DETAIL= gql`
-  query getCompanyPlanDetail($data: GetCompanyPlanDetailInput!) {
-    getCompanyPlanDetail(data: $data) {
-      tier
-      price
-      billingFrequency
-      memberSince
-      subscriptionStartDate
-      subscriptionEndDate
-      trialStartDate
-      trialEndDate
+// const GET_COMPANY_PLAN_DETAIL= gql`
+//   query getCompanyPlanDetail($data: GetCompanyPlanDetailInput!) {
+//     getCompanyPlanDetail(data: $data) {
+//       tier
+//       price
+//       billingFrequency
+//       memberSince
+//       subscriptionStartDate
+//       subscriptionEndDate
+//       trialStartDate
+//       trialEndDate
+//     }
+//   }
+// `;
+
+const GET_COMPANY_PLAN_TYPE = gql`
+  query getCompanyPlan($data: GetCompanyPlanInput!) {
+    getCompanyPlan(data: $data) {
+      planType
     }
   }
 `;
+
 
 
 const GET_ALL_PLANS = gql`

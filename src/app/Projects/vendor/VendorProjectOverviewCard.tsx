@@ -160,7 +160,7 @@ const VendorProjectOverviewCard = ({
         >
           <MoreIcon id="123" />
         </IconButton>
-        <Menu
+        {/* <Menu
           id="long-menu"
           anchorEl={projectMenuAnchor}
           open={projectMenuOpen}
@@ -183,7 +183,7 @@ const VendorProjectOverviewCard = ({
               {intl.formatMessage({ id: "app.general.share" })}
             </MenuItem>
           </MenuList>
-        </Menu>
+        </Menu> */}
 
         <Container
           sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}

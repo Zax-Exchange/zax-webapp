@@ -95,6 +95,7 @@ export type CompanyPlan = {
   companyId: Scalars['String'];
   id: Scalars['String'];
   planId: Scalars['String'];
+  planType: CompanyPlanType;
 };
 
 export type CompanyPlanDetail = {
@@ -105,9 +106,12 @@ export type CompanyPlanDetail = {
   subscriptionEndDate: Scalars['String'];
   subscriptionStartDate: Scalars['String'];
   tier: PlanTier;
-  trialEndDate?: Maybe<Scalars['String']>;
-  trialStartDate?: Maybe<Scalars['String']>;
 };
+
+export enum CompanyPlanType {
+  Free = 'FREE',
+  Paid = 'PAID'
+}
 
 export enum CompanySize {
   L = 'L',
@@ -234,7 +238,7 @@ export type CreatePurchaseOrderInput = {
 };
 
 export type CreateStripeCustomerInStripeForCustomerInput = {
-  email: Scalars['String'];
+  companyId: Scalars['String'];
   priceId: Scalars['String'];
 };
 
@@ -455,6 +459,10 @@ export type GetCompanyPlanDetailInput = {
   companyId: Scalars['String'];
 };
 
+export type GetCompanyPlanInput = {
+  companyId: Scalars['String'];
+};
+
 export type GetCustomerDetailInput = {
   companyId: Scalars['String'];
 };
@@ -638,6 +646,7 @@ export type Mutation = {
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
   updateCustomerInfo: Scalars['Boolean'];
+  updateCustomerUpgradeToPaidPlan: Scalars['Boolean'];
   updateGuestProject: Scalars['Boolean'];
   updateProject: Scalars['Boolean'];
   updateProjectBid: Scalars['Boolean'];
@@ -834,6 +843,11 @@ export type MutationUpdateCompanyStatusArgs = {
 
 export type MutationUpdateCustomerInfoArgs = {
   data: UpdateCustomerInfoInput;
+};
+
+
+export type MutationUpdateCustomerUpgradeToPaidPlanArgs = {
+  data: UpdateCustomerUpgradeToPaidPlanInput;
 };
 
 
@@ -1315,7 +1329,8 @@ export type Query = {
   getAllUsersWithinCompany: Array<GenericUser>;
   getCategory?: Maybe<Category>;
   getCompanyDetail?: Maybe<CompanyDetail>;
-  getCompanyPlanDetail: CompanyPlanDetail;
+  getCompanyPlan?: Maybe<CompanyPlan>;
+  getCompanyPlanDetail?: Maybe<CompanyPlanDetail>;
   getCustomerDetail: CustomerDetail;
   getCustomerPos: Array<CustomerPo>;
   getCustomerProject: CustomerProject;
@@ -1388,6 +1403,11 @@ export type QueryGetCategoryArgs = {
 
 export type QueryGetCompanyDetailArgs = {
   data?: InputMaybe<GetCompanyDetailInput>;
+};
+
+
+export type QueryGetCompanyPlanArgs = {
+  data: GetCompanyPlanInput;
 };
 
 
@@ -1657,6 +1677,10 @@ export type UpdateCustomerInfoInput = {
   logo?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   phone: Scalars['String'];
+};
+
+export type UpdateCustomerUpgradeToPaidPlanInput = {
+  companyId: Scalars['String'];
 };
 
 export type UpdateGuestProjectInput = {

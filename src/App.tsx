@@ -44,6 +44,7 @@ import Footer from "./app/Footer/Footer";
 import Feedback from "./app/Feedback/Feedback";
 import ReactGA from "react-ga4";
 import mixpanel from "mixpanel-browser";
+import CustomerUpgradeBanner from "./app/Banner/CustomerUpgradeBanner";
 
 const theme = createTheme({
   palette: {
@@ -207,6 +208,9 @@ function App() {
             <CustomSnackbar />
             <Nav />
             <Container maxWidth="xl" sx={{ mb: 12, pt: 12 }}>
+              <Container>
+                {!!user && !user.isVendor && <CustomerUpgradeBanner />}
+              </Container>
               <Routes>
                 {/* START COMMON PATH */}
                 <Route

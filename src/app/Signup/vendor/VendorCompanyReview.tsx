@@ -152,7 +152,7 @@ const VendorCompanyReview = ({
             </Box>
           </ListItem>
 
-          {plan && (
+          {/* {plan && (
             <ListItem>
               <Typography variant="subtitle2">
                 {intl.formatMessage({ id: "app.signup.pricingDetail" })}
@@ -162,7 +162,7 @@ const VendorCompanyReview = ({
                 {intl.formatMessage({ id: "app.general.month" })}
               </Typography>
             </ListItem>
-          )}
+          )} */}
         </List>
       </Container>
     </>

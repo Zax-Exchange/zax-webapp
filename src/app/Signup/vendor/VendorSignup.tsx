@@ -350,23 +350,25 @@ const VendorSignup = () => {
     //   setCurrentPage(VendorSignupPage.REVIEW_PAGE);
     // }
     else if (currentPage === VendorSignupPage.REVIEW_PAGE) {
-      await createVendorMutation({
-        variables: {
-          data: {
-            ...values,
-            leadTime: parseInt(values.leadTime),
-            stripeCustomerInfo: {
-              subscriptionId: "",
-              customerId: "",
+      try {
+        await createVendorMutation({
+          variables: {
+            data: {
+              ...values,
+              leadTime: parseInt(values.leadTime),
+              stripeCustomerInfo: {
+                subscriptionId: "",
+                customerId: "",
+              },
             },
           },
-        },
-        fetchPolicy: "no-cache",
-      });
-      mixpanel.track("sign up", {
-        isVendor: true,
-      });
-      setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
+          fetchPolicy: "no-cache",
+        });
+        mixpanel.track("sign up", {
+          isVendor: true,
+        });
+        setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
+      } catch (error) {}
       // try {
       //   const { data } = await createStripeCustomerMutation({
       //     variables: {
@@ -448,18 +450,18 @@ const VendorSignup = () => {
     // ) {
     //   buttons = [backButton];
     // } else
-    if (currentPage === VendorSignupPage.EMAIL_PAGE) {
-      buttons = [backButton, nextButton];
-    }
+    // if (currentPage === VendorSignupPage.EMAIL_PAGE) {
+    //   buttons = [backButton, nextButton];
+    // }
     // else if (
     //   currentPage === VendorSignupPage.PLAN_SELECTION_PAGE ||
     //   currentPage === VendorSignupPage.COMPANY_SIZE_PAGE
     // ) {
     //   buttons = [backButton];
     // }
-    else {
-      buttons = [backButton, nextButton];
-    }
+    // else {
+    // }
+    buttons = [backButton, nextButton];
     return (
       <Container
         disableGutters

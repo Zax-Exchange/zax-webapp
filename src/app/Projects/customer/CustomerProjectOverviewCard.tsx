@@ -220,12 +220,12 @@ const CustomerProjectOverviewCard = ({
               {intl.formatMessage({ id: "app.general.viewDetail" })}
             </MenuItem>
 
-            <MenuItem
+            {/* <MenuItem
               onClick={() => projectMenuOnClick("share")}
               disabled={!canShare()}
             >
               {intl.formatMessage({ id: "app.general.share" })}
-            </MenuItem>
+            </MenuItem> */}
 
             <MenuItem
               onClick={() => projectMenuOnClick("delete")}

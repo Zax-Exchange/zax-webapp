@@ -176,6 +176,11 @@ const CustomerProjects = () => {
           </MenuList>
         </Menu>
 
+        {!projects.length && (
+          <Typography variant="caption" color="text.secondary">
+            {intl.formatMessage({ id: "app.customer.projects.noProjects" })}
+          </Typography>
+        )}
         <Fade in={true}>
           <Grid container spacing={3} className="user-projects-inner-container">
             {projects.map((project, i) => {

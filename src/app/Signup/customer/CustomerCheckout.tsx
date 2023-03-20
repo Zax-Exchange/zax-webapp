@@ -1,10 +1,11 @@
-import { Button, Container } from "@mui/material";
+import { Box, Button, Container } from "@mui/material";
 import {
   useStripe,
   useElements,
   PaymentElement,
+  AddressElement,
 } from "@stripe/react-stripe-js";
-import React from "react";
+import React, { useContext } from "react";
 import { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { StripePaymentIntent } from "../../../generated/graphql";
@@ -13,25 +14,42 @@ import { useCreateCustomerMutation } from "../../gql/create/customer/customer.ge
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { CustomerSignupData, CustomerSignupPage } from "./CustomerSignup";
 import mixpanel from "mixpanel-browser";
+import { LoadingButton } from "@mui/lab";
+import { useUpdateCustomerUpgradeToPaidPlanMutation } from "../../gql/update/subscription/subscription.generated";
+import { AuthContext } from "../../../context/AuthContext";
 
 const CustomerCheckout = ({
-  setCurrentPage,
-  setIsLoading,
-  companyData,
+  // setCurrentPage,
+  // setIsLoading,
+  // companyData,
   stripePaymentIntent,
+  setCheckoutOpen,
+  companyPlanRefetch,
+  setPaymentSuccess,
 }: {
-  setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  companyData: CustomerSignupData;
+  // setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
+  // setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  // companyData: CustomerSignupData;
   stripePaymentIntent: StripePaymentIntent;
+  setCheckoutOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  companyPlanRefetch: () => void;
+  setPaymentSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const { user } = useContext(AuthContext);
+
   const intl = useIntl();
   const stripe = useStripe();
   const elements = useElements();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const [createCustomerMutation] = useCreateCustomerMutation();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [
+    updateCustomerPlan,
+    { loading: updateCustomerPlanLoading, error: updateCustomerPlanError },
+  ] = useUpdateCustomerUpgradeToPaidPlanMutation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -43,49 +61,49 @@ const CustomerCheckout = ({
     }
   }, [stripe, elements]);
 
-  useEffect(() => {
-    if (paymentSuccess) {
-      createCustomer();
-    }
-  }, [paymentSuccess]);
+  // useEffect(() => {
+  //   if (paymentSuccess) {
+  //     createCustomer();
+  //   }
+  // }, [paymentSuccess]);
 
-  const createCustomer = async () => {
-    if (paymentSuccess) {
-      try {
-        setIsLoading(true);
-        await createCustomerMutation({
-          variables: {
-            data: {
-              ...companyData,
-              stripeCustomerInfo: {
-                subscriptionId: stripePaymentIntent.subscriptionId,
-                customerId: stripePaymentIntent.customerId,
-              },
-            },
-          },
-          fetchPolicy: "no-cache",
-        });
-        mixpanel.track("sign up", {
-          isVendor: false,
-        });
-        setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
-      } catch (error) {
-        setSnackbar({
-          severity: "error",
-          message: intl.formatMessage({ id: "app.general.network.error" }),
-        });
-        setSnackbarOpen(true);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
+  // const createCustomer = async () => {
+  //   if (paymentSuccess) {
+  //     try {
+  //       setIsLoading(true);
+  //       await createCustomerMutation({
+  //         variables: {
+  //           data: {
+  //             ...companyData,
+  //             stripeCustomerInfo: {
+  //               subscriptionId: stripePaymentIntent.subscriptionId,
+  //               customerId: stripePaymentIntent.customerId,
+  //             },
+  //           },
+  //         },
+  //         fetchPolicy: "no-cache",
+  //       });
+  //       mixpanel.track("sign up", {
+  //         isVendor: false,
+  //       });
+  //       setCurrentPage(CustomerSignupPage.SUCCESS_PAGE);
+  //     } catch (error) {
+  //       setSnackbar({
+  //         severity: "error",
+  //         message: intl.formatMessage({ id: "app.general.network.error" }),
+  //       });
+  //       setSnackbarOpen(true);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  // };
 
   const finishPayment = async () => {
     try {
       // TODO: review this to make it more robust (should guarantee company and payment are both successful)
       setIsLoading(true);
-      if (stripe && elements && !paymentSuccess) {
+      if (stripe && elements) {
         const { error } = await stripe.confirmPayment({
           elements,
           redirect: "if_required",
@@ -94,11 +112,20 @@ const CustomerCheckout = ({
         if (error) {
           throw error;
         } else {
+          await updateCustomerPlan({
+            variables: {
+              data: {
+                companyId: user!.companyId,
+              },
+            },
+          });
+          companyPlanRefetch();
           setPaymentSuccess(true);
         }
-      } else if (paymentSuccess) {
-        await createCustomer();
       }
+      //  else if (paymentSuccess) {
+      //   await createCustomer();
+      // }
     } catch (error: any) {
       let message = intl.formatMessage({ id: "app.general.network.error" });
       if (error.type === "card_error") {
@@ -116,28 +143,34 @@ const CustomerCheckout = ({
 
   return (
     <>
+      {/* <AddressElement
+        options={{
+          mode: "billing",
+        }}
+      />
+      <Box mt={4}>
+      </Box> */}
       <PaymentElement />
-
       <Container
-        disableGutters
         sx={{
           display: "flex",
           justifyContent: "flex-end",
-          gap: 4,
-          position: "absolute",
-          right: 24,
-          bottom: 12,
+          mt: 4,
         }}
       >
-        <Button
+        {/* <Button
           variant="outlined"
           onClick={() => setCurrentPage(CustomerSignupPage.REVIEW_PAGE)}
         >
           {intl.formatMessage({ id: "app.general.back" })}
-        </Button>
-        <Button variant="contained" onClick={finishPayment}>
+        </Button> */}
+        <LoadingButton
+          loading={isLoading}
+          variant="contained"
+          onClick={finishPayment}
+        >
           {intl.formatMessage({ id: "app.signup.finishAndPay" })}
-        </Button>
+        </LoadingButton>
       </Container>
     </>
   );
