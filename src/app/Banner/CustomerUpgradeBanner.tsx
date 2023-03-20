@@ -96,7 +96,7 @@ const CustomerUpgradeBanner = () => {
             companyId: user!.companyId,
             priceId:
               process.env.NODE_ENV! === "production"
-                ? "price_1MmlW3EZqkVG9UR3xFjBhBdO"
+                ? "price_1MnY2yEZqkVG9UR3fNKtMR6n"
                 : "price_1MmnCoEZqkVG9UR39D7Fu8kF",
           },
         },
