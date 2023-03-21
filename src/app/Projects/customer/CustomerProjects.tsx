@@ -139,7 +139,6 @@ const CustomerProjects = () => {
   if (getCustomerProjectsData) {
     return (
       <Container sx={{ position: "relative" }}>
-        <CustomerUpgradeBanner />
         {isProjectPageLoading && <FullScreenLoading />}
         <Box display="flex" justifyContent="space-between" sx={{ mb: 2 }}>
           <Typography variant="subtitle2">

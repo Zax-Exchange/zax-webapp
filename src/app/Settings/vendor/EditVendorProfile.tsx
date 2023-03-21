@@ -86,7 +86,7 @@ const EditVendorProfile = () => {
         phone,
         logo,
         country,
-        companyUrl,
+        companyUrl: companyUrl || "https://",
         fax,
         leadTime,
         locations,
@@ -123,6 +123,13 @@ const EditVendorProfile = () => {
         break;
       case "name":
         isAllowed = isValidAlphanumeric(val);
+        break;
+      case "companyUrl":
+        if (val.substring(0, 8) !== "https://") {
+          isAllowed = false;
+        } else {
+          isAllowed = true;
+        }
         break;
       default:
         break;

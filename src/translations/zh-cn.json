@@ -133,7 +133,7 @@
   "app.signup.pricingDetail": "详细费用",
   "app.signup.invalidToken.signup": "您的令牌不合法或已失效，请点击下面的按钮来重新发送链接。",
   "app.signup.invalidToken.signup.linkSent": "链接已发送！",
-  "app.signup.checkoutSuccess": "企业创建成功！请查看您的邮箱并点击您的账号创建链接。",
+  "app.signup.checkoutSuccess": "企业创建成功！请查看您的邮箱并点击您的账号创建链接。若您没收到我们的邮件，请查看您的垃圾邮箱。",
   "app.signup.user.email.helperText": "此邮箱将做为您的登陆用户名。",
   "app.signup.error.moreThanOneUser": "您的账号已被创建，请至登入页面登入您的账号。",
 

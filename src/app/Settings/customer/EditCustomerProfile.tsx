@@ -63,7 +63,7 @@ const EditCustomerProfile = () => {
         phone,
         logo,
         country,
-        companyUrl,
+        companyUrl: companyUrl || "https://",
         fax,
       });
     }
@@ -90,6 +90,13 @@ const EditCustomerProfile = () => {
         break;
       case "name":
         isAllowed = isValidAlphanumeric(val);
+        break;
+      case "companyUrl":
+        if (val.substring(0, 8) !== "https://") {
+          isAllowed = false;
+        } else {
+          isAllowed = true;
+        }
         break;
       default:
         break;

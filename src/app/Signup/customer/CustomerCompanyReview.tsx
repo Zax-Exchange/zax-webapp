@@ -68,7 +68,7 @@ const CustomerCompanyReview = ({
             </Typography>
             <Typography variant="caption">{values.country}</Typography>
           </ListItem>
-          {values.companyUrl && (
+          {values.companyUrl !== "https://" && (
             <ListItem>
               <Typography variant="subtitle2">
                 {intl.formatMessage({

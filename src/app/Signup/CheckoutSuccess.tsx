@@ -12,7 +12,7 @@ const CheckoutSuccess = () => {
         <CheckCircle color="success" fontSize="large" />
       </Box>
       <Box>
-        <Typography variant="subtitle2">
+        <Typography variant="caption" sx={{ whiteSpace: "pre-line" }}>
           {intl.formatMessage({ id: "app.signup.checkoutSuccess" })}
         </Typography>
       </Box>
