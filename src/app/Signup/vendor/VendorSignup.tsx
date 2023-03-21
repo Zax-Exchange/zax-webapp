@@ -362,6 +362,8 @@ const VendorSignup = () => {
           variables: {
             data: {
               ...values,
+              companyUrl:
+                values.companyUrl === "https://" ? "" : values.companyUrl,
               leadTime: parseInt(values.leadTime),
               stripeCustomerInfo: {
                 subscriptionId: "",

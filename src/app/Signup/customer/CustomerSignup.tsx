@@ -246,6 +246,8 @@ const CustomerSignup = () => {
           variables: {
             data: {
               ...values,
+              companyUrl:
+                values.companyUrl === "https://" ? "" : values.companyUrl,
               stripeCustomerInfo: {
                 subscriptionId: "",
                 customerId: "",
