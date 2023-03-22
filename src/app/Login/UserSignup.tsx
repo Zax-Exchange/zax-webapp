@@ -24,8 +24,6 @@ import {
 } from "../gql/utils/user/user.generated";
 import { LoadingButton } from "@mui/lab";
 
-// TODO: refactor url/route
-// TODO: intl
 const UserSignup = () => {
   const intl = useIntl();
   const { token } = useParams();
