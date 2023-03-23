@@ -217,6 +217,10 @@ const EditVendorProfile = () => {
         variables: {
           data: {
             ...vendorData!,
+            companyUrl:
+              vendorData!.companyUrl !== "https://"
+                ? vendorData!.companyUrl
+                : "",
           },
         },
       });

@@ -206,7 +206,13 @@ const EditCustomerProfile = () => {
     try {
       await updateCustomerData({
         variables: {
-          data: customerData!,
+          data: {
+            ...customerData!,
+            companyUrl:
+              customerData!.companyUrl !== "https://"
+                ? customerData!.companyUrl
+                : "",
+          },
         },
       });
 
