@@ -120,6 +120,11 @@ export enum CompanySize {
   Xs = 'XS'
 }
 
+export type CreateCertificationsInput = {
+  companyId: Scalars['String'];
+  fileIds: Array<Scalars['String']>;
+};
+
 export type CreateCustomerInput = {
   companyUrl?: InputMaybe<Scalars['String']>;
   contactEmail: Scalars['String'];
@@ -376,6 +381,10 @@ export type DeleteBidRemarkInput = {
   fileId: Scalars['String'];
 };
 
+export type DeleteCertificationsInput = {
+  fileIds: Array<Scalars['String']>;
+};
+
 export type DeleteInvoiceInput = {
   fileId: Scalars['String'];
 };
@@ -423,6 +432,13 @@ export type FileInterface = {
   url: Scalars['String'];
 };
 
+export type GenericFile = FileInterface & {
+  __typename?: 'GenericFile';
+  fileId: Scalars['String'];
+  filename: Scalars['String'];
+  url: Scalars['String'];
+};
+
 export type GenericUser = UserInterface & {
   __typename?: 'GenericUser';
   companyId: Scalars['String'];
@@ -449,6 +465,10 @@ export type GetAllUsersWithinCompanyInput = {
 
 export type GetCategoryInput = {
   id: Scalars['String'];
+};
+
+export type GetCertificationsInput = {
+  companyId: Scalars['String'];
 };
 
 export type GetCompanyDetailInput = {
@@ -611,6 +631,7 @@ export type LoggedInUser = UserInterface & {
 export type Mutation = {
   __typename?: 'Mutation';
   cancelStripeSubscription: Scalars['Boolean'];
+  createCertifications: Scalars['Boolean'];
   createCustomer: Scalars['Boolean'];
   createCustomerSubscription: StripeSubscription;
   createGuestProject: Scalars['Boolean'];
@@ -628,6 +649,7 @@ export type Mutation = {
   createVendorSubscription: StripeSubscription;
   deactivateCustomerUser: Scalars['Boolean'];
   deleteBidRemark: Scalars['Boolean'];
+  deleteCertifications: Scalars['Boolean'];
   deleteInvoice: Scalars['Boolean'];
   deletePendingJoinRequests: Scalars['Boolean'];
   deleteProject: Scalars['Boolean'];
@@ -660,6 +682,7 @@ export type Mutation = {
   updateUserPower: Scalars['Boolean'];
   updateVendorInfo: Scalars['Boolean'];
   uploadBidRemark: BidRemark;
+  uploadCertification: GenericFile;
   uploadInvoice: Invoice;
   uploadProjectDesign: ProjectDesign;
   uploadPurchaseOrder: PurchaseOrder;
@@ -668,6 +691,11 @@ export type Mutation = {
 
 export type MutationCancelStripeSubscriptionArgs = {
   data: CancelStripeSubscriptionInput;
+};
+
+
+export type MutationCreateCertificationsArgs = {
+  data: CreateCertificationsInput;
 };
 
 
@@ -754,6 +782,11 @@ export type MutationDeactivateCustomerUserArgs = {
 
 export type MutationDeleteBidRemarkArgs = {
   data: DeleteBidRemarkInput;
+};
+
+
+export type MutationDeleteCertificationsArgs = {
+  data: DeleteCertificationsInput;
 };
 
 
@@ -913,6 +946,11 @@ export type MutationUpdateVendorInfoArgs = {
 
 
 export type MutationUploadBidRemarkArgs = {
+  file: Scalars['Upload'];
+};
+
+
+export type MutationUploadCertificationArgs = {
   file: Scalars['Upload'];
 };
 
@@ -1334,6 +1372,7 @@ export type Query = {
   getAllPlans: Array<Plan>;
   getAllUsersWithinCompany: Array<GenericUser>;
   getCategory?: Maybe<Category>;
+  getCertifications: Array<GenericFile>;
   getCompanyDetail?: Maybe<CompanyDetail>;
   getCompanyPlan?: Maybe<CompanyPlan>;
   getCompanyPlanDetail?: Maybe<CompanyPlanDetail>;
@@ -1404,6 +1443,11 @@ export type QueryGetAllUsersWithinCompanyArgs = {
 
 export type QueryGetCategoryArgs = {
   data: GetCategoryInput;
+};
+
+
+export type QueryGetCertificationsArgs = {
+  data: GetCertificationsInput;
 };
 
 

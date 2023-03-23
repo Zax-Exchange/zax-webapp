@@ -5,3 +5,9 @@ const DELETE_INVOICE = gql`
     deleteInvoice(data: $data)
   }
 `
+
+const DELETE_CERTS = gql`
+  mutation deleteCertifications($data: DeleteCertificationsInput!) {
+    deleteCertifications(data: $data)
+  }
+`

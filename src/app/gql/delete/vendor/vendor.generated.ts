@@ -11,6 +11,13 @@ export type DeleteInvoiceMutationVariables = Types.Exact<{
 
 export type DeleteInvoiceMutation = { __typename?: 'Mutation', deleteInvoice: boolean };
 
+export type DeleteCertificationsMutationVariables = Types.Exact<{
+  data: Types.DeleteCertificationsInput;
+}>;
+
+
+export type DeleteCertificationsMutation = { __typename?: 'Mutation', deleteCertifications: boolean };
+
 
 export const DeleteInvoiceDocument = gql`
     mutation deleteInvoice($data: DeleteInvoiceInput!) {
@@ -43,3 +50,34 @@ export function useDeleteInvoiceMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteInvoiceMutationHookResult = ReturnType<typeof useDeleteInvoiceMutation>;
 export type DeleteInvoiceMutationResult = Apollo.MutationResult<DeleteInvoiceMutation>;
 export type DeleteInvoiceMutationOptions = Apollo.BaseMutationOptions<DeleteInvoiceMutation, DeleteInvoiceMutationVariables>;
+export const DeleteCertificationsDocument = gql`
+    mutation deleteCertifications($data: DeleteCertificationsInput!) {
+  deleteCertifications(data: $data)
+}
+    `;
+export type DeleteCertificationsMutationFn = Apollo.MutationFunction<DeleteCertificationsMutation, DeleteCertificationsMutationVariables>;
+
+/**
+ * __useDeleteCertificationsMutation__
+ *
+ * To run a mutation, you first call `useDeleteCertificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCertificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCertificationsMutation, { data, loading, error }] = useDeleteCertificationsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useDeleteCertificationsMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCertificationsMutation, DeleteCertificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCertificationsMutation, DeleteCertificationsMutationVariables>(DeleteCertificationsDocument, options);
+      }
+export type DeleteCertificationsMutationHookResult = ReturnType<typeof useDeleteCertificationsMutation>;
+export type DeleteCertificationsMutationResult = Apollo.MutationResult<DeleteCertificationsMutation>;
+export type DeleteCertificationsMutationOptions = Apollo.BaseMutationOptions<DeleteCertificationsMutation, DeleteCertificationsMutationVariables>;

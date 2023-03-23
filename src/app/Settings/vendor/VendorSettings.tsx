@@ -40,6 +40,7 @@ import ManageInvitations from "../ManageInvitations";
 import InviteUsers from "../ManageInvitations";
 import UpdateUserPower from "../UpdateUserPower";
 import EditVendorProfile from "./EditVendorProfile";
+import UploadCertifications from "./UploadCertifications";
 
 const NoWrapListItemText = styled(
   (props: ListItemTextProps & { text: string }) => {
@@ -164,6 +165,10 @@ const VendorSettings = () => {
     if (view === VENDOR_SETTINGS_ROUTE.UPDATE_USER_POWER) {
       setSettingView(<UpdateUserPower />);
     }
+
+    if (view === VENDOR_SETTINGS_ROUTE.UPLOAD_CERTIFICATIONS) {
+      setSettingView(<UploadCertifications />);
+    }
   };
 
   return (
@@ -242,13 +247,24 @@ const VendorSettings = () => {
                         </ListItemButton>
                       </ListItem>
 
-                      {/* <ListItem disableGutters>
-                      <ListItemButton>
-                        <NoWrapListItemText text="Upload certifications"></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
+                      <ListItem
+                        disableGutters
+                        onClick={() =>
+                          renderSettingsView(
+                            VENDOR_SETTINGS_ROUTE.UPLOAD_CERTIFICATIONS
+                          )
+                        }
+                      >
+                        <ListItemButton>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.companySettings.uploadCertifications",
+                            })}
+                          ></NoWrapListItemText>
+                        </ListItemButton>
+                      </ListItem>
 
-                    <ListItem disableGutters>
+                      {/*<ListItem disableGutters>
                       <ListItemButton>
                         <NoWrapListItemText text="Request verification"></NoWrapListItemText>
                       </ListItemButton>

@@ -78,6 +78,13 @@ export type GetVendorProjectInvitationsQueryVariables = Types.Exact<{
 
 export type GetVendorProjectInvitationsQuery = { __typename?: 'Query', getVendorProjectInvitations: Array<{ __typename?: 'ProjectInvitation', projectId: string, customerCompanyId: string, vendorCompanyId: string, projectName: string, customerName: string, vendorName: string }> };
 
+export type GetCertificationsQueryVariables = Types.Exact<{
+  data: Types.GetCertificationsInput;
+}>;
+
+
+export type GetCertificationsQuery = { __typename?: 'Query', getCertifications: Array<{ __typename?: 'GenericFile', fileId: string, filename: string, url: string }> };
+
 
 export const GetVendorDetailDocument = gql`
     query getVendorDetail($data: GetVendorDetailInput!) {
@@ -523,3 +530,38 @@ export function useGetVendorProjectInvitationsLazyQuery(baseOptions?: Apollo.Laz
 export type GetVendorProjectInvitationsQueryHookResult = ReturnType<typeof useGetVendorProjectInvitationsQuery>;
 export type GetVendorProjectInvitationsLazyQueryHookResult = ReturnType<typeof useGetVendorProjectInvitationsLazyQuery>;
 export type GetVendorProjectInvitationsQueryResult = Apollo.QueryResult<GetVendorProjectInvitationsQuery, GetVendorProjectInvitationsQueryVariables>;
+export const GetCertificationsDocument = gql`
+    query getCertifications($data: GetCertificationsInput!) {
+  getCertifications(data: $data) {
+    ...FileFragment
+  }
+}
+    ${FileFragmentFragmentDoc}`;
+
+/**
+ * __useGetCertificationsQuery__
+ *
+ * To run a query within a React component, call `useGetCertificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCertificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCertificationsQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetCertificationsQuery(baseOptions: Apollo.QueryHookOptions<GetCertificationsQuery, GetCertificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCertificationsQuery, GetCertificationsQueryVariables>(GetCertificationsDocument, options);
+      }
+export function useGetCertificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCertificationsQuery, GetCertificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCertificationsQuery, GetCertificationsQueryVariables>(GetCertificationsDocument, options);
+        }
+export type GetCertificationsQueryHookResult = ReturnType<typeof useGetCertificationsQuery>;
+export type GetCertificationsLazyQueryHookResult = ReturnType<typeof useGetCertificationsLazyQuery>;
+export type GetCertificationsQueryResult = Apollo.QueryResult<GetCertificationsQuery, GetCertificationsQueryVariables>;

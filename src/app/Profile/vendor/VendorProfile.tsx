@@ -34,6 +34,7 @@ import { productValueToLabelMap } from "../../constants/products";
 import { Store } from "@mui/icons-material";
 import { openLink } from "../../Utils/openLink";
 import NotFound from "../../Utils/NotFound";
+import CertificationsTab from "./CertificationsTab";
 
 type TypographyVariant =
   | "button"
@@ -91,10 +92,10 @@ const VendorProfile = () => {
       label: intl.formatMessage({ id: "app.vendorProfile.tab.companyInfo" }),
       value: "companyInfo",
     },
-    // {
-    //   label: intl.formatMessage({ id: "app.vendorProfile.tab.certifications" }),
-    //   value: "certifications",
-    // },
+    {
+      label: intl.formatMessage({ id: "app.vendorProfile.tab.certifications" }),
+      value: "certifications",
+    },
     // {
     //   label: intl.formatMessage({
     //     id: "app.vendorProfile.tab.productShowcase",
@@ -164,6 +165,7 @@ const VendorProfile = () => {
   if (vendorData) {
     const {
       // logo,
+      id,
       name,
       isVerified,
 
@@ -383,6 +385,9 @@ const VendorProfile = () => {
                 }
               </List>
             </Box>
+          </TabPanel>
+          <TabPanel value={currentTab} index={1}>
+            <CertificationsTab />
           </TabPanel>
         </Paper>
       </Container>

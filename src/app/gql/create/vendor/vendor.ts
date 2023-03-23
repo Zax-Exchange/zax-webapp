@@ -26,3 +26,9 @@ const CREATE_GUEST_PROJECT = gql`
     createGuestProjectLink(data: $data)
   }
 `
+
+const CREATE_CERTS = gql`
+  mutation createCertifications($data: CreateCertificationsInput!) {
+    createCertifications(data: $data)
+  }
+`

@@ -59,6 +59,7 @@
   "app.general.company.customerName": "客户名",
   "app.general.purchaseOrder": "购买订单",
   "app.general.invoice": "发货单",
+  "app.general.upload": "上传",
 
   "app.general.input.dateError": "无效日期",
   "app.general.input.invalidError": "无效输入",
@@ -550,6 +551,8 @@
    "app.settings.manageBillingInfo.viewStatements": "订阅以及账单",
   "app.settings.companySettings": "企业设置",
   "app.settings.companySettings.editCompanyProfile": "编辑企业信息",
+  "app.settings.companySettings.uploadCertifications": "上传认证档案",
+  "app.settings.companySettings.uploadCertifications.helperText": "上传您拥有的认证或证照能使客户在浏览您的企业简介时更相信公司的专业。",
 
   "app.settings.manageCompanyUsers": "管理用户",
   "app.settings.manageCompanyUsers.manageInvitations": "管理邀请",

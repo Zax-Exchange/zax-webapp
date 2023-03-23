@@ -183,3 +183,12 @@ const GET_VENDOR_PROJECT_INVITATIONS = gql`
     }
   }
 `
+
+const GET_CERTS = gql`
+  ${FILE_FRAGMENT}
+  query getCertifications($data: GetCertificationsInput!) {
+    getCertifications(data: $data) {
+      ...FileFragment
+    }
+  }
+`
