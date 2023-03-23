@@ -127,7 +127,14 @@ const FactoryInfoTab = () => {
                     })}
                   </TableCell>
                   <TableCell>{factory.moq}</TableCell>
-                  <TableCell>{factory.leadTime}</TableCell>
+                  <TableCell>
+                    {intl.formatMessage(
+                      { id: "app.general.months" },
+                      {
+                        month: factory.leadTime,
+                      }
+                    )}
+                  </TableCell>
                 </TableRow>
               );
             })}
