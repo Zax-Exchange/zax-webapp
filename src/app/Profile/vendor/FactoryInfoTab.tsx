@@ -128,12 +128,8 @@ const FactoryInfoTab = () => {
                   </TableCell>
                   <TableCell>{factory.moq}</TableCell>
                   <TableCell>
-                    {intl.formatMessage(
-                      { id: "app.general.months" },
-                      {
-                        month: factory.leadTime,
-                      }
-                    )}
+                    {factory.leadTime}{" "}
+                    {intl.formatMessage({ id: "app.general.weeks" })}
                   </TableCell>
                 </TableRow>
               );

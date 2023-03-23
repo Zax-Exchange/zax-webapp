@@ -55,6 +55,7 @@
   "app.general.minimum": "min",
   "app.general.maximum": "max",
   "app.general.months": "{month} month(s)",
+  "app.general.weeks": "weeks",
   "app.general.resend": "Resend",
   "app.general.company.vendorName": "Vendor Name",
   "app.general.company.customerName": "Customer Name",

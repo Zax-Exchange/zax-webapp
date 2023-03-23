@@ -54,6 +54,7 @@
   "app.general.minimum": "最少",
   "app.general.maximum": "最多",
   "app.general.months": "{month} 个月",
+  "app.general.weeks": "周",
   "app.general.resend": "重新发送",
   "app.general.company.vendorName": "厂商名",
   "app.general.company.customerName": "客户名",

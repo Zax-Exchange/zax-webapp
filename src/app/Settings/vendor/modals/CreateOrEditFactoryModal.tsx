@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
@@ -332,6 +333,17 @@ export const CreateOrEditFactoryModal = ({
                 value={productsDetail.leadTime}
                 onChange={(e) => productMoqOnChange(e, i, "leadTime")}
                 sx={{ mr: 2 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="GrayText">
+                        {intl.formatMessage({
+                          id: "app.general.weeks",
+                        })}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }}
               />
               {i !== 0 && (
                 <IconButton onClick={() => deleteProductsAndMoq(i)}>
