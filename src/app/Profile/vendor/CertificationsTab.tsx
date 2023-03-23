@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useGetCertificationsQuery } from "../../gql/get/vendor/vendor.generated";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import { Document, Page } from "react-pdf/dist/esm/entry.webpack5";
+import { Document, Page, pdfjs } from "react-pdf/dist/esm/entry.webpack5";
 import AttachmentButton from "../../Utils/AttachmentButton";
 import { GenericFile } from "../../../generated/graphql";
 import {
@@ -15,6 +15,8 @@ import {
   OpenInNew,
 } from "@mui/icons-material";
 import { openLink } from "../../Utils/openLink";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const CertificationsTab = () => {
   const intl = useIntl();
