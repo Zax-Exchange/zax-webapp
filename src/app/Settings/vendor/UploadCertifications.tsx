@@ -19,7 +19,7 @@ import FullScreenLoading from "../../Utils/Loading";
 import UploadCertButton from "./UploadCertButton";
 import { FileFragmentFragment } from "../../gql/utils/common/file.generated";
 import UploadCertModal from "./modals/UploadCertModal";
-import { Delete } from "@mui/icons-material";
+import { Delete, InfoOutlined } from "@mui/icons-material";
 import { useDeleteCertificationsMutation } from "../../gql/delete/vendor/vendor.generated";
 
 const UploadCertifications = () => {
@@ -85,7 +85,7 @@ const UploadCertifications = () => {
   };
   const isLoading = deleteCertLoading || loading;
   return (
-    <Container>
+    <Container sx={{ position: "relative" }}>
       {isLoading && <FullScreenLoading />}
       <Box>
         <Typography variant="h6">
@@ -94,14 +94,15 @@ const UploadCertifications = () => {
           })}
         </Typography>
       </Box>
-      <Box>
-        <Typography variant="caption">
+      <Box p={2} sx={{ display: "flex", alignItems: "center" }}>
+        <InfoOutlined fontSize="small" color="info" sx={{ mr: 1 }} />
+        <Typography variant="caption" whiteSpace="pre-line">
           {intl.formatMessage({
             id: "app.settings.companySettings.uploadCertifications.helperText",
           })}
         </Typography>
       </Box>
-      <Box display="flex" justifyContent="flex-end">
+      <Box sx={{ position: "absolute", top: 0, right: "2rem" }}>
         <Button variant="contained" onClick={() => setUploadModalOpen(true)}>
           {intl.formatMessage({ id: "app.general.upload" })}
         </Button>

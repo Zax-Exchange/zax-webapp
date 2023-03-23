@@ -548,7 +548,7 @@
   "app.settings.companySettings": "Company Settings",
   "app.settings.companySettings.editCompanyProfile": "Edit Company Profile",
   "app.settings.companySettings.uploadCertifications": "Upload Certifications",
-  "app.settings.companySettings.uploadCertifications.helperText": "Certifications can help make your company look a lot more qualified and professional to customers.",
+  "app.settings.companySettings.uploadCertifications.helperText": "Certifications can help make your company more professional and trustworthy.",
   "app.settings.manageCompanyUsers": "Manage Company Users",
   "app.settings.manageCompanyUsers.manageInvitations": "Manage Invitations",
   "app.settings.manageCompanyUsers.manageInvitations.directInvitation": "Direct Invitation",
