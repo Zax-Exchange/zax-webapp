@@ -483,7 +483,7 @@ const CustomerSearchResults = () => {
           <Paper sx={{ p: 2, pt: 0.5 }}>
             <Box>
               <Box>
-                <Box>{renderLeadTimeFilters()}</Box>
+                {/* <Box>{renderLeadTimeFilters()}</Box> */}
                 {/* <Box>{renderMoqFilters()}</Box> */}
                 <Box>{renderFactoryLocationsFilter()}</Box>
               </Box>
