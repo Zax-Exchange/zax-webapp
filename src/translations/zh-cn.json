@@ -476,6 +476,7 @@
 
   "app.vendorProfile.tab.companyInfo": "企业信息",
   "app.vendorProfile.tab.certifications": "证书与获奖",
+  "app.vendorProfile.tab.certifications.noCert": "此厂商尚未上传任何证书。",
   "app.vendorProfile.tab.productShowcase": "产品展示",
   
 

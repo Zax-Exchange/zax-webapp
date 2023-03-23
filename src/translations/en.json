@@ -472,6 +472,7 @@
 
   "app.vendorProfile.tab.companyInfo": "Company Info",
   "app.vendorProfile.tab.certifications": "Certifications & Rewards",
+  "app.vendorProfile.tab.certifications.noCert": "This vendor has not uploaded any certifications yet.",
   "app.vendorProfile.tab.productShowcase": "Product Showcase",
   
 

@@ -96,7 +96,9 @@ const CertificationsTab = () => {
       {!certsList.length && !loading && (
         <Box>
           <Typography variant="caption" color="text.secondary">
-            {intl.formatMessage({ id: "app.vendorProfile.cert.noCert" })}
+            {intl.formatMessage({
+              id: "app.vendorProfile.tab.certifications.noCert",
+            })}
           </Typography>
         </Box>
       )}
