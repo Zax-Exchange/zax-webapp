@@ -13,7 +13,14 @@ export type GetVendorDetailQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetVendorDetailQuery = { __typename?: 'Query', getVendorDetail?: { __typename?: 'VendorDetail', id: string, name: string, contactEmail: string, phone: string, logo?: string | null, country: string, isActive: boolean, companyUrl?: string | null, fax?: string | null, isVerified: boolean, locations: Array<string>, leadTime: number, productsAndMoq: Array<{ __typename?: 'ProductAndMoq', product: string, moq: string }> } | null };
+export type GetVendorDetailQuery = { __typename?: 'Query', getVendorDetail?: { __typename?: 'VendorDetail', id: string, name: string, contactEmail: string, phone: string, logo?: string | null, country: string, isActive: boolean, companyUrl?: string | null, fax?: string | null, isVerified: boolean } | null };
+
+export type GetVendorFactoriesQueryVariables = Types.Exact<{
+  data: Types.GetVendorFactoriesInput;
+}>;
+
+
+export type GetVendorFactoriesQuery = { __typename?: 'Query', getVendorFactories: Array<{ __typename?: 'FactoryDetail', id: string, location: string, factoryProductsDetail: Array<{ __typename?: 'FactoryProductDetail', product: string, moq: string, leadTime: string }> }> };
 
 export type GetVendorProjectQueryVariables = Types.Exact<{
   data: Types.GetVendorProjectInput;
@@ -48,7 +55,7 @@ export type SearchVendorCompaniesQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorSearchItem', vendor: { __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string>, leadTime: number }, highlight: { __typename?: 'VendorSearchHighlight', products?: Array<string | null> | null, name?: Array<string | null> | null } }> };
+export type SearchVendorCompaniesQuery = { __typename?: 'Query', searchVendorCompanies: Array<{ __typename?: 'VendorSearchItem', vendor: { __typename?: 'VendorOverview', id: string, name: string, contactEmail: string, logo?: string | null, country: string, isVerified: boolean, locations: Array<string>, products: Array<string> }, highlight: { __typename?: 'VendorSearchHighlight', products?: Array<string | null> | null, name?: Array<string | null> | null } }> };
 
 export type GetVendorPosQueryVariables = Types.Exact<{
   data: Types.GetVendorPosInput;
@@ -99,12 +106,6 @@ export const GetVendorDetailDocument = gql`
     companyUrl
     fax
     isVerified
-    locations
-    productsAndMoq {
-      product
-      moq
-    }
-    leadTime
   }
 }
     `;
@@ -136,6 +137,47 @@ export function useGetVendorDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetVendorDetailQueryHookResult = ReturnType<typeof useGetVendorDetailQuery>;
 export type GetVendorDetailLazyQueryHookResult = ReturnType<typeof useGetVendorDetailLazyQuery>;
 export type GetVendorDetailQueryResult = Apollo.QueryResult<GetVendorDetailQuery, GetVendorDetailQueryVariables>;
+export const GetVendorFactoriesDocument = gql`
+    query getVendorFactories($data: GetVendorFactoriesInput!) {
+  getVendorFactories(data: $data) {
+    id
+    location
+    factoryProductsDetail {
+      product
+      moq
+      leadTime
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetVendorFactoriesQuery__
+ *
+ * To run a query within a React component, call `useGetVendorFactoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVendorFactoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVendorFactoriesQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetVendorFactoriesQuery(baseOptions: Apollo.QueryHookOptions<GetVendorFactoriesQuery, GetVendorFactoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVendorFactoriesQuery, GetVendorFactoriesQueryVariables>(GetVendorFactoriesDocument, options);
+      }
+export function useGetVendorFactoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVendorFactoriesQuery, GetVendorFactoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVendorFactoriesQuery, GetVendorFactoriesQueryVariables>(GetVendorFactoriesDocument, options);
+        }
+export type GetVendorFactoriesQueryHookResult = ReturnType<typeof useGetVendorFactoriesQuery>;
+export type GetVendorFactoriesLazyQueryHookResult = ReturnType<typeof useGetVendorFactoriesLazyQuery>;
+export type GetVendorFactoriesQueryResult = Apollo.QueryResult<GetVendorFactoriesQuery, GetVendorFactoriesQueryVariables>;
 export const GetVendorProjectDocument = gql`
     query getVendorProject($data: GetVendorProjectInput!) {
   getVendorProject(data: $data) {
@@ -329,7 +371,6 @@ export const SearchVendorCompaniesDocument = gql`
       isVerified
       locations
       products
-      leadTime
     }
     highlight {
       products

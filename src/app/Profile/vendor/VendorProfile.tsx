@@ -35,6 +35,7 @@ import { Store } from "@mui/icons-material";
 import { openLink } from "../../Utils/openLink";
 import NotFound from "../../Utils/NotFound";
 import CertificationsTab from "./CertificationsTab";
+import FactoryInfoTab from "./FactoryInfoTab";
 
 type TypographyVariant =
   | "button"
@@ -91,6 +92,10 @@ const VendorProfile = () => {
     {
       label: intl.formatMessage({ id: "app.vendorProfile.tab.companyInfo" }),
       value: "companyInfo",
+    },
+    {
+      label: intl.formatMessage({ id: "app.vendorProfile.tab.factoryInfo" }),
+      value: "factoryInfo",
     },
     {
       label: intl.formatMessage({ id: "app.vendorProfile.tab.certifications" }),
@@ -175,10 +180,8 @@ const VendorProfile = () => {
       fax,
 
       country,
-      leadTime,
-      locations,
-      productsAndMoq,
     } = vendorData;
+
     return (
       <Container>
         <Box display="flex" flexDirection="row">
@@ -278,62 +281,62 @@ const VendorProfile = () => {
                     </Link>
                   </CompanyInfoListItem>
                 )}
+                <CompanyInfoListItem>
+                  {renderTypography(
+                    intl.formatMessage({
+                      id: "app.company.attribute.country",
+                    }),
+                    {
+                      variant: "subtitle2",
+                    }
+                  )}
+                  {renderTypography(country, {
+                    variant: "caption",
+                  })}
+                </CompanyInfoListItem>
               </List>
-              <List>
+              {/* <List>
                 {
-                  <CompanyInfoListItem>
-                    {renderTypography(
-                      intl.formatMessage({
-                        id: "app.company.attribute.country",
-                      }),
-                      {
-                        variant: "subtitle2",
-                      }
-                    )}
-                    {renderTypography(country, {
-                      variant: "caption",
-                    })}
-                  </CompanyInfoListItem>
                 }
                 {
-                  <CompanyInfoListItem>
-                    {renderTypography(
-                      intl.formatMessage({
-                        id: "app.vendor.attribute.locations",
-                      }),
-                      {
-                        variant: "subtitle2",
-                      }
-                    )}
-                    {renderTypography(locations, {
-                      variant: "caption",
-                    })}
-                  </CompanyInfoListItem>
+                  // <CompanyInfoListItem>
+                  //   {renderTypography(
+                  //     intl.formatMessage({
+                  //       id: "app.vendor.attribute.locations",
+                  //     }),
+                  //     {
+                  //       variant: "subtitle2",
+                  //     }
+                  //   )}
+                  //   {renderTypography(locations, {
+                  //     variant: "caption",
+                  //   })}
+                  // </CompanyInfoListItem>
                 }
                 {
-                  <CompanyInfoListItem>
-                    {renderTypography(
-                      intl.formatMessage({
-                        id: "app.vendor.attribute.leadTime",
-                      }),
-                      {
-                        variant: "subtitle2",
-                      }
-                    )}
-                    {renderTypography(
-                      `${intl.formatMessage(
-                        {
-                          id: "app.general.months",
-                        },
-                        {
-                          month: leadTime,
-                        }
-                      )}`,
-                      {
-                        variant: "caption",
-                      }
-                    )}
-                  </CompanyInfoListItem>
+                  // <CompanyInfoListItem>
+                  //   {renderTypography(
+                  //     intl.formatMessage({
+                  //       id: "app.vendor.attribute.leadTime",
+                  //     }),
+                  //     {
+                  //       variant: "subtitle2",
+                  //     }
+                  //   )}
+                  //   {renderTypography(
+                  //     `${intl.formatMessage(
+                  //       {
+                  //         id: "app.general.months",
+                  //       },
+                  //       {
+                  //         month: leadTime,
+                  //       }
+                  //     )}`,
+                  //     {
+                  //       variant: "caption",
+                  //     }
+                  //   )}
+                  // </CompanyInfoListItem>
                 }
               </List>
               <List>
@@ -383,10 +386,13 @@ const VendorProfile = () => {
                     </Box>
                   </CompanyInfoListItem>
                 }
-              </List>
+              </List> */}
             </Box>
           </TabPanel>
           <TabPanel value={currentTab} index={1}>
+            <FactoryInfoTab />
+          </TabPanel>
+          <TabPanel value={currentTab} index={2}>
             <CertificationsTab />
           </TabPanel>
         </Paper>

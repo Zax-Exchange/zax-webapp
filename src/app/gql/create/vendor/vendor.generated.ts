@@ -39,6 +39,13 @@ export type CreateCertificationsMutationVariables = Types.Exact<{
 
 export type CreateCertificationsMutation = { __typename?: 'Mutation', createCertifications: boolean };
 
+export type CreateFactoryMutationVariables = Types.Exact<{
+  data: Types.CreateFactoryInput;
+}>;
+
+
+export type CreateFactoryMutation = { __typename?: 'Mutation', createFactory: boolean };
+
 
 export const CreateVendorDocument = gql`
     mutation createVendor($data: CreateVendorInput!) {
@@ -198,3 +205,34 @@ export function useCreateCertificationsMutation(baseOptions?: Apollo.MutationHoo
 export type CreateCertificationsMutationHookResult = ReturnType<typeof useCreateCertificationsMutation>;
 export type CreateCertificationsMutationResult = Apollo.MutationResult<CreateCertificationsMutation>;
 export type CreateCertificationsMutationOptions = Apollo.BaseMutationOptions<CreateCertificationsMutation, CreateCertificationsMutationVariables>;
+export const CreateFactoryDocument = gql`
+    mutation createFactory($data: CreateFactoryInput!) {
+  createFactory(data: $data)
+}
+    `;
+export type CreateFactoryMutationFn = Apollo.MutationFunction<CreateFactoryMutation, CreateFactoryMutationVariables>;
+
+/**
+ * __useCreateFactoryMutation__
+ *
+ * To run a mutation, you first call `useCreateFactoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFactoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFactoryMutation, { data, loading, error }] = useCreateFactoryMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateFactoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateFactoryMutation, CreateFactoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFactoryMutation, CreateFactoryMutationVariables>(CreateFactoryDocument, options);
+      }
+export type CreateFactoryMutationHookResult = ReturnType<typeof useCreateFactoryMutation>;
+export type CreateFactoryMutationResult = Apollo.MutationResult<CreateFactoryMutation>;
+export type CreateFactoryMutationOptions = Apollo.BaseMutationOptions<CreateFactoryMutation, CreateFactoryMutationVariables>;

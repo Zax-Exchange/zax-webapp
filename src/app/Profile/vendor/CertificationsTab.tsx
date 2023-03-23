@@ -15,6 +15,7 @@ import {
   OpenInNew,
 } from "@mui/icons-material";
 import { openLink } from "../../Utils/openLink";
+import FullScreenLoading from "../../Utils/Loading";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -58,7 +59,9 @@ const CertificationsTab = () => {
     setCurrentPage((prev) => prev + 1);
   };
 
-  const renderCert = (cert: GenericFile) => {
+  const renderCert = (cert: GenericFile | null) => {
+    if (!cert) return null;
+
     if (cert.filename.split(".").pop() === "pdf") {
       return (
         <Box>
@@ -93,6 +96,7 @@ const CertificationsTab = () => {
         position: "relative",
       }}
     >
+      {loading && <FullScreenLoading />}
       {!certsList.length && !loading && (
         <Box>
           <Typography variant="caption" color="text.secondary">

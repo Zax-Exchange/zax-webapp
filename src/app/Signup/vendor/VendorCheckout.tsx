@@ -52,36 +52,36 @@ const VendorCheckout = ({
   }, [paymentSuccess]);
 
   const createVendor = async () => {
-    if (paymentSuccess) {
-      try {
-        setIsLoading(true);
-        await createVendorMutation({
-          variables: {
-            data: {
-              ...companyData,
-              leadTime: parseInt(companyData.leadTime),
-              stripeCustomerInfo: {
-                subscriptionId: stripePaymentIntent.subscriptionId,
-                customerId: stripePaymentIntent.customerId,
-              },
-            },
-          },
-          fetchPolicy: "no-cache",
-        });
-        mixpanel.track("sign up", {
-          isVendor: true,
-        });
-        setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
-      } catch (error) {
-        setSnackbar({
-          severity: "error",
-          message: intl.formatMessage({ id: "app.general.network.error" }),
-        });
-        setSnackbarOpen(true);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+    // if (paymentSuccess) {
+    //   try {
+    //     setIsLoading(true);
+    //     await createVendorMutation({
+    //       variables: {
+    //         data: {
+    //           ...companyData,
+    //           leadTime: parseInt(companyData.leadTime),
+    //           stripeCustomerInfo: {
+    //             subscriptionId: stripePaymentIntent.subscriptionId,
+    //             customerId: stripePaymentIntent.customerId,
+    //           },
+    //         },
+    //       },
+    //       fetchPolicy: "no-cache",
+    //     });
+    //     mixpanel.track("sign up", {
+    //       isVendor: true,
+    //     });
+    //     setCurrentPage(VendorSignupPage.SUCCESS_PAGE);
+    //   } catch (error) {
+    //     setSnackbar({
+    //       severity: "error",
+    //       message: intl.formatMessage({ id: "app.general.network.error" }),
+    //     });
+    //     setSnackbarOpen(true);
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // }
   };
 
   const finishPayment = async () => {

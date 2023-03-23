@@ -89,7 +89,7 @@ const SearchCompanyOverview = ({
                   </Typography>
                 </ProjectOverviewListItem>
 
-                <ProjectOverviewListItem>
+                {/* <ProjectOverviewListItem>
                   <Tooltip
                     title={intl.formatMessage({
                       id: "app.vendor.attribute.leadTime",
@@ -107,7 +107,7 @@ const SearchCompanyOverview = ({
                       }
                     )}
                   </Typography>
-                </ProjectOverviewListItem>
+                </ProjectOverviewListItem> */}
 
                 {/* <ProjectOverviewListItem>
                   <Tooltip title="MOQ Range" arrow placement="top">

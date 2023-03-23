@@ -97,7 +97,7 @@ const VendorCompanyReview = ({
               <Typography variant="caption">{values.fax}</Typography>
             </ListItem>
           )}
-          <ListItem>
+          {/* <ListItem>
             <Typography variant="subtitle2">
               {intl.formatMessage({ id: "app.vendor.attribute.leadTime" })}
             </Typography>
@@ -150,7 +150,7 @@ const VendorCompanyReview = ({
                 </TableBody>
               </TableContainer>
             </Box>
-          </ListItem>
+          </ListItem> */}
 
           {/* {plan && (
             <ListItem>

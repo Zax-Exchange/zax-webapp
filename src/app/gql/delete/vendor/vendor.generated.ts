@@ -18,6 +18,13 @@ export type DeleteCertificationsMutationVariables = Types.Exact<{
 
 export type DeleteCertificationsMutation = { __typename?: 'Mutation', deleteCertifications: boolean };
 
+export type DeleteFactoryMutationVariables = Types.Exact<{
+  data: Types.DeleteFactoryInput;
+}>;
+
+
+export type DeleteFactoryMutation = { __typename?: 'Mutation', deleteFactory: boolean };
+
 
 export const DeleteInvoiceDocument = gql`
     mutation deleteInvoice($data: DeleteInvoiceInput!) {
@@ -81,3 +88,34 @@ export function useDeleteCertificationsMutation(baseOptions?: Apollo.MutationHoo
 export type DeleteCertificationsMutationHookResult = ReturnType<typeof useDeleteCertificationsMutation>;
 export type DeleteCertificationsMutationResult = Apollo.MutationResult<DeleteCertificationsMutation>;
 export type DeleteCertificationsMutationOptions = Apollo.BaseMutationOptions<DeleteCertificationsMutation, DeleteCertificationsMutationVariables>;
+export const DeleteFactoryDocument = gql`
+    mutation deleteFactory($data: DeleteFactoryInput!) {
+  deleteFactory(data: $data)
+}
+    `;
+export type DeleteFactoryMutationFn = Apollo.MutationFunction<DeleteFactoryMutation, DeleteFactoryMutationVariables>;
+
+/**
+ * __useDeleteFactoryMutation__
+ *
+ * To run a mutation, you first call `useDeleteFactoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteFactoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteFactoryMutation, { data, loading, error }] = useDeleteFactoryMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useDeleteFactoryMutation(baseOptions?: Apollo.MutationHookOptions<DeleteFactoryMutation, DeleteFactoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteFactoryMutation, DeleteFactoryMutationVariables>(DeleteFactoryDocument, options);
+      }
+export type DeleteFactoryMutationHookResult = ReturnType<typeof useDeleteFactoryMutation>;
+export type DeleteFactoryMutationResult = Apollo.MutationResult<DeleteFactoryMutation>;
+export type DeleteFactoryMutationOptions = Apollo.BaseMutationOptions<DeleteFactoryMutation, DeleteFactoryMutationVariables>;

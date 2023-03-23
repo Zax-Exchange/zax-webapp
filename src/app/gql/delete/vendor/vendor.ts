@@ -11,3 +11,9 @@ const DELETE_CERTS = gql`
     deleteCertifications(data: $data)
   }
 `
+
+const DELETE_FACTORY = gql`
+  mutation deleteFactory($data: DeleteFactoryInput!) {
+    deleteFactory(data: $data)
+  }
+`

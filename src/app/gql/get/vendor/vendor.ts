@@ -17,16 +17,24 @@ const GET_VENDOR_DETAIL = gql`
       companyUrl
       fax
       isVerified
-      locations
-      productsAndMoq {
-        product
-        moq
-      }
-      leadTime
+      
     }
   }
 `;
 
+const GET_FACTORIES = gql`
+  query getVendorFactories($data: GetVendorFactoriesInput!) {
+    getVendorFactories(data: $data) {
+      id
+      location
+      factoryProductsDetail {
+        product
+        moq
+        leadTime
+      }
+    }
+  }
+`
 const GET_VENDOR_PROJECT = gql`
 ${PROJECT_FRAGMENT}
 ${PROJECT_COMPONENT_FRAGMENT}
@@ -113,7 +121,6 @@ const SEARCH_VENDOR_COMPANIES = gql`
       isVerified
       locations
       products
-      leadTime
       }
       highlight {
         products

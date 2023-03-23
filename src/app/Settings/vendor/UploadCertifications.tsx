@@ -103,7 +103,7 @@ const UploadCertifications = () => {
         </Typography>
       </Box>
       <Box sx={{ position: "absolute", top: 0, right: "2rem" }}>
-        <Button variant="contained" onClick={() => setUploadModalOpen(true)}>
+        <Button variant="outlined" onClick={() => setUploadModalOpen(true)}>
           {intl.formatMessage({ id: "app.general.upload" })}
         </Button>
       </Box>
@@ -127,7 +127,7 @@ const UploadCertifications = () => {
                     onClick={() => openLink(cert.url)}
                   />
                   <IconButton onClick={() => deleteCertOnClick(cert.fileId)}>
-                    <Delete />
+                    <Delete color="error" />
                   </IconButton>
                 </ListItem>
               );

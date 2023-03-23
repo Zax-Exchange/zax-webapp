@@ -22,10 +22,7 @@ import { countries } from "../../constants/countries";
 import FullScreenLoading from "../../Utils/Loading";
 import { validate } from "email-validator";
 import { useUpdateVendorInfoMutation } from "../../gql/update/vendor/vendor.generated";
-import {
-  ProductAndMoqInput,
-  UpdateVendorInfoInput,
-} from "../../../generated/graphql";
+import { UpdateVendorInfoInput } from "../../../generated/graphql";
 import {
   ALL_PRODUCT_NAMES,
   productValueToLabelMap,
@@ -66,18 +63,8 @@ const EditVendorProfile = () => {
 
   useEffect(() => {
     if (getVendorDetailData && getVendorDetailData.getVendorDetail) {
-      const {
-        name,
-        contactEmail,
-        phone,
-        logo,
-        country,
-        companyUrl,
-        fax,
-        leadTime,
-        locations,
-        productsAndMoq,
-      } = getVendorDetailData.getVendorDetail;
+      const { name, contactEmail, phone, logo, country, companyUrl, fax } =
+        getVendorDetailData.getVendorDetail;
 
       setVendorData({
         companyId: user!.companyId,
@@ -88,12 +75,6 @@ const EditVendorProfile = () => {
         country,
         companyUrl: companyUrl || "https://",
         fax,
-        leadTime,
-        locations,
-        productsAndMoq: productsAndMoq.map((productAndMoq) => ({
-          product: productAndMoq.product,
-          moq: productAndMoq.moq,
-        })),
       });
     }
   }, [getVendorDetailData]);
@@ -117,10 +98,6 @@ const EditVendorProfile = () => {
       case "fax":
         isAllowed = isValidInt(val);
         break;
-      case "leadTime":
-        isAllowed = isValidInt(val);
-        val = parseInt(val, 10) || "";
-        break;
       case "name":
         isAllowed = isValidAlphanumeric(val);
         break;
@@ -143,67 +120,12 @@ const EditVendorProfile = () => {
     }
   };
 
-  const productMoqOnChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ind: number
-  ) => {
-    if (!vendorData) return;
-
-    const val = e.target.value;
-    const isAllowed = isValidInt(val);
-    if (isAllowed) {
-      const prevProductAndMoq = vendorData.productsAndMoq[ind];
-      prevProductAndMoq.moq = val;
-      const allProductsAndMoq = [...vendorData.productsAndMoq];
-      allProductsAndMoq.splice(ind, 1, prevProductAndMoq);
-      setVendorData((prev) => ({
-        ...prev!,
-        productsAndMoq: [...allProductsAndMoq],
-      }));
-    }
-  };
-
   const countryOnChange = (v: Country | null) => {
     // v could be null if user clears input field
     const country = v ? v.label : vendorData!.country;
     setVendorData({
       ...vendorData!,
       country,
-    });
-  };
-
-  const locationOnChange = (locations: { label: string }[]) => {
-    const locationLabels = locations.map((l) => l.label);
-    setVendorData({
-      ...vendorData!,
-      locations: locationLabels,
-    });
-  };
-
-  const deleteProductsAndMoq = (ind: number) => {
-    setVendorData((prev) => {
-      const allProductsAndMoq = [...prev!.productsAndMoq];
-      allProductsAndMoq!.splice(ind, 1);
-      return {
-        ...prev!,
-        productsAndMoq: allProductsAndMoq,
-      };
-    });
-  };
-
-  const addProductsAndMoq = () => {
-    const prevProductsAndMoq = [...vendorData!.productsAndMoq];
-    setVendorData((prev) => {
-      return {
-        ...prev!,
-        productsAndMoq: [
-          ...prevProductsAndMoq,
-          {
-            product: "",
-            moq: "",
-          },
-        ],
-      };
     });
   };
 
@@ -259,9 +181,6 @@ const EditVendorProfile = () => {
         case "name":
         case "phone":
         case "country":
-        case "locations":
-        case "leadTime":
-        case "productsAndMoq":
           return true;
       }
       return false;
@@ -269,14 +188,7 @@ const EditVendorProfile = () => {
 
     const isValid = (
       field: keyof UpdateVendorInfoInput,
-      fieldValue:
-        | boolean
-        | string
-        | number
-        | string[]
-        | ProductAndMoqInput[]
-        | undefined
-        | null
+      fieldValue: boolean | string | number | string[] | undefined | null
     ) => {
       switch (field) {
         case "contactEmail":
@@ -284,14 +196,7 @@ const EditVendorProfile = () => {
         case "name":
         case "phone":
         case "country":
-        case "leadTime":
-          return !!fieldValue;
-        case "locations":
-          return !!(fieldValue as string[]).length;
-        case "productsAndMoq":
-          return (fieldValue as ProductAndMoqInput[]).every(
-            (productAndMoq) => !!productAndMoq.product && !!productAndMoq.moq
-          );
+          return !!(fieldValue as string).length;
       }
       return false;
     };
@@ -306,167 +211,12 @@ const EditVendorProfile = () => {
     return false;
   };
 
-  const renderVendorUpdateForm = () => {
-    if (!vendorData) return null;
-    const renderProductsDropdown = (ind: number) => {
-      const product = vendorData.productsAndMoq[ind].product;
-      return (
-        <Autocomplete
-          id={`productsAndMoqDropdown-${ind}`}
-          sx={{ width: 400 }}
-          options={ALL_PRODUCT_NAMES}
-          getOptionLabel={(option) =>
-            intl.formatMessage({ id: option.labelId })
-          }
-          autoHighlight
-          value={product ? productValueToLabelMap[product] : null}
-          getOptionDisabled={(option) => {
-            for (let produtcAndMoq of vendorData.productsAndMoq) {
-              if (option.value === produtcAndMoq.product) return true;
-            }
-            return false;
-          }}
-          onChange={(e, v) => {
-            const productAndMoq = [...vendorData.productsAndMoq][ind];
-
-            if (!v) {
-              productAndMoq.product = "";
-            } else {
-              productAndMoq.product = v.value;
-            }
-            const allProductsAndMoq = [...vendorData.productsAndMoq];
-            allProductsAndMoq.splice(ind, 1, productAndMoq);
-            setVendorData((prev) => ({
-              ...prev!,
-              productsAndMoq: [...allProductsAndMoq],
-            }));
-          }}
-          renderInput={(params) => (
-            <TextField
-              required
-              {...params}
-              label={intl.formatMessage({
-                id: "app.vendor.attribute.products",
-              })}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password",
-              }}
-              InputLabelProps={{
-                sx: {
-                  fontSize: 16,
-                  top: -7,
-                },
-              }}
-            />
-          )}
-        />
-      );
-    };
-
-    const getDefaultCompanyLocations = () => {
-      const res = [];
-      for (let country of countries) {
-        for (let compCountry of vendorData!.locations) {
-          if (country.label === compCountry) res.push(country);
-        }
-      }
-      return res;
-    };
-    const renderFactoryLocationDropdown = () => {
-      return (
-        <Autocomplete
-          id="factory-location-select"
-          sx={{ width: 300 }}
-          options={countries}
-          autoHighlight
-          getOptionLabel={(option) => option.label}
-          onChange={(e, v) => locationOnChange(v)}
-          defaultValue={[...getDefaultCompanyLocations()]}
-          multiple
-          renderOption={(props, option) => (
-            <Box
-              component="li"
-              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-              {...props}
-            >
-              <img
-                loading="lazy"
-                width="20"
-                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                alt=""
-              />
-              {option.label} ({option.code})
-            </Box>
-          )}
-          renderInput={(params) => (
-            <TextField
-              required
-              {...params}
-              label={intl.formatMessage({
-                id: "app.vendor.attribute.locations",
-              })}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password", // disable autocomplete and autofill
-              }}
-            />
-          )}
-        />
-      );
-    };
-
-    return (
-      <>
-        <TextField
-          required
-          InputLabelProps={{ shrink: true }}
-          label={intl.formatMessage({ id: "app.vendor.attribute.leadTime" })}
-          name="leadTime"
-          value={vendorData!.leadTime}
-          onChange={onChange}
-        />
-        {renderFactoryLocationDropdown()}
-        {vendorData.productsAndMoq.map((productAndMoq, i) => {
-          return (
-            <Box display="flex" mb={5} key={i}>
-              <Box mr={2}>{renderProductsDropdown(i)}</Box>
-              <TextField
-                required
-                label={intl.formatMessage({
-                  id: "app.vendor.attribute.moq",
-                })}
-                type="text"
-                name="moq"
-                value={productAndMoq.moq}
-                onChange={(e) => productMoqOnChange(e, i)}
-                sx={{ mr: 2 }}
-              />
-              {i !== 0 && (
-                <IconButton onClick={() => deleteProductsAndMoq(i)}>
-                  <Cancel />
-                </IconButton>
-              )}
-            </Box>
-          );
-        })}
-        <Box display="flex">
-          <Button variant="outlined" onClick={addProductsAndMoq}>
-            {intl.formatMessage({ id: "app.general.addMore" })}
-          </Button>
-        </Box>
-      </>
-    );
-  };
-
   const updateCompanyData = async () => {
     try {
       await updateVendorData({
         variables: {
           data: {
             ...vendorData!,
-            leadTime: vendorData!.leadTime,
           },
         },
       });
@@ -546,8 +296,6 @@ const EditVendorProfile = () => {
               onChange={onChange}
             />
             {renderCountryDropdown()}
-
-            {renderVendorUpdateForm()}
 
             <Container
               sx={{

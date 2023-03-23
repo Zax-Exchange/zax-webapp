@@ -478,6 +478,8 @@
   "app.vendorProfile.tab.certifications": "证书与获奖",
   "app.vendorProfile.tab.certifications.noCert": "此厂商尚未上传任何证书。",
   "app.vendorProfile.tab.productShowcase": "产品展示",
+  "app.vendorProfile.tab.factoryInfo": "工厂信息",
+  "app.vendorProfile.tab.factoryInfo.noFactory": "此厂商尚未上传任何工厂信息。",
   
 
   "app.vendor.poInvoice.upload.create": "创建发货单",
@@ -554,6 +556,7 @@
   "app.settings.companySettings.editCompanyProfile": "编辑企业信息",
   "app.settings.companySettings.uploadCertifications": "上传认证档案",
   "app.settings.companySettings.uploadCertifications.helperText": "上传您拥有的认证或证照能使客户在浏览您的企业简介时更相信公司的专业。",
+  "app.settings.companySettings.editFactories": "编辑工厂信息",
 
   "app.settings.manageCompanyUsers": "管理用户",
   "app.settings.manageCompanyUsers.manageInvitations": "管理邀请",

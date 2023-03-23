@@ -33,10 +33,7 @@ import React from "react";
 import VendorCheckout from "./VendorCheckout";
 import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import { useGetAllPlansQuery } from "../../gql/get/company/company.generated";
-import {
-  ProductAndMoqInput,
-  StripePaymentIntent,
-} from "../../../generated/graphql";
+import { StripePaymentIntent } from "../../../generated/graphql";
 import { useIntl } from "react-intl";
 import { useCreateStripeCustomerInStripeForVendorMutation } from "../../gql/create/company/company.generated";
 import JoinOrCreateCompany from "../JoinOrCreateCompany";
@@ -56,9 +53,9 @@ export type VendorSignupData = {
   isActive: boolean;
   isVendor: boolean;
   isVerified: boolean;
-  leadTime: string;
-  locations: string[];
-  productsAndMoq: ProductAndMoqInput[];
+  // leadTime: string;
+  // locations: string[];
+  // productsAndMoq: ProductAndMoqInput[];
   companyUrl: string;
   planId: string;
   userEmail: string;
@@ -99,9 +96,9 @@ const VendorSignup = () => {
     intl.formatMessage({
       id: "app.signup.step.companyInfo",
     }),
-    intl.formatMessage({
-      id: "app.signup.vendor.step.vendorInfo",
-    }),
+    // intl.formatMessage({
+    //   id: "app.signup.vendor.step.vendorInfo",
+    // }),
     // intl.formatMessage({
     //   id: "app.signup.step.selectPlan",
     // }),
@@ -143,9 +140,9 @@ const VendorSignup = () => {
     isActive: false,
     isVendor: true,
     isVerified: false,
-    leadTime: "",
-    locations: [],
-    productsAndMoq: [{ product: "", moq: "" }],
+    // leadTime: "",
+    // locations: [],
+    // productsAndMoq: [{ product: "", moq: "" }],
     companyUrl: "https://",
     planId: "",
     userEmail: "",
@@ -288,43 +285,43 @@ const VendorSignup = () => {
     });
   };
 
-  const deleteProductsAndMoq = (ind: number) => {
-    setValues((prev) => {
-      const allProductsAndMoq = [...prev.productsAndMoq];
-      allProductsAndMoq!.splice(ind, 1);
-      return {
-        ...prev,
-        productsAndMoq: allProductsAndMoq,
-      };
-    });
-  };
+  // const deleteProductsAndMoq = (ind: number) => {
+  //   setValues((prev) => {
+  //     const allProductsAndMoq = [...prev.productsAndMoq];
+  //     allProductsAndMoq!.splice(ind, 1);
+  //     return {
+  //       ...prev,
+  //       productsAndMoq: allProductsAndMoq,
+  //     };
+  //   });
+  // };
 
-  const addProductsAndMoq = () => {
-    const prevProductsAndMoq = [...values.productsAndMoq];
-    setValues((prev) => {
-      return {
-        ...prev,
-        productsAndMoq: [
-          ...prevProductsAndMoq,
-          {
-            product: "",
-            moq: "",
-          },
-        ],
-      };
-    });
-  };
+  // const addProductsAndMoq = () => {
+  //   const prevProductsAndMoq = [...values.productsAndMoq];
+  //   setValues((prev) => {
+  //     return {
+  //       ...prev,
+  //       productsAndMoq: [
+  //         ...prevProductsAndMoq,
+  //         {
+  //           product: "",
+  //           moq: "",
+  //         },
+  //       ],
+  //     };
+  //   });
+  // };
 
   // used for determining if we should disable next button
   const validateInputs = (fields: (keyof VendorSignupData)[]) => {
     for (let field of fields) {
-      if (field === "productsAndMoq") {
-        for (let productAndMoq of values.productsAndMoq) {
-          if (productAndMoq.moq === "" || productAndMoq.product === "")
-            return false;
-        }
-        continue;
-      }
+      // if (field === "productsAndMoq") {
+      //   for (let productAndMoq of values.productsAndMoq) {
+      //     if (productAndMoq.moq === "" || productAndMoq.product === "")
+      //       return false;
+      //   }
+      //   continue;
+      // }
       const val = values[field as keyof VendorSignupData];
       if (Array.isArray(val) && val.length === 0) return false;
       if (!val) return false;
@@ -343,13 +340,14 @@ const VendorSignup = () => {
         ...values,
         name: values.name.replace(/\s+/g, " ").trim(),
       });
-      setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
-    } else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
-      setValues({
-        ...values,
-      });
       setCurrentPage(VendorSignupPage.REVIEW_PAGE);
     }
+    // else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
+    //   setValues({
+    //     ...values,
+    //   });
+    //   setCurrentPage(VendorSignupPage.REVIEW_PAGE);
+    // }
     // else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
     //   setCurrentPage(VendorSignupPage.PLAN_SELECTION_PAGE);
     // }
@@ -364,7 +362,6 @@ const VendorSignup = () => {
               ...values,
               companyUrl:
                 values.companyUrl === "https://" ? "" : values.companyUrl,
-              leadTime: parseInt(values.leadTime),
               stripeCustomerInfo: {
                 subscriptionId: "",
                 customerId: "",
@@ -416,9 +413,9 @@ const VendorSignup = () => {
       case VendorSignupPage.COMPANY_INFO_PAGE:
         setCurrentPage(VendorSignupPage.EMAIL_PAGE);
         break;
-      case VendorSignupPage.VENDOR_INFO_PAGE:
-        setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
-        break;
+      // case VendorSignupPage.VENDOR_INFO_PAGE:
+      //   setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
+      //   break;
       // case VendorSignupPage.COMPANY_SIZE_PAGE:
       //   setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
       //   break;
@@ -426,7 +423,7 @@ const VendorSignup = () => {
       //   setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
       //   break;
       case VendorSignupPage.REVIEW_PAGE:
-        setCurrentPage(VendorSignupPage.VENDOR_INFO_PAGE);
+        setCurrentPage(VendorSignupPage.COMPANY_INFO_PAGE);
         break;
       // case VendorSignupPage.PAYMENT_PAGE:
       //   setCurrentPage(VendorSignupPage.REVIEW_PAGE);
@@ -534,23 +531,25 @@ const VendorSignup = () => {
           )}
         </>
       );
-    } else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
-      return (
-        <>
-          <VendorInfo
-            values={values}
-            setValues={setValues}
-            onChange={onChange}
-            setShouldDisableNext={setShouldDisableNext}
-            addProductsAndMoq={addProductsAndMoq}
-            deleteProductsAndMoq={deleteProductsAndMoq}
-          />
-          {renderNavigationButtons(
-            validateInputs(["leadTime", "productsAndMoq", "locations"])
-          )}
-        </>
-      );
-    } else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
+    }
+    //  else if (currentPage === VendorSignupPage.VENDOR_INFO_PAGE) {
+    //   return (
+    //     <>
+    //       <VendorInfo
+    //         values={values}
+    //         setValues={setValues}
+    //         onChange={onChange}
+    //         setShouldDisableNext={setShouldDisableNext}
+    //         addProductsAndMoq={addProductsAndMoq}
+    //         deleteProductsAndMoq={deleteProductsAndMoq}
+    //       />
+    //       {renderNavigationButtons(
+    //         validateInputs(["leadTime", "productsAndMoq", "locations"])
+    //       )}
+    //     </>
+    //   );
+    // }
+    else if (currentPage === VendorSignupPage.COMPANY_SIZE_PAGE) {
       return (
         <>
           <Typography variant="h6">Choose your company size</Typography>

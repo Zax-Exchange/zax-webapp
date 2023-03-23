@@ -41,6 +41,7 @@ import InviteUsers from "../ManageInvitations";
 import UpdateUserPower from "../UpdateUserPower";
 import EditVendorProfile from "./EditVendorProfile";
 import UploadCertifications from "./UploadCertifications";
+import EditFactories from "./EditFactories";
 
 const NoWrapListItemText = styled(
   (props: ListItemTextProps & { text: string }) => {
@@ -94,6 +95,7 @@ enum VENDOR_SETTINGS_ROUTE {
   DEACTIVATE_USERS = "DEACTIVATE_USERS",
   UPDATE_USER_POWER = "UPDATE_USER_POWER",
   VIEW_STATEMENTS = "VIEW_STATEMENTS",
+  EDIT_FACTORIES = "EDIT_FACTORIES",
 }
 const VendorSettings = () => {
   const { user } = useContext(AuthContext);
@@ -169,6 +171,10 @@ const VendorSettings = () => {
     if (view === VENDOR_SETTINGS_ROUTE.UPLOAD_CERTIFICATIONS) {
       setSettingView(<UploadCertifications />);
     }
+
+    if (view === VENDOR_SETTINGS_ROUTE.EDIT_FACTORIES) {
+      setSettingView(<EditFactories />);
+    }
   };
 
   return (
@@ -242,6 +248,23 @@ const VendorSettings = () => {
                           <NoWrapListItemText
                             text={intl.formatMessage({
                               id: "app.settings.companySettings.editCompanyProfile",
+                            })}
+                          ></NoWrapListItemText>
+                        </ListItemButton>
+                      </ListItem>
+
+                      <ListItem
+                        disableGutters
+                        onClick={() =>
+                          renderSettingsView(
+                            VENDOR_SETTINGS_ROUTE.EDIT_FACTORIES
+                          )
+                        }
+                      >
+                        <ListItemButton>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.companySettings.editFactories",
                             })}
                           ></NoWrapListItemText>
                         </ListItemButton>

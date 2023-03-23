@@ -75,13 +75,9 @@ export type CompanyDetail = {
   isActive: Scalars['Boolean'];
   isVendor: Scalars['Boolean'];
   isVerified: Scalars['Boolean'];
-  leadTime?: Maybe<Scalars['Int']>;
-  locations?: Maybe<Array<Scalars['String']>>;
   logo?: Maybe<Scalars['String']>;
-  moq?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   phone: Scalars['String'];
-  products?: Maybe<Array<Scalars['String']>>;
   updatedAt: Scalars['Date'];
 };
 
@@ -139,6 +135,12 @@ export type CreateCustomerInput = {
   planId: Scalars['String'];
   stripeCustomerInfo: StripeCustomerInfo;
   userEmail: Scalars['String'];
+};
+
+export type CreateFactoryInput = {
+  companyId: Scalars['String'];
+  factoryProductsDetail: Array<FactoryProductDetailInput>;
+  location: Scalars['String'];
 };
 
 export type CreateGuestProjectInput = {
@@ -268,13 +270,10 @@ export type CreateVendorInput = {
   isActive: Scalars['Boolean'];
   isVendor: Scalars['Boolean'];
   isVerified: Scalars['Boolean'];
-  leadTime: Scalars['Int'];
-  locations: Array<Scalars['String']>;
   logo?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   phone: Scalars['String'];
   planId: Scalars['String'];
-  productsAndMoq: Array<ProductAndMoqInput>;
   stripeCustomerInfo: StripeCustomerInfo;
   userEmail: Scalars['String'];
 };
@@ -385,6 +384,11 @@ export type DeleteCertificationsInput = {
   fileIds: Array<Scalars['String']>;
 };
 
+export type DeleteFactoryInput = {
+  companyId: Scalars['String'];
+  id: Scalars['String'];
+};
+
 export type DeleteInvoiceInput = {
   fileId: Scalars['String'];
 };
@@ -424,6 +428,26 @@ export type DeleteProjectPermissionsInput = {
 
 export type DeletePurchaseOrderInput = {
   fileId: Scalars['String'];
+};
+
+export type FactoryDetail = {
+  __typename?: 'FactoryDetail';
+  factoryProductsDetail: Array<FactoryProductDetail>;
+  id: Scalars['String'];
+  location: Scalars['String'];
+};
+
+export type FactoryProductDetail = {
+  __typename?: 'FactoryProductDetail';
+  leadTime: Scalars['String'];
+  moq: Scalars['String'];
+  product: Scalars['String'];
+};
+
+export type FactoryProductDetailInput = {
+  leadTime: Scalars['String'];
+  moq: Scalars['String'];
+  product: Scalars['String'];
 };
 
 export type FileInterface = {
@@ -569,6 +593,10 @@ export type GetVendorDetailInput = {
   companyId: Scalars['String'];
 };
 
+export type GetVendorFactoriesInput = {
+  vendorCompanyId: Scalars['String'];
+};
+
 export type GetVendorGuestProjectInput = {
   projectId: Scalars['String'];
   userId: Scalars['String'];
@@ -634,6 +662,7 @@ export type Mutation = {
   createCertifications: Scalars['Boolean'];
   createCustomer: Scalars['Boolean'];
   createCustomerSubscription: StripeSubscription;
+  createFactory: Scalars['Boolean'];
   createGuestProject: Scalars['Boolean'];
   createGuestProjectLink: Scalars['Boolean'];
   createInvoice: Scalars['Boolean'];
@@ -650,6 +679,7 @@ export type Mutation = {
   deactivateCustomerUser: Scalars['Boolean'];
   deleteBidRemark: Scalars['Boolean'];
   deleteCertifications: Scalars['Boolean'];
+  deleteFactory: Scalars['Boolean'];
   deleteInvoice: Scalars['Boolean'];
   deletePendingJoinRequests: Scalars['Boolean'];
   deleteProject: Scalars['Boolean'];
@@ -670,6 +700,7 @@ export type Mutation = {
   updateCompanyStatus: Scalars['Boolean'];
   updateCustomerInfo: Scalars['Boolean'];
   updateCustomerUpgradeToPaidPlan: Scalars['Boolean'];
+  updateFactory: Scalars['Boolean'];
   updateGuestProject: Scalars['Boolean'];
   updateProject: Scalars['Boolean'];
   updateProjectBid: Scalars['Boolean'];
@@ -707,6 +738,11 @@ export type MutationCreateCustomerArgs = {
 export type MutationCreateCustomerSubscriptionArgs = {
   priceId: Scalars['String'];
   stripeCustomerId: Scalars['String'];
+};
+
+
+export type MutationCreateFactoryArgs = {
+  data: CreateFactoryInput;
 };
 
 
@@ -787,6 +823,11 @@ export type MutationDeleteBidRemarkArgs = {
 
 export type MutationDeleteCertificationsArgs = {
   data: DeleteCertificationsInput;
+};
+
+
+export type MutationDeleteFactoryArgs = {
+  data: DeleteFactoryInput;
 };
 
 
@@ -890,6 +931,11 @@ export type MutationUpdateCustomerUpgradeToPaidPlanArgs = {
 };
 
 
+export type MutationUpdateFactoryArgs = {
+  data: UpdateFactoryInput;
+};
+
+
 export type MutationUpdateGuestProjectArgs = {
   data: UpdateGuestProjectInput;
 };
@@ -980,15 +1026,11 @@ export type PermissionedCompany = {
   isActive: Scalars['Boolean'];
   isVendor: Scalars['Boolean'];
   isVerified: Scalars['Boolean'];
-  leadTime?: Maybe<Scalars['Int']>;
-  locations?: Maybe<Array<Scalars['String']>>;
   logo: Scalars['String'];
-  moq?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   phone: Scalars['String'];
   planInfo: CompanyPlan;
   power: UserPower;
-  products?: Maybe<Array<Scalars['String']>>;
   updatedAt: Scalars['Date'];
 };
 
@@ -1099,17 +1141,6 @@ export type Pricings = {
   annual?: Maybe<PricingDetail>;
   monthly?: Maybe<PricingDetail>;
   perUser: PricingDetail;
-};
-
-export type ProductAndMoq = {
-  __typename?: 'ProductAndMoq';
-  moq: Scalars['String'];
-  product: Scalars['String'];
-};
-
-export type ProductAndMoqInput = {
-  moq: Scalars['String'];
-  product: Scalars['String'];
 };
 
 export type ProductDimension = {
@@ -1396,6 +1427,7 @@ export type Query = {
   getStatementsLink: Scalars['String'];
   getUser: GenericUser;
   getVendorDetail?: Maybe<VendorDetail>;
+  getVendorFactories: Array<FactoryDetail>;
   getVendorGuestProject?: Maybe<VendorGuestProject>;
   getVendorGuestProjects: Array<VendorGuestProjectOverview>;
   getVendorPos: Array<VendorPo>;
@@ -1563,6 +1595,11 @@ export type QueryGetUserArgs = {
 
 export type QueryGetVendorDetailArgs = {
   data?: InputMaybe<GetVendorDetailInput>;
+};
+
+
+export type QueryGetVendorFactoriesArgs = {
+  data?: InputMaybe<GetVendorFactoriesInput>;
 };
 
 
@@ -1737,6 +1774,13 @@ export type UpdateCustomerUpgradeToPaidPlanInput = {
   companyId: Scalars['String'];
 };
 
+export type UpdateFactoryInput = {
+  companyId: Scalars['String'];
+  factoryProductsDetail: Array<FactoryProductDetailInput>;
+  id: Scalars['String'];
+  location: Scalars['String'];
+};
+
 export type UpdateGuestProjectInput = {
   componentsForCreate: Array<CreateProjectComponentInput>;
   componentsForDelete: Array<DeleteProjectComponentInput>;
@@ -1861,12 +1905,9 @@ export type UpdateVendorInfoInput = {
   contactEmail: Scalars['String'];
   country: Scalars['String'];
   fax?: InputMaybe<Scalars['String']>;
-  leadTime: Scalars['Int'];
-  locations: Array<Scalars['String']>;
   logo?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   phone: Scalars['String'];
-  productsAndMoq: Array<ProductAndMoqInput>;
 };
 
 export type UserInterface = {
@@ -1910,12 +1951,9 @@ export type VendorDetail = {
   id: Scalars['String'];
   isActive: Scalars['Boolean'];
   isVerified: Scalars['Boolean'];
-  leadTime: Scalars['Int'];
-  locations: Array<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   phone: Scalars['String'];
-  productsAndMoq: Array<ProductAndMoq>;
 };
 
 export type VendorGuestProject = ProjectInterface & {
@@ -1963,7 +2001,6 @@ export type VendorOverview = {
   country: Scalars['String'];
   id: Scalars['String'];
   isVerified: Scalars['Boolean'];
-  leadTime: Scalars['Int'];
   locations: Array<Scalars['String']>;
   logo?: Maybe<Scalars['String']>;
   name: Scalars['String'];

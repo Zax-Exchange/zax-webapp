@@ -32,3 +32,9 @@ const CREATE_CERTS = gql`
     createCertifications(data: $data)
   }
 `
+
+const CREATE_FACTORY = gql`
+  mutation createFactory($data: CreateFactoryInput!) {
+    createFactory(data: $data)
+  }
+`

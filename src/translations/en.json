@@ -264,7 +264,7 @@
   "app.vendor.attribute.moq": "Minimum Order Quantity",
   "app.vendor.attribute.leadTime": "Lead Time",
   "app.vendor.attribute.products": "Manufacturing Products",
-  "app.vendor.attribute.locations": "Factory Locations",
+  "app.vendor.attribute.locations": "Factory Location",
   "app.vendor.attribute.productsAndMoq": "Product And MOQ",
   "app.plan.attribute.tier.premium": "Premium",
   "app.plan.attribute.tier.business": "Business",
@@ -474,6 +474,8 @@
   "app.vendorProfile.tab.certifications": "Certifications & Rewards",
   "app.vendorProfile.tab.certifications.noCert": "This vendor has not uploaded any certifications yet.",
   "app.vendorProfile.tab.productShowcase": "Product Showcase",
+  "app.vendorProfile.tab.factoryInfo": "Factories Info",
+  "app.vendorProfile.tab.factoryInfo.noFactory": "This vendor has not added any factories yet.",
   
 
   "app.vendor.poInvoice.upload.create": "Create Invoice",
@@ -550,6 +552,7 @@
   "app.settings.companySettings.editCompanyProfile": "Edit Company Profile",
   "app.settings.companySettings.uploadCertifications": "Upload Certifications",
   "app.settings.companySettings.uploadCertifications.helperText": "Certifications can help make your company more professional and trustworthy.",
+  "app.settings.companySettings.editFactories": "Edit Factories",
   "app.settings.manageCompanyUsers": "Manage Company Users",
   "app.settings.manageCompanyUsers.manageInvitations": "Manage Invitations",
   "app.settings.manageCompanyUsers.manageInvitations.directInvitation": "Direct Invitation",

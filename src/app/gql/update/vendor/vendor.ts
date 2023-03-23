@@ -5,3 +5,9 @@ const UPDATE_VENDOR_INFO = gql`
     updateVendorInfo(data: $data)
   }
 `;
+
+const UPDATE_FACTORY = gql`
+  mutation updateFactory($data: UpdateFactoryInput!) {
+    updateFactory(data: $data)
+  }
+`
