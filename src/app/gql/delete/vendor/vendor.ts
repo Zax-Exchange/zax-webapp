@@ -12,6 +12,12 @@ const DELETE_CERTS = gql`
   }
 `
 
+const DELETE_PRODUCT_IMAGES = gql`
+  mutation deleteProductImages($data: DeleteProductImagesInput!) {
+    deleteProductImages(data: $data)
+  }
+`
+
 const DELETE_FACTORY = gql`
   mutation deleteFactory($data: DeleteFactoryInput!) {
     deleteFactory(data: $data)

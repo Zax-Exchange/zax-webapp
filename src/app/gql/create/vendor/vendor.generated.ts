@@ -39,6 +39,13 @@ export type CreateCertificationsMutationVariables = Types.Exact<{
 
 export type CreateCertificationsMutation = { __typename?: 'Mutation', createCertifications: boolean };
 
+export type CreateProductImagesMutationVariables = Types.Exact<{
+  data: Types.CreateProductImagesInput;
+}>;
+
+
+export type CreateProductImagesMutation = { __typename?: 'Mutation', createProductImages: boolean };
+
 export type CreateFactoryMutationVariables = Types.Exact<{
   data: Types.CreateFactoryInput;
 }>;
@@ -205,6 +212,37 @@ export function useCreateCertificationsMutation(baseOptions?: Apollo.MutationHoo
 export type CreateCertificationsMutationHookResult = ReturnType<typeof useCreateCertificationsMutation>;
 export type CreateCertificationsMutationResult = Apollo.MutationResult<CreateCertificationsMutation>;
 export type CreateCertificationsMutationOptions = Apollo.BaseMutationOptions<CreateCertificationsMutation, CreateCertificationsMutationVariables>;
+export const CreateProductImagesDocument = gql`
+    mutation createProductImages($data: CreateProductImagesInput!) {
+  createProductImages(data: $data)
+}
+    `;
+export type CreateProductImagesMutationFn = Apollo.MutationFunction<CreateProductImagesMutation, CreateProductImagesMutationVariables>;
+
+/**
+ * __useCreateProductImagesMutation__
+ *
+ * To run a mutation, you first call `useCreateProductImagesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductImagesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductImagesMutation, { data, loading, error }] = useCreateProductImagesMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateProductImagesMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductImagesMutation, CreateProductImagesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductImagesMutation, CreateProductImagesMutationVariables>(CreateProductImagesDocument, options);
+      }
+export type CreateProductImagesMutationHookResult = ReturnType<typeof useCreateProductImagesMutation>;
+export type CreateProductImagesMutationResult = Apollo.MutationResult<CreateProductImagesMutation>;
+export type CreateProductImagesMutationOptions = Apollo.BaseMutationOptions<CreateProductImagesMutation, CreateProductImagesMutationVariables>;
 export const CreateFactoryDocument = gql`
     mutation createFactory($data: CreateFactoryInput!) {
   createFactory(data: $data)

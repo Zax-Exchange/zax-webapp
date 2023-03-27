@@ -199,3 +199,13 @@ const GET_CERTS = gql`
     }
   }
 `
+
+const GET_PRODUCT_IMAGES = gql`
+  ${FILE_FRAGMENT}
+  query getProductImages($data: GetProductImagesInput!) {
+    getProductImages(data: $data) {
+      ...FileFragment
+      productType
+    }
+  }
+`

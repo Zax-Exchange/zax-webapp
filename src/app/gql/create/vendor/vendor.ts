@@ -33,6 +33,12 @@ const CREATE_CERTS = gql`
   }
 `
 
+const CREATE_PRODUCT_IMAGES = gql`
+  mutation createProductImages($data: CreateProductImagesInput!) {
+    createProductImages(data: $data)
+  }
+`
+
 const CREATE_FACTORY = gql`
   mutation createFactory($data: CreateFactoryInput!) {
     createFactory(data: $data)

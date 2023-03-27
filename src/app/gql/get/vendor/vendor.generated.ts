@@ -92,6 +92,13 @@ export type GetCertificationsQueryVariables = Types.Exact<{
 
 export type GetCertificationsQuery = { __typename?: 'Query', getCertifications: Array<{ __typename?: 'GenericFile', fileId: string, filename: string, url: string }> };
 
+export type GetProductImagesQueryVariables = Types.Exact<{
+  data: Types.GetProductImagesInput;
+}>;
+
+
+export type GetProductImagesQuery = { __typename?: 'Query', getProductImages: Array<{ __typename?: 'ProductImageFile', productType: string, fileId: string, filename: string, url: string }> };
+
 
 export const GetVendorDetailDocument = gql`
     query getVendorDetail($data: GetVendorDetailInput!) {
@@ -606,3 +613,39 @@ export function useGetCertificationsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetCertificationsQueryHookResult = ReturnType<typeof useGetCertificationsQuery>;
 export type GetCertificationsLazyQueryHookResult = ReturnType<typeof useGetCertificationsLazyQuery>;
 export type GetCertificationsQueryResult = Apollo.QueryResult<GetCertificationsQuery, GetCertificationsQueryVariables>;
+export const GetProductImagesDocument = gql`
+    query getProductImages($data: GetProductImagesInput!) {
+  getProductImages(data: $data) {
+    ...FileFragment
+    productType
+  }
+}
+    ${FileFragmentFragmentDoc}`;
+
+/**
+ * __useGetProductImagesQuery__
+ *
+ * To run a query within a React component, call `useGetProductImagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductImagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductImagesQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetProductImagesQuery(baseOptions: Apollo.QueryHookOptions<GetProductImagesQuery, GetProductImagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProductImagesQuery, GetProductImagesQueryVariables>(GetProductImagesDocument, options);
+      }
+export function useGetProductImagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductImagesQuery, GetProductImagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProductImagesQuery, GetProductImagesQueryVariables>(GetProductImagesDocument, options);
+        }
+export type GetProductImagesQueryHookResult = ReturnType<typeof useGetProductImagesQuery>;
+export type GetProductImagesLazyQueryHookResult = ReturnType<typeof useGetProductImagesLazyQuery>;
+export type GetProductImagesQueryResult = Apollo.QueryResult<GetProductImagesQuery, GetProductImagesQueryVariables>;

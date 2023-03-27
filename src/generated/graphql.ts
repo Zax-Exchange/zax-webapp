@@ -168,6 +168,12 @@ export type CreateInvoiceInput = {
   projectId: Scalars['String'];
 };
 
+export type CreateProductImagesInput = {
+  companyId: Scalars['String'];
+  fileIds: Array<Scalars['String']>;
+  productType: Scalars['String'];
+};
+
 export type CreateProjectBidComponentInput = {
   projectBidId?: InputMaybe<Scalars['String']>;
   projectComponentId: Scalars['String'];
@@ -397,6 +403,10 @@ export type DeletePendingJoinRequestInput = {
   userEmail: Scalars['String'];
 };
 
+export type DeleteProductImagesInput = {
+  fileIds: Array<Scalars['String']>;
+};
+
 export type DeleteProjectBidPermissionsInput = {
   projectBidId: Scalars['String'];
   userIds: Array<Scalars['String']>;
@@ -542,6 +552,10 @@ export type GetPlanInput = {
   planId: Scalars['String'];
 };
 
+export type GetProductImagesInput = {
+  companyId: Scalars['String'];
+};
+
 export type GetProjectBidInput = {
   companyId: Scalars['String'];
   projectId: Scalars['String'];
@@ -666,6 +680,7 @@ export type Mutation = {
   createGuestProject: Scalars['Boolean'];
   createGuestProjectLink: Scalars['Boolean'];
   createInvoice: Scalars['Boolean'];
+  createProductImages: Scalars['Boolean'];
   createProject: Scalars['Boolean'];
   createProjectBid: Scalars['Boolean'];
   createProjectBidComponents: Scalars['Boolean'];
@@ -682,6 +697,7 @@ export type Mutation = {
   deleteFactory: Scalars['Boolean'];
   deleteInvoice: Scalars['Boolean'];
   deletePendingJoinRequests: Scalars['Boolean'];
+  deleteProductImages: Scalars['Boolean'];
   deleteProject: Scalars['Boolean'];
   deleteProjectBidPermissions: Scalars['Boolean'];
   deleteProjectDesign: Scalars['Boolean'];
@@ -715,6 +731,7 @@ export type Mutation = {
   uploadBidRemark: BidRemark;
   uploadCertification: GenericFile;
   uploadInvoice: Invoice;
+  uploadProductImage: GenericFile;
   uploadProjectDesign: ProjectDesign;
   uploadPurchaseOrder: PurchaseOrder;
 };
@@ -758,6 +775,11 @@ export type MutationCreateGuestProjectLinkArgs = {
 
 export type MutationCreateInvoiceArgs = {
   data: CreateInvoiceInput;
+};
+
+
+export type MutationCreateProductImagesArgs = {
+  data: CreateProductImagesInput;
 };
 
 
@@ -838,6 +860,11 @@ export type MutationDeleteInvoiceArgs = {
 
 export type MutationDeletePendingJoinRequestsArgs = {
   data: Array<DeletePendingJoinRequestInput>;
+};
+
+
+export type MutationDeleteProductImagesArgs = {
+  data: DeleteProductImagesInput;
 };
 
 
@@ -1006,6 +1033,11 @@ export type MutationUploadInvoiceArgs = {
 };
 
 
+export type MutationUploadProductImageArgs = {
+  file: Scalars['Upload'];
+};
+
+
 export type MutationUploadProjectDesignArgs = {
   file: Scalars['Upload'];
 };
@@ -1154,6 +1186,14 @@ export type ProductDimensionInput = {
   x: Scalars['String'];
   y: Scalars['String'];
   z?: InputMaybe<Scalars['String']>;
+};
+
+export type ProductImageFile = FileInterface & {
+  __typename?: 'ProductImageFile';
+  fileId: Scalars['String'];
+  filename: Scalars['String'];
+  productType: Scalars['String'];
+  url: Scalars['String'];
 };
 
 export type Project = ProjectInterface & {
@@ -1415,6 +1455,7 @@ export type Query = {
   getGuestProjectDetail?: Maybe<Project>;
   getInvoice?: Maybe<Invoice>;
   getPlan: Plan;
+  getProductImages: Array<ProductImageFile>;
   getProjectBid?: Maybe<ProjectBid>;
   getProjectBidUsers: Array<UserProjectPermission>;
   getProjectBidsForPo: Array<ProjectBidForPo>;
@@ -1535,6 +1576,11 @@ export type QueryGetInvoiceArgs = {
 
 export type QueryGetPlanArgs = {
   data: GetPlanInput;
+};
+
+
+export type QueryGetProductImagesArgs = {
+  data: GetProductImagesInput;
 };
 
 

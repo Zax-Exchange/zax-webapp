@@ -163,6 +163,7 @@
   "app.home.announcement.provideFeedback": "若您有任何关于平台的想法或反馈，请同样使用右下角的选单填写反馈表。",
   "app.home.announcement.changeLocale": "若需变更显示语言，请点击左下角的图标选择语言。",
 
+  "app.product.type": "包装盒类型",
   "app.product.purpose.labeling": "装饰",
   "app.product.purpose.sealing": "封装",
   "app.product.shape.square": "方形",
@@ -478,6 +479,7 @@
   "app.vendorProfile.tab.companyInfo": "企业信息",
   "app.vendorProfile.tab.certifications": "证书与获奖",
   "app.vendorProfile.tab.certifications.noCert": "此厂商尚未上传任何证书。",
+  "app.vendorProfile.tab.productShowcase.noImage": "此厂商尚未上传任何产品展示图。",
   "app.vendorProfile.tab.productShowcase": "产品展示",
   "app.vendorProfile.tab.factoryInfo": "工厂信息",
   "app.vendorProfile.tab.factoryInfo.noFactory": "此厂商尚未上传任何工厂信息。",
@@ -558,7 +560,8 @@
   "app.settings.companySettings.uploadCertifications": "上传认证档案",
   "app.settings.companySettings.uploadCertifications.helperText": "上传您拥有的认证或证照能使客户在浏览您的企业简介时更相信公司的专业。",
   "app.settings.companySettings.editFactories": "编辑工厂信息",
-
+ "app.settings.companySettings.uploadShowcaseImages": "上传成品图片",
+  "app.settings.companySettings.uploadShowcaseImages.helperText": "选择产品类型并上传您想让客户浏览的成品图片。",
   "app.settings.manageCompanyUsers": "管理用户",
   "app.settings.manageCompanyUsers.manageInvitations": "管理邀请",
   "app.settings.manageCompanyUsers.manageInvitations.directInvitation": "直接邀请",

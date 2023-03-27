@@ -8,11 +8,13 @@ export type FileFragment_GenericFile_Fragment = { __typename?: 'GenericFile', fi
 
 export type FileFragment_Invoice_Fragment = { __typename?: 'Invoice', fileId: string, filename: string, url: string };
 
+export type FileFragment_ProductImageFile_Fragment = { __typename?: 'ProductImageFile', fileId: string, filename: string, url: string };
+
 export type FileFragment_ProjectDesign_Fragment = { __typename?: 'ProjectDesign', fileId: string, filename: string, url: string };
 
 export type FileFragment_PurchaseOrder_Fragment = { __typename?: 'PurchaseOrder', fileId: string, filename: string, url: string };
 
-export type FileFragmentFragment = FileFragment_BidRemark_Fragment | FileFragment_GenericFile_Fragment | FileFragment_Invoice_Fragment | FileFragment_ProjectDesign_Fragment | FileFragment_PurchaseOrder_Fragment;
+export type FileFragmentFragment = FileFragment_BidRemark_Fragment | FileFragment_GenericFile_Fragment | FileFragment_Invoice_Fragment | FileFragment_ProductImageFile_Fragment | FileFragment_ProjectDesign_Fragment | FileFragment_PurchaseOrder_Fragment;
 
 export const FileFragmentFragmentDoc = gql`
     fragment FileFragment on FileInterface {

@@ -42,6 +42,7 @@ import UpdateUserPower from "../UpdateUserPower";
 import EditVendorProfile from "./EditVendorProfile";
 import UploadCertifications from "./UploadCertifications";
 import EditFactories from "./EditFactories";
+import UploadShowcaseImages from "./UploadShowcaseImages";
 
 const NoWrapListItemText = styled(
   (props: ListItemTextProps & { text: string }) => {
@@ -96,6 +97,7 @@ enum VENDOR_SETTINGS_ROUTE {
   UPDATE_USER_POWER = "UPDATE_USER_POWER",
   VIEW_STATEMENTS = "VIEW_STATEMENTS",
   EDIT_FACTORIES = "EDIT_FACTORIES",
+  UPLOAD_SHOWCASE_IMAGES = "UPLOAD_SHOWCASE_IMAGES",
 }
 const VendorSettings = () => {
   const { user } = useContext(AuthContext);
@@ -174,6 +176,10 @@ const VendorSettings = () => {
 
     if (view === VENDOR_SETTINGS_ROUTE.EDIT_FACTORIES) {
       setSettingView(<EditFactories />);
+    }
+
+    if (view === VENDOR_SETTINGS_ROUTE.UPLOAD_SHOWCASE_IMAGES) {
+      setSettingView(<UploadShowcaseImages />);
     }
   };
 
@@ -287,17 +293,22 @@ const VendorSettings = () => {
                         </ListItemButton>
                       </ListItem>
 
-                      {/*<ListItem disableGutters>
-                      <ListItemButton>
-                        <NoWrapListItemText text="Request verification"></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem disableGutters>
-                      <ListItemButton>
-                        <NoWrapListItemText text="Deactivate company"></NoWrapListItemText>
-                      </ListItemButton>
-                    </ListItem> */}
+                      <ListItem
+                        disableGutters
+                        onClick={() =>
+                          renderSettingsView(
+                            VENDOR_SETTINGS_ROUTE.UPLOAD_SHOWCASE_IMAGES
+                          )
+                        }
+                      >
+                        <ListItemButton>
+                          <NoWrapListItemText
+                            text={intl.formatMessage({
+                              id: "app.settings.companySettings.uploadShowcaseImages",
+                            })}
+                          ></NoWrapListItemText>
+                        </ListItemButton>
+                      </ListItem>
                     </Stack>
                   </AccordionDetails>
                 </SettingsAccordion>

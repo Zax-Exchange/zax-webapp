@@ -36,6 +36,7 @@ import { openLink } from "../../Utils/openLink";
 import NotFound from "../../Utils/NotFound";
 import CertificationsTab from "./CertificationsTab";
 import FactoryInfoTab from "./FactoryInfoTab";
+import ProductShowcaseTab from "./ProductShowcaseTab";
 
 type TypographyVariant =
   | "button"
@@ -101,12 +102,12 @@ const VendorProfile = () => {
       label: intl.formatMessage({ id: "app.vendorProfile.tab.certifications" }),
       value: "certifications",
     },
-    // {
-    //   label: intl.formatMessage({
-    //     id: "app.vendorProfile.tab.productShowcase",
-    //   }),
-    //   value: "productShowcase",
-    // },
+    {
+      label: intl.formatMessage({
+        id: "app.vendorProfile.tab.productShowcase",
+      }),
+      value: "productShowcase",
+    },
   ];
 
   const {
@@ -394,6 +395,9 @@ const VendorProfile = () => {
           </TabPanel>
           <TabPanel value={currentTab} index={2}>
             <CertificationsTab />
+          </TabPanel>
+          <TabPanel value={currentTab} index={3}>
+            <ProductShowcaseTab />
           </TabPanel>
         </Paper>
       </Container>
