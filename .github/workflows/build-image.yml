@@ -1,5 +1,5 @@
 name: Build Docker Images
-run-name: ${{ github.actor }} is Building and Pushing Docker images to ECR
+run-name: Building ${{ github.ref_name }}
 on: workflow_dispatch
 jobs:
   Generate-Build-Tag:
