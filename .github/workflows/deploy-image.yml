@@ -1,5 +1,5 @@
 name: Deploy Docker Image
-run-name: ${{ github.actor }} is Setting Version and Deploying Image to EKS
+run-name: ${{ inputs.deploymentEnvironment}} - deploying ${{ github.ref_name }}
 on:
   workflow_dispatch:
     inputs:
