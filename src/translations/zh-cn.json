@@ -392,6 +392,7 @@
   "app.customer.projects.componentsDetail": "部件细节",
   "app.customer.projects.versionHistory": "版本历史",
   "app.customer.projects.modal.delete.title": "您确定要删除此项目？",
+  "app.customer.projects.modal.delete.desc": "若项目已有竞标，所有竞标将被删除。",
   "app.customer.projects.error.reachedFreePlanLimit": "您已达到免费计划的项目数量限制。请在继续之前升级至我们的高级套餐。",
   "app.customer.createProject.configureProjectDetail": "编辑项目细节",
   "app.customer.createProject.addComponent": "添加部件",

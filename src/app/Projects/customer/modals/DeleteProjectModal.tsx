@@ -72,6 +72,13 @@ const DeleteProjectModal = ({
             })}
           </Typography>
         </DialogTitle>
+        <DialogContent>
+          <Typography variant="caption">
+            {intl.formatMessage({
+              id: "app.customer.projects.modal.delete.desc",
+            })}
+          </Typography>
+        </DialogContent>
         <DialogActions sx={{ mt: 1 }}>
           <Button
             onClick={() => setDeleteProjectModalOpen(false)}

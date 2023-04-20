@@ -108,7 +108,7 @@ const CustomerProjectOverviewCard = ({
         }
         break;
       case "delete":
-        if (canDelete()) setDeleteProjectModalOpen(true);
+        setDeleteProjectModalOpen(true);
         break;
       default:
         break;
@@ -229,7 +229,7 @@ const CustomerProjectOverviewCard = ({
 
             <MenuItem
               onClick={() => projectMenuOnClick("delete")}
-              disabled={!canDelete()}
+              // disabled={!canDelete()}
             >
               {intl.formatMessage({ id: "app.general.delete" })}
             </MenuItem>
