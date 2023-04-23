@@ -3,6 +3,8 @@ import { ZaxConfig } from "./Config"
 export class EnvConfig implements ZaxConfig {
   webserviceUrl = process.env.REACT_APP_WEBSERVICE_URL!;
   notificationServiceUrl = process.env.REACT_APP_NOTIFICATION_SERVICE_URL!;
+  chatserviceUrl = "http://localhost:4001"
+  chatWebsocketUrl = "ws://localhost:4002"
   streamApiKey = process.env.REACT_APP_STREAM_API_KEY!;
   streamAppId = process.env.REACT_APP_STREAM_APP_ID!;
   cloudfrontUrl = process.env.REACT_APP_STATIC_CLOUDFRONT_URL!;

@@ -102,13 +102,12 @@ const CustomerChat = ({ bids }: { bids: ProjectBid[] }) => {
         </List>
       </Box>
       <Box sx={{ flexGrow: 2, background: "white", borderRadius: "4px" }}>
-        <ProjectChat
-          projectBidId={bids[chatIndexToOpen] ? bids[chatIndexToOpen].id : ""}
-          customerName={companyData ? companyData.getCustomerDetail.name : ""}
-          vendorName={
-            bids[chatIndexToOpen] ? bids[chatIndexToOpen].companyId : ""
-          }
-        />
+        { user &&
+          <ProjectChat
+            userId={user.id}
+            projectBidId={bids[chatIndexToOpen] ? bids[chatIndexToOpen].id : ""}
+          />
+        }
       </Box>
     </Paper>
   );

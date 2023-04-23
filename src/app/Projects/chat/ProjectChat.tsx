@@ -1,106 +1,95 @@
-import { Box, DialogTitle, DialogContent, Dialog } from "@mui/material";
-import { StreamChat } from "stream-chat";
-import { Chat, Channel, Thread, Window, MessageInput } from "stream-chat-react";
-import { useContext, useEffect, useRef, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import Messages from "./Messages";
-import CustomMessageInput from "./MessageInput";
+import { Box } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import MessageInput from "./MessageInput";
+import { Messages, MessageUserData } from "./Messages";
 import React from "react";
 import "./Chat.scss";
-import { envConfig as config } from "../../Config/EnvConfig";
+import { ChatData, ChatApi } from "./ChatApi";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { envConfig } from "../../Config/EnvConfig";
 
-const streamApiKey = config.streamApiKey;
-const streamAppId = config.streamAppId;
-const filters = { type: "messaging", members: { $in: ["ancient-mountain-4"] } };
-const sort = { last_message_at: -1 };
-
-const CustomChannelPreview = (props: any) => {
-  const { channel, setActiveChannel } = props;
-
-  const { messages } = channel.state;
-  const messagePreview = messages[messages.length - 1]?.text.slice(0, 30);
-
-  return (
-    <div onClick={() => setActiveChannel(channel)} style={{ margin: "12px" }}>
-      <div>{channel.data.name || "Unnamed Channel"}</div>
-      <div style={{ fontSize: "14px" }}>{messagePreview}</div>
-    </div>
-  );
-};
-
-const ProjectChat = ({
-  projectBidId,
-  customerName,
-  vendorName,
-}: {
-  projectBidId: string;
-  customerName: string;
-  vendorName: string;
-}) => {
-  const { user } = useContext(AuthContext);
-  const [chatClient, setChatClient] = useState(null as any);
-  const [channel, setChannel] = useState(null as any);
-  const messagesRef = useRef<HTMLUListElement | null>(null);
-
-  const logo =
-    "https://st4.depositphotos.com/3265223/21282/v/600/depositphotos_212821870-stock-illustration-default-avatar-photo-placeholder-profile.jpg";
-
-  useEffect(() => {
-    const initChat = async () => {
-      const client = StreamChat.getInstance(streamApiKey);
-
-      if (!chatClient) {
-        await client.connectUser(
-          {
-            id: user!.companyId,
-            name: user!.isVendor ? vendorName : customerName,
-            image: logo,
-          },
-          user!.chatToken
-        );
-        setChatClient(client);
-      }
-
-      const channel = client.channel("messaging", projectBidId, {
-        name: `Channel for ${customerName} & ${vendorName}`,
-      });
-
-      channel.addMembers([user!.companyId]);
-      await channel.watch();
-      setChannel(channel);
-    };
-
-    initChat();
-  }, [projectBidId]);
-
-  useEffect(() => {
-    return () => {
-      if (chatClient) {
-        chatClient.disconnectUser();
-      }
-    };
-  }, [chatClient]);
-
-  // Use this so we can pass props into CustomMessageInput if needed.
-  const getCustomeMessageInput = () => {
-    return <CustomMessageInput />;
-  };
-
-  if (!chatClient) {
+const gqlClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  uri: envConfig.webserviceUrl
+});
+const getUser = async (userId: string) => {
+  try {
+    const result = await gqlClient.query({
+      query: gql`query GetUser($data: GetUserInput!) {
+        getUser(data: $data) {
+          companyId
+          email
+          id
+          isVendor
+          power
+          name
+          status
+        }
+      }`,
+      variables: {
+        data: {
+          userId,
+        },
+      },
+    });
+    return result;
+  } catch (err) {
+    console.log(`failed to retrieve user userId=${userId}`)
     return null;
   }
+}
+
+
+const ProjectChat = ({
+  userId, 
+  projectBidId,
+}: {
+  userId: string;
+  projectBidId: string;
+}) => {
+  const [chat, setChat] = useState<ChatData|null>(null)
+  const [userData, setUserData] = useState<Map<string,MessageUserData>>(new Map<string,MessageUserData>());
+
+  // fetch chat and set chat
+  useEffect(() => {
+    const init = async () => {
+      var chat = await ChatApi.createOrGetChatByProjectBidId(projectBidId);
+      chat = await ChatApi.addUserToChat(chat.id, userId)
+      setChat(chat);
+    };
+    init();
+  }, []);
+
+  // once chat has been set, fetch all the user information
+  useEffect(() => {
+    if (chat === null ) {
+      return; 
+    }
+    const userMap = new Map<string,MessageUserData>();
+    Promise.all(chat.users.map((user) => {
+      return getUser(user.userId);
+    }))
+    .then((users) => {
+      users.forEach((user) => {
+        if (user == null) {
+          return;
+        }
+        userMap.set(user.data.id, {
+          userId: user.data.id,
+          userName: user.data.name,
+          userImage: undefined,
+        })
+      })
+      setUserData(userMap)
+    });
+  }, [chat]);
 
   return (
     <Box>
-      <Chat client={chatClient} theme="messaging light">
-        <Channel channel={channel} Input={getCustomeMessageInput}>
-          <Window>
-            <Messages messagesRef={messagesRef} />
-          </Window>
-          <Thread />
-          <MessageInput />
-        </Channel>
-      </Chat>
+      {chat && userId &&
+        <Messages chat={chat} userId={userId} users={userData}/>
+      }
+      <MessageInput chatId={chat==null? null : chat.id} userId={userId}/>
     </Box>
   );
 };
