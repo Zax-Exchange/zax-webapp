@@ -17,3 +17,9 @@ const DELETE_PENDING_JOIN_REQUESTS = gql`
     deletePendingJoinRequests(data: $data)
   }
 `
+
+const SEND_VENDOR_SIGNUP_INVITATION = gql`
+  mutation sendVendorSignupInvitation($data: SendVendorSignupInvitationInput!) {
+    sendVendorSignupInvitation(data: $data)
+  }
+`

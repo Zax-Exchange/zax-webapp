@@ -5,10 +5,12 @@ import {
   Box,
   Button,
   CircularProgress,
+  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
+  Link,
   List,
   ListItem,
   TextField,
@@ -42,8 +44,10 @@ type InvitationItem = {
 };
 const ProjectInvitationModal = ({
   setProjectInvitationModalOpen,
+  setInviteVendorToSignupOpen,
 }: {
   setProjectInvitationModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setInviteVendorToSignupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const intl = useIntl();
   const { user } = useContext(AuthContext);
@@ -329,7 +333,7 @@ const ProjectInvitationModal = ({
       </DialogTitle>
       <DialogContent>
         <Box display="flex" justifyContent="space-around">
-          <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 0.5 }}>
             <Autocomplete
               sx={{ width: 400 }}
               loading={searchVendorsLoading}
@@ -402,6 +406,30 @@ const ProjectInvitationModal = ({
               </Button>
             </Box>
           </Box>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+          <Typography color="text.secondary" fontSize={"0.8rem"}>
+            {intl.formatMessage({
+              id: "app.customer.projectDetail.inviteVendors.signup",
+            })}
+          </Typography>
+          <Link
+            onClick={() => {
+              setProjectInvitationModalOpen(false);
+              setInviteVendorToSignupOpen(true);
+            }}
+            fontSize={"0.8rem"}
+            sx={{
+              ":hover": {
+                cursor: "pointer",
+              },
+              ml: 0.5,
+            }}
+          >
+            {intl.formatMessage({
+              id: "app.customer.projectDetail.inviteVendors.inviteToSignup",
+            })}
+          </Link>
         </Box>
         <Box sx={{ overflow: "hidden" }}>
           {getProjectInvitationsLoading && (

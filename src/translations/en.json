@@ -459,6 +459,9 @@
   "app.customer.projectDetail.inviteVendors": "Invite Vendors To Bid",
   "app.customer.projectDetail.inviteVendors.modal.title": "Invite vendors to bid on your project",
   "app.customer.projectDetail.inviteVendors.noInvitations": "You have not invited any vendors yet.",
+  "app.customer.projectDetail.inviteVendors.signup": "Don't see the vendor your working with?",
+  "app.customer.projectDetail.inviteVendors.inviteToSignup": "Invite them.",
+  "app.customer.projectDetail.inviteVendors.invite": "Invite",
   "app.customer.projectDetail.subnav.project": "Project",
   "app.customer.projectDetail.subnav.messages": "Messages",
 

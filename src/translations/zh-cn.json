@@ -463,6 +463,9 @@
   "app.customer.projectDetail.inviteVendors": "邀请厂商竞标",
   "app.customer.projectDetail.inviteVendors.modal.title": "邀请厂商来竞标您的项目",
   "app.customer.projectDetail.inviteVendors.noInvitations": "项目尚未邀请厂商来竞标。",
+  "app.customer.projectDetail.inviteVendors.signup": "没看到您正在合作的厂商？",
+  "app.customer.projectDetail.inviteVendors.inviteToSignup": "邀请他们。",
+  "app.customer.projectDetail.inviteVendors.invite": "邀请",
   "app.customer.projectDetail.subnav.project": "项目",
   "app.customer.projectDetail.subnav.messages": "消息",
 

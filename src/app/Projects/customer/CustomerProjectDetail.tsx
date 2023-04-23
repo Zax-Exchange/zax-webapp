@@ -66,6 +66,7 @@ import ProjectInvitationCard from "../vendor/ProjectInvitationCard";
 import NotFound from "../../Utils/NotFound";
 import mixpanel from "mixpanel-browser";
 import CustomerChat from "../chat/CustomerChat";
+import InviteVendorToSignupModal from "./modals/InviteVendorToSignupModal";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -109,7 +110,8 @@ const CustomerProjectDetail = ({
     useState(false);
   const [projectChangelogModalOpen, setProjectChangelogModalOpen] =
     useState(false);
-
+  const [inviteVendorToSignupOpen, setInviteVendorToSignupOpen] =
+    useState(false);
   const [componentsChangelog, setComponentsChangelog] = useState<
     Record<string, ProjectComponentChangelog[]>
   >({});
@@ -394,19 +396,16 @@ const CustomerProjectDetail = ({
                       </Box>
                       {projectData.permission !== ProjectPermission.Viewer && (
                         <Box>
-                          {projectData.visibility ===
-                            ProjectVisibility.Private && (
-                            <IconButton onClick={openProjectInvitationModal}>
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "app.customer.projectDetail.inviteVendors",
-                                })}
-                                placement="top"
-                              >
-                                <GroupAddOutlined color="primary" />
-                              </Tooltip>
-                            </IconButton>
-                          )}
+                          <IconButton onClick={openProjectInvitationModal}>
+                            <Tooltip
+                              title={intl.formatMessage({
+                                id: "app.customer.projectDetail.inviteVendors",
+                              })}
+                              placement="top"
+                            >
+                              <GroupAddOutlined color="primary" />
+                            </Tooltip>
+                          </IconButton>
                           <IconButton onClick={copyProject}>
                             <Tooltip
                               title={intl.formatMessage({
@@ -593,6 +592,15 @@ const CustomerProjectDetail = ({
               <Dialog open={projectInvitationModalOpen}>
                 <ProjectInvitationModal
                   setProjectInvitationModalOpen={setProjectInvitationModalOpen}
+                  setInviteVendorToSignupOpen={setInviteVendorToSignupOpen}
+                />
+              </Dialog>
+              <Dialog
+                open={inviteVendorToSignupOpen}
+                onClose={() => setInviteVendorToSignupOpen(false)}
+              >
+                <InviteVendorToSignupModal
+                  setInviteVendorToSignupOpen={setInviteVendorToSignupOpen}
                 />
               </Dialog>
             </Box>

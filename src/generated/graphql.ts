@@ -711,6 +711,7 @@ export type Mutation = {
   resetPassword: Scalars['Boolean'];
   resubmitProjectBid: Scalars['Boolean'];
   sendPasswordResetLink: Scalars['Boolean'];
+  sendVendorSignupInvitation: Scalars['Boolean'];
   updateCompanyPlan: Scalars['Boolean'];
   updateCompanyPlanSubscriptionInfo: Scalars['Boolean'];
   updateCompanyStatus: Scalars['Boolean'];
@@ -930,6 +931,11 @@ export type MutationResubmitProjectBidArgs = {
 
 export type MutationSendPasswordResetLinkArgs = {
   data: SendPasswordResetLinkInput;
+};
+
+
+export type MutationSendVendorSignupInvitationArgs = {
+  data: SendVendorSignupInvitationInput;
 };
 
 
@@ -1770,6 +1776,10 @@ export type SearchVendorCompanyInput = {
 };
 
 export type SendPasswordResetLinkInput = {
+  email: Scalars['String'];
+};
+
+export type SendVendorSignupInvitationInput = {
   email: Scalars['String'];
 };
 

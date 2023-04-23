@@ -25,6 +25,13 @@ export type DeletePendingJoinRequestsMutationVariables = Types.Exact<{
 
 export type DeletePendingJoinRequestsMutation = { __typename?: 'Mutation', deletePendingJoinRequests: boolean };
 
+export type SendVendorSignupInvitationMutationVariables = Types.Exact<{
+  data: Types.SendVendorSignupInvitationInput;
+}>;
+
+
+export type SendVendorSignupInvitationMutation = { __typename?: 'Mutation', sendVendorSignupInvitation: boolean };
+
 
 export const CheckCompanyNameDocument = gql`
     query checkCompanyName($data: CheckCompanyNameInput!) {
@@ -123,3 +130,34 @@ export function useDeletePendingJoinRequestsMutation(baseOptions?: Apollo.Mutati
 export type DeletePendingJoinRequestsMutationHookResult = ReturnType<typeof useDeletePendingJoinRequestsMutation>;
 export type DeletePendingJoinRequestsMutationResult = Apollo.MutationResult<DeletePendingJoinRequestsMutation>;
 export type DeletePendingJoinRequestsMutationOptions = Apollo.BaseMutationOptions<DeletePendingJoinRequestsMutation, DeletePendingJoinRequestsMutationVariables>;
+export const SendVendorSignupInvitationDocument = gql`
+    mutation sendVendorSignupInvitation($data: SendVendorSignupInvitationInput!) {
+  sendVendorSignupInvitation(data: $data)
+}
+    `;
+export type SendVendorSignupInvitationMutationFn = Apollo.MutationFunction<SendVendorSignupInvitationMutation, SendVendorSignupInvitationMutationVariables>;
+
+/**
+ * __useSendVendorSignupInvitationMutation__
+ *
+ * To run a mutation, you first call `useSendVendorSignupInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendVendorSignupInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendVendorSignupInvitationMutation, { data, loading, error }] = useSendVendorSignupInvitationMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSendVendorSignupInvitationMutation(baseOptions?: Apollo.MutationHookOptions<SendVendorSignupInvitationMutation, SendVendorSignupInvitationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendVendorSignupInvitationMutation, SendVendorSignupInvitationMutationVariables>(SendVendorSignupInvitationDocument, options);
+      }
+export type SendVendorSignupInvitationMutationHookResult = ReturnType<typeof useSendVendorSignupInvitationMutation>;
+export type SendVendorSignupInvitationMutationResult = Apollo.MutationResult<SendVendorSignupInvitationMutation>;
+export type SendVendorSignupInvitationMutationOptions = Apollo.BaseMutationOptions<SendVendorSignupInvitationMutation, SendVendorSignupInvitationMutationVariables>;
