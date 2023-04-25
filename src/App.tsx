@@ -45,6 +45,7 @@ import Feedback from "./app/Feedback/Feedback";
 import ReactGA from "react-ga4";
 import mixpanel from "mixpanel-browser";
 import CustomerUpgradeBanner from "./app/Banner/CustomerUpgradeBanner";
+import GuestEditProject from "./app/LoggedOut/GuestProject/GuestEditProject";
 
 const theme = createTheme({
   palette: {
@@ -387,6 +388,14 @@ function App() {
                   element={
                     <LoggedOutRoute>
                       <GuestProject />
+                    </LoggedOutRoute>
+                  }
+                />
+                <Route
+                  path={LOGGED_OUT_ROUTES.GUEST_PROJECT_EDIT}
+                  element={
+                    <LoggedOutRoute>
+                      <GuestEditProject />
                     </LoggedOutRoute>
                   }
                 />

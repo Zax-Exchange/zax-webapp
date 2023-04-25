@@ -104,7 +104,7 @@ const VendorGuestProjectOverviewCard = ({
           ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
         }}
       >
-        <IconButton
+        {/* <IconButton
           sx={{ position: "absolute", right: "4px" }}
           id="long-button"
           onClick={moreOnClick}
@@ -134,7 +134,7 @@ const VendorGuestProjectOverviewCard = ({
               {intl.formatMessage({ id: "app.general.share" })}
             </MenuItem>
           </MenuList>
-        </Menu>
+        </Menu> */}
 
         <Container
           sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}

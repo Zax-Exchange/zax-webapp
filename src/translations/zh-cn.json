@@ -519,10 +519,10 @@
   "app.vendor.projectDetail.noBid": "您没有竞标此部件。",
   "app.vendor.projectDetail.chatWithCustomer": "与客户对话",
 
-  "app.vendor.projects.yourBids": "竞标项目",
-  "app.vendor.projects.noBids": "暂无竞标项目。您可以搜索项目来创建您的第一个竞标。",
+  "app.vendor.projects.yourBids": "您的项目",
+  "app.vendor.projects.noBids": "暂无任何项目。您可以通过发送询价单来创建您的项目。",
   "app.vendor.projects.yourInvitations": "竞标邀请",
-  "app.vendor.projects.yourInvitations.tooltip": "客户可以邀请厂商来竞标他们的非公开项目。任何竞标邀请将在以下显示。",
+  "app.vendor.projects.yourInvitations.tooltip": "客户可以邀请厂商来竞标他们的私人项目。任何竞标邀请将在以下显示。",
   "app.vendor.projects.noInvitations": "暂无竞标邀请。",
 
   "app.vendor.projectDetail.resubmitBid": "如果您的竞标无需更新，您可以重新提交。",

@@ -23,6 +23,7 @@ import useCustomSnackbar from "../../Utils/CustomSnackbar";
 import FullScreenLoading from "../../Utils/Loading";
 import GuestAdvancedCreate from "./GuestAdvanceCreate";
 import GuestEditProject from "./GuestEditProject";
+import GuestProjectDetail from "./GuestProjectDetail";
 
 const GuestProject = () => {
   const intl = useIntl();
@@ -32,6 +33,7 @@ const GuestProject = () => {
     loading: getProjectDetailLoading,
     data: getProjectDetailData,
     error: getProjectDetailError,
+    refetch: getProjectDetailRefetch,
   } = useGetProjectDetailQuery({
     variables: {
       data: {
@@ -39,6 +41,7 @@ const GuestProject = () => {
       },
     },
     fetchPolicy: "no-cache",
+    notifyOnNetworkStatusChange: true,
   });
 
   const [creationMode, setCreationMode] = useState(
@@ -47,7 +50,7 @@ const GuestProject = () => {
   const [email, setEmail] = useState("");
 
   // TODO: check email before GETing project data (check both email and project exist)
-  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(true);
   const [emailVerifyFailed, setEmailVerifyFailed] = useState(false);
 
   const [projectCreated, setProjectCreated] = useState(false);
@@ -114,6 +117,10 @@ const GuestProject = () => {
     );
   };
 
+  const refetchProjectData = () => {
+    getProjectDetailRefetch();
+  };
+
   if (getProjectDetailLoading) {
     return <FullScreenLoading />;
   }
@@ -169,19 +176,15 @@ const GuestProject = () => {
         res = (
           <>
             {/* {renderCreationModeDropdown()} */}
-            <GuestAdvancedCreate
-              setProjectCreated={setProjectCreated}
-              projectId={projectId!}
-            />
+            <GuestAdvancedCreate refetchProjectData={refetchProjectData} />
           </>
         );
       } else {
       }
     } else {
       res = (
-        <GuestEditProject
-          setProjectUpdated={setProjectUpdated}
-          projectId={projectId!}
+        <GuestProjectDetail
+          projectData={getProjectDetailData.getProjectDetail}
         />
       );
     }

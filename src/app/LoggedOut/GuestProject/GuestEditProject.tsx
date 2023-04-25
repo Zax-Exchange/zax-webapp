@@ -1,4 +1,4 @@
-import { Edit, Cancel, Restore } from "@mui/icons-material";
+import { Edit, Cancel, Restore, KeyboardBackspace } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
@@ -44,6 +44,8 @@ import {
 } from "../../Utils/inputValidators";
 import FullScreenLoading from "../../Utils/Loading";
 import ProjectCategoryDropdown from "../../Utils/ProjectCategoryDropdown";
+import { useNavigate, useParams } from "react-router-dom";
+import { LOGGED_OUT_ROUTES } from "../../constants/loggedOutRoutes";
 
 type EditProjectErrors = Record<keyof UpdateProjectData, boolean>;
 
@@ -69,14 +71,10 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const GuestEditProject = ({
-  projectId,
-  setProjectUpdated,
-}: {
-  projectId: string;
-  setProjectUpdated: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const GuestEditProject = () => {
   const intl = useIntl();
+  const { projectId } = useParams();
+  const navigate = useNavigate();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
 
   const [updateProjectMutation, { loading: updateProjectLoading }] =
@@ -102,7 +100,7 @@ const GuestEditProject = ({
   const [updateProjectInput, setUpdateProjectInput] =
     useState<UpdateGuestProjectInput>({
       projectData: {
-        projectId: projectId,
+        projectId: projectId || "",
         name: "",
         deliveryAddress: "",
         country: "",
@@ -305,6 +303,14 @@ const GuestEditProject = ({
     setCurrentTab(newTab);
   };
 
+  const navigateToProjectDetail = () => {
+    const dest = LOGGED_OUT_ROUTES.GUEST_PROJECT.replace(
+      ":projectId",
+      projectId ? projectId : ""
+    );
+    navigate(dest);
+  };
+
   const orderQuantityOnChange = (val: string) => {
     if (isValidInt(val)) {
       setOrderQuantity(val);
@@ -473,12 +479,19 @@ const GuestEditProject = ({
         }),
       ]);
 
-      setProjectUpdated(true);
+      navigateToProjectDetail();
+      setSnackbar({
+        severity: "success",
+        message: intl.formatMessage({
+          id: "app.customer.editProject.update.success",
+        }),
+      });
     } catch (e) {
       setSnackbar({
         severity: "error",
         message: intl.formatMessage({ id: "app.general.network.error" }),
       });
+    } finally {
       setSnackbarOpen(true);
     }
   };
@@ -522,6 +535,14 @@ const GuestEditProject = ({
     );
   };
 
+  const backButtonHandler = () => {
+    const dest = LOGGED_OUT_ROUTES.GUEST_PROJECT.replace(
+      ":projectId",
+      projectId ? projectId : ""
+    );
+    navigate(dest);
+  };
+
   const isLoading = updateProjectLoading;
 
   if (getProjectDetailError) {
@@ -537,7 +558,11 @@ const GuestEditProject = ({
   return (
     <>
       {isLoading && <FullScreenLoading />}
-
+      <Box style={{ textAlign: "left" }}>
+        <IconButton onClick={backButtonHandler}>
+          <KeyboardBackspace />
+        </IconButton>
+      </Box>
       <Paper sx={{ padding: 5 }}>
         <Box display="flex" mb={4}>
           <Typography variant="h6" textAlign="left" flexGrow={1}>

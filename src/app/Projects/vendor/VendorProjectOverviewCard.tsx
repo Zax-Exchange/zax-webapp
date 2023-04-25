@@ -153,14 +153,14 @@ const VendorProjectOverviewCard = ({
           ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
         }}
       >
-        <IconButton
+        {/* <IconButton
           sx={{ position: "absolute", right: "4px" }}
           id="long-button"
           onClick={moreOnClick}
         >
           <MoreIcon id="123" />
         </IconButton>
-        {/* <Menu
+        <Menu
           id="long-menu"
           anchorEl={projectMenuAnchor}
           open={projectMenuOpen}

@@ -29,6 +29,8 @@ import ComponentSpecDetail from "../../Projects/common/ComponentSpecDetail";
 import { Cancel } from "@mui/icons-material";
 import CreateProjectComponentModal from "../../Projects/customer/createProject/advanced/modals/CreateProjectComponentModal";
 import ProjectSpecInput from "../../Projects/customer/createProject/common/ProjectSpecInput";
+import { useNavigate, useParams } from "react-router-dom";
+import { LOGGED_OUT_ROUTES } from "../../constants/loggedOutRoutes";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,16 +54,16 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const GuestAdvamcedCreate = ({
-  projectId,
-  setProjectCreated,
+const GuestAdvancedCreate = ({
+  refetchProjectData,
 }: {
-  projectId: string;
-  setProjectCreated: React.Dispatch<React.SetStateAction<boolean>>;
+  refetchProjectData: () => void;
 }) => {
   const intl = useIntl();
   const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const { projectId } = useParams();
 
+  const navigate = useNavigate();
   const [deleteDesign, { error: deleteDesignError }] =
     useDeleteProjectDesignMutation();
 
@@ -230,7 +232,7 @@ const GuestAdvamcedCreate = ({
       deliveryDate: data.deliveryDate,
       name: data.name,
       orderQuantities: data.orderQuantities,
-      projectId,
+      projectId: projectId || "",
       targetPrice: data.targetPrice,
       totalWeight: data.totalWeight,
     };
@@ -246,9 +248,19 @@ const GuestAdvamcedCreate = ({
           } as CreateGuestProjectInput,
         },
       });
-
-      setProjectCreated(true);
-    } catch (e) {}
+      refetchProjectData();
+      setSnackbar({
+        severity: "success",
+        message: intl.formatMessage({ id: "app.guestProject.created" }),
+      });
+    } catch (e) {
+      setSnackbar({
+        severity: "error",
+        message: intl.formatMessage({ id: "app.general.network.error" }),
+      });
+    } finally {
+      setSnackbarOpen(true);
+    }
   };
 
   const isLoading = createGuestProjectLoading;
@@ -387,4 +399,4 @@ const GuestAdvamcedCreate = ({
   );
 };
 
-export default GuestAdvamcedCreate;
+export default GuestAdvancedCreate;
