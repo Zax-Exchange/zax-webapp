@@ -1147,7 +1147,6 @@ const VendorProjectDetail = ({
             <Box>
               { user &&
                 <ProjectChat
-                  userId={user.id}
                   projectBidId={bidInfo.id}
                   />
               }

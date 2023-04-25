@@ -1,19 +1,13 @@
-import { Box, List, ListItem, Typography } from "@mui/material";
-import React, { createRef, useEffect, useRef, useState } from "react";
-import { ChatApi, ChatData, MessageData } from "./ChatApi";
+import { Box, CircularProgress, List, ListItem, Typography } from "@mui/material";
+import React, { createRef, useEffect, useRef, useState, UIEvent } from "react";
+import { ChatApi, ChatData, ChatUserData, MessageData } from "./ChatApi";
 
 const DEFAULT_USER_PFP: string = "https://st4.depositphotos.com/3265223/21282/v/600/depositphotos_212821870-stock-illustration-default-avatar-photo-placeholder-profile.jpg";
 
-type MessageUserData = {
-  userId: string;
-  userName: string;
-  userImage: string | undefined;
-}
-
 type MessageDataWrapper = {
   isLoading: boolean;
+  hasEarlierMessages: boolean;
   messages: MessageData[];
-  numMessages: number;
 }
 
 type MessageDisplayData = {
@@ -21,7 +15,6 @@ type MessageDisplayData = {
   isFromCurrentUser: boolean;
   messageId: number;
   chatId: string;
-  timestampString: string;
   timestamp: number;
   message: string;
   userImage: string;
@@ -31,84 +24,116 @@ type MessageDisplayData = {
 const Messages = ({
   chat,
   userId,
-  users,
 }: {
   chat: ChatData;
   userId: string;
-  users: Map<string,MessageUserData>;
 }) => {
-  var websocket: WebSocket | null;
   const [messages, setMessages] = useState<MessageDataWrapper>({
     isLoading: false,
+    hasEarlierMessages: true,
     messages: [],
-    numMessages: 0,
   });
-  const messagesRef = useRef<MessageDataWrapper>();
-  messagesRef.current = messages;
+  const messageRef = useRef<MessageDataWrapper>(messages)
+  const websocketRef = useRef<WebSocket|null>(null);
   const messageListRef = createRef<HTMLUListElement>();
+
+  const userMap = new Map<string,ChatUserData>();
+  chat.users.forEach((user) => {
+    userMap.set(user.userId, user)
+  });
+
+  const prependMessages = (newMessages: MessageData[]) => {
+    const newMessageList = newMessages.concat(messageRef.current.messages);
+    const uniqueMessages = [...new Map(newMessageList.map((m) => [m.messageId, m])).values()];
+    messageRef.current = {
+      isLoading: messageRef.current.isLoading,
+      messages: uniqueMessages,
+      hasEarlierMessages: messageRef.current.hasEarlierMessages,
+    }
+    setMessages(messageRef.current);
+  }
+
+  const appendMessages = (newMessages: MessageData[]) => {
+    const newMessageList = messageRef.current.messages.concat(newMessages);
+    const uniqueMessages = [...new Map(newMessageList.map((m) => [m.messageId, m])).values()];
+    messageRef.current = {
+      isLoading: messageRef.current.isLoading,
+      messages: uniqueMessages,
+      hasEarlierMessages: messageRef.current.hasEarlierMessages,
+    }
+    setMessages(messageRef.current);
+  }
+
+  const setIsLoading = (isLoading: boolean) => {
+    messageRef.current = {
+      isLoading: isLoading,
+      messages: messageRef.current.messages,
+      hasEarlierMessages: messageRef.current.hasEarlierMessages
+    }
+    setMessages(messageRef.current);
+  }
+
+  const setHasEarlierMessages = (hasEarlierMessages: boolean) => {
+    messageRef.current = {
+      isLoading: messageRef.current.isLoading,
+      messages: messageRef.current.messages,
+      hasEarlierMessages: hasEarlierMessages
+    }
+    setMessages(messageRef.current);
+  }
+    
+  const fetchEarlierMessages = async () => {
+    const beforeDate = new Date();
+    var previousFirstMessageId: number|undefined = undefined
+    if (messageRef.current.messages.length > 0) {
+      beforeDate.setTime(Date.parse(messageRef.current.messages[0].sentAt));
+      previousFirstMessageId = messageRef.current.messages[0].messageId;
+    }
+    setIsLoading(true);
+    const fetchedMessages = (await ChatApi.getMessages(chat.id, beforeDate)).reverse();
+    prependMessages(fetchedMessages);
+    setIsLoading(false);
+    const currentFirstMessageId = messageRef.current.messages[0].messageId;
+    setHasEarlierMessages(previousFirstMessageId != currentFirstMessageId);
+  }
 
   useEffect(() => {
     // When the component mounts and we have a projectBidId, we need to fetch the chat details
     // and open a websocket connection
-
-    const getMessages = async (chat: ChatData) => {
-      setMessages({isLoading: true, messages: [], numMessages: 0});
-      const latestMessages: MessageData[] = await ChatApi.getMessages(chat.id, new Date());
-      setMessages({isLoading: false, messages: latestMessages.reverse(), numMessages: latestMessages.length});
+    const initWebsocket = async () => {
+      if (websocketRef.current === null) {
+        websocketRef.current = ChatApi.subscribeToChat(chat.id, userId,
+          (messageSentEvent) => {
+            appendMessages([messageSentEvent.message]);
+            scrollToBottom();
+          }, 
+          (closeEvent) => {
+            console.log('Socket forcibly closed. Reconnecting in 1 second.', closeEvent.reason);
+            setTimeout(() => {
+              initWebsocket();
+            }, 1000);
+          });
+      }
     }
-    const initWebsocket = async (chat: ChatData) => {
-      websocket = ChatApi.subscribeToChat(chat.id, userId,
-        (messageSentEvent) => {
-          const messages = messagesRef.current;
-          if (messages) {
-            messages.messages.push(messageSentEvent.message);
-            setMessages({
-              isLoading: messages.isLoading,
-              messages: messages.messages,
-              numMessages: messages.messages.length
-            });
-          }
-        }, 
-        (closeEvent) => {
-          console.log('Socket forcibly closed. Reconnecting in 1 second.', closeEvent.reason);
-          setTimeout(() => {
-            initWebsocket(chat);
-          }, 1000);
-        });
-    }
-  
-    if (chat != null) {
-      getMessages(chat);
-      initWebsocket(chat);
-    }
+    fetchEarlierMessages();
+    initWebsocket();
 
     return () => {
       // When the component unmounts, we need to close the websocket connection
-      websocket?.close();
+      if (websocketRef.current !== null) {
+        websocketRef.current.close();
+        websocketRef.current = null;
+      }
     }
-  }, [chat])
+  }, [chat]);
 
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const messageDisplayData: MessageDisplayData[] = messages.messages.map((msg) => {
-    const user = users.get(msg.userId)
-    const userName = (user === undefined)? "Unknown User" : user.userName;
-    const userImage = (user === undefined || user.userImage === undefined)? DEFAULT_USER_PFP : user.userImage;
-    return {
-      chatId: msg.chatId,
-      messageId: msg.messageId,
-      message: msg.message,
-      userId: msg.userId,
-      isFromCurrentUser: msg.userId === userId,
-      timestampString: msg.timestamp,
-      timestamp: Date.parse(msg.timestamp),
-      userImage,
-      userName,
-    }
-  });
+  const onScroll = (event: UIEvent<HTMLUListElement>) => {
+    const scrolledToTop = messageListRef.current && messageListRef.current.scrollTop === 0;
+    const shouldFetchMoreMessages = !messageRef.current.isLoading && messageRef.current.hasEarlierMessages;
+    if (scrolledToTop && shouldFetchMoreMessages) {
+      fetchEarlierMessages();
+    } 
+  }
 
   const scrollToBottom = () => {
     if (messageListRef.current) {
@@ -116,14 +141,35 @@ const Messages = ({
     }
   };
 
+  const messageDisplayData: MessageDisplayData[] = messages.messages.map((msg) => {
+    const user = userMap.get(msg.userId)
+    const userName = (user===undefined)? "Unknown User" : user.userName;
+    const userImage = (user===undefined || user===null || user.userImage===undefined || user.userImage===null)? DEFAULT_USER_PFP : user.userImage;
+    return {
+      chatId: msg.chatId,
+      messageId: msg.messageId,
+      message: msg.message,
+      userId: msg.userId,
+      isFromCurrentUser: msg.userId === userId,
+      timestamp: Date.parse(msg.sentAt),
+      userImage,
+      userName,
+    }
+  });
+
   return (
     <List
       sx={{ maxHeight: "470px", overflowY: "scroll", pt: 0 }}
       ref={messageListRef}
+      onScroll={onScroll}
     >
+      {
+        messages.isLoading && 
+          <CircularProgress sx={{height: "55px", width: "55px", padding: "10px"}}/>
+      }
       {messageDisplayData.map((m: MessageDisplayData) => {
         return (
-          <Message message={m} key={m.messageId} />
+          <Message message={m} key={m.messageId}/>
         );
       })}
     </List>
@@ -133,8 +179,10 @@ const Messages = ({
 function Message({
   message,
 }: {
-  message: MessageDisplayData;
+  message: MessageDisplayData,
 }) {
+  const time = new Date();
+  time.setTime(message.timestamp)
   return (
     <ListItem
       disableGutters
@@ -152,7 +200,7 @@ function Message({
             <Box display="flex">
               <Box pt="5px">
                 <img
-                  src={message.userImage==null? "" : message.userImage}
+                  src={message.userImage}
                   height={35}
                   width={35}
                   alt="logo"
@@ -172,7 +220,7 @@ function Message({
                 color="text.secondary"
                 fontSize="0.7em"
               >
-                {message.timestampString}
+                {time.toLocaleString()}
               </Typography>
             </Box>
           )}
@@ -201,6 +249,5 @@ function Message({
 export {
   MessageDataWrapper,
   MessageDisplayData,
-  MessageUserData,
   Messages
 };

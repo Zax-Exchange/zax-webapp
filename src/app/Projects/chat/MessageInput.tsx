@@ -8,15 +8,15 @@ export default function MessageInput({
   chatId,
   userId,
 } : {
-  chatId: string | null
-  userId: string | null
+  chatId: string | undefined
+  userId: string | undefined
 }) {
   const theme: any = useTheme();
   const [text, setText] = useState('')
 
   const sendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (chatId == null || userId == null) {
+    if (chatId === undefined || userId === undefined) {
       console.log(`could not send message chatId=${chatId} userId=${userId}`)
       return;
     }

@@ -1,4 +1,3 @@
-import { Await } from "react-router-dom";
 import { envConfig } from "../../Config/EnvConfig";
 
 type MessageSentEvent = {
@@ -12,12 +11,15 @@ type MessageData = {
   messageId: number;
   message: string;
   userId: string;
-  timestamp: string;
+  sentAt: string;
+  updatedAt: string;
 }
 
 type ChatUserData = {
   chatId: string;
   userId: string;
+  userName: string;
+  userImage: string;
   lastReadMessageId: number;
   notificationSetting: string;
 }
@@ -36,10 +38,12 @@ const createOrGetChatByProjectBidId = async (projectBidId: string) => {
   return responseBody
 }
 
-const addUserToChat = async (chatId: string, userId: string) => {
+const addUserToChat = async (chatId: string, userId: string, userName: string) => {
   const body = JSON.stringify({
       chatId,
       userId,
+      userName,
+      userImage: null,
   });
   const response = await fetch(`${envConfig.chatserviceUrl}/chatAccess`, {
     method: 'POST',
@@ -57,7 +61,7 @@ const addUserToChat = async (chatId: string, userId: string) => {
 }
 
 const getMessages = async (chatId: string, before: Date) => {
-  const dateStr = before.toUTCString();
+  const dateStr = before.toISOString();
   const response = await fetch(`${envConfig.chatserviceUrl}/message/chat/${chatId}?before=${dateStr}&count=10`);
   const responseBody: MessageData[] = await response.json();
   return responseBody;
@@ -126,5 +130,6 @@ const ChatApi = {
 export {
   MessageData,
   ChatData,
+  ChatUserData,
   ChatApi
 }
