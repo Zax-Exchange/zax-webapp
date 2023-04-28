@@ -19,7 +19,6 @@ import { Plan } from "../../../generated/graphql";
 import { SubscriptionInfo } from "./CustomerSignup";
 import groupPlan from "../../../static/groupPlan.svg";
 import businessPlan from "../../../static/businessPlan.svg";
-import { Avatar } from "stream-chat-react";
 
 const PlanListItem = styled(ListItem)(() => ({
   flexDirection: "column",
