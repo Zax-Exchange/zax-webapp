@@ -98,10 +98,15 @@ const ProjectSpecInput = ({
       <List>
         <ListItem>
           <Box width="100%">
-            <Box mb={0.5}>
+            <Box mb={0.5} sx={{ display: "flex", alignItems: "center" }}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.name",
+                })
+              )}
+              {renderTooltip(
+                intl.formatMessage({
+                  id: "app.customer.createProject.name.tooltip",
                 })
               )}
             </Box>
@@ -153,10 +158,15 @@ const ProjectSpecInput = ({
         </ListItem>
         <ListItem>
           <Box width="100%">
-            <Box mb={0.5}>
+            <Box mb={0.5} sx={{ display: "flex", alignItems: "center" }}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.deliveryDate",
+                })
+              )}
+              {renderTooltip(
+                intl.formatMessage({
+                  id: "app.customer.createProject.deliveryDate.tooltip",
                 })
               )}
             </Box>
@@ -190,10 +200,15 @@ const ProjectSpecInput = ({
 
         <ListItem>
           <Box width="100%">
-            <Box mb={0.5}>
+            <Box mb={0.5} sx={{ display: "flex", alignItems: "center" }}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.targetPrice",
+                })
+              )}
+              {renderTooltip(
+                intl.formatMessage({
+                  id: "app.customer.createProject.targetPrice.tooltip",
                 })
               )}
             </Box>
@@ -272,10 +287,15 @@ const ProjectSpecInput = ({
       <List sx={{ flexBasis: "50%" }}>
         <ListItem>
           <Box width="100%">
-            <Box mb={0.5}>
+            <Box mb={0.5} sx={{ display: "flex", alignItems: "center" }}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.category",
+                })
+              )}
+              {renderTooltip(
+                intl.formatMessage({
+                  id: "app.customer.createProject.category.tooltip",
                 })
               )}
             </Box>
@@ -292,10 +312,15 @@ const ProjectSpecInput = ({
         </ListItem>
         <ListItem>
           <Box width="100%">
-            <Box mb={0.5}>
+            <Box mb={0.5} sx={{ display: "flex", alignItems: "center" }}>
               {renderSpecTitle(
                 intl.formatMessage({
                   id: "app.project.attribute.deliveryAddress",
+                })
+              )}
+              {renderTooltip(
+                intl.formatMessage({
+                  id: "app.customer.createProject.deliveryAddress.tooltip",
                 })
               )}
             </Box>

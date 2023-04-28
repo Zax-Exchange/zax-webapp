@@ -51,12 +51,14 @@ const VendorProjects = () => {
       },
     },
     fetchPolicy: "no-cache",
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
     data: getVendorGuestProjectsData,
     error: getVendorGuestProjectsError,
     loading: getVendorGuestProjectsLoading,
+    refetch: getVendorGuestProjectsRefetch,
   } = useGetVendorGuestProjectsQuery({
     variables: {
       data: {
@@ -64,6 +66,7 @@ const VendorProjects = () => {
       },
     },
     fetchPolicy: "no-cache",
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
@@ -145,6 +148,11 @@ const VendorProjects = () => {
         break;
     }
     sortOnClose();
+  };
+
+  const refetchProjects = async () => {
+    getVendorProjectsRefetch();
+    getVendorGuestProjectsRefetch();
   };
 
   const isLoading =
@@ -268,7 +276,13 @@ const VendorProjects = () => {
             {getVendorGuestProjectsData.getVendorGuestProjects
               .filter((project) => project.status !== ProjectStatus.Incomplete)
               .map((project) => {
-                return <GuestProjectOverviewCard project={project} />;
+                return (
+                  <GuestProjectOverviewCard
+                    project={project}
+                    refetchProjects={refetchProjects}
+                    setIsProjectPageLoading={setIsProjectPageLoading}
+                  />
+                );
               })}
           </Grid>
         </Box>

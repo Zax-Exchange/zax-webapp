@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Chip,
   Container,
@@ -29,8 +29,11 @@ import { VENDOR_ROUTES } from "../../constants/loggedInRoutes";
 import { useIntl } from "react-intl";
 import { AccountCircle } from "@mui/icons-material";
 import CustomerPermissionModal from "../customer/modals/CustomerPermissionModal";
+import { useDeleteProjectMutation } from "../../gql/delete/project/project.generated";
+import useCustomSnackbar from "../../Utils/CustomSnackbar";
+import DeleteProjectModal from "../customer/modals/DeleteProjectModal";
 
-type ProjectMenuOption = "view-detail" | "share";
+type ProjectMenuOption = "view-detail" | "share" | "delete";
 
 const ProjectOverviewListItem = styled(MuiListItem)(() => ({
   justifyContent: "flex-start",
@@ -43,14 +46,20 @@ const ProjectOverviewListItem = styled(MuiListItem)(() => ({
 
 const VendorGuestProjectOverviewCard = ({
   project,
+  refetchProjects,
+  setIsProjectPageLoading,
 }: {
   project: VendorGuestProjectOverview;
+  refetchProjects: () => void;
+  setIsProjectPageLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const intl = useIntl();
   const navigate = useNavigate();
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const [projectMenuAnchor, setProjectMenuAnchor] =
     useState<HTMLButtonElement | null>(null);
+  const { setSnackbar, setSnackbarOpen } = useCustomSnackbar();
+  const [deleteProjectModalOpen, setDeleteProjectModalOpen] = useState(false);
 
   const projectMenuOpen = !!projectMenuAnchor;
 
@@ -79,7 +88,9 @@ const VendorGuestProjectOverviewCard = ({
     if (action === "share" && canShare()) {
       setPermissionModalOpen(true);
     }
-
+    if (action === "delete") {
+      setDeleteProjectModalOpen(true);
+    }
     moreOnClose();
   };
 
@@ -104,7 +115,7 @@ const VendorGuestProjectOverviewCard = ({
           ":hover": { backgroundColor: "#f8f8f8", cursor: "pointer" },
         }}
       >
-        {/* <IconButton
+        <IconButton
           sx={{ position: "absolute", right: "4px" }}
           id="long-button"
           onClick={moreOnClick}
@@ -127,14 +138,11 @@ const VendorGuestProjectOverviewCard = ({
               {intl.formatMessage({ id: "app.general.viewDetail" })}
             </MenuItem>
 
-            <MenuItem
-              onClick={() => projectMenuOnClick("share")}
-              disabled={!canShare()}
-            >
-              {intl.formatMessage({ id: "app.general.share" })}
+            <MenuItem onClick={() => projectMenuOnClick("delete")}>
+              {intl.formatMessage({ id: "app.general.delete" })}
             </MenuItem>
           </MenuList>
-        </Menu> */}
+        </Menu>
 
         <Container
           sx={{ minHeight: 240, paddingTop: 2, paddingBottom: 2 }}
@@ -221,6 +229,13 @@ const VendorGuestProjectOverviewCard = ({
         </Container>
       </Paper>
 
+      <DeleteProjectModal
+        deleteProjectModalOpen={deleteProjectModalOpen}
+        setDeleteProjectModalOpen={setDeleteProjectModalOpen}
+        setIsProjectPageLoading={setIsProjectPageLoading}
+        projectId={project.id}
+        refetchProjects={refetchProjects}
+      />
       <Dialog
         open={permissionModalOpen}
         onClose={() => setPermissionModalOpen(false)}
