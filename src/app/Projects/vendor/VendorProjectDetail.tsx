@@ -1145,11 +1145,11 @@ const VendorProjectDetail = ({
             }}
           >
             <Box>
-              <ProjectChat
-                projectBidId={bidInfo.id}
-                customerName={customerName}
-                vendorName={getVendorDetailData!.getVendorDetail!.name}
-              />
+              { user &&
+                <ProjectChat
+                  projectBidId={bidInfo.id}
+                  />
+              }
             </Box>
           </DialogContent>
         </Dialog>

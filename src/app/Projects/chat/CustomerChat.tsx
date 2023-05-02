@@ -9,7 +9,6 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import ProjectChat from "./ProjectChat";
 import {
-  useGetVendorDetailLazyQuery,
   useGetVendorDetailQuery,
 } from "../../gql/get/vendor/vendor.generated";
 import { ProjectBid } from "../../../generated/graphql";
@@ -102,13 +101,11 @@ const CustomerChat = ({ bids }: { bids: ProjectBid[] }) => {
         </List>
       </Box>
       <Box sx={{ flexGrow: 2, background: "white", borderRadius: "4px" }}>
-        <ProjectChat
-          projectBidId={bids[chatIndexToOpen] ? bids[chatIndexToOpen].id : ""}
-          customerName={companyData ? companyData.getCustomerDetail.name : ""}
-          vendorName={
-            bids[chatIndexToOpen] ? bids[chatIndexToOpen].companyId : ""
-          }
-        />
+        { user &&
+          <ProjectChat
+            projectBidId={bids[chatIndexToOpen] ? bids[chatIndexToOpen].id : ""}
+          />
+        }
       </Box>
     </Paper>
   );
