@@ -377,6 +377,12 @@ export type CustomerProjectOverview = {
   visibility: ProjectVisibility;
 };
 
+export type CustomerProjectSearchResult = {
+  __typename?: 'CustomerProjectSearchResult';
+  hits: Array<SearchResultProjectOverview>;
+  totalHits: Scalars['Int'];
+};
+
 export type DeactivateUserInput = {
   companyId: Scalars['String'];
   userIds: Array<Scalars['String']>;
@@ -1483,10 +1489,10 @@ export type Query = {
   getVendorProjects: Array<VendorProjectOverview>;
   login: LoggedInUser;
   searchCategories: Array<Category>;
-  searchCustomerProjects: Array<SearchResultProjectOverview>;
+  searchCustomerProjects: CustomerProjectSearchResult;
   searchProducts: Array<Scalars['String']>;
-  searchVendorByName: Array<VendorSearchItem>;
-  searchVendorCompanies: Array<VendorSearchItem>;
+  searchVendorByName: VendorSearchResult;
+  searchVendorCompanies: VendorSearchResult;
 };
 
 
@@ -1740,7 +1746,9 @@ export type SearchCategoriesInput = {
 export type SearchCustomerProjectInput = {
   countries?: InputMaybe<Array<Scalars['String']>>;
   deliveryDate?: InputMaybe<Scalars['String']>;
+  from?: InputMaybe<Scalars['Int']>;
   orderQuantities?: InputMaybe<Array<Scalars['String']>>;
+  size?: InputMaybe<Scalars['Int']>;
   targetPriceRange?: InputMaybe<Array<Scalars['String']>>;
   userId: Scalars['String'];
   userInput: Scalars['String'];
@@ -1765,13 +1773,17 @@ export type SearchResultProjectOverview = {
 };
 
 export type SearchVendorByNameInput = {
+  from?: InputMaybe<Scalars['Int']>;
+  size?: InputMaybe<Scalars['Int']>;
   userInput: Scalars['String'];
 };
 
 export type SearchVendorCompanyInput = {
   countries?: InputMaybe<Array<Scalars['String']>>;
   factoryLocations?: InputMaybe<Array<Scalars['String']>>;
+  from?: InputMaybe<Scalars['Int']>;
   leadTime?: InputMaybe<Scalars['String']>;
+  size?: InputMaybe<Scalars['Int']>;
   userInput: Scalars['String'];
 };
 
@@ -2136,4 +2148,10 @@ export type VendorSearchItem = {
   __typename?: 'VendorSearchItem';
   highlight: VendorSearchHighlight;
   vendor: VendorOverview;
+};
+
+export type VendorSearchResult = {
+  __typename?: 'VendorSearchResult';
+  hits: Array<VendorSearchItem>;
+  totalHits: Scalars['Int'];
 };

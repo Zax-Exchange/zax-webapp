@@ -54,7 +54,7 @@ export type SearchCustomerProjectsQueryVariables = Types.Exact<{
 }>;
 
 
-export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: Array<{ __typename?: 'SearchResultProjectOverview', id: string, name: string, category: string, products: Array<string>, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any, bidInfo: { __typename?: 'ProjectBidInfo', hasBids: boolean, biddedByUserCompany: boolean } }> };
+export type SearchCustomerProjectsQuery = { __typename?: 'Query', searchCustomerProjects: { __typename?: 'CustomerProjectSearchResult', totalHits: number, hits: Array<{ __typename?: 'SearchResultProjectOverview', id: string, name: string, category: string, products: Array<string>, deliveryDate: string, deliveryAddress: string, targetPrice: string, orderQuantities: Array<number>, createdAt: any, bidInfo: { __typename?: 'ProjectBidInfo', hasBids: boolean, biddedByUserCompany: boolean } }> } };
 
 export const ProjectComponentFragmentFragmentDoc = gql`
     fragment ProjectComponentFragment on ProjectComponent {
@@ -305,19 +305,22 @@ export type GetProjectDetailQueryResult = Apollo.QueryResult<GetProjectDetailQue
 export const SearchCustomerProjectsDocument = gql`
     query searchCustomerProjects($data: SearchCustomerProjectInput!) {
   searchCustomerProjects(data: $data) {
-    id
-    name
-    category
-    products
-    deliveryDate
-    deliveryAddress
-    targetPrice
-    orderQuantities
-    createdAt
-    bidInfo {
-      hasBids
-      biddedByUserCompany
+    hits {
+      id
+      name
+      category
+      products
+      deliveryDate
+      deliveryAddress
+      targetPrice
+      orderQuantities
+      createdAt
+      bidInfo {
+        hasBids
+        biddedByUserCompany
+      }
     }
+    totalHits
   }
 }
     `;

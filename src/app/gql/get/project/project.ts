@@ -149,19 +149,22 @@ const GET_PROJECT_DETAIL = gql`
 const SEARCH_CUSTOMER_PROJECTS = gql`
   query searchCustomerProjects($data: SearchCustomerProjectInput!) {
     searchCustomerProjects(data: $data) {
-      id
-      name
-      category
-      products
-      deliveryDate
-      deliveryAddress
-      targetPrice
-      orderQuantities
-      createdAt
-      bidInfo {
-        hasBids
-        biddedByUserCompany
+      hits {
+        id
+        name
+        category
+        products
+        deliveryDate
+        deliveryAddress
+        targetPrice
+        orderQuantities
+        createdAt
+        bidInfo {
+          hasBids
+          biddedByUserCompany
+        }
       }
+      totalHits
     }
   }
 `;

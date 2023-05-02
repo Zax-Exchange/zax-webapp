@@ -13,6 +13,7 @@ import {
   TextField,
   Autocomplete,
   Paper,
+  Pagination,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
@@ -24,6 +25,7 @@ import { useIntl } from "react-intl";
 import { isValidFloat } from "../../Utils/inputValidators";
 import { Country } from "../../Signup/customer/CustomerSignup";
 import { countries } from "../../constants/countries";
+import { STARTING_PAGE, PAGE_SIZE } from "../SearchConstants";
 
 // Allowed search params, if user tempers the url we will not allow search request to fire
 const allowedParams = {
@@ -55,6 +57,9 @@ const VendorSearchResults = () => {
 
   // state to indicate whether query params is malformed and display error if needed
   const [queryParamError, setQueryParamError] = useState(false);
+
+  // state to keep track of page number
+  const [page, setPage] = React.useState(STARTING_PAGE);
 
   // Filter values, this will be initialized based on url if there is any, otherwise they will be empty string
   const [filters, setFilters] = useState<VendorFiltersType>({
@@ -147,30 +152,37 @@ const VendorSearchResults = () => {
   // Runs on every query change based on userInput or filters, only runs if queries are valid.
   useEffect(() => {
     if (validQueryString) {
-      searchProjects({
-        variables: {
-          data: {
-            userInput: queryMap.userInput as string,
-            userId: queryMap.userId as string,
-            targetPriceRange: queryMap.targetPriceRange
-              ? (queryMap.targetPriceRange as string[])
-              : undefined,
-            deliveryDate: queryMap.deliveryDate
-              ? (queryMap.deliveryDate as string)
-              : undefined,
-            countries: queryMap.countries
-              ? Array.isArray(queryMap.countries)
-                ? (queryMap.countries as string[])
-                : [queryMap.countries as string]
-              : undefined,
-          },
-        },
-        fetchPolicy: "no-cache",
-      });
+      setPage(STARTING_PAGE);
+      searchProjectsForPage(STARTING_PAGE) 
     }
   }, [validQueryString, queries]);
 
-  // Clears all filters and sets searchParam to only contain userInput. This changes the url and thus trigger a search request
+  const searchProjectsForPage = (page: number) => {
+    searchProjects({
+      variables: {
+        data: {
+          userInput: queryMap.userInput as string,
+          userId: queryMap.userId as string,
+          targetPriceRange: queryMap.targetPriceRange
+            ? (queryMap.targetPriceRange as string[])
+            : undefined,
+          deliveryDate: queryMap.deliveryDate
+            ? (queryMap.deliveryDate as string)
+            : undefined,
+          countries: queryMap.countries
+            ? Array.isArray(queryMap.countries)
+              ? (queryMap.countries as string[])
+              : [queryMap.countries as string]
+            : undefined,
+          from: (page - 1) * PAGE_SIZE,
+          size: PAGE_SIZE,
+        },
+      },
+      fetchPolicy: "no-cache",
+    });
+  }
+
+  // Clears all filters and sets searchParam to only contain userInput and userId. This changes the url and thus trigger a search request
   const clearFilters = () => {
     setFilters({
       targetPriceRange: ["", ""],
@@ -179,6 +191,7 @@ const VendorSearchResults = () => {
     });
     setSearchParams({
       userInput: queryMap.userInput as string,
+      userId: queryMap.userId as string,
     });
   };
 
@@ -187,6 +200,7 @@ const VendorSearchResults = () => {
     let currentSearchParams: any = {
       ...searchParams,
       userInput: queryMap.userInput,
+      userId: queryMap.userId as string,
     };
     if (
       filters.targetPriceRange[0] !== "" &&
@@ -485,6 +499,14 @@ const VendorSearchResults = () => {
       </>
     );
   };
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+    if (validQueryString) {
+      searchProjectsForPage(value);
+    }
+  };
+
   if (searchProjectsLoading) {
     return <FullScreenLoading />;
   }
@@ -512,19 +534,20 @@ const VendorSearchResults = () => {
         </Grid>
 
         <Grid item xs={7} className="search-results-inner-container">
-          {!searchProjectsData.searchCustomerProjects.length && (
+          {!searchProjectsData.searchCustomerProjects.hits.length && (
             <Typography variant="caption">
               {intl.formatMessage({
                 id: "app.search.noResults",
               })}
             </Typography>
           )}
-          {!!searchProjectsData.searchCustomerProjects.length && (
+          {!!searchProjectsData.searchCustomerProjects.hits.length && (
             <>
               <Stack direction="column">
-                {searchProjectsData.searchCustomerProjects.map((result, i) => {
+                {searchProjectsData.searchCustomerProjects.hits.map((result, i) => {
                   return <SearchProjectOverview projectData={result} key={i} />;
                 })}
+                <Pagination count={Math.ceil(searchProjectsData.searchCustomerProjects.totalHits/PAGE_SIZE)} page={page} onChange={handlePageChange} />
               </Stack>
             </>
           )}
