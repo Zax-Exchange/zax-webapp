@@ -25,8 +25,8 @@ const Messages = ({
   chat,
   userId,
 }: {
-  chat: ChatData;
-  userId: string;
+  chat: ChatData | undefined;
+  userId: string | undefined;
 }) => {
   const [messages, setMessages] = useState<MessageDataWrapper>({
     isLoading: false,
@@ -38,7 +38,7 @@ const Messages = ({
   const messageListRef = createRef<HTMLUListElement>();
 
   const userMap = new Map<string,ChatUserData>();
-  chat.users.forEach((user) => {
+  chat?.users.forEach((user) => {
     userMap.set(user.userId, user)
   });
 
@@ -83,6 +83,9 @@ const Messages = ({
   }
     
   const fetchEarlierMessages = async () => {
+    if (chat === undefined || userId === undefined) {
+      return;
+    }
     const beforeDate = new Date();
     var previousFirstMessageId: number|undefined = undefined
     if (messageRef.current.messages.length > 0) {
@@ -101,6 +104,9 @@ const Messages = ({
     // When the component mounts and we have a projectBidId, we need to fetch the chat details
     // and open a websocket connection
     const initWebsocket = async () => {
+      if (chat === undefined || userId === undefined) {
+        return;
+      }
       if (websocketRef.current === null) {
         websocketRef.current = ChatApi.subscribeToChat(chat.id, userId,
           (messageSentEvent) => {
@@ -159,7 +165,7 @@ const Messages = ({
 
   return (
     <List
-      sx={{ maxHeight: "470px", overflowY: "scroll", pt: 0 }}
+      sx={{ minHeight: "400px", maxHeight: "470px", overflowY: "scroll", pt: 0 }}
       ref={messageListRef}
       onScroll={onScroll}
     >

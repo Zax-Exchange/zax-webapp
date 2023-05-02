@@ -29,9 +29,7 @@ const ProjectChat = ({
 
   return (
     <Box>
-      {chat && user &&
-        <Messages chat={chat} userId={user.id}/>
-      }
+      <Messages chat={chat==null? undefined: chat} userId={user?.id}/>
       <MessageInput chatId={chat?.id} userId={user?.id}/>
     </Box>
   );
